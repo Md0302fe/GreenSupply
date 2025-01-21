@@ -7,7 +7,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { FaRegAddressCard } from "react-icons/fa";
 import { FaRegNewspaper } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import DropdownList from "./DropdownList";
+
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -23,9 +23,7 @@ const Navigation = () => {
             <span>ĐỒ CHƠI TRẺ EM</span>
             <BiChevronDown className="arrow-down"></BiChevronDown>
           </div>
-          <div className="Dropdown_list">
-            <DropdownList></DropdownList>
-          </div>
+
         </div>
         <div className="menu-items homepage flex-center-center">
           <FaHome className="nav-icons"></FaHome>

@@ -14,7 +14,7 @@ import Header from "./components/HeaderComponent/Header";
 import Footer from "./components/FooterComponent/Footer";
 import Register from "./components/AuthComponent/Register";
 import Loading from "./components/LoadingComponent/Loading";
-import DrawerOrder from "./components/ViewOrder/DrawerOrder";
+
 import Navigation from "./components/HeaderComponent/Navigation";
 import Drawer from "./components/DrawerComponent/DrawerComponent";
 import Contact from "./components/ContactComponent/ContactComponent";
@@ -31,12 +31,11 @@ const App = ({ loginActive }) => {
   // orderList
   const orderRedux = useSelector((state) => state.order);
 
-  const [orders, setOrders] = useState([]);
 
   // dispatch
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const user = useSelector((state) => state.user);
+
 
   // Bạn có thể sử dụng useMatch để kiểm tra xem route có phải là route của ProductDetails không.
   const match = useMatch("/Product-Detail/:id"); // Kiểm tra route
@@ -54,11 +53,6 @@ const App = ({ loginActive }) => {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    if (orderRedux && orderRedux?.orderItems) {
-      setOrders(orderRedux?.orderItems);
-    }
-  }, [orderRedux]);
 
   // Function 8
   const handleDecoded = () => {
@@ -183,19 +177,6 @@ const App = ({ loginActive }) => {
 
       {/* Footer App */}
       <div className="footer"></div>
-
-      {/* Drawer Cart */}
-      <Drawer
-        title="Giỏ Hàng"
-        isOpen={drawerUp}
-        onClose={() => setDrawerUp(false)}
-        placement="right"
-        width="30%"
-        forceRender
-        closeIcon={customCloseIcon}
-      >
-        <DrawerOrder orders={orders} setDrawerUp={setDrawerUp}></DrawerOrder>
-      </Drawer>
 
       {/* TOAST - Notification */}
       <ToastContainer
