@@ -1,0 +1,15 @@
+.Wrapper.Width {
+  font-family: "cabin";
+  // Cây thư mục
+  .navigate-link {
+    cursor: pointer;
+    span {
+      &:hover {
+        border-bottom: 1px solid black;
+      }
+    }
+  }
+  // nội dung chính của trang product details
+  .Product-Detail-MainContent {
+  }
+}

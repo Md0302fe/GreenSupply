@@ -77,7 +77,7 @@ textarea,
 select {
   font-size: 16px;
   outline: none;
-  font-family: "Poppins";
+  font-family: "Cabin";
 }
 
 .App {
@@ -128,4 +128,49 @@ button {
 
 p {
   color: #5e6282;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.ant-upload-drag-container {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.ant-modal.css-dev-only-do-not-override-14i19y2 {
+  min-width: 700px;
+}
+
+th.ant-table-cell,
+.ant-table-cell {
+  text-align: left !important;
+}
+
+.ant-input.css-dev-only-do-not-override-14i19y2 {
+  padding-left: 12px !important;
+}
+
+.ant-input-suffix {
+  display: none !important;
+}
+
+.ant-drawer-header {
+  background-color: black;
+}
+
+.ant-drawer-title {
+  color: white;
+  font-size: 26px;
+  text-transform: uppercase;
+}
+
+.ant-pagination.Paginate.css-dev-only-do-not-override-14i19y2 {
+  margin: 40px 0;
+  justify-content: center;
+}
+
+.ant-input-number-input {
+  text-align: center;
 }
