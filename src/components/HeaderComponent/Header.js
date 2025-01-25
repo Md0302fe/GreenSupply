@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetUser } from "../../redux/slides/userSlides";
-import { searchProduct } from "../../redux/slides/productSlides";
+
 import { WrapperContentPopup } from "./styles";
 import { persistor } from "../../redux/store";
 
@@ -35,10 +35,6 @@ const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
     setUserAvatar(userRedux?.avatar);
   }, [userRedux?.avatar]);
 
-  const onSearch = (e) => {
-    setSearch(e.target.value);
-    dispatch(searchProduct(e.target.value));
-  };
 
   // HIDE POP OVER
   const hide = () => {
@@ -113,7 +109,7 @@ const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
               allowClear
               enterButton="Search"
               size="large"
-              onChange={onSearch}
+              onChange={{}}
             />
           </Col>
           <Col span={6} className="Shopping-cart flex-center-center">
