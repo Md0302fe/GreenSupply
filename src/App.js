@@ -18,6 +18,7 @@ import Loading from "./components/LoadingComponent/Loading";
 import Navigation from "./components/HeaderComponent/Navigation";
 import Drawer from "./components/DrawerComponent/DrawerComponent";
 import Contact from "./components/ContactComponent/ContactComponent";
+import HomePage from "./pages/HomePage/HomePage.js";
 
 const App = ({ loginActive }) => {
   // header icons click state
@@ -125,16 +126,18 @@ const App = ({ loginActive }) => {
       <Loading isPending={isLoading}>
         <div>
           {/* Header-App */}
-          <div className="header-container">
+          <div className="header-container mb-5">
             <Header
               setActive={setActiveForm}
               setIsLoginActive={setIsLoginActive}
               setDrawerUp={setDrawerUp}
             ></Header>
-            <div className="navigation-container">
+
+            {/* <div className="navigation-container">
               <Navigation></Navigation>
-            </div>
+            </div> */}
           </div>
+
           {/* Main-Body-App */}
           <div className="main-container">
             {/* main-content */}
