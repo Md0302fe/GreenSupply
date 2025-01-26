@@ -29,14 +29,10 @@ Control OverLay .overlay-all.hidden {
 .login-container {
   .Login-wapper {
     position: relative;
-    max-width: 800px;
-    background-color: #f2f1ef;
     border-radius: 5px;
-    justify-content: space-around;
     padding: 20px 0;
 
     .Info-Sign-In {
-      width: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,7 +81,6 @@ Control OverLay .overlay-all.hidden {
         flex-direction: column;
         gap: 10px;
         font-size: 15px;
-        min-width: 300px;
 
         .form-group {
           label {
@@ -96,7 +91,6 @@ Control OverLay .overlay-all.hidden {
           }
 
           input {
-            border: none;
             width: 100%;
             padding: 8px 8px;
             border-radius: 5px;

@@ -13,6 +13,10 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlides";
 
+// image
+import backgroundRegister from "../../assets/image/background_login.png";
+
+
 const Login = ({
   isLoginActive,
   setLoginHiddent,
@@ -90,22 +94,22 @@ const Login = ({
   return (
     //  Overlay - Login-container
     <div
-      className={`login-container overlay-all flex-center-center ${
-        isLoginActive && active ? "active" : "hiddent"
-      } `}
+      className={`login-container overlay-all flex-center-center ${isLoginActive && active ? "active" : "hiddent"
+        } `}
     >
       {/* Wrapper Login */}
-      <div className="Login-wapper Width flex-center-center">
-        <div className="Info-Sign-In">
-          <div className="title col-8 mx-auto">Thế Giới Đồ Chơi</div>
-          <div className="welcome col-8 mx-auto">Chào Mừng Bạn Trở Lại</div>
-          <div className="content-form col-5 mx-auto">
+      <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
+        style={{ backgroundImage: `url("${backgroundRegister}")` }}>
+        <div className="Info-Sign-In bg-white rounded-2xl pt-12 pb-6  md:ml-8 w-11/12 lg:w-8/12 mx-auto">
+          <img src="image/logo-orange.png" alt="" />
+          <p className="text-3xl font-bold text-supply-primary mb-4">Đăng nhập</p>
+          <div className="content-form col-5 w-10/12">
             {/* Email */}
             <div className="form-group">
               {/* <label>Email</label> */}
               <input
                 type={"email"}
-                className="form-control"
+                className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={email}
                 placeholder="Email"
                 onChange={(event) => setEmail(event.target.value)}
@@ -117,7 +121,7 @@ const Login = ({
               {/* <label>Password</label> */}
               <input
                 type={"password"}
-                className="form-control"
+                className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={password}
                 placeholder="Mật khẩu "
                 onChange={(event) => setPassword(event.target.value)}
@@ -129,9 +133,8 @@ const Login = ({
               <span>Quên mật khẩu ?</span>
             </div>
             <div
-              className={`errorShow register ${
-                stateNotification ? "active" : ""
-              }`}
+              className={`errorShow register ${stateNotification ? "active" : ""
+                }`}
             >
               {data?.status === "ERROR" ? (
                 <div className="errorShow">
@@ -150,28 +153,30 @@ const Login = ({
               )}
             </div>
             <Loading isPending={isPending}>
-              <button
-                className="btn-submit"
-                onClick={() => handleLogin()}
-                disabled={!email.length || !password.length}
-              >
-                Đăng nhập
-              </button>
+              <div className="text-center">
+                <button
+                  className="text-center bg-supply-primary text-white px-10 py-2 rounded-full disabled:bg-supply-sec"
+                  onClick={() => handleLogin()}
+                  disabled={!email.length || !password.length}
+                >
+                  Đăng nhập
+                </button>
+              </div>
             </Loading>
+          </div>
+          <div className="mt-4 text-center">
+            <p>Bạn chưa có tài khoản <span onClick={() => handleSignUp()} className="text-supply-primary underline cursor-pointer">Đăng ký</span></p>
+            <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
           </div>
         </div>
 
-        <div className="Goto-Sign-Up">
-          {/* Button Đăng Ký */}
-          <div className="Goto-Sign-Up__btn">
-            <button
-              className="btn-signup"
-              onClick={() => {
-                handleSignUp();
-              }}
-            >
-              Đăng ký
-            </button>
+        <div className="hidden md:flex flex-col items-center justify-center text-center">
+          <img src="image/logo-white.png" alt="" />
+          <p className="text-white font-semibold text-3xl">Giải pháp hiệu quả <br /> dành cho nông sản của bạn</p>
+          <div className="flex items-center gap-3 justify-center mt-3">
+            <img src="image/icon/fb.png" alt="" />
+            <img src="image/icon/yt.png" alt="" />
+            <img src="image/icon/tt.png" alt="" />
           </div>
         </div>
         {/* Button Close Form */}
