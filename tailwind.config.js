@@ -7,7 +7,10 @@ module.exports = {
     extend: {
       colors: {
         customOrange: '#FF8B00',
+        "supply-primary": '#FF8B00', // Cam đậm
+        "supply-sec": '#ffc412', // Cam đậm
       },
+      
       fontFamily: {
         instrument: ['"Instrument Sans"', 'sans-serif'],
       },
