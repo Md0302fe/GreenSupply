@@ -13,10 +13,12 @@ import { resetUser } from "../../redux/slides/userSlides";
 import { WrapperContentPopup } from "./styles";
 import { persistor } from "../../redux/store";
 
+import "./Header.scss";
 import * as UserServices from "../../services/UserServices";
 import Loading from "../LoadingComponent/Loading";
 import logoBraintots from "../../assets/logo.png";
-import "./Header.scss";
+
+import logo from "../../assets/NewProject/Logo/GreenSupply.png";
 
 const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
   const [open, setOpen] = useState(false);
@@ -34,7 +36,6 @@ const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
   useEffect(() => {
     setUserAvatar(userRedux?.avatar);
   }, [userRedux?.avatar]);
-
 
   // HIDE POP OVER
   const hide = () => {
@@ -72,146 +73,51 @@ const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
 
   return (
     <div className="Header">
-      {/* Topbar - Wrapper */}
-      <div className="topbar-wrap flex-center-center">
-        <div className="Width flex-center-center">
-          <div className="topcontent-left text-black"> Giao hàng siêu tốc</div>
-          <div className="topcontent-right flex-center-center">
-            <div className="content-rights">
-              <CiSquareQuestion className="icons-right text-black"></CiSquareQuestion>
+      <header className="bg-customOrange px-6 py-2 rounded-bl-2xl rounded-br-2xl max-w-full">
+        <div className="container mx-auto flex justify-end items-center space-x-4 max-w-full">
+          <button className="text-sm font-medium text-white flex items-center space-x-2">
+            <i className="fa-solid fa-bell"></i>
+            <span>Thông báo</span>
+          </button>
+          <button className="text-sm font-medium text-white flex items-center space-x-2">
+            <i className="fa-solid fa-globe"></i>
+            <span>Tiếng Việt</span>
+            <i className="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+
+        <div className="container mx-auto grid grid-cols-12 items-center gap-4 max-w-full">
+          <div className="col-span-2 flex items-center">
+            <img
+              src={logo}
+              alt="Green Supply Logo"
+              className="h-16 max-w-full"
+            />
+          </div>
+          <div className="col-span-7 relative max-w-full">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <button className="h-[36px] w-[36px] flex items-center justify-center bg-[#FF8B00] text-white rounded-md">
+                <i className="fa-solid fa-magnifying-glass"></i>
+              </button>
             </div>
-            <a href="https://www.dochoigiaotri.com/">
-              <div className="content-item text-black">
-                <span>Tư vấn mua hàng</span>
-                <h5>0333 090 091 / Facebook</h5>
-              </div>
-            </a>
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              className="w-full h-[46px] pl-14 pr-4 py-2 rounded border font-bold border-gray-300 focus:outline-none text-[#FF8B00] focus:border-[#FF8B00] placeholder:text-[#FF8B00]"
+            />
+          </div>
+          <div className="col-span-3 flex justify-end space-x-4 max-w-full">
+            <button className="w-[140px] h-[42px] text-sm font-bold bg-white text-black rounded-md">
+              Đăng ký
+            </button>
+            <button className="w-[140px] h-[42px] text-sm font-bold bg-yellow-300 text-black rounded-md">
+              Đăng nhập
+            </button>
           </div>
         </div>
-      </div>
-      <Row className="flex-center-center">
-        <div className="Width flex-center-center">
-          <Col span={5} className="Logo">
-            <div
-              style={{
-                backgroundImage: `url(${logoBraintots})`,
-                width: "100%",
-                height: "100px",
-                backgroundSize: "cover",
-              }}
-            ></div>
-          </Col>
-
-          <Col span={13} className="Search-box">
-            <Search
-              className="search-box-item"
-              placeholder="Tìm kiếm sản phẩm"
-              allowClear
-              enterButton="Search"
-              size="large"
-              onChange={{}}
-            />
-          </Col>
-          <Col span={6} className="Shopping-cart flex-center-center">
-            <Loading isPending={loading}>
-              <div className="Wrapper-Account text-black">
-                {userRedux?.name !== "" && userRedux?.name !== undefined ? (
-                  <div className="user-login flex-center-center">
-                    <>
-                      <Popover
-                        content={
-                          <ul
-                            className="user-nav"
-                            style={{ padding: "0", minWidth: "160px" }}
-                          >
-                            {userRedux?.isAdmin && (
-                              <li>
-                                <WrapperContentPopup
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => navigate("/system/admin")}
-                                >
-                                  Quản lý hệ thống
-                                </WrapperContentPopup>
-                              </li>
-                            )}
-                            <li>
-                              <WrapperContentPopup
-                                style={{ cursor: "pointer" }}
-                                onClick={() => navigate("/profile-user")}
-                              >
-                                Thông tin
-                              </WrapperContentPopup>
-                            </li>
-                            <li>
-                              <WrapperContentPopup
-                                style={{ cursor: "pointer" }}
-                                onClick={() => handleClickBtnLogout()}
-                              >
-                                Đăng xuất
-                              </WrapperContentPopup>
-                            </li>
-                          </ul>
-                        }
-                        trigger="click"
-                        open={open}
-                        onOpenChange={handleOpenChange}
-                        className="flex-center-center Popover"
-                      >
-                        {userAvatar ? (
-                          <img
-                            className="avatar-login-user"
-                            src={userAvatar}
-                            alt="avatar"
-                          ></img>
-                        ) : (
-                          <LuUser
-                            style={{ fontSize: "35px", padding: "0 6px" }}
-                          ></LuUser>
-                        )}
-                        <Button>
-                          <span onClick={hide}>{userRedux.name}</span>
-                        </Button>
-                      </Popover>
-                    </>
-                  </div>
-                ) : (
-                  <div
-                    className="None-account"
-                    onClick={() => handleClickIconUser()}
-                  >
-                    {/* Icons User */}
-                    <AiOutlineUser className="shopping-cart-icons user text-black"></AiOutlineUser>
-                    <span className="text-lg text-black">tài khoản</span>
-                  </div>
-                )}
-                {/* <div className="favorite-box flex-center-center">
-              <AiOutlineHeart className="shopping-cart-icons icons"></AiOutlineHeart>
-              <div className="favorite flex-center-center">1</div>
-            </div> */}
-              </div>
-            </Loading>
-
-            <div className="cart-box flex-center-center text-black">
-              <Badge count={orderRedux?.orderItems?.length} size="small">
-                <HiOutlineShoppingBag
-                  className="shopping-cart-icons text-black"
-                  onClick={() => setDrawerUp(true)}
-                ></HiOutlineShoppingBag>
-              </Badge>
-
-              <div className="shopping-cart-price">
-                <span className="cart-number">0/</span>
-                <span className="cart-total">0 đ</span>
-              </div>
-            </div>
-          </Col>
-        </div>
-        {/* Drawer Up - CustomDrawer */}
-      </Row>
+      </header>
     </div>
   );
 };
 
 export default Header;
-
-// ant design / chia phần tử ra thành 24 cột , Col span={...} số cột chiếm trong layout.
