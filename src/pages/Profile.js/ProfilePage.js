@@ -40,12 +40,16 @@ import userImage from "../../assets/DefaultUser.jpg";
 const ProfilePage = () => {
   // 1: Variables
   const userRedux = useSelector((state) => state.user);
+  console.log("userRedux:", userRedux);
 
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [birth_day, setBirthday] = useState("");
+  const [gender, setGender] = useState("Other");
+  const [full_name, setFullName] = useState("");
 
   const navigate = useNavigate();
   const dishpatch = useDispatch();
@@ -75,7 +79,15 @@ const ProfilePage = () => {
 
   // CLICK BUTTON BTN UPDATE -> CALL API HANDLE UPDATE USER - CLICK CẬP NHẬT
   const handleClickBtnUpdate = () => {
-    const data = { name, email, phone, address, avatar };
+    const data = {
+      full_name,
+      email,
+      phone,
+      address,
+      avatar,
+      birth_day,
+      gender,
+    };
     // call api -> trả về toàn bộ trạng thái của lệnh call đó. (truyền vào 1 object data)
     mutation.mutate({
       id: userRedux?.id,
@@ -87,20 +99,25 @@ const ProfilePage = () => {
   // USER INFOMATIONS AFTER UPDATE
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserServices.getDetailsUser(id, token);
+    console.log("API Response:", res);
     dishpatch(updateUser({ ...res?.data, access_token: token }));
   };
 
   // get value redux after userRedux change
   useEffect(() => {
-    setName(userRedux?.name);
+    setFullName(userRedux?.full_name);
+    // setName(userRedux?.name);
     setEmail(userRedux?.email);
     setPhone(userRedux?.phone);
     setAddress(userRedux?.address);
     setAvatar(userRedux?.avatar);
+    setBirthday(userRedux?.birth_day);
+    setGender(userRedux?.gender);
   }, [userRedux]);
 
   const handleChangeName = (value) => {
-    setName(value);
+    // setName(value);
+    setFullName(value);
   };
   const handleChangeEmail = (value) => {
     setEmail(value);
@@ -172,7 +189,7 @@ const ProfilePage = () => {
                           alt="avatar"
                           fluid
                         />
-                        <p className="text-muted mb-1">{name}</p>
+                        <p className="text-muted mb-1">{full_name}</p>
                         <p className="text-muted mb-4">
                           Bay Area, San Francisco, CA
                         </p>
@@ -187,6 +204,20 @@ const ProfilePage = () => {
                         </FlexCenterCenter>
                       </CardBodys>
                     </FlexCenterCenterCol>
+                    <FlexCenterCenterCol className="mb-4">
+                      {/* avatar here */}
+                      <CardBodys>   
+                        <FlexCenterCenter>
+                          <MDBBtn
+                          
+                          >
+                            Danh Sách Địa Chỉ
+                          </MDBBtn>
+                        </FlexCenterCenter>
+                      </CardBodys>
+                    </FlexCenterCenterCol>
+                    
+                    
                   </MDBCol>
                   <MDBCol lg="8">
                     <MDBCard className="mb-4">
@@ -199,7 +230,7 @@ const ProfilePage = () => {
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
                               <InPut
                                 type="text"
-                                placeholder={name}
+                                value={full_name}
                                 onChange={(e) =>
                                   handleChangeName(e.target.value)
                                 }
@@ -215,7 +246,7 @@ const ProfilePage = () => {
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
                               <InPut
                                 type="email"
-                                placeholder={email}
+                                value={email}
                                 onChange={(e) =>
                                   handleChangeEmail(e.target.value)
                                 }
@@ -231,7 +262,7 @@ const ProfilePage = () => {
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
                               <InPut
                                 type="text"
-                                placeholder={phone}
+                                value={phone}
                                 onChange={(e) =>
                                   handleChangePhone(e.target.value)
                                 }
@@ -239,7 +270,30 @@ const ProfilePage = () => {
                             </MDBCardText>
                           </MDBCol>
                         </MDBRow>
-                        <MDBRow className="mt-[32px]">
+                        <MDBRow>
+                          <MDBCol sm="3">
+                            <MDBCardText>Ngày sinh</MDBCardText>
+                          </MDBCol>
+                          <MDBCol sm="9">
+                            <InPut
+                              type="date"
+                              value={birth_day}
+                              onChange={(e) => setBirthday(e.target.value)}
+                            />
+                          </MDBCol>
+                        </MDBRow>
+                        <MDBRow>
+                          <MDBCol sm="3">
+                            <MDBCardText>Giới tính</MDBCardText>
+                          </MDBCol>
+                          <MDBCol sm="9">
+                            <InPut
+                              value={gender}
+                              onChange={(e) => setGender(e.target.value)}
+                            />
+                          </MDBCol>
+                        </MDBRow>
+                        {/* <MDBRow className="mt-[32px]">
                           <MDBCol sm="3">
                             <MDBCardText>Address</MDBCardText>
                           </MDBCol>
@@ -254,7 +308,7 @@ const ProfilePage = () => {
                               />
                             </MDBCardText>
                           </MDBCol>
-                        </MDBRow>
+                        </MDBRow> */}
                         <div className="flex justify-between items-center min-h-[20vh]">
                           <div className="flex-[0.25]">
                             <MDBCardText>Avatar</MDBCardText>

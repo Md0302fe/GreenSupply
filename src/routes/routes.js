@@ -18,7 +18,7 @@ import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
 
 import ContactPage from "../pages/ContactPage/ContactPage";
-
+import ProfilePage from "../pages/Profile.js/ProfilePage";
 const Router = () => {
   return (
     <>
@@ -41,6 +41,10 @@ const Router = () => {
           <Route index element={<Dashboard />} />
           <Route path="manage-users" element={<ManageUser />} />
         </Route>
+
+        {/* payment routes */}
+        <Route path="/Profile" element={<ProfilePage />} />
+
       </Routes>
 
       
