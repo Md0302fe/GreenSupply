@@ -6,12 +6,8 @@
   height: calc(100% + 20%);
   top: -10%;
   left: 0;
-  transition: all 0.5s;
   z-index: 98;
   visibility: hidden;
-  opacity: 0;
-  transform: translateY(-10%);
-  transition: all 0.3s ease;
 }
 
 Control OverLay .overlay-all.hidden {
@@ -21,8 +17,6 @@ Control OverLay .overlay-all.hidden {
 
 .overlay-all.active {
   visibility: visible; // visibility: hidden và opacity: 0 giúp ẩn phần tử mà không loại bỏ nó khỏi luồng tài liệu.
-  opacity: 1;
-  transform: translateY(0);
 }
 
 // Main Content

@@ -8,6 +8,8 @@ import Loading from "../LoadingComponent/Loading";
 
 import { TbFaceIdError } from "react-icons/tb";
 import { RxCheckCircled } from "react-icons/rx";
+import OtpInput from 'react-otp-input';
+import { toast } from "react-toastify";
 
 const Register = ({
   setLoginActive,
@@ -24,12 +26,16 @@ const Register = ({
   const [date, setDate] = useState("");
   const [role_check, setRoleCheck] = useState(false);
   const [gender, setGender] = useState("");
+  const [resendTimer, setResendTimer] = useState(0); // Thời gian chờ (giây)
 
+  const [otp, setOtp] = useState('');
+  const [otpPopupVisible, setOtpPopupVisible] = useState('');
   const mutation = useMutationHooks((data) => UserServices.userRegister(data));
   const { isPending, data, isSuccess } = mutation;
 
   useEffect(() => {
     if (isSuccess && data.status === "OK") {
+      toast.success('Tạo tài khoản thành công!');
       setTimeout(() => {
         setLoginActive();
         setRegisterHiddent();
@@ -40,7 +46,11 @@ const Register = ({
 
   // Click Submit Sau Khi Điền Form
   const HandleSubmitFormRegister = () => {
-    const data = { name, email, password, confirmPassword, phone, date, role_check, gender };
+    if (!otp || otp.length !== 6) { // Kiểm tra OTP
+      toast.error("Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.");
+      return;
+    }
+    const data = { name, email, password, confirmPassword, phone, date, role_check, gender, otp };
     mutation.mutate(data);
   };
 
@@ -56,12 +66,54 @@ const Register = ({
     setRegisterHiddent();
   };
 
+  // Hàm xử lý gửi OTP
+  const requestOtp = async () => {
+    if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
+
+    try {
+      const result = await UserServices.sendOtp({
+        name,
+        email,
+        password,
+        confirmPassword,
+        phone,
+        date,
+        role_check,
+        gender,
+      });
+
+      if (result.status === "OK") {
+        setOtpPopupVisible(true);
+        setResendTimer(60); // Đặt thời gian chờ là 60 giây
+
+        // Bắt đầu đếm ngược
+        const interval = setInterval(() => {
+          setResendTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval); // Dừng đếm ngược khi hết thời gian
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        toast.success("OTP đã được gửi!");
+      } else {
+        toast.error(result.message || "Không thể gửi OTP.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi yêu cầu OTP:", error.message);
+      toast.error("Không thể gửi OTP. Vui lòng thử lại.");
+    }
+  };
+
+
   return (
     <div
       className={`login-container overlay-all flex-center-center ${active && isRegisterActive ? "active" : "hiddent"
         } `}
     >
-      <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid grid-cols-2"
+      <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
       >
         {/* Button Close Form */}
@@ -128,10 +180,16 @@ const Register = ({
               </label> */}
               <input
                 type={"text"}
-                className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^(03|05|07|08|09)\d{8}$/.test(phone) ? "border-red-500" : ""
+                  }`}
                 value={phone}
                 placeholder="Số điện thoại"
-                onChange={(event) => setPhone(event.target.value)}
+                onChange={(event) => {
+                  const input = event.target.value;
+                  if (/^\d*$/.test(input)) { // Chỉ cho phép nhập số
+                    setPhone(input);
+                  }
+                }}
                 required
               ></input>
             </div>
@@ -225,7 +283,7 @@ const Register = ({
                     !phone.length
                   }
                   className="text-center bg-supply-primary text-white px-10 py-2 rounded-full disabled:bg-supply-sec"
-                  onClick={() => HandleSubmitFormRegister()}
+                  onClick={() => requestOtp()}
                 >
                   Đăng ký
                 </button>
@@ -237,7 +295,7 @@ const Register = ({
             <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center text-center">
+        <div className="hidden md:flex flex-col items-center justify-center text-center">
           <img src="image/logo-white.png" alt="" />
           <p className="text-white font-semibold text-3xl">Giải pháp hiệu quả <br /> dành cho nông sản của bạn</p>
           <div className="flex items-center gap-3 justify-center mt-3">
@@ -246,6 +304,55 @@ const Register = ({
             <img src="image/icon/tt.png" alt="" />
           </div>
         </div>
+        {otpPopupVisible && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+              <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+                Nhập mã OTP
+              </h3>
+              <p className="text-sm text-gray-600 text-center mb-4">
+                Vui lòng nhập mã OTP gồm 6 chữ số được gửi đến email của bạn
+              </p>
+              <OtpInput
+                value={otp}
+                onChange={setOtp}
+                numInputs={6}
+                containerStyle={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                renderInput={(props) => (
+                  <input
+                    {...props}
+                    className="w-12 h-12 text-center text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                    style={{ width: "48px", height: "48px" }}
+                  />
+                )}
+              />
+              <button
+                className="mt-6 w-full py-3 bg-indigo-600 text-white text-lg font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                onClick={() => HandleSubmitFormRegister(otp)}
+              >
+                Xác nhận OTP
+              </button>
+              <p className="text-sm text-gray-500 text-center mt-4">
+                Không nhận được mã?{" "}
+                <span
+                  className={`cursor-pointer ${resendTimer > 0
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-indigo-600 hover:underline"
+                    }`}
+                  onClick={resendTimer === 0 ? requestOtp : undefined}
+                >
+                  {resendTimer > 0 ? `Gửi lại sau ${resendTimer}s` : "Gửi lại"}
+                </span>
+              </p>
+            </div>
+          </div>
+
+        )}
+
       </div>
     </div>
   );
