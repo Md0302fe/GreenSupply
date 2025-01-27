@@ -110,20 +110,21 @@ const Register = ({
 
   return (
     <div
-      className={`login-container overlay-all flex-center-center ${active && isRegisterActive ? "active" : "hiddent"
+      className={`login-container overlay-all flex-center-center ${active && isRegisterActive ? "active" : "hidden"
         } `}
     >
       <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
       >
-        {/* Button Close Form */}
-        <AiFillCloseSquare
-          className="btn-close-form"
-          onClick={() => handleClickCloseBtn()}
-        ></AiFillCloseSquare>
 
-        <div className="Info-Sign-In  bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-8/12 mx-auto">
-          <div className="col-4 mx-auto py-2 pt-4 font-bold text-3xl text-center text-supply-primary mb-4">Đăng Ký</div>
+
+        <div className="Info-Sign-In  bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
+          {/* Button Close Form */}
+          <div onClick={() => handleClickCloseBtn()} className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
+            <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
+            <span>Trang chủ</span>
+          </div>
+          <div className="col-4 mx-auto pt-12 font-bold text-3xl text-center text-supply-primary mb-4">Đăng Ký</div>
           {/* FORM SIGN UP */}
           <div className="content-form col-5 w-10/12 mx-auto">
             {/* 1/ Họ - first Name */}
