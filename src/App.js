@@ -13,6 +13,7 @@ import Login from "./components/AuthComponent/Login";
 import Header from "./components/HeaderComponent/Header";
 import Footer from "./components/FooterComponent/Footer";
 import Register from "./components/AuthComponent/Register";
+import GoogleRegister from "./components/AuthComponent/GoogleRegister";
 import Loading from "./components/LoadingComponent/Loading";
 
 import Navigation from "./components/HeaderComponent/Navigation";
@@ -25,13 +26,15 @@ const App = ({ loginActive }) => {
   const [activeForm, setActiveForm] = useState(false);
   // active register state
   const [isRegisterActive, setIsRegisterActive] = useState(false);
+  // active register state
+  const [isGoogleRegisterActive, setIsGoogleRegisterActive] = useState(false);
   // active login state
   const [isLoginActive, setIsLoginActive] = useState(false);
   // isActive Drawer Up
   const [drawerUp, setDrawerUp] = useState(false);
   // orderList
   const orderRedux = useSelector((state) => state.order);
-
+  const [googleUser, setGoogleUser] = useState(null);
 
   // dispatch
   const dispatch = useDispatch();
@@ -92,21 +95,6 @@ const App = ({ loginActive }) => {
     }
   );
 
-  const customCloseIcon = (
-    <span
-      style={{
-        display: "flex",
-        alignItems: "center",
-        position: "absolute",
-        right: "5%",
-        color: "white",
-      }}
-    >
-      <span style={{ textTransform: "uppercase" }}>Đóng</span>
-      <IoIosRemove style={{ marginRight: 8, fontSize: "22px" }} />
-    </span>
-  );
-
   // Authentication form log-in/log-out
   const setLoginActive = () => {
     setIsLoginActive(true);
@@ -120,7 +108,16 @@ const App = ({ loginActive }) => {
   const setRegisterHiddent = () => {
     setIsRegisterActive(false);
   };
+  const setGoogleRegisterActive = (user) => {
+    console.log("activeForm :", activeForm);
+    setIsGoogleRegisterActive(true);
+    setGoogleUser(user); // Lưu thông tin người dùng Google
+  };
 
+  const setGoogleRegisterHiddent = () => {
+    setIsGoogleRegisterActive(false);
+    setGoogleUser(null); // Xóa thông tin khi ẩn form
+  };
   return (
     <div>
       <Loading isPending={isLoading}>
@@ -130,6 +127,7 @@ const App = ({ loginActive }) => {
             <Header
               setActive={setActiveForm}
               setIsLoginActive={setIsLoginActive}
+              setIsRegisterActive={setIsRegisterActive}
               setDrawerUp={setDrawerUp}
             ></Header>
 
@@ -161,6 +159,7 @@ const App = ({ loginActive }) => {
                 isLoginActive={isLoginActive}
                 setLoginHiddent={setLoginHiddent}
                 setRegisterActive={setRegisterActive}
+                setGoogleRegisterActive={setGoogleRegisterActive}
                 setActive={setActiveForm}
                 active={activeForm}
               />
@@ -173,6 +172,16 @@ const App = ({ loginActive }) => {
                 setActive={setActiveForm}
                 active={activeForm}
               ></Register>
+            )}
+            {activeForm && isGoogleRegisterActive && (
+              <GoogleRegister
+                setLoginActive={setLoginActive}
+                setRegisterHiddent={setGoogleRegisterHiddent}
+                isGoogleRegisterActive={isGoogleRegisterActive}
+                setActive={setActiveForm}
+                active={activeForm}
+                user={googleUser} // Truyền thông tin người dùng Google
+              />
             )}
           </activeForm-Authentication>
         </div>

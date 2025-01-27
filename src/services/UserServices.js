@@ -23,6 +23,13 @@ export const userRegister = async (data) => {
   );
   return res?.data;
 };
+export const completeProfile = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/complete-profile`,
+    data
+  );
+  return res?.data;
+};
 
 export const getDetailsUser = async (id, access_token) => {
   // thông qua id , và access_token chỉ cho phép get dữ liệu của only user này
