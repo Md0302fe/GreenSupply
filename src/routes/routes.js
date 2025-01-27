@@ -19,6 +19,7 @@ import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
 
 import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
+import ProductPage from "../pages/ProductPage/ProductPage";
 const Router = () => {
   return (
     <>
@@ -42,8 +43,13 @@ const Router = () => {
           <Route path="manage-users" element={<ManageUser />} />
         </Route>
 
-        {/* payment routes */}
+        {/* Profile routes */}
         <Route path="/Profile" element={<ProfilePage />} />
+
+
+        
+        {/* Product routes */}
+        <Route path="/Product" element={<ProductPage />} />
 
       </Routes>
 

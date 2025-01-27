@@ -25,7 +25,7 @@ const HomePage = () => {
           <FeatureButtons />
         </div>
       </div>
-      {/* <ImportProductList /> */}
+      <ImportProductList />
       <MangoDescription />
       <AboutSupplyChain />
       <VisionOverview />

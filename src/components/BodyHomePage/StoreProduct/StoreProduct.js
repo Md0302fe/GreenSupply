@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import xoaiuc from "../../../assets/NewProject/ProductList/XoaiUc/xoaiuc-1.png";
 import xoaicathl from "../../../assets/NewProject/ProductList/XoaiCatHoaLoc/xoaicathoaloc-1.png";
 import xoaithanhca from "../../../assets/NewProject/ProductList/XoaiThanhCa/xoaithanhca-1.png";
@@ -45,9 +46,14 @@ export const StoreProduct = [
 
 const StoreProducts = () => {
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const navigate = useNavigate(); // Hook điều hướng
 
   const handleClick = (id) => {
     setSelectedProductId(id);
+  };
+
+  const handleViewMore = () => {
+    navigate("/Product"); 
   };
 
   return (
@@ -104,7 +110,10 @@ const StoreProducts = () => {
 
         {/* Nút xem thêm */}
         <div className="flex justify-center mt-6">
-          <button className="flex items-center bg-[#FFE814] text-[#F14A00] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#FBC02D] hover:scale-105 transition duration-300">
+          <button
+            onClick={handleViewMore} // Thêm sự kiện điều hướng
+            className="flex items-center bg-[#FFE814] text-[#F14A00] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#FBC02D] hover:scale-105 transition duration-300"
+          >
             Xem thêm
             <span className="flex items-center justify-center ml-3 w-6 h-6 bg-[#F14A00] text-white rounded-full hover:bg-[#D84315]">
               <i className="fa-solid fa-chevron-right text-xs"></i>
