@@ -20,7 +20,7 @@ import logoBraintots from "../../assets/logo.png";
 
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
 
-const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
+const Header = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userAvatar, setUserAvatar] = useState("");
@@ -46,9 +46,14 @@ const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
     setOpen(newOpen);
   };
   // Click Icons User
-  const handleClickIconUser = () => {
+  const handleClickLogin = () => {
     setActive(true);
     setIsLoginActive(true);
+  };
+  // Click Icons User
+  const handleClickRegister = () => {
+    setActive(true);
+    setIsRegisterActive(true);
   };
   // CLICK BTN LOG-OUT
   const handleClickBtnLogout = async () => {
@@ -107,10 +112,10 @@ const Header = ({ setActive, setIsLoginActive, setDrawerUp }) => {
             />
           </div>
           <div className="col-span-3 flex justify-end space-x-4 max-w-full">
-            <button className="w-[140px] h-[42px] text-sm font-bold bg-white text-black rounded-md">
+            <button onClick={() => handleClickRegister()} className="w-[140px] h-[42px] text-sm font-bold bg-white text-black rounded-md">
               Đăng ký
             </button>
-            <button className="w-[140px] h-[42px] text-sm font-bold bg-yellow-300 text-black rounded-md">
+            <button onClick={() => handleClickLogin()} className="w-[140px] h-[42px] text-sm font-bold bg-yellow-300 text-black rounded-md">
               Đăng nhập
             </button>
           </div>
