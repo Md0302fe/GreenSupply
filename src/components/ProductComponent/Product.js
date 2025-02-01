@@ -16,7 +16,9 @@ const Product = () => {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3001/api/product/getAll");
+      const response = await axios.get(
+        "http://localhost:3001/api/product/getAllProduct"
+      );
       setProducts(response.data.products);
       setFilteredProducts(response.data.products); // Gán toàn bộ sản phẩm vào danh sách lọc
       setLoading(false);
@@ -62,6 +64,11 @@ const Product = () => {
     }
   }, [searchTerm]);
 
+  // Hàm xử lý khi nhấp vào hình ảnh sản phẩm
+  const handleProductClick = (productId) => {
+    navigate(`/product-detail/${productId}`); // Điều hướng đến trang chi tiết sản phẩm
+  };
+
   if (loading) {
     return <div className="text-center py-10">Đang tải...</div>;
   }
@@ -80,10 +87,10 @@ const Product = () => {
               onClick={() => navigate("/")}
               className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
             >
-              Home
+              Trang chủ
             </span>
             <span className="mx-2">/</span>
-            <span className="text-gray-500">Product</span>
+            <span className="text-gray-500">Sản phẩm</span>
           </div>
         </div>
 
@@ -111,7 +118,10 @@ const Product = () => {
                 key={product._id}
                 className="cursor-pointer hover:scale-105 transition-transform duration-300 p-4"
               >
-                <div className="overflow-hidden flex justify-center items-center shadow-right-bottom border-4 border-white">
+                <div
+                  className="overflow-hidden flex justify-center items-center shadow-right-bottom border-4 border-white"
+                  onClick={() => handleProductClick(product._id)} // Bắt sự kiện click
+                >
                   <img
                     src={product.image}
                     alt={product.name}

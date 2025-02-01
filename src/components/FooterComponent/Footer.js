@@ -8,28 +8,30 @@ import BackgroundFooter from "../../assets/NewProject/ProductList/background-foo
 
 const Footer = () => {
   return (
-    <div className="max-w-full bg-[#053B22] text-white">
-      <div className="relative">
+    <div className="w-full bg-[#053B22] text-white">
+      <div className="relative w-full">
         {/* Background Image */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
         <img
           src={BackgroundFooter}
           alt="Background Footer"
-          className="w-full h-auto"
+          className="w-full h-[250px] md:h-[350px] object-cover"
         />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-
         {/* Nội dung */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
-          <img src={LogoYellow} alt="Green Supply Logo" className="w-48 mb-4" />
-          <h1 className="text-3xl font-bold mb-4">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
+          <img
+            src={LogoYellow}
+            alt="Green Supply Logo"
+            className="w-36 md:w-48 mb-2"
+          />
+          <h1 className="text-xl md:text-3xl font-bold mb-4">
             Giải pháp hiệu quả dành cho nông sản của bạn
           </h1>
-          <div className="w-[60rem] h-[3px] bg-[#FFD412] mb-4 rounded-full"></div>
+          <div className="w-[90%] md:w-[60rem] h-[3px] bg-[#FFD412] mb-4 rounded-full"></div>
 
           {/* Nút Giới thiệu */}
-          <div className="flex justify-center mt-6">
+          <div className="mt-4 -md:mt-[32px]">
             <button className="flex items-center bg-[#FFE814] text-[#F14A00] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#FBC02D] hover:scale-105 transition duration-300">
               Giới thiệu
               <span className="flex items-center justify-center ml-3 w-6 h-6 bg-[#F14A00] text-white rounded-full hover:bg-[#D84315]">
@@ -40,35 +42,40 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto px-2 py-12 grid grid-cols-1 md:grid-cols-3 gap-x-16">
+      {/* Nội dung chính */}
+      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-16">
         {/* Logo và mô tả */}
-        <div className="">
-          <img src={logoWhite} alt="Green Supply" className="w-36 mb-4" />
+        <div>
+          <img
+            src={logoWhite}
+            alt="Green Supply"
+            className="w-28 md:w-36 mb-4"
+          />
           <h4 className="text-sm leading-6">
             Giải pháp hiệu quả dành cho nông sản của bạn
           </h4>
-          <h4 className="text-sm leading-6 mt-4 mr-[2rem]">
+          <p className="text-sm leading-6 mt-4">
             Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền
             vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách
             hiệu quả.
-          </h4>
+          </p>
         </div>
 
         {/* Văn phòng */}
-        <div className="">
+        <div>
           <h3 className="font-bold text-lg mb-4">Văn phòng</h3>
-          <h4 className="text-sm">Công ty TNHH Green Supply</h4>
-          <h4 className="text-sm mt-2">
+          <p className="text-sm">Công ty TNHH Green Supply</p>
+          <p className="text-sm mt-2">
             Địa chỉ: 120 đường Nguyễn Văn Cừ, phường Long Tuyền, quận Bình Thủy
             - Cần Thơ
-          </h4>
+          </p>
         </div>
 
         {/* Thông tin liên lạc */}
         <div>
           <h3 className="font-bold text-lg mb-4">Thông tin liên lạc</h3>
-          <h4 className="text-sm">Email: Greensupply@gmail.com</h4>
-          <h4 className="text-sm mt-2">Điện thoại: 0976 000 000</h4>
+          <p className="text-sm">Email: Greensupply@gmail.com</p>
+          <p className="text-sm mt-2">Điện thoại: 0976 000 000</p>
           {/* Mạng xã hội */}
           <div className="flex gap-4 mt-6">
             <img src={FacebookIcon} alt="Facebook" className="w-6 h-6" />
@@ -78,10 +85,9 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="max-w-full h-20 bg-white flex justify-center items-center">
-        <p className="font-bold text-black font-instrument">
-          Greensupply.com.vn
-        </p>
+      {/* Copyright */}
+      <div className="w-full h-16 bg-white flex justify-center items-center">
+        <p className="font-bold text-black">Greensupply.com.vn</p>
       </div>
     </div>
   );
