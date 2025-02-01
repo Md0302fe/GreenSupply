@@ -8,8 +8,6 @@ import ManageUser from "../components/Admin/Content/User/AdminUser";
 
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
 
-
-
 // Toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,6 +18,7 @@ import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
 import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
+import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
 const Router = () => {
   return (
     <>
@@ -31,7 +30,6 @@ const Router = () => {
           {/* New route for ContactPage */}
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/Introduction" element={<IntroductionPage />} />
-
         </Route>
 
         {/* payment routes */}
@@ -46,14 +44,10 @@ const Router = () => {
         {/* Profile routes */}
         <Route path="/Profile" element={<ProfilePage />} />
 
-
-        
         {/* Product routes */}
         <Route path="/Product" element={<ProductPage />} />
-
+        <Route path="/product-detail/:id" element={<ProductDetailPage />} />
       </Routes>
-
-      
 
       <ToastContainer
         position="top-right"
