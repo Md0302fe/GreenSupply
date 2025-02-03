@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Login.scss";
-import { AiFillCloseSquare } from "react-icons/ai";
 import backgroundRegister from "../../assets/image/background_login.png";
 import * as UserServices from "../../services/UserServices";
 import { useMutationHooks } from "../../hooks/useMutationHook";

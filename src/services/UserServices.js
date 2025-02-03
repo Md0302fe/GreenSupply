@@ -8,6 +8,27 @@ export const userLogin = async (data) => {
   );
   return res?.data;
 };
+export const checkEmail = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/check-email`,
+    data
+  );
+  return res?.data;
+};
+export const checkOtp = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/check-otp`,
+    data
+  );
+  return res?.data;
+};
+export const updatePassword = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/update-password`,
+    data
+  );
+  return res?.data;
+};
 export const sendOtp = async (data) => {
   const res = await axios.post(
     `${process.env.REACT_APP_API_URL}/user/create-otp`,
