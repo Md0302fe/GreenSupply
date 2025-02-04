@@ -3,43 +3,19 @@ import * as UserServices from "./services/UserServices";
 
 import { jwtDecode } from "jwt-decode";
 import { isJsonString } from "./ultils";
-import { IoIosRemove } from "react-icons/io";
 import { ToastContainer } from "react-toastify";
 import { Outlet, useMatch } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateUser } from "./redux/slides/userSlides";
 
-import Login from "./components/AuthComponent/Login";
 import Header from "./components/HeaderComponent/Header";
 import Footer from "./components/FooterComponent/Footer";
-import Register from "./components/AuthComponent/Register";
-import GoogleRegister from "./components/AuthComponent/GoogleRegister";
 import Loading from "./components/LoadingComponent/Loading";
 
-import Navigation from "./components/HeaderComponent/Navigation";
-import Drawer from "./components/DrawerComponent/DrawerComponent";
-import Contact from "./components/ContactComponent/ContactComponent";
-import HomePage from "./pages/HomePage/HomePage.js";
-
 const App = ({ loginActive }) => {
-  // header icons click state
-  const [activeForm, setActiveForm] = useState(false);
-  // active register state
-  const [isRegisterActive, setIsRegisterActive] = useState(false);
-  // active register state
-  const [isGoogleRegisterActive, setIsGoogleRegisterActive] = useState(false);
-  // active login state
-  const [isLoginActive, setIsLoginActive] = useState(false);
-  // isActive Drawer Up
-  const [drawerUp, setDrawerUp] = useState(false);
-  // orderList
-  const orderRedux = useSelector((state) => state.order);
-  const [googleUser, setGoogleUser] = useState(null);
-
   // dispatch
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
 
   // Bạn có thể sử dụng useMatch để kiểm tra xem route có phải là route của ProductDetails không.
   const match = useMatch("/Product-Detail/:id"); // Kiểm tra route
@@ -95,41 +71,14 @@ const App = ({ loginActive }) => {
     }
   );
 
-  // Authentication form log-in/log-out
-  const setLoginActive = () => {
-    setIsLoginActive(true);
-  };
-  const setLoginHiddent = () => {
-    setIsLoginActive(false);
-  };
-  const setRegisterActive = () => {
-    setIsRegisterActive(true);
-  };
-  const setRegisterHiddent = () => {
-    setIsRegisterActive(false);
-  };
-  const setGoogleRegisterActive = (user) => {
-    console.log("activeForm :", activeForm);
-    setIsGoogleRegisterActive(true);
-    setGoogleUser(user); // Lưu thông tin người dùng Google
-  };
 
-  const setGoogleRegisterHiddent = () => {
-    setIsGoogleRegisterActive(false);
-    setGoogleUser(null); // Xóa thông tin khi ẩn form
-  };
   return (
     <div>
       <Loading isPending={isLoading}>
         <div>
           {/* Header-App */}
           <div className="header-container mb-5">
-            <Header
-              setActive={setActiveForm}
-              setIsLoginActive={setIsLoginActive}
-              setIsRegisterActive={setIsRegisterActive}
-              setDrawerUp={setDrawerUp}
-            ></Header>
+            <Header></Header>
 
             {/* <div className="navigation-container">
               <Navigation></Navigation>
@@ -141,9 +90,7 @@ const App = ({ loginActive }) => {
             {/* main-content */}
             <div className="app-content">
               {match ? (
-                <Outlet
-                  context={{ setLoginActive, setActiveForm, setDrawerUp }}
-                ></Outlet>
+                <Outlet></Outlet>
               ) : (
                 <Outlet></Outlet>
               )}
@@ -151,39 +98,6 @@ const App = ({ loginActive }) => {
           </div>
           {/* Footer */}
           <Footer></Footer>
-
-          {/* LOGIN IF ACTIVE */}
-          <activeForm-Authentication>
-            {activeForm && (
-              <Login
-                isLoginActive={isLoginActive}
-                setLoginHiddent={setLoginHiddent}
-                setRegisterActive={setRegisterActive}
-                setGoogleRegisterActive={setGoogleRegisterActive}
-                setActive={setActiveForm}
-                active={activeForm}
-              />
-            )}
-            {activeForm && isRegisterActive && (
-              <Register
-                setLoginActive={setLoginActive}
-                setRegisterHiddent={setRegisterHiddent}
-                isRegisterActive={isRegisterActive}
-                setActive={setActiveForm}
-                active={activeForm}
-              ></Register>
-            )}
-            {activeForm && isGoogleRegisterActive && (
-              <GoogleRegister
-                setLoginActive={setLoginActive}
-                setRegisterHiddent={setGoogleRegisterHiddent}
-                isGoogleRegisterActive={isGoogleRegisterActive}
-                setActive={setActiveForm}
-                active={activeForm}
-                user={googleUser} // Truyền thông tin người dùng Google
-              />
-            )}
-          </activeForm-Authentication>
         </div>
       </Loading>
 

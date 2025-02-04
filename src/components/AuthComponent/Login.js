@@ -98,6 +98,7 @@ const Login = ({
         localStorage.setItem("access_token", response.access_token);
         toast.success("Đăng nhập thành công!");
         setTimeout(() => {
+          window.location.replace('/home')
           setLoginHiddent();
         }, 1000);
       } else {
