@@ -20,15 +20,10 @@ import backgroundRegister from "../../assets/image/background_login.png";
 // Google
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import OTPInput from "react-otp-input";
+import { useNavigate } from "react-router-dom";
 
-const Login = ({
-  isLoginActive,
-  setLoginHiddent,
-  setRegisterActive,
-  setActive,
-  active,
-  setGoogleRegisterActive,
-}) => {
+const Login = () => {
+  const navigate = useNavigate();
   // Variables
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const [email, setEmail] = useState("");
@@ -70,7 +65,7 @@ const Login = ({
         setTimeout(() => {
           setEmail("");
           setPassword("");
-          setLoginHiddent();
+          window.location.replace('/home');
           setStateNotification(false);
         }, 1000);
       }
@@ -91,14 +86,14 @@ const Login = ({
       console.log(response)
       const { status, user, message } = response;
       if (status === "NEW_USER") {
-        // Hiển thị GoogleRegister để bổ sung thông tin
-        setGoogleRegisterActive(user); // Gọi hàm kích hoạt
+        
+        navigate("/google-register", { state: { user } });
       } else if (status === "OK") {
         // Đăng nhập thành công
         localStorage.setItem("access_token", response.access_token);
         toast.success("Đăng nhập thành công!");
         setTimeout(() => {
-          setLoginHiddent();
+          window.location.replace('/home')
         }, 1000);
       } else {
         toast.error(message || "Đăng nhập thất bại.");
@@ -189,37 +184,24 @@ const Login = ({
       console.error("Lỗi khi cập nhật mật khẩu:", error);
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
     } finally {
-      setsendOtpLoading(false); 
+      setsendOtpLoading(false);
     }
-  };
-
-  // CLICK BTN CLOSE
-  const handleClickCloseBtn = () => {
-    setLoginHiddent();
-    setActive(false);
-  };
-
-  // CLICK BTN ĐĂNG KÝ
-  const handleSignUp = () => {
-    setLoginHiddent();
-    setRegisterActive();
   };
 
   return (
     //  Overlay - Login-container
     <div
-      className={`login-container overlay-all flex-center-center ${isLoginActive && active ? "active" : "hidden"
-        } `}
+      className={`login-container flex-center-center h-screen`}
     >
       {/* Wrapper Login */}
       <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
         style={{ backgroundImage: `url("${backgroundRegister}")` }}>
         <div className="Info-Sign-In bg-white rounded-2xl pt-12 pb-6  md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
           {/* Button Close Form */}
-          <div onClick={() => handleClickCloseBtn()} className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
+          <a href="/" className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
             <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
             <span>Trang chủ</span>
-          </div>
+          </a>
           <img src="image/logo-orange.png" alt="" />
           <p className="text-3xl font-bold text-supply-primary mb-4">Đăng nhập</p>
           <div className="content-form col-5 w-10/12">
@@ -293,7 +275,7 @@ const Login = ({
             </div>
           </GoogleOAuthProvider>
           <div className="mt-4 text-center">
-            <p>Bạn chưa có tài khoản <span onClick={() => handleSignUp()} className="text-supply-primary underline cursor-pointer">Đăng ký</span></p>
+            <p>Bạn chưa có tài khoản <a href="/register" className="text-supply-primary underline cursor-pointer">Đăng ký</a></p>
             <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
           </div>
         </div>

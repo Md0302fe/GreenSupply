@@ -1,26 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { resetUser } from "../../redux/slides/userSlides";
-import { persistor } from "../../redux/store";
-import * as UserServices from "../../services/UserServices";
+import React from "react";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
 
-const Header = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
-  const [search, setSearch] = useState("");
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const handleClickLogin = () => {
-    setActive(true);
-    setIsLoginActive(true);
-  };
-
-  const handleClickRegister = () => {
-    setActive(true);
-    setIsRegisterActive(true);
-  };
-
+const Header = () => {
   return (
     <div className="Header">
       <header className="bg-customOrange px-4 md:px-6 py-2 rounded-bl-2xl rounded-br-2xl w-full">
@@ -64,7 +45,7 @@ const Header = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
           </div>
 
           {/* Đăng ký & Đăng nhập */}
-          <div className="md:col-span-3 flex justify-center md:justify-end flex-wrap gap-3 md:gap-4">
+          {/* <div className="md:col-span-3 flex justify-center md:justify-end flex-wrap gap-3 md:gap-4">
             <button
               onClick={handleClickRegister}
               className="w-[120px] md:w-[140px] h-[40px] md:h-[42px] text-sm font-bold bg-white text-black rounded-md transition-all duration-300 hover:brightness-110"
@@ -78,7 +59,7 @@ const Header = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
             >
               Đăng nhập
             </button>
-          </div>
+          </div> */}
         </div>
       </header>
     </div>

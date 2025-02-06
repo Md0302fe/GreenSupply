@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import App from "../App";
 
 import HomePage from "../pages/HomePage/HomePage";
+import LandingPage from "../pages/LandingPage/LandingPage";
 import ManageUser from "../components/Admin/Content/User/AdminUser";
 
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
@@ -19,23 +20,32 @@ import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
+
 import SupplierDashboard from "../pages/SupplierPage/SupplierDashboard/SupplierDashboard";
 // import HarvestRequestPage from "../pages/SupplierPage/HarvestRequestPage/HarvestRequestPage";
+
+import Login from "../components/AuthComponent/Login";
+import Register from "../components/AuthComponent/Register";
+import GoogleRegister from "../components/AuthComponent/GoogleRegister";
+
 const Router = () => {
   return (
     <>
       <Routes>
         {/* Sử dụng nested route bao bọc các outlet cần hiển thị : LayoutHeader*/}
-        <Route path="/" element={<App />}>
+        <Route path="/" element={<LandingPage />}></Route>
+        <Route path="/home" element={<App />}>
           {/* Sử dụng index route chỉ dẫn trang mặc định cần hiển thị*/}
           <Route index element={<HomePage />} />
           {/* New route for ContactPage */}
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/Introduction" element={<IntroductionPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="introduction" element={<IntroductionPage />} />
         </Route>
-
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/google-register" element={<GoogleRegister />} />
         {/* payment routes */}
-        <Route path="/Payment" element={<PaymentPage />} />
+        <Route path="/payment" element={<PaymentPage />} />
 
         {/* admin-page  : LayoutAdmin*/}
         <Route path="/system/admin" element={<Admin />}>
@@ -44,10 +54,10 @@ const Router = () => {
         </Route>
 
         {/* Profile routes */}
-        <Route path="/Profile" element={<ProfilePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         {/* Product routes */}
-        <Route path="/Product" element={<ProductPage />} />
+        <Route path="/product" element={<ProductPage />} />
         <Route path="/product-detail/:id" element={<ProductDetailPage />} />
 
         {/* Supplier Page*/}
