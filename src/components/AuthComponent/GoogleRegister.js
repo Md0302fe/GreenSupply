@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Login.scss";
-import { AiFillCloseSquare } from "react-icons/ai";
 import backgroundRegister from "../../assets/image/background_login.png";
 import { toast } from "react-toastify";
 import * as UserServices from "../../services/UserServices";
+import { useLocation } from "react-router-dom";
 
-const GoogleRegister = ({
-  setLoginActive,
-  isGoogleRegisterActive,
-  setRegisterHiddent,
-  setActive,
-  active,
-  user, // Thông tin người dùng từ Google (email, full_name, avatar)
-}) => {
+const GoogleRegister = () => {
+  const location = useLocation();
+  const user = location.state?.user;
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
   const [role_check, setRoleCheck] = useState(false);
@@ -41,9 +36,7 @@ const GoogleRegister = ({
       if (result.status === "OK") {
         toast.success("Thông tin đã được cập nhật!");
         setTimeout(() => {
-          setRegisterHiddent();
-          setActive(false);
-          setLoginActive();
+          window.location.href = "/login";
         }, 1500);
       } else {
         toast.error(result.message || "Không thể cập nhật thông tin.");
@@ -57,16 +50,17 @@ const GoogleRegister = ({
 
   return (
     <div
-      className={`login-container overlay-all flex-center-center ${
-        active && isGoogleRegisterActive ? "active" : "hidden"
-      } `}
+      className={`login-container flex-center-center h-screen`}
     >
       <div
         className="Login-wapper Width items-center bg-cover max-w-full w-full h-full flex"
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
       >
-        <div className="Info-Sign-In bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
-
+        <div className="Info-Sign-In bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-6/12 mx-auto relative">
+          <a href="/login" className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
+            <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
+            <span>Quay lại</span>
+          </a>
           <div className="w-full pt-12 font-bold text-3xl text-center text-supply-primary mb-4">
             Cập Nhật Thông Tin
           </div>
@@ -75,6 +69,7 @@ const GoogleRegister = ({
           <div className="flex flex-col items-center mb-6">
             <img
               src={user.avatar}
+              referrerPolicy="no-referrer"
               alt="Avatar"
               className="w-24 h-24 rounded-full border-2 border-supply-primary mb-2"
             />
@@ -88,11 +83,10 @@ const GoogleRegister = ({
             <div className="form-group">
               <input
                 type={"text"}
-                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${
-                  phone && !/^(03|05|07|08|09)\d{8}$/.test(phone)
-                    ? "border-red-500"
-                    : ""
-                }`}
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^(03|05|07|08|09)\d{8}$/.test(phone)
+                  ? "border-red-500"
+                  : ""
+                  }`}
                 value={phone}
                 placeholder="Số điện thoại"
                 onChange={(event) => {

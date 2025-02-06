@@ -1,21 +1,8 @@
 
-import React, { useState } from "react";
-import Login from "../../components/AuthComponent/Login";
-import Register from "../../components/AuthComponent/Register";
-import GoogleRegister from "../../components/AuthComponent/GoogleRegister";
+import React from "react";
+import { Link } from "react-router-dom";
 
-const Navbar = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
-
-  const handleClickLogin = () => {
-    setActive(true);
-    setIsLoginActive(true);
-  };
-
-  const handleClickRegister = () => {
-    setActive(true);
-    setIsRegisterActive(true);
-  };
-
+const Navbar = () => {
   return (
     <nav className="bg-white">
       <div className="flex justify-between">
@@ -31,16 +18,18 @@ const Navbar = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
               className="border px-4 py-2 rounded-full w-1/2 max-sm:hidden"
             />
             <div className="flex gap-4">
-              <button
-                onClick={handleClickLogin}
-                className="border border-orange-500 text-orange-500 px-4 py-2 rounded-md">
+              <Link
+                to="/login"
+                className="border border-orange-500 text-orange-500 px-4 py-2 rounded-md"
+              >
                 Đăng Nhập
-              </button>
-              <button
-                onClick={handleClickRegister}
-                className="bg-orange-500 text-white px-4 py-2 rounded-md">
+              </Link>
+              <Link
+                to="/register"
+                className="bg-orange-500 text-white px-4 py-2 rounded-md"
+              >
                 Đăng Ký
-              </button>
+              </Link>
             </div>
           </div>
           <div className="bg-orange-500 text-white flex justify-center sm:justify-start gap-6 md:gap-8 py-3 sm:pl-6 sm:rounded-s-lg">
@@ -116,79 +105,13 @@ const About = () => {
 }
 
 const LandingPage = () => {
-  const [activeForm, setActiveForm] = useState(false);
-
-  // active register state
-  const [isRegisterActive, setIsRegisterActive] = useState(false);
-  // active register state
-  const [isGoogleRegisterActive, setIsGoogleRegisterActive] = useState(false);
-  // active login state
-  const [isLoginActive, setIsLoginActive] = useState(false);
-
-  const [googleUser, setGoogleUser] = useState(null);
-
-  // Authentication form log-in/log-out
-  const setLoginActive = () => {
-    setIsLoginActive(true);
-  };
-  const setLoginHiddent = () => {
-    setIsLoginActive(false);
-  };
-  const setRegisterActive = () => {
-    setIsRegisterActive(true);
-  };
-  const setRegisterHiddent = () => {
-    setIsRegisterActive(false);
-  };
-  const setGoogleRegisterActive = (user) => {
-    setIsGoogleRegisterActive(true);
-    setGoogleUser(user); // Lưu thông tin người dùng Google
-  };
-
-  const setGoogleRegisterHiddent = () => {
-    setIsGoogleRegisterActive(false);
-    setGoogleUser(null); // Xóa thông tin khi ẩn form
-  };
-
   return (
     <div>
-      <Navbar setActive={setActiveForm} setIsLoginActive={setIsLoginActive} setIsRegisterActive={setIsRegisterActive} />
+      <Navbar />
       <Banner />
       <Card />
       <About />
 
-      {/* LOGIN IF ACTIVE */}
-      <activeForm-Authentication>
-        {activeForm && (
-          <Login
-            isLoginActive={isLoginActive}
-            setLoginHiddent={setLoginHiddent}
-            setRegisterActive={setRegisterActive}
-            setGoogleRegisterActive={setGoogleRegisterActive}
-            setActive={setActiveForm}
-            active={activeForm}
-          />
-        )}
-        {activeForm && isRegisterActive && (
-          <Register
-            setLoginActive={setLoginActive}
-            setRegisterHiddent={setRegisterHiddent}
-            isRegisterActive={isRegisterActive}
-            setActive={setActiveForm}
-            active={activeForm}
-          ></Register>
-        )}
-        {activeForm && isGoogleRegisterActive && (
-          <GoogleRegister
-            setLoginActive={setLoginActive}
-            setRegisterHiddent={setGoogleRegisterHiddent}
-            isGoogleRegisterActive={isGoogleRegisterActive}
-            setActive={setActiveForm}
-            active={activeForm}
-            user={googleUser} // Truyền thông tin người dùng Google
-          />
-        )}
-      </activeForm-Authentication>
     </div>
   );
 };
