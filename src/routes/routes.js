@@ -20,6 +20,9 @@ import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
+import Login from "../components/AuthComponent/Login";
+import Register from "../components/AuthComponent/Register";
+import GoogleRegister from "../components/AuthComponent/GoogleRegister";
 const Router = () => {
   return (
     <>
@@ -33,7 +36,9 @@ const Router = () => {
           <Route path="contact" element={<ContactPage />} />
           <Route path="introduction" element={<IntroductionPage />} />
         </Route>
-
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/google-register" element={<GoogleRegister />} />
         {/* payment routes */}
         <Route path="/payment" element={<PaymentPage />} />
 
