@@ -1,0 +1,20 @@
+body {
+  font-family: "Nunito", serif;
+}
+
+.MuiBadge-badge {
+  background-color: #ff5252 !important;
+}
+
+.ReactCollapse--collapse {
+  transition: height 300ms;
+}
+
+.btn-blue {
+  background: #3872fa;
+  color: #fff !important;
+}
+
+.btn-blue:hover {
+  background: #3067e5;
+}
