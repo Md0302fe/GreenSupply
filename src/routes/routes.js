@@ -20,9 +20,14 @@ import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
+
+import SupplierDashboard from "../pages/SupplierPage/SupplierDashboard/SupplierDashboard";
+// import HarvestRequestPage from "../pages/SupplierPage/HarvestRequestPage/HarvestRequestPage";
+
 import Login from "../components/AuthComponent/Login";
 import Register from "../components/AuthComponent/Register";
 import GoogleRegister from "../components/AuthComponent/GoogleRegister";
+
 const Router = () => {
   return (
     <>
@@ -54,6 +59,10 @@ const Router = () => {
         {/* Product routes */}
         <Route path="/product" element={<ProductPage />} />
         <Route path="/product-detail/:id" element={<ProductDetailPage />} />
+
+        {/* Supplier Page*/}
+        <Route path="/supplier/*" element={<SupplierDashboard />} />
+        
       </Routes>
 
       <ToastContainer
