@@ -53,16 +53,10 @@ const Register = ({
     mutation.mutate(data);
   };
 
-  // Click Btn Đóng Form
-  const handleClickCloseBtn = () => {
-    setRegisterHiddent();
-    setActive(false);
-  };
-
-  // Clik Btn Đăng Nhập
-  const handleSignIn = () => {
-    setLoginActive();
-    setRegisterHiddent();
+  const handleCloseOtpPopup = () => {
+    setOtp(''); 
+    setOtpPopupVisible(false); 
+    setResendTimer(0); 
   };
 
   // Hàm xử lý gửi OTP
@@ -109,8 +103,7 @@ const Register = ({
 
   return (
     <div
-      className={`login-container overlay-all flex-center-center ${active && isRegisterActive ? "active" : "hidden"
-        } `}
+      className={`login-container flex-center-center h-screen `}
     >
       <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
@@ -119,10 +112,10 @@ const Register = ({
 
         <div className="Info-Sign-In  bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
           {/* Button Close Form */}
-          <div onClick={() => handleClickCloseBtn()} className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
+          <a href="/" className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
             <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
             <span>Trang chủ</span>
-          </div>
+          </a>
           <div className="col-4 mx-auto pt-12 font-bold text-3xl text-center text-supply-primary mb-4">Đăng Ký</div>
           {/* FORM SIGN UP */}
           <div className="content-form col-5 w-10/12 mx-auto">
@@ -291,7 +284,7 @@ const Register = ({
             </Loading>
           </div>
           <div className="mt-4 text-center">
-            <p>Bạn đã có tài khoản <span onClick={() => handleSignIn()} className="text-supply-primary underline cursor-pointer">Đăng nhập</span></p>
+            <p>Bạn đã có tài khoản <a href="/login" className="text-supply-primary underline cursor-pointer">Đăng nhập</a></p>
             <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
           </div>
         </div>
@@ -306,8 +299,11 @@ const Register = ({
         </div>
         {otpPopupVisible && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-              <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
+              <div onClick={handleCloseOtpPopup} className="absolute top-4 right-4 cursor-pointer">
+                <img src="/image/icon/close.png" alt="" className="w-4" />
+              </div>
+              <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6 mt-2">
                 Nhập mã OTP
               </h3>
               <p className="text-sm text-gray-600 text-center mb-4">
