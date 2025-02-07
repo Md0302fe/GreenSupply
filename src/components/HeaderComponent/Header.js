@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -22,14 +23,14 @@ const Header = () => {
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-12 items-center gap-2 px-2 md:px-6">
           {/* Logo */}
           <div className="md:col-span-2 flex justify-center md:justify-center">
-            <img
-              src={logo}
-              alt="Green Supply Logo"
-              className="h-12 md:h-16 max-w-full cursor-pointer"
-              onClick={() => navigate("/")}
-            />
+          <Link to="/">
+              <img
+                src={logo}
+                alt="Green Supply Logo"
+                className="h-12 md:h-16 max-w-full cursor-pointer"
+              />
+            </Link>
           </div>
-
           {/* Thanh tìm kiếm */}
           <div className="md:col-span-7 relative w-full">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3">

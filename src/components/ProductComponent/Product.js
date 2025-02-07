@@ -41,7 +41,7 @@ const Product = () => {
   const debouncedSearch = useCallback(
     _.debounce((query) => {
       filterProducts(query);
-    }, 300),
+    }, 50),
     [products]
   );
 
@@ -78,7 +78,7 @@ const Product = () => {
   }
 
   return (
-    <div className="max-w-[1450px] mx-auto text-center bg-gray-100 py-10 border border-gray-300 shadow-inner mb-10">
+    <div className="max-w-[1450px] mx-auto text-center bg-gray-100 py-10 border border-gray-300 shadow-inner mb-6 mt-6">
       <div className="font-instrument">
         {/* Breadcrumb */}
         <div className="bg-light rounded-3 p-3 mb-4 flex flex-row w-full justify-between items-center min-h-[60px]">
