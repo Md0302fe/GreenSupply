@@ -19,6 +19,11 @@ import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
+import AddressPage from "../pages/AddressPage/AddressPage";
+import AddressCreate from "../pages/AddressPage/AddressCreate";
+import AddressUpdate from "../pages/AddressPage/AddressUpdate";
+
+
 const Router = () => {
   return (
     <>
@@ -43,10 +48,18 @@ const Router = () => {
 
         {/* Profile routes */}
         <Route path="/Profile" element={<ProfilePage />} />
-
+ 
         {/* Product routes */}
         <Route path="/Product" element={<ProductPage />} />
         <Route path="/product-detail/:id" element={<ProductDetailPage />} />
+
+
+
+          {/* Address routes */}
+        <Route path="/Address" element={<AddressPage />} />
+        <Route path="/Address-Create" element={<AddressCreate />} />
+        <Route path="/Address-Update/:id" element={<AddressUpdate />} />
+
       </Routes>
 
       <ToastContainer

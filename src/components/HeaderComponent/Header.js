@@ -5,6 +5,7 @@ import { resetUser } from "../../redux/slides/userSlides";
 import { persistor } from "../../redux/store";
 import * as UserServices from "../../services/UserServices";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
+import { Link } from "react-router-dom";
 
 const Header = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
   const [search, setSearch] = useState("");
@@ -41,11 +42,13 @@ const Header = ({ setActive, setIsLoginActive, setIsRegisterActive }) => {
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-12 items-center gap-2 px-2 md:px-6">
           {/* Logo */}
           <div className="md:col-span-2 flex justify-center md:justify-center">
-            <img
-              src={logo}
-              alt="Green Supply Logo"
-              className="h-12 md:h-16 max-w-full"
-            />
+          <Link to="/">
+              <img
+                src={logo}
+                alt="Green Supply Logo"
+                className="h-12 md:h-16 max-w-full cursor-pointer"
+              />
+            </Link>
           </div>
 
           {/* Thanh tìm kiếm */}

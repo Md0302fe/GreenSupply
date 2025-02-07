@@ -44,6 +44,12 @@ const App = ({ loginActive }) => {
   // Bạn có thể sử dụng useMatch để kiểm tra xem route có phải là route của ProductDetails không.
   const match = useMatch("/Product-Detail/:id"); // Kiểm tra route
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    console.log("Token khi load lại trang:", token); // Kiểm tra token sau khi reload
+  }, []);
+  
+
   // Effect 1
   useEffect(() => {
     setIsLoading(true);
