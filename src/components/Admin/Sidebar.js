@@ -15,6 +15,7 @@ import {
 import { FaGem, FaGithub } from "react-icons/fa";
 
 import sidebarBg from "../../assets/bg2.jpg";
+import logo from "../../assets/NewProject/Logo/GreenSupply.png";
 
 import { MdDashboardCustomize } from "react-icons/md";
 import { FaUserGear } from "react-icons/fa6";
@@ -38,10 +39,10 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             {/* title here */}
             <div className="SidebarHeader-top">
               <div
-                className="SidebarHeader-avatar"
-                style={{ backgroundImage: `url(${user?.avatar})` }}
+                className="SidebarHeader-avatar object-contain"
+                style={{ backgroundImage: `url(${logo})` }}
               ></div>
-              <span className="SidebarHeader-title">MD.DEV</span>
+              <span className="SidebarHeader-title">ADMIN</span>
             </div>
           </div>
         </SidebarHeader>

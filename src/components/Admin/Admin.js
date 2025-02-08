@@ -19,15 +19,23 @@ const Admin = (props) => {
       </div>
       <div className="admin-content w-full">
         {/* admin-header-content */}
-        <div className="w-full flex justify-between items-center cursor-pointer px-[20px] h-10">
-          <FaBars
-            onClick={() => {
-              setCollapsed(!collapsed);
-            }}
-          />
-          <div className="flex justify-center items-center text-black gap-2" onClick={() => navigate('/')}>
-          <AiOutlineHome className="size-5"></AiOutlineHome>
-            <span className="border-b border-black">Back to home</span>
+        <div className="w-full flex justify-between items-center bg-white shadow-md px-4 h-16 transition-all duration-300">
+          <div className="flex items-center cursor-pointer">
+            <FaBars
+              onClick={() => {
+                setCollapsed(!collapsed);
+              }}
+              className="text-2xl text-gray-700 hover:text-blue-500 transition-colors duration-200"
+            />
+          </div>
+          <div
+            className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-all duration-200"
+            onClick={() => navigate("/home")}
+          >
+            <AiOutlineHome className="text-2xl" />
+            <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
+              Quay về trang chủ
+            </span>
           </div>
         </div>
         {/* admin-main-content */}

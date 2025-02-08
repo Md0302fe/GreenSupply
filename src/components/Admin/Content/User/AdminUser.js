@@ -52,10 +52,10 @@ const UserComponent = () => {
 
     if (res?.data) {
       setStateDetailsUser({
-        name: res?.data.name,
+        name: res?.data.full_name,
         email: res?.data.email,
         phone: res?.data.phone,
-        isAdmin: res?.data.isAdmin ? "admin" : "user",
+        isAdmin: res?.role_id?.role_name,
         avatar: res?.data.avatar,
         address: res?.data.address,
       });
@@ -248,10 +248,11 @@ const UserComponent = () => {
   const tableData =
     users?.data?.length &&
     users?.data.map((user) => {
+      console.log("user =>",user )
       return {
         ...user,
         key: user._id,
-        isAdmin: user?.isAdmin ? "Admin" : "User",
+        isAdmin: user?.role_id?.role_name,
       };
     });
 
@@ -380,15 +381,16 @@ const UserComponent = () => {
   const columns = [
     {
       title: "Tên khách hàng",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
-      sorter: (a, b) => a.name.length - b.name.length,
+      dataIndex: "full_name",
+      key: "full_name",
+      ...getColumnSearchProps("full_name"),
+      sorter: (a, b) => a?.full_name.length - b?.full_name.length,
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      ...getColumnSearchProps("email"),
     },
     {
       title: "Vai Trò",
@@ -396,12 +398,12 @@ const UserComponent = () => {
       key: "isAdmin",
       filters: [
         {
-          text: "admin",
-          value: true,
+          text: "Admin",
+          value: "Admin",
         },
         {
-          text: "user",
-          value: false,
+          text: "User",
+          value: "User",
         },
       ],
       onFilter: (value, record) => {
@@ -423,7 +425,6 @@ const UserComponent = () => {
       render: renderAction,
     },
   ];
-
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
@@ -582,25 +583,6 @@ const UserComponent = () => {
                 src={stateDetailsUser?.avatar}
                 alt="Avatar User"
                 style={{ width: "50%", objectFit: "cover" }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Địa chỉ"
-              name="address"
-              rules={[
-                {
-                  required: true,
-                  message: "Địa chỉ!",
-                },
-              ]}
-            >
-              <Input
-                value={stateDetailsUser?.address}
-                onChange={(event) =>
-                  handleOnChangeDetails(event.target.value, "address")
-                }
-                placeholder="Địa chỉ"
               />
             </Form.Item>
 
