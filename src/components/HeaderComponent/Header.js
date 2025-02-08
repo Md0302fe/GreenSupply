@@ -1,7 +1,9 @@
 import React from "react";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <div className="Header">
       <header className="bg-customOrange px-4 md:px-6 py-2 rounded-bl-2xl rounded-br-2xl w-full">

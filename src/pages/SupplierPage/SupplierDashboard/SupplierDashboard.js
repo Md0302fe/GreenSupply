@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import HeaderSupplier from "../Header/HeaderSupplier";
 import SideBar from "../SideBar/SideBar";
+import "../../../styles/css/HeaderSupplier.css";
 import HarvestRequestPage from "../ContentWrapper/HarvestRequestPage";
 import HarvestRequestManagement from "../ContentWrapper/HarvestRequestManagement";
-import "../../../styles/css/HeaderSupplier.css";
+import SupplyRequestPage from "../ContentWrapper/SupplyRequestPage";
 
 const SupplierDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -49,6 +50,7 @@ const SupplierDashboard = () => {
               />
               <Route path="harvest-request" element={<HarvestRequestPage />} />
               <Route path="harvest-request-management" element={<HarvestRequestManagement />} />
+              <Route path="supply-request" element={<SupplyRequestPage />} />
             </Routes>
           </div>
         </div>
