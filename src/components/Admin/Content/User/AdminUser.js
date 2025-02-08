@@ -40,7 +40,7 @@ const UserComponent = () => {
     name: "",
     email: "",
     phone: "",
-    isAdmin: "",
+    role: "",
     avatar: "",
     address: "",
   });
@@ -55,7 +55,7 @@ const UserComponent = () => {
         name: res?.data.full_name,
         email: res?.data.email,
         phone: res?.data.phone,
-        isAdmin: res?.role_id?.role_name,
+        role: res?.data?.role_id?.role_name,
         avatar: res?.data.avatar,
         address: res?.data.address,
       });
@@ -74,12 +74,19 @@ const UserComponent = () => {
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, dataUpdate } = data;
     // convert data tại đây tránh lỗi vặt
+    if (dataUpdate?.role === "Admin") {
+      dataUpdate.role = "67950da386a0a462d408c7b9";
+    } else if (dataUpdate?.role === "User") {
+      dataUpdate.role = "67950f9f8465df03b29bf752";
+    } else if (dataUpdate?.role === "Supplier") {
+      dataUpdate.role = "67950fec8465df03b29bf753";
+    }
     const updatedData = {
       ...dataUpdate,
-      isAdmin: dataUpdate?.isAdmin === "admin",
+      role_id: dataUpdate?.role,
     };
 
-    // remember return . tránh việc mutationUpdate không trả về data
+    //remember return . tránh việc mutationUpdate không trả về data
     return UserServices.updateUser({
       id,
       access_token: token,
@@ -211,7 +218,7 @@ const UserComponent = () => {
       name: "",
       email: "",
       phone: "",
-      isAdmin: "",
+      role: "",
       avatar: "",
       address: "",
     });
@@ -248,11 +255,10 @@ const UserComponent = () => {
   const tableData =
     users?.data?.length &&
     users?.data.map((user) => {
-      console.log("user =>",user )
       return {
         ...user,
         key: user._id,
-        isAdmin: user?.role_id?.role_name,
+        role: user?.role_id?.role_name,
       };
     });
 
@@ -376,8 +382,6 @@ const UserComponent = () => {
         text
       ),
   });
-
-  // COLUMNS DATA TABLE
   const columns = [
     {
       title: "Tên khách hàng",
@@ -394,8 +398,8 @@ const UserComponent = () => {
     },
     {
       title: "Vai Trò",
-      dataIndex: "isAdmin",
-      key: "isAdmin",
+      dataIndex: "role",
+      key: "role",
       filters: [
         {
           text: "Admin",
@@ -405,12 +409,13 @@ const UserComponent = () => {
           text: "User",
           value: "User",
         },
+        {
+          text: "Supplier",
+          value: "Supplier",
+        },
       ],
       onFilter: (value, record) => {
-        if (value) {
-          return record.isAdmin === true;
-        }
-        return record.isAdmin === false;
+        return record.role.includes(value);
       },
     },
     {
@@ -458,7 +463,7 @@ const UserComponent = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
-        width="50%"
+        width="40%"
         forceRender
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
@@ -540,7 +545,7 @@ const UserComponent = () => {
 
             <Form.Item
               label="Vai trò"
-              name="isAdmin"
+              name="role"
               rules={[
                 {
                   required: true,
@@ -548,12 +553,20 @@ const UserComponent = () => {
                 },
               ]}
             >
+              {console.log()}
               <Select
-                value={stateDetailsUser.isAdmin}
-                onChange={(value) => handleOnChangeDetails(value, "isAdmin")}
+                value={"keke"}
+                onChange={(value) => handleOnChangeDetails(value, "role")}
               >
-                <Select.Option value="admin">Admin</Select.Option>
-                <Select.Option value="user">User</Select.Option>
+                <Select.Option value="67950da386a0a462d408c7b9">
+                  Admin
+                </Select.Option>
+                <Select.Option value="67950fec8465df03b29bf753">
+                  Supplier
+                </Select.Option>
+                <Select.Option value="67950f9f8465df03b29bf752">
+                  User
+                </Select.Option>
               </Select>
             </Form.Item>
 
