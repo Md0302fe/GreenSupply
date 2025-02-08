@@ -30,7 +30,7 @@ const SideBar = () => {
         <img
           src={logo}
           className="w-[150px] cursor-pointer ml-7"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         />
       </div>
 
@@ -91,6 +91,15 @@ const SideBar = () => {
           >
             <MdOutlineBorderColor className="text-[20px]" />
             <span>Tạo yêu cầu thu hàng</span>
+          </Button>
+        </li>
+        <li>
+          <Button
+            onClick={() => navigate("/supplier/supply-request")}
+            className="w-full !capitalize !justify-start flex gap-3 text-[12px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
+          >
+            <MdOutlineBorderColor className="text-[20px]" />
+            <span>Tạo đơn cung cấp hàng</span>
           </Button>
         </li>
         <li>

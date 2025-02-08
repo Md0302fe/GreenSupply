@@ -3,9 +3,7 @@ import logo from "../../assets/NewProject/Logo/GreenSupply.png";
 import { Badge, Button, Col, Popover, Row } from "antd";
 import { WrapperContentPopup } from "./styles";
 import { AiOutlineUser } from "react-icons/ai";
-
 import Loading from "../LoadingComponent/Loading";
-
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "../../redux/slides/userSlides";
