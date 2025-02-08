@@ -1,9 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
-import { useNavigate } from "react-router-dom";
+import { Badge, Button, Col, Popover, Row } from "antd";
+import { WrapperContentPopup } from "./styles";
+import { AiOutlineUser } from "react-icons/ai";
+import Loading from "../LoadingComponent/Loading";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { resetUser } from "../../redux/slides/userSlides";
+import { persistor } from "../../redux/store";
+import { LuUser } from "react-icons/lu";
+import "./Header.scss";
+
+import * as UserServices from "../../services/UserServices";
 
 const Header = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const userRedux = useSelector((state) => state.user);
+  const [userAvatar, setUserAvatar] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  // CLICK BTN LOG-OUT
+  const handleClickBtnLogout = async () => {
+    setLoading(true);
+    await UserServices.logoutUser();
+    // sau khi gọi clear Cookie chứa token / set lại state (chứa thông tin user = redux)
+    dispatch(resetUser());
+    // Xóa dữ liệu trong Redux Persist
+    persistor.purge(); // Xóa toàn bộ dữ liệu trong Redux Persist
+
+    // Xóa dữ liệu trong localStorage
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+
+    // Đảm bảo Popover đóng lại sau khi đăng xuất
+    setOpen(false);
+    setLoading(false);
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
+  };
+  // OPEN CHANGE
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+  };
+  useEffect(() => {
+    setUserAvatar(userRedux?.avatar);
+  }, [userRedux?.avatar]);
+  // Click Icons User
+
   return (
     <div className="Header">
       <header className="bg-customOrange px-4 md:px-6 py-2 rounded-bl-2xl rounded-br-2xl w-full">
@@ -21,47 +68,100 @@ const Header = () => {
         </div>
 
         {/* Nội dung chính */}
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-12 items-center gap-2 px-2 md:px-6">
+        <div className="container  flex justify-between">
           {/* Logo */}
           <div className="md:col-span-2 flex justify-center md:justify-center">
-            <img
-              src={logo}
-              alt="Green Supply Logo"
-              className="h-12 md:h-16 max-w-full cursor-pointer"
-              onClick={() => navigate("/")}
-            />
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Green Supply Logo"
+                className="h-12 md:h-16 max-w-full cursor-pointer"
+              />
+            </Link>
           </div>
-
-          {/* Thanh tìm kiếm */}
-          <div className="md:col-span-7 relative w-full">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <button className="h-[36px] w-[36px] flex items-center justify-center bg-[#FF8B00] text-white rounded-md hover:bg-[#D84315] transition-all duration-300">
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </button>
-            </div>
-            <input
-              type="text"
-              placeholder="Tìm kiếm..."
-              className="w-full h-[42px] md:h-[46px] pl-14 pr-4 py-2 rounded border font-bold border-gray-300 focus:outline-none text-[#FF8B00] focus:border-[#FF8B00] placeholder:text-[#FF8B00]"
-            />
-          </div>
-
-          {/* Đăng ký & Đăng nhập */}
-          {/* <div className="md:col-span-3 flex justify-center md:justify-end flex-wrap gap-3 md:gap-4">
-            <button
-              onClick={handleClickRegister}
-              className="w-[120px] md:w-[140px] h-[40px] md:h-[42px] text-sm font-bold bg-white text-black rounded-md transition-all duration-300 hover:brightness-110"
-            >
-              Đăng ký
-            </button>
-
-            <button
-              onClick={handleClickLogin}
-              className="w-[120px] md:w-[140px] h-[40px] md:h-[42px] text-sm font-bold bg-yellow-300 text-black rounded-md hover:bg-yellow-400 transition-all duration-300"
-            >
-              Đăng nhập
-            </button>
-          </div> */}
+          <Col span={6} className="Shopping-cart flex-center-center">
+            <Loading isPending={loading}>
+              <div className="Wrapper-Account text-black">
+                {userRedux?.full_name !== "" &&
+                userRedux?.full_name !== undefined ? (
+                  <div className="user-login flex-center-center">
+                    <>
+                      <Popover
+                        content={
+                          <ul
+                            className="user-nav"
+                            style={{ padding: "0", minWidth: "160px" }}
+                          >
+                            {userRedux?.isAdmin === "Admin" && (
+                              <li>
+                                <WrapperContentPopup
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => navigate("/system/admin")}
+                                >
+                                  Quản lý hệ thống
+                                </WrapperContentPopup>
+                              </li>
+                            )}
+                            <li>
+                              <WrapperContentPopup
+                                style={{ cursor: "pointer" }}
+                                onClick={() => navigate("/Profile")}
+                              >
+                                Thông tin cá nhân
+                              </WrapperContentPopup>
+                            </li>
+                            <li>
+                              <WrapperContentPopup
+                                style={{ cursor: "pointer" }}
+                                onClick={() => navigate("/infomation-order")}
+                              >
+                                Quản lý đơn
+                              </WrapperContentPopup>
+                            </li>
+                            <li>
+                              <WrapperContentPopup
+                                style={{ cursor: "pointer" }}
+                                onClick={() => handleClickBtnLogout()}
+                              >
+                                Đăng xuất
+                              </WrapperContentPopup>
+                            </li>
+                          </ul>
+                        }
+                        trigger="click"
+                        open={open}
+                        onOpenChange={handleOpenChange}
+                        className="flex-center-center Popover"
+                      >
+                        {userAvatar ? (
+                          <img
+                            className="w-[40px] h-[40px] rounded-[50%] object-cover cursor-pointer mr-2"
+                            src={userAvatar}
+                            alt="avatar"
+                          ></img>
+                        ) : (
+                          <LuUser
+                            style={{ fontSize: "35px", padding: "0 6px" }}
+                          ></LuUser>
+                        )}
+                        <Button>
+                          <span onClick={() => setOpen(false)}>
+                            {userRedux.full_name}
+                          </span>
+                        </Button>
+                      </Popover>
+                    </>
+                  </div>
+                ) : (
+                  <div className="None-account">
+                    {/* Icons User */}
+                    <AiOutlineUser className="shopping-cart-icons user text-black"></AiOutlineUser>
+                    <span className="text-lg text-black">Tài khoản</span>
+                  </div>
+                )}
+              </div>
+            </Loading>
+          </Col>
         </div>
       </header>
     </div>

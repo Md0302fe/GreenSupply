@@ -25,9 +25,8 @@ export const userSlides = createSlice({
         full_name,
         email,
         phone,
-        address,
         avatar,
-        isAdmin,
+        role_id,
         access_token,
         birth_day,
         gender,
@@ -37,9 +36,8 @@ export const userSlides = createSlice({
       state.full_name = full_name;
       state.email = email;
       state.phone = phone;
-      state.address = address;
       state.avatar = avatar;
-      state.isAdmin = isAdmin;
+      state.isAdmin = role_id.role_name;
       state.birth_day = birth_day;
       state.gender = gender;
     },
@@ -50,7 +48,6 @@ export const userSlides = createSlice({
       state.full_name = "";
       state.email = "";
       state.phone = "";
-      state.address = "";
       state.avatar = "";
       state.isAdmin = false;
       state.birth_day = ""; 

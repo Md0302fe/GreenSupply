@@ -51,9 +51,12 @@ const Login = () => {
     if (isSuccess) {
       // chuẩn bị active box notification (success/fails)
       setStateNotification(true);
+
+      console.log("Dữ liệu trả về từ API login:", data);
       if (data.status === "OK") {
         // lấy token từ phía BE
         const token = data?.access_token;
+        console.log("Token nhận được:", token); 
         // setItem (token)
         localStorage.setItem("access_token", JSON.stringify(token));
         if (data?.access_token) {

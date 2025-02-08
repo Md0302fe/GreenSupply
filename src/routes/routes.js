@@ -20,6 +20,10 @@ import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
+import AddressPage from "../pages/AddressPage/AddressPage";
+import AddressCreate from "../pages/AddressPage/AddressCreate";
+import AddressUpdate from "../pages/AddressPage/AddressUpdate";
+
 
 import SupplierDashboard from "../pages/SupplierPage/SupplierDashboard/SupplierDashboard";
 // import HarvestRequestPage from "../pages/SupplierPage/HarvestRequestPage/HarvestRequestPage";
@@ -59,6 +63,13 @@ const Router = () => {
         {/* Product routes */}
         <Route path="/product" element={<ProductPage />} />
         <Route path="/product-detail/:id" element={<ProductDetailPage />} />
+
+
+
+          {/* Address routes */}
+        <Route path="/Address" element={<AddressPage />} />
+        <Route path="/Address-Create" element={<AddressCreate />} />
+        <Route path="/Address-Update/:id" element={<AddressUpdate />} />
 
         {/* Supplier Page*/}
         <Route path="/supplier/*" element={<SupplierDashboard />} />
