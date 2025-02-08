@@ -6,6 +6,7 @@ import App from "../App";
 import HomePage from "../pages/HomePage/HomePage";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import ManageUser from "../components/Admin/Content/User/AdminUser";
+import ManageBlockedUser from "../components/Admin/Content/User/BlockedUser";
 
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
 
@@ -55,6 +56,8 @@ const Router = () => {
         <Route path="/system/admin" element={<Admin />}>
           <Route index element={<Dashboard />} />
           <Route path="manage-users" element={<ManageUser />} />
+          <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
+          
         </Route>
 
         {/* Profile routes */}

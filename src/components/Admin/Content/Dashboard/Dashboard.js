@@ -14,7 +14,7 @@ const DashboardComponent = () => {
                 Bảng Điều Khiển
               </a>
             </li>
-            <li>
+            <li>  
               <a href="#production" className="hover:underline">
                 Quản Lý Sản Xuất
               </a>

@@ -65,6 +65,10 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
                 Quản lý người dùng
                 <Link to={"manage-users"} />
               </MenuItem>
+              <MenuItem>
+                Quản lý tài khoản
+                <Link to={"manage-blocked-users"} />
+              </MenuItem>
             </SubMenu>
           </Menu>
 
