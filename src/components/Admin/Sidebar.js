@@ -74,24 +74,6 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
           </Menu>
 
           <Menu iconShape="circle">
-            <SubMenu
-              // suffix={<span className="badge yellow">3</span>}
-              icon={<FaGem />}
-              title="Sản Phẩm"
-            >
-              <MenuItem>
-                Quản lý phân loại
-                <Link to={"manage-categories"} />
-              </MenuItem>
-              <MenuItem>
-                Quản lý sản phẩm
-                <Link to={"manage-products"} />
-              </MenuItem>
-            </SubMenu>
-          </Menu> 
-
-
-          <Menu iconShape="circle">
           <SubMenu
             icon={<FaShoppingCart />}
             title="Quản Lý Đơn Hàng"

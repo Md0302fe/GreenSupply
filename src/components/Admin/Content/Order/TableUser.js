@@ -42,13 +42,13 @@ const TableUser = (props) => {
 
   return (
     <Loading isPending={isLoading}>
-      <Button
+      {/* <Button
         type="primary"
         className="button-exportFile"
         onClick={handleExportFileExcels}
       >
         Xuất File
-      </Button>
+      </Button> */}
 
       <Table
         rowSelection={{

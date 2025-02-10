@@ -44,9 +44,9 @@ const TableUser = (props) => {
   return (
     <Loading isPending={isLoading}>
       
-      <Button type="primary" className="button-exportFile" onClick={handleExportFileExcels}>
+      {/* <Button type="primary" className="button-exportFile" onClick={handleExportFileExcels}>
         Xuất file
-      </Button>
+      </Button> */}
 
       <Table
         rowSelection={{
