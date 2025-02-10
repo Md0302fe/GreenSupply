@@ -37,7 +37,7 @@ export const userSlides = createSlice({
       state.email = email;
       state.phone = phone;
       state.avatar = avatar;
-      state.isAdmin = role_id.role_name;
+      state.isAdmin = role_id?.role_name;
       state.birth_day = birth_day;
       state.gender = gender;
     },

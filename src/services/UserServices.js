@@ -126,6 +126,19 @@ export const updateUser = async (data) => {
   );
   return res?.data;
 };
+export const updateAccount = async (data) => {
+  // gọi api / clearCookie("refresh_token") ;
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/user/update-account/${data?.id}`,
+    data.data,
+    {
+      headers: {
+        token: `Bearer ${data?.access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
 
 export const blockUser = async (id, access_token) => {
   // gọi api / clearCookie("refresh_token") ;

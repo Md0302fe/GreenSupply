@@ -76,7 +76,7 @@ const ProfilePage = () => {
   // 2: Mutation
   const mutation = useMutationHooks((Res) => {
     const { id, access_token, data } = Res;
-    return UserServices.updateUser({ id, data, access_token });
+    return UserServices.updateAccount({ id, data, access_token });
   });
   const { isPending, isSuccess, data } = mutation;
 

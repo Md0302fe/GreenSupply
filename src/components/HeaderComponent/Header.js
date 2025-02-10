@@ -71,7 +71,7 @@ const Header = () => {
         <div className="container  flex justify-between">
           {/* Logo */}
           <div className="md:col-span-2 flex justify-center md:justify-center">
-            <Link to="/">
+            <Link to="/home">
               <img
                 src={logo}
                 alt="Green Supply Logo"
