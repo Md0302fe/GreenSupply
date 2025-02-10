@@ -36,6 +36,7 @@ import {
 } from "./styles";
 
 import userImage from "../../assets/DefaultUser.jpg";
+import OTPInput from "react-otp-input";
 
 const ProfilePage = () => {
   // 1: Variables
@@ -55,7 +56,16 @@ const ProfilePage = () => {
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [genderError, setGenderError] = useState("");
-
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setconfirmNewPassword] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+  const [otp, setOtp] = useState('');
+  const [otpPopupVisible, setOtpPopupVisible] = useState('');
+    const [isChagePassword, setIsChangePassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [sendOtpLoading, setsendOtpLoading] = useState(false);
+  
   const navigate = useNavigate();
   const dishpatch = useDispatch();
   const location = useLocation();
@@ -212,7 +222,98 @@ const ProfilePage = () => {
     setBirthDayError(""); // Xóa lỗi nếu hợp lệ
     return true;
   };
+  // Hàm xử lý gửi OTP
+  const requestOtp = async () => {
+    if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
 
+    try {
+      const result = await UserServices.sendOtp({
+        password
+      });
+
+      if (result.status === "OK") {
+        setOtpPopupVisible(true);
+        setResendTimer(60); // Đặt thời gian chờ là 60 giây
+
+        // Bắt đầu đếm ngược
+        const interval = setInterval(() => {
+          setResendTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval); // Dừng đếm ngược khi hết thời gian
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        toast.success("OTP đã được gửi!");
+      } else {
+        toast.error(result.message || "Không thể gửi OTP.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi yêu cầu OTP:", error.message);
+      toast.error("Không thể gửi OTP. Vui lòng thử lại.");
+    }
+  };
+  // Click Submit Sau Khi Điền Form
+  const HandleSubmitForm = async () => {
+    if (!otp || otp.length !== 6) { // Kiểm tra OTP
+      toast.error("Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.");
+      return;
+    }
+    const data = { email, otp };
+    const res = await UserServices.checkOtpChangePassword(data);
+    if(res.status === "OK") {
+      console.log(newPassword)
+      const res2 = await UserServices.updatePassword({newPassword, email});
+      if(res2.status === "OK") {
+        toast.success("Thay đổi mật khẩu thành công.");
+        window.location.reload();
+      }
+    }
+  };
+  const handleCheckPassword = async () => {
+    if(!newPassword || !password || !confirmNewPassword) {
+      toast.error("Các trường thông tin không được để trống.");
+      return;
+    }
+    if(newPassword !== confirmNewPassword) {
+      toast.error("Mật khẩu không trùng khớp");
+      return;
+    }
+    if (password === newPassword) {
+      toast.error("Mật khẩu mới không được trùng với mật khẩu cũ");
+      return;
+    }
+      setsendOtpLoading(true);
+      setErrorMessage('');
+      try {
+        const res = await UserServices.checkPassword({ email, password });
+        if (res.status === "ERROR") {
+          setErrorMessage(res.message);
+        }
+        if (res.status === "OK") {
+          setOtpPopupVisible(true);
+          setResendTimer(60);
+          const interval = setInterval(() => {
+            setResendTimer((prev) => {
+              if (prev <= 1) {
+                clearInterval(interval); // Dừng đếm ngược khi hết thời gian
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+  
+          toast.success("OTP đã được gửi!");
+        }
+      } catch (error) {
+        console.error("API call failed:", error);
+        setErrorMessage("Something went wrong. Please try again.");
+      } finally {
+        setsendOtpLoading(false);
+      }
+    }
   // get value redux after userRedux change
   useEffect(() => {
     setFullName(userRedux?.full_name);
@@ -240,7 +341,11 @@ const ProfilePage = () => {
     const error = validatePhone(value);
     setPhoneError(error);
   };
-
+  const handleCloseOtpPopup = () => {
+    setOtp('');
+    setOtpPopupVisible(false);
+    setResendTimer(0);
+  };
   const handleChangeAddress = (value) => {
     setAddress(value);
   };
@@ -303,7 +408,7 @@ const ProfilePage = () => {
                 </MDBRow>
                 <MDBRow>
                   <MDBCol lg="4">
-                    <FlexCenterCenterCol className="mb-4">
+                    <FlexCenterCenterCol className="mb-2">
                       {/* avatar here */}
                       <CardBodys>
                         <StyledMDBCardImage
@@ -326,12 +431,22 @@ const ProfilePage = () => {
                         </FlexCenterCenter>
                       </CardBodys>
                     </FlexCenterCenterCol>
-                    <FlexCenterCenterCol className="mb-4">
+                    <FlexCenterCenterCol className="mb-2">
                       {/* avatar here */}
                       <CardBodys>
                         <FlexCenterCenter>
                           <MDBBtn onClick={() => navigate("/Address")}>
                             Danh Sách Địa Chỉ
+                          </MDBBtn>
+                        </FlexCenterCenter>
+                      </CardBodys>
+                    </FlexCenterCenterCol>
+                    <FlexCenterCenterCol className="mb-4">
+                      {/* avatar here */}
+                      <CardBodys>
+                        <FlexCenterCenter>
+                          <MDBBtn onClick={() => setIsChangePassword(true)}>
+                            Đổi mật khẩu
                           </MDBBtn>
                         </FlexCenterCenter>
                       </CardBodys>
@@ -504,6 +619,118 @@ const ProfilePage = () => {
           </WrapperContent>
         </Loading>
       </div>
+      {isChagePassword && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+              <div onClick={() => setIsChangePassword(false)} className="absolute top-4 right-4 cursor-pointer">
+                <img src="/image/icon/close.png" alt="" className="w-4" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-700">Đổi mật khẩu</h2>
+              <p className="text-gray-500 text-sm my-2 mt-3">Vui lòng nhập mật khẩu cũ của bạn</p>
+              <input
+                type="password"
+                required
+                placeholder="Nhập mật khẩu cũ..."
+                onChange={(event) => setPassword(event.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+              />
+              <p className="text-gray-500 text-sm my-2 mt-3">Vui lòng nhập mật khẩu mới của bạn</p>
+              <input
+                type="password"
+                required
+                placeholder="Nhập mật khẩu mới..."
+                onChange={(event) => setNewPassword(event.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+              />
+              <p className="text-gray-500 text-sm my-2 mt-3">Vui lòng nhập lại mật khẩu mới của bạn</p>
+              <input
+                type="password"
+                required
+                placeholder="Nhập lại mật khẩu mới..."
+                onChange={(event) => setconfirmNewPassword(event.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+              />
+              {errorMessage && (
+                <p className="text-red-500 mt-2 ml-2">{errorMessage}</p>
+              )}
+              <button onClick={() => handleCheckPassword()} disabled={sendOtpLoading} className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition">
+                {sendOtpLoading === true ? (
+                  <div role="status" className="w-fit mx-auto">
+                    <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                    </svg>
+                  </div>
+                ) : (
+                  <span>
+                    Gửi yêu cầu
+                  </span>
+                )}
+              </button>
+
+              {sendOtpLoading === false ?? (
+                <div
+                  onClick={() => setIsChangePassword(false)}
+                  className="absolute top-3 right-3 cursor-pointer"
+                >
+                  <img src="/image/icon/close.png" alt="Đóng" className="w-4 opacity-70 hover:opacity-100 transition" />
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+      {otpPopupVisible && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
+            <div onClick={handleCloseOtpPopup} className="absolute top-4 right-4 cursor-pointer">
+              <img src="/image/icon/close.png" alt="" className="w-4" />
+            </div>
+            <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6 mt-2">
+              Nhập mã OTP
+            </h3>
+            <p className="text-sm text-gray-600 text-center mb-4">
+              Vui lòng nhập mã OTP gồm 6 chữ số được gửi đến email của bạn
+            </p>
+            <OTPInput
+              value={otp}
+              onChange={setOtp}
+              numInputs={6}
+              containerStyle={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              renderInput={(props) => (
+                <input
+                  {...props}
+                  className="w-12 h-12 text-center text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                  style={{ width: "48px", height: "48px" }}
+                />
+              )}
+            />
+            <button
+              className="mt-6 w-full py-3 bg-indigo-600 text-white text-lg font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+              onClick={() => HandleSubmitForm(otp)}
+            >
+              Xác nhận OTP
+            </button>
+            <p className="text-sm text-gray-500 text-center mt-4">
+              Không nhận được mã?{" "}
+              <span
+                className={`cursor-pointer ${resendTimer > 0
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "text-indigo-600 hover:underline"
+                  }`}
+                onClick={resendTimer === 0 ? requestOtp : undefined}
+              >
+                {resendTimer > 0 ? `Gửi lại sau ${resendTimer}s` : "Gửi lại"}
+              </span>
+            </p>
+          </div>
+        </div>
+
+      )}
     </div>
   );
 };

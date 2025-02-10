@@ -56,7 +56,7 @@ const Login = () => {
       if (data.status === "OK") {
         // lấy token từ phía BE
         const token = data?.access_token;
-        console.log("Token nhận được:", token); 
+        console.log("Token nhận được:", token);
         // setItem (token)
         localStorage.setItem("access_token", JSON.stringify(token));
         if (data?.access_token) {
@@ -89,7 +89,7 @@ const Login = () => {
       console.log(response)
       const { status, user, message } = response;
       if (status === "NEW_USER") {
-        
+
         navigate("/google-register", { state: { user } });
       } else if (status === "OK") {
         // Đăng nhập thành công
@@ -111,6 +111,11 @@ const Login = () => {
   const handleGoogleLoginFailure = (error) => {
     toast.error("Đăng nhập không thành công, hãy thử lại sau.")
     console.error("Google Login Failed:", error);
+  };
+  const handleCloseOtpPopup = () => {
+    setOtp(''); 
+    setOtpPopupVisible(false); 
+    setResendTimer(0); 
   };
 
   // USER INFOMATIONS
@@ -295,6 +300,9 @@ const Login = () => {
         {isForgotPassword && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+              <div onClick={() => setIsForgotPassword(false)} className="absolute top-4 right-4 cursor-pointer">
+                <img src="/image/icon/close.png" alt="" className="w-4" />
+              </div>
               <h2 className="text-lg font-semibold text-gray-700">Quên mật khẩu?</h2>
               <p className="text-gray-500 text-sm mb-4">Vui lòng nhập email của bạn</p>
               <input
@@ -336,7 +344,10 @@ const Login = () => {
         )}
         {otpPopupVisible && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
+              <div onClick={handleCloseOtpPopup} className="absolute top-4 right-4 cursor-pointer">
+                <img src="/image/icon/close.png" alt="" className="w-4" />
+              </div>
               <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6">
                 Nhập mã OTP
               </h3>
