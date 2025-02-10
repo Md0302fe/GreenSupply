@@ -10,13 +10,7 @@ import { RxCheckCircled } from "react-icons/rx";
 import OtpInput from 'react-otp-input';
 import { toast } from "react-toastify";
 
-const Register = ({
-  setLoginActive,
-  isRegisterActive,
-  setRegisterHiddent,
-  setActive,
-  active,
-}) => {
+const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,14 +24,14 @@ const Register = ({
   const [otp, setOtp] = useState('');
   const [otpPopupVisible, setOtpPopupVisible] = useState('');
   const mutation = useMutationHooks((data) => UserServices.userRegister(data));
-  const { isPending, data, isSuccess } = mutation;
+  const [loading, setLoading] = useState(false);
+  const { data, isSuccess } = mutation;
 
   useEffect(() => {
     if (isSuccess && data.status === "OK") {
       toast.success('Tạo tài khoản thành công!');
       setTimeout(() => {
-        setLoginActive();
-        setRegisterHiddent();
+        window.location.href = "/login";
       }, 1500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +56,7 @@ const Register = ({
   // Hàm xử lý gửi OTP
   const requestOtp = async () => {
     if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
-
+    setLoading(true);
     try {
       const result = await UserServices.sendOtp({
         name,
@@ -97,6 +91,8 @@ const Register = ({
     } catch (error) {
       console.error("Lỗi khi yêu cầu OTP:", error.message);
       toast.error("Không thể gửi OTP. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -265,7 +261,7 @@ const Register = ({
               )}
             </div>
 
-            <Loading isPending={isPending}>
+            <Loading isPending={loading}>
               <div className="text-center">
                 <button
                   disabled={
