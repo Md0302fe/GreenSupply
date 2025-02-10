@@ -27,7 +27,7 @@ const Navigation = () => {
         </div>
         <div className="menu-items homepage flex-center-center">
           <FaHome className="nav-icons"></FaHome>
-          <span onClick={() => navigate("/")}>TRANG CHỦ</span>
+          <span onClick={() => navigate("/home")}>TRANG CHỦ</span>
         </div>
         <div className="menu-items infomation flex-center-center">
           <FaInfoCircle className="nav-icons"></FaInfoCircle>

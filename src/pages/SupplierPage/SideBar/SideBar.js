@@ -120,15 +120,6 @@ const SideBar = () => {
             <span>Theo dõi lô hàng</span>
           </Button>
         </li>
-        <li>
-          <Button
-            onClick={() => navigate("/supplier/logout")}
-            className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
-          >
-            <FiLogOut className="text-[20px]" />
-            <span>Đăng xuất</span>
-          </Button>
-        </li>
       </ul>
     </div>
   );

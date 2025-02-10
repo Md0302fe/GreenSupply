@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import { Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
@@ -15,6 +16,7 @@ import { FaRegBell } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     right: -3,
@@ -23,6 +25,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     padding: "0 4px",
   },
 }));
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+
 
 const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
@@ -139,7 +144,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
               className="flex items-center gap-3"
             >
               <FaRegUser className="text-[16px]" />
-              <span className="text-[14px]">Profile</span>
+              <a href="/profile"  className="text-[14px]">Profile</a>
             </MenuItem>
 
             <MenuItem

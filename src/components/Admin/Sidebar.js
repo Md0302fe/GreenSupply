@@ -97,11 +97,11 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             title="Quản Lý Đơn Hàng"
           >
             <MenuItem>
-              Đơn yêu cầu nhập liệu
+              Đơn yêu cầu thu nguyên liệu
               <Link to={"manage-fuel-orders"} />
             </MenuItem>
             <MenuItem>
-              Đơn cung cấp nhiên liệu
+              Đơn cung cấp nguyên liệu
               <Link to={"manage-provide-orders"} />
             </MenuItem>
           </SubMenu>

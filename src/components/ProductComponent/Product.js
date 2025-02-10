@@ -84,7 +84,7 @@ const Product = () => {
         <div className="bg-light rounded-3 p-3 mb-4 flex flex-row w-full justify-between items-center min-h-[60px]">
           <div className="flex flex-row items-center">
             <span
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
               className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
             >
               Trang chủ

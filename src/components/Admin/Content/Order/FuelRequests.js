@@ -5,18 +5,17 @@ import { Button, Form, Input, Select, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 import * as OrderServices from "../../../../services/OrderServices";
-import { BiImageAdd } from "react-icons/bi";
+
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { getBase64 } from "../../../../ultils";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
-import ModalComponent from "../../../ModalComponent/ModalComponent";
+
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { message } from "antd";
@@ -140,32 +139,6 @@ const FuelRequestsManagement = () => {
     isPending: isPendingUpDate,
     isSuccess: isSuccessUpdate,
   } = mutationUpdate;
-
-  // Mutation - Delete Productd
-  const mutationDelete = useMutationHooks((data) => {
-    const { id, token } = data;
-    return UserServices.deleteUser(id, token);
-  });
-
-  const {
-    data: deleteRespone,
-    isPending: isPendingDelete,
-    isSuccess: isSuccessDelete,
-  } = mutationDelete;
-
-  // Handle Notification and set loading for delete function
-  useEffect(() => {
-    if (isSuccessDelete) {
-      if (deleteRespone?.status === "OK") {
-        setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
-      } else {
-        toast.success(deleteRespone?.message);
-        setIsOpenDelete(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessDelete]);
 
   // Handle each time rowSelected was call
   useEffect(() => {
@@ -456,7 +429,7 @@ const FuelRequestsManagement = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý đơn yêu cầu nhập liệu</h5>
+        <h5 className="content-title">quản lý đơn yêu cầu thu nguyên liệu</h5>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
