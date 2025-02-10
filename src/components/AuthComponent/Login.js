@@ -93,7 +93,13 @@ const Login = () => {
         navigate("/google-register", { state: { user } });
       } else if (status === "OK") {
         // Đăng nhập thành công
-        localStorage.setItem("access_token", response.access_token);
+        localStorage.setItem("access_token", JSON.stringify(response.access_token));
+        if (data?.access_token) {
+          const decode = jwtDecode(response.access_token);
+          if (decode?.id) {
+            handleGetDetailsUser(decode?.id, response.access_token);
+          }
+        }
         toast.success("Đăng nhập thành công!");
         setTimeout(() => {
           window.location.replace('/home')

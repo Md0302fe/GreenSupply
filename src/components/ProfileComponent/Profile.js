@@ -516,7 +516,7 @@ const ProfilePage = () => {
                           <MDBCol sm="9">
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
                               <InPut
-                                type="text"
+                                type="number"
                                 value={phone}
                                 onChange={(e) =>
                                   handleChangePhone(e.target.value)
