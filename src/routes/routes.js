@@ -5,8 +5,7 @@ import App from "../App";
 
 import HomePage from "../pages/HomePage/HomePage";
 import LandingPage from "../pages/LandingPage/LandingPage";
-import ManageUser from "../components/Admin/Content/User/AdminUser";
-
+import ManageUser  from "../components/Admin/Content/User/AdminUser";
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
 
 // Toastify
@@ -15,7 +14,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Admin from "../components/Admin/Admin";
 import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import IntroductionPage from "../pages/IntroductionPage/IntroductionPage";
-
 import ContactPage from "../pages/ContactPage/ContactPage";
 import ProfilePage from "../pages/Profile.js/ProfilePage";
 import ProductPage from "../pages/ProductPage/ProductPage";
@@ -23,14 +21,16 @@ import ProductDetailPage from "../pages/ProductPage/ProductDetailPage";
 import AddressPage from "../pages/AddressPage/AddressPage";
 import AddressCreate from "../pages/AddressPage/AddressCreate";
 import AddressUpdate from "../pages/AddressPage/AddressUpdate";
-
-
 import SupplierDashboard from "../pages/SupplierPage/SupplierDashboard/SupplierDashboard";
-// import HarvestRequestPage from "../pages/SupplierPage/HarvestRequestPage/HarvestRequestPage";
+
+// Import các component OrderManagement và OrderDetails
+import FuelRequestsManagement from "../components/Admin/Content/Order/FuelRequests";
+import FuelProvideManagement from "../components/Admin/Content/Order/FuelProvideOrders";
 
 import Login from "../components/AuthComponent/Login";
 import Register from "../components/AuthComponent/Register";
 import GoogleRegister from "../components/AuthComponent/GoogleRegister";
+import FuelRequestsComponent from "../components/Admin/Content/Order/FuelRequests";
 
 const Router = () => {
   return (
@@ -54,8 +54,15 @@ const Router = () => {
         {/* admin-page  : LayoutAdmin*/}
         <Route path="/system/admin" element={<Admin />}>
           <Route index element={<Dashboard />} />
-          <Route path="manage-users" element={<ManageUser />} />
+          <Route path="manage-users" element={<ManageUser  />} />
         </Route>
+
+        <Route path="/system/admin" element={<Admin />}>
+          <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
+          <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
+        </Route>
+        {/* Routes cho quản lý đơn hàng */}
+       
 
         {/* Profile routes */}
         <Route path="/profile" element={<ProfilePage />} />
@@ -64,15 +71,14 @@ const Router = () => {
         <Route path="/product" element={<ProductPage />} />
         <Route path="/product-detail/:id" element={<ProductDetailPage />} />
 
-
-
-          {/* Address routes */}
+        {/* Address routes */}
         <Route path="/Address" element={<AddressPage />} />
         <Route path="/Address-Create" element={<AddressCreate />} />
         <Route path="/Address-Update/:id" element={<AddressUpdate />} />
 
         {/* Supplier Page*/}
         <Route path="/supplier/*" element={<SupplierDashboard />} />
+
         
       </Routes>
 
