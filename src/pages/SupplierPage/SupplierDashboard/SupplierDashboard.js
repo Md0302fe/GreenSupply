@@ -6,6 +6,7 @@ import "../../../styles/css/HeaderSupplier.css";
 import HarvestRequestPage from "../ContentWrapper/HarvestRequestPage";
 import HarvestRequestManagement from "../ContentWrapper/HarvestRequestManagement";
 import SupplyRequestPage from "../ContentWrapper/SupplyRequestPage";
+import { ToastContainer } from "react-toastify";
 
 const SupplierDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -16,6 +17,7 @@ const SupplierDashboard = () => {
 
   return (
     <section className="main relative font-nunito">
+      <ToastContainer />
       <div
         className={`
           fixed top-0 left-0 z-50
