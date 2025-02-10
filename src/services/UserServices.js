@@ -37,9 +37,14 @@ export const checkOtpChangePassword = async (data) => {
   return res?.data;
 };
 export const updatePassword = async (data) => {
-  const res = await axios.post(
+  const res = await axiosJWT.post(
     `${process.env.REACT_APP_API_URL}/user/update-password`,
-    data
+    data,
+    {
+      headers: {
+        token: `Bearer ${data?.access_token}`,
+      },
+    }
   );
   return res?.data;
 };

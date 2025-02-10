@@ -10,6 +10,7 @@ const initialState = {
   access_token: "",
   birth_day: "",
   gender: "Other",
+  password: "",
 };
 
 
@@ -30,6 +31,7 @@ export const userSlides = createSlice({
         access_token,
         birth_day,
         gender,
+        password,
       } = action.payload;
       state.access_token = access_token;
       state.id = _id;
@@ -40,6 +42,7 @@ export const userSlides = createSlice({
       state.isAdmin = role_id?.role_name;
       state.birth_day = birth_day;
       state.gender = gender;
+      state.password = password;
     },
 
     resetUser: (state) => {
@@ -52,6 +55,7 @@ export const userSlides = createSlice({
       state.isAdmin = false;
       state.birth_day = ""; 
       state.gender = "Other"; 
+      state.password = ""; 
     },
   },
 });

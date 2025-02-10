@@ -94,7 +94,7 @@ const Login = () => {
       } else if (status === "OK") {
         // Đăng nhập thành công
         localStorage.setItem("access_token", JSON.stringify(response.access_token));
-        if (data?.access_token) {
+        if (response?.access_token) {
           const decode = jwtDecode(response.access_token);
           if (decode?.id) {
             handleGetDetailsUser(decode?.id, response.access_token);
@@ -127,7 +127,7 @@ const Login = () => {
   // USER INFOMATIONS
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserServices.getDetailsUser(id, token);
-    dishpatch(updateUser({ ...res?.data, access_token: token }));
+    dishpatch(updateUser({ ...res?.data , access_token: token }));
   };
 
   // CLICK BTN LOGIN

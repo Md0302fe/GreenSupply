@@ -48,9 +48,9 @@ const Register = () => {
   };
 
   const handleCloseOtpPopup = () => {
-    setOtp(''); 
-    setOtpPopupVisible(false); 
-    setResendTimer(0); 
+    setOtp('');
+    setOtpPopupVisible(false);
+    setResendTimer(0);
   };
 
   // Hàm xử lý gửi OTP
@@ -142,12 +142,17 @@ const Register = () => {
             <div className="form-group">
               <input
                 type="password"
-                className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${password && password.length < 6 ? "border-red-500" : ""
+                  }`}
                 value={password}
                 placeholder="Mật khẩu"
                 onChange={(event) => setPassword(event.target.value)}
                 required
               />
+              {/* Hiển thị lỗi nếu mật khẩu không hợp lệ */}
+              {password && password.length < 6 && (
+                <p className="text-red-500 text-sm mt-1">Mật khẩu phải có ít nhất 6 ký tự.</p>
+              )}
             </div>
 
             {/* 4/ Confirm Password */}
@@ -164,24 +169,26 @@ const Register = () => {
 
             {/* 5/ Phone */}
             <div className="form-group">
-              {/* <label>
-                Phone <span style={{ color: "red" }}>*</span>
-              </label> */}
               <input
-                type={"text"}
-                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^(03|05|07|08|09)\d{8}$/.test(phone) ? "border-red-500" : ""
+                type="text"
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^0\d{9}$/.test(phone) ? "border-red-500" : ""
                   }`}
                 value={phone}
                 placeholder="Số điện thoại"
                 onChange={(event) => {
                   const input = event.target.value;
-                  if (/^\d*$/.test(input)) { // Chỉ cho phép nhập số
+                  if (/^\d{0,10}$/.test(input)) { // Chỉ cho phép nhập số, tối đa 10 số
                     setPhone(input);
                   }
                 }}
                 required
-              ></input>
+              />
+              {/* Hiển thị lỗi nếu số điện thoại không hợp lệ */}
+              {phone && !/^0\d{9}$/.test(phone) && (
+                <p className="text-red-500 text-sm mt-1">Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.</p>
+              )}
             </div>
+
             {/* 6. Giới tính */}
             <div>
               <p>Giới tính:</p>
@@ -220,12 +227,18 @@ const Register = () => {
             <div className="form-group">
               <label htmlFor="date">Ngày sinh</label>
               <input
-                type={"date"}
-                className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black "
+                type="date"
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${date && date > new Date().toISOString().split("T")[0] ? "border-red-500" : ""
+                  }`}
                 id="date"
                 value={date}
                 onChange={(event) => setDate(event.target.value)}
-              ></input>
+                required
+              />
+              {/* Hiển thị lỗi nếu ngày sinh không hợp lệ */}
+              {date && date > new Date().toISOString().split("T")[0] && (
+                <p className="text-red-500 text-sm mt-1">Ngày sinh không thể lớn hơn ngày hiện tại.</p>
+              )}
             </div>
 
             {/* 7. Is supplier */}

@@ -9,17 +9,34 @@ const GoogleRegister = () => {
   const location = useLocation();
   const user = location.state?.user;
   const [phone, setPhone] = useState("");
-  const [date, setDate] = useState("");
+  const [birth_day, setBirthday] = useState("");
   const [role_check, setRoleCheck] = useState(false);
   const [gender, setGender] = useState("");
 
+  // validate
+  const [birthDayError, setBirthDayError] = useState("");
+
+  const today = new Date().toISOString().split("T")[0];
+
+  // Xử lý kiểm tra ngày sinh khi nhập
+  const handleBirthDayChange = (event) => {
+    const inputDate = event.target.value;
+    setBirthday(inputDate);
+    if (!inputDate) {
+      setBirthDayError("Vui lòng chọn ngày sinh.");
+    } else if (inputDate > today) {
+      setBirthDayError("Ngày sinh không thể lớn hơn ngày hiện tại.");
+    } else {
+      setBirthDayError(""); // Xóa lỗi nếu hợp lệ
+    }
+  };
+
   // Submit thông tin còn thiếu
   const handleSubmit = async () => {
-    if (!phone || !date) {
-      toast.error("Vui lòng nhập đầy đủ số điện thoại và ngày sinh!");
+    if (birthDayError || !phone || !birth_day) {
+      toast.error("Vui lòng nhập đúng thông tin trước khi tiếp tục.");
       return;
     }
-
     try {
       // Gửi thông tin lên API để cập nhật tài khoản
       const result = await UserServices.completeProfile({
@@ -28,7 +45,7 @@ const GoogleRegister = () => {
         avatar: user.avatar,
         googleId: user.googleId,
         phone,
-        date,
+        birth_day,
         role_check,
         gender,
       });
@@ -82,22 +99,25 @@ const GoogleRegister = () => {
             {/* Phone */}
             <div className="form-group">
               <input
-                type={"text"}
-                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^(03|05|07|08|09)\d{8}$/.test(phone)
-                  ? "border-red-500"
-                  : ""
+                type="text"
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^0\d{9}$/.test(phone) ? "border-red-500" : ""
                   }`}
                 value={phone}
                 placeholder="Số điện thoại"
                 onChange={(event) => {
                   const input = event.target.value;
-                  if (/^\d*$/.test(input)) {
+                  if (/^\d{0,10}$/.test(input)) { // Chỉ cho phép nhập tối đa 10 số
                     setPhone(input);
                   }
                 }}
                 required
               />
+              {/* Hiển thị lỗi nếu số điện thoại không hợp lệ */}
+              {phone && !/^0\d{9}$/.test(phone) && (
+                <p className="text-red-500 text-sm">Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.</p>
+              )}
             </div>
+
 
             {/* Gender */}
             <div>
@@ -135,15 +155,17 @@ const GoogleRegister = () => {
 
             {/* Birthday */}
             <div className="form-group">
-              <label htmlFor="date">Ngày sinh</label>
+              <label htmlFor="birth_day">Ngày sinh</label>
               <input
-                type={"date"}
-                className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black "
-                id="date"
-                value={date}
-                onChange={(event) => setDate(event.target.value)}
+                type="date"
+                className={`border-[1px] border-supply-primary text-black ${birthDayError ? "border-red-500" : ""
+                  }`}
+                id="birth_day"
+                value={birth_day}
+                onChange={handleBirthDayChange}
                 required
               />
+              {birthDayError && <p className="text-red-500 text-sm">{birthDayError}</p>}
             </div>
 
             {/* Is supplier */}
