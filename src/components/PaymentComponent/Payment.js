@@ -99,7 +99,7 @@ const Payment = () => {
           ></div>
           <div className="text-[#202020] text-[14px] flex justify-start items-center gap-3 min-h-[30px]">
             <span
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
               className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
             >
               Trang chủ{" "}

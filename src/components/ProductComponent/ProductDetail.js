@@ -54,7 +54,7 @@ const ProductDetail = () => {
       <div className="bg-gray-100 rounded-lg p-3 mb-6 flex flex-wrap items-center justify-between min-h-[50px] text-sm">
         <div className="flex items-center">
           <span
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/home")}
             className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
           >
             Trang chủ

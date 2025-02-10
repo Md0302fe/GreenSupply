@@ -130,7 +130,7 @@ const AddressUpdate = () => {
               <MDBCol>
                 <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4 border">
                   <MDBBreadcrumbItem>
-                    <span onClick={() => navigate("/")} className="cursor-pointer hover:border-b hover:border-black">
+                    <span onClick={() => navigate("/home")} className="cursor-pointer hover:border-b hover:border-black">
                       Home
                     </span>
                   </MDBBreadcrumbItem>

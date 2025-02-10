@@ -113,14 +113,6 @@ const Header = () => {
                             <li>
                               <WrapperContentPopup
                                 style={{ cursor: "pointer" }}
-                                onClick={() => navigate("/infomation-order")}
-                              >
-                                Quản lý đơn
-                              </WrapperContentPopup>
-                            </li>
-                            <li>
-                              <WrapperContentPopup
-                                style={{ cursor: "pointer" }}
                                 onClick={() => handleClickBtnLogout()}
                               >
                                 Đăng xuất

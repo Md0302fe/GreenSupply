@@ -95,6 +95,7 @@ const FuelProvideManagement = () => {
       message.error("Có lỗi xảy ra khi duyệt đơn!");
     }
   };
+  
   // cancel orders
   const handleCancelProvideOrder = async () => {
     try {
@@ -138,31 +139,7 @@ const FuelProvideManagement = () => {
     isSuccess: isSuccessUpdate,
   } = mutationUpdate;
 
-  // Mutation - Delete Productd
-  const mutationDelete = useMutationHooks((data) => {
-    const { id, token } = data;
-    return UserServices.deleteUser(id, token);
-  });
 
-  const {
-    data: deleteRespone,
-    isPending: isPendingDelete,
-    isSuccess: isSuccessDelete,
-  } = mutationDelete;
-
-  // Handle Notification and set loading for delete function
-  useEffect(() => {
-    if (isSuccessDelete) {
-      if (deleteRespone?.status === "OK") {
-        setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
-      } else {
-        toast.success(deleteRespone?.message);
-        setIsOpenDelete(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessDelete]);
 
   // Handle each time rowSelected was call
   useEffect(() => {
@@ -466,7 +443,7 @@ const FuelProvideManagement = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý đơn cung cấp nhiên liệu</h5>
+        <h5 className="content-title">quản lý đơn cung cấp nguyên liệu</h5>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -522,7 +499,7 @@ const FuelProvideManagement = () => {
               <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
             </Form.Item>
 
-            <Form.Item label="Loại Nhiên Liệu" name="fuel_name">
+            <Form.Item label="Loại Nguyên Liệu" name="fuel_name">
               <span>{stateDetailsUser?.fuel_name || ""}</span>
             </Form.Item>
 

@@ -276,7 +276,7 @@ const ProfilePage = () => {
                       <div className="flex flex-row items-center">
                         <MDBBreadcrumbItem>
                           <span
-                            onClick={() => navigate("/")}
+                            onClick={() => navigate("/home")}
                             className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
                           >
                             Home

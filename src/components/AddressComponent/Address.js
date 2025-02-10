@@ -83,7 +83,7 @@ const Address = () => {
                   <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4 border ">
                     <MDBBreadcrumbItem>
                       <span
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/home")}
                         className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
                       >
                         Home
