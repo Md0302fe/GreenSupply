@@ -5,7 +5,13 @@ import App from "../App";
 
 import HomePage from "../pages/HomePage/HomePage";
 import LandingPage from "../pages/LandingPage/LandingPage";
+<<<<<<< HEAD
 import ManageUser  from "../components/Admin/Content/User/AdminUser";
+=======
+import ManageUser from "../components/Admin/Content/User/AdminUser";
+import ManageBlockedUser from "../components/Admin/Content/User/BlockedUser";
+
+>>>>>>> bfe6102aeb6f037d2de9a1e9af66f9de08dfa3e4
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
 
 // Toastify
@@ -54,7 +60,13 @@ const Router = () => {
         {/* admin-page  : LayoutAdmin*/}
         <Route path="/system/admin" element={<Admin />}>
           <Route index element={<Dashboard />} />
+<<<<<<< HEAD
           <Route path="manage-users" element={<ManageUser  />} />
+=======
+          <Route path="manage-users" element={<ManageUser />} />
+          <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
+          
+>>>>>>> bfe6102aeb6f037d2de9a1e9af66f9de08dfa3e4
         </Route>
 
         <Route path="/system/admin" element={<Admin />}>

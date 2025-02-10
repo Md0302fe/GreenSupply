@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./User.scss";
 
-import { Button, Form, Input, Select, Space, Upload } from "antd";
+import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 
@@ -12,8 +12,6 @@ import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
-import { converDateString } from "../../../../ultils";
-
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 
 import TableUser from "./TableUser";
@@ -22,7 +20,7 @@ import ModalComponent from "../../../ModalComponent/ModalComponent";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 
-const UserComponent = () => {
+const BlockedUserComponent = () => {
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -45,30 +43,24 @@ const UserComponent = () => {
     role: "",
     avatar: "",
     address: "",
-    birth_day: "",
-    createdAt: "",
-    gender: "",
-    updatedAt: "",
+    is_blocked: "",
+    is_deleted: "",
   });
 
   // Fetch : Get User Details
   const fetchGetUserDetails = async ({ id, access_token }) => {
     const res = await UserServices.getDetailsUser(id, access_token);
     // Get respone từ api và gán vào state update details
-
     if (res?.data) {
-      console.log("res?.data => ", res?.data);
       setStateDetailsUser({
-        name: res?.data.full_name,
-        email: res?.data.email,
-        phone: res?.data.phone,
+        name: res?.data?.full_name,
+        email: res?.data?.email,
+        phone: res?.data?.phone,
         role: res?.data?.role_id?.role_name,
-        avatar: res?.data.avatar,
-        address: res?.data.address,
-        birth_day: res?.data.birth_day,
-        createdAt: res?.data.createdAt,
-        gender: res?.data.gender,
-        updatedAt: res?.data?.updatedAt,
+        avatar: res?.data?.avatar,
+        address: res?.data?.is_blocked,
+        is_blocked: res?.data?.is_blocked ? "Bị chặn" : "Hoạt động",
+        is_deleted: res?.data?.is_deleted ? "Đã xóa" : "Hoạt động",
       });
     }
 
@@ -124,19 +116,33 @@ const UserComponent = () => {
     isSuccess: isSuccessDelete,
   } = mutationDelete;
 
+  // Mutation - Delete Productd
+  const mutationUnBlock = useMutationHooks((data) => {
+    const { id, token } = data;
+    return UserServices.unBlockUser(id, token);
+  });
+
+  const {
+    data: unblockRespone,
+    isPending: isPendingUnblock,
+    isSuccess: isSuccessUnblock,
+  } = mutationUnBlock;
+
   // Handle Notification and set loading for delete function
   useEffect(() => {
-    if (isSuccessDelete) {
-      if (deleteRespone?.status === "OK") {
+    if (isSuccessDelete || isSuccessUnblock) {
+      if (deleteRespone?.status === "OK" || unblockRespone?.status === "OK") {
         setIsOpenDelete(false);
         toast.success(deleteRespone?.message);
+        toast.success(unblockRespone?.message);
       } else {
-        toast.success(deleteRespone?.message);
+        toast.error(deleteRespone?.message);
+        toast.error(unblockRespone?.message);
         setIsOpenDelete(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessDelete]);
+  }, [isSuccessDelete, isSuccessUnblock]);
 
   // Handle each time rowSelected was call
   useEffect(() => {
@@ -170,14 +176,25 @@ const UserComponent = () => {
   // Usequery TỰ GET DỮ LIỆU TỪ PHÍA BE NGAY LẦN ĐẦU RENDER COMPONENT Này (Hiển thị list sản phẩm).
   // Tự động lấy dữ liệu: Ngay khi component chứa useQuery được render, useQuery sẽ tự động gọi hàm fetchGetAllProduct để lấy danh sách sản phẩm từ API.
   const queryUser = useQuery({
-    queryKey: ["user"],
+    queryKey: ["blocked-user"],
     queryFn: fetchGetAllUsers,
   });
   const { isLoading, data: users } = queryUser;
 
   // Handle Confirm Delete Product
-  const handleConfirmDelete = () => {
+  const handleConfirmBlock = () => {
     mutationDelete.mutate(
+      { id: rowSelected, token: user?.access_token },
+      {
+        onSettled: () => {
+          queryUser.refetch();
+        },
+      }
+    );
+  };
+  // Handle Confirm Delete Product
+  const handleConfirmUnBlock = () => {
+    mutationUnBlock.mutate(
       { id: rowSelected, token: user?.access_token },
       {
         onSettled: () => {
@@ -232,10 +249,6 @@ const UserComponent = () => {
       role: "",
       avatar: "",
       address: "",
-      birth_day: "",
-      createdAt: "",
-      gender: "",
-      updatedAt: "",
     });
     formUpdate.resetFields();
     setIsDrawerOpen(false);
@@ -274,21 +287,51 @@ const UserComponent = () => {
         ...user,
         key: user._id,
         role: user?.role_id?.role_name,
+        is_blocked: user?.is_blocked,
       };
     });
 
   // Actions
-  const renderAction = () => {
+  const renderAction = (role, record) => {
     return (
-      <div
-        className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%]"
-        onClick={handleDetailsProduct}
-      >
-        <AiOutlineEdit className="text-xl" style={{ color: "blueviolet" }} />
-        <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          Chi tiết
-        </span>
-      </div>
+      <Loading isPending={isPendingDelete || isPendingUnblock}>
+        <div
+          className="flex-center-center"
+          style={{ justifyContent: "space-around" }}
+        >
+          <Button
+            type="default"
+            onClick={() =>
+              record?.is_blocked
+                ? handleUnBlockAccount(record?._id)
+                : handleBlockAccount(record?._id)
+            }
+            style={{
+              borderRadius: "5px",
+              fontSize: "14px",
+              transition: "all 0.3s ease",
+              backgroundColor: record?.is_blocked ? "#52c41a" : "#ffa940", // Xanh lá khi bỏ chặn, vàng khi chặn
+              borderColor: record?.is_blocked ? "#52c41a" : "#ffa940",
+              color: "white",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = record?.is_blocked
+                ? "#73d13d" // Màu sáng hơn khi hover (bỏ chặn)
+                : "#ffc53e"; // Màu sáng hơn khi hover (chặn)
+              e.currentTarget.style.color = "black";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = record?.is_blocked
+                ? "#52c41a"
+                : "#ffa940";
+              e.currentTarget.style.color = "white";
+            }}
+          >
+            <BiBlock style={{ marginRight: "5px" }} />
+            <span>{record?.is_blocked ? "Bỏ Chặn" : "Chặn Tài Khoản"}</span>
+          </Button>
+        </div>
+      </Loading>
     );
   };
 
@@ -303,9 +346,45 @@ const UserComponent = () => {
     setSearchText("");
   };
 
-  const handleDeleteAccount = (accountID) => {};
+  const handleBlockAccount = (accountId) => {
+    Modal.confirm({
+      title: "Xác nhận chặn tài khoản",
+      content: "Bạn có chắc chắn muốn chặn tài khoản này không?",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      width: 600, // Tăng kích thước modal
+      onOk() {
+        handleConfirmBlock(
+          { accountId: accountId },
+          {
+            onSettled: () => {
+              queryUser.refetch();
+            },
+          }
+        );
+      },
+    });
+  };
 
-  const handleBlockAccount = (accountId) => {};
+  const handleUnBlockAccount = (accountId) => {
+    Modal.confirm({
+      title: "Xác nhận gỡ chặn tài khoản",
+      content: "Bạn có chắc chắn muốn gỡ chặn tài khoản này không?",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      width: 600, // Tăng kích thước modal
+      onOk() {
+        handleConfirmUnBlock(
+          { accountId: accountId },
+          {
+            onSettled: () => {
+              queryUser.refetch();
+            },
+          }
+        );
+      },
+    });
+  };
 
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
@@ -397,6 +476,7 @@ const UserComponent = () => {
         text
       ),
   });
+
   const columns = [
     {
       title: "Tên khách hàng",
@@ -435,29 +515,91 @@ const UserComponent = () => {
       render: (role) => <div style={{ textAlign: "center" }}>{role}</div>,
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Số điện thoại</div>,
-      dataIndex: "phone",
-      key: "phone",
-      ...getColumnSearchProps("phone"),
-      render: (phone) => <div style={{ textAlign: "center" }}>{phone}</div>
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Trạng thái</div>
+      ),
+      dataIndex: "is_blocked",
+      key: "is_blocked",
+      filters: [
+        {
+          text: "Hoạt động",
+          value: false,
+        },
+        {
+          text: "Bị chặn",
+          value: true,
+        },
+      ],
+      onFilter: (value, record) => {
+        return record.is_blocked === value;
+      },
+      render: (isBlocked) => {
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {isBlocked ? (
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "red",
+                  color: "white",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  minWidth: "80px",
+                }}
+              >
+                Bị chặn
+              </span>
+            ) : (
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "rgba(0, 255, 0, 0.2)",
+                  color: "green",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  gap: "6px",
+                  minWidth: "80px",
+                }}
+              >
+                <span
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    backgroundColor: "green",
+                    borderRadius: "50%",
+                    display: "inline-block",
+                  }}
+                ></span>
+                Hoạt động
+              </span>
+            )}
+          </div>
+        );
+      },
+      align: "center",
     },
     {
       title: (
         <div style={{ textAlign: "center", width: "100%" }}>Chức năng</div>
       ),
       dataIndex: "action",
-      render: (text, record) => (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {renderAction(text, record)}
-        </div>
-      ),
-      align: "center",
+      render: (role, record) => renderAction(role, record),
     },
   ];
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý người dùng</h5>
+        <h5 className="content-title">quản lý tài khoản</h5>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -531,6 +673,7 @@ const UserComponent = () => {
                 style={{ borderRadius: "5px" }}
               />
             </Form.Item>
+
             <Form.Item
               label="Số điện thoại"
               name="phone"
@@ -554,6 +697,7 @@ const UserComponent = () => {
               rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
             >
               <Select
+                value={"keke"}
                 onChange={(value) => handleOnChangeDetails(value, "role")}
                 style={{ borderRadius: "5px" }}
               >
@@ -589,25 +733,15 @@ const UserComponent = () => {
             </Form.Item>
 
             <Form.Item label="Review Avatar" name="avatar">
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <img
-                  src={stateDetailsUser?.avatar}
-                  alt="Avatar User"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                    borderRadius: "50%", // Bo tròn hình ảnh
-                  }}
-                />
-              </div>
-            </Form.Item>
-            {console.log("statedeTails ", stateDetailsUser)}
-            <Form.Item label="Ngày tạo" name="created">
-              <div>{converDateString(stateDetailsUser?.createdAt)}</div>
-            </Form.Item>
-            <Form.Item label="Cập nhật gần nhất" name="created">
-              <div>{converDateString(stateDetailsUser?.updatedAt)}</div>
+              <img
+                src={stateDetailsUser?.avatar}
+                alt="Avatar User"
+                style={{
+                  width: "50%",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }} // Thêm bo góc
+              />
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -622,20 +756,8 @@ const UserComponent = () => {
           </Form>
         </Loading>
       </DrawerComponent>
-
-      {/* Modal Confirm Delete Product */}
-      <ModalComponent
-        title="Xóa Tài Khoản"
-        open={isOpenDelete}
-        onCancel={handleCancelDelete}
-        onOk={handleConfirmDelete}
-      >
-        <Loading isPending={isPendingDelete}>
-          <div>Bạn có chắc muốn xóa sản phẩm không ?</div>
-        </Loading>
-      </ModalComponent>
     </div>
   );
 };
 
-export default UserComponent;
+export default BlockedUserComponent;

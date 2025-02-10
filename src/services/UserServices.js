@@ -113,10 +113,11 @@ export const updateUser = async (data) => {
   return res?.data;
 };
 
-export const deleteUser = async (id, access_token) => {
+export const blockUser = async (id, access_token) => {
   // gọi api / clearCookie("refresh_token") ;
-  const res = await axiosJWT.delete(
-    `${process.env.REACT_APP_API_URL}/user/delete-user/${id}`,
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/user/block-user/${id}`,
+    {},
     {
       headers: {
         token: `Bearer ${access_token}`,
@@ -124,6 +125,20 @@ export const deleteUser = async (id, access_token) => {
     }
   );
   console.log("Respone Data From Delete User : ", res);
+  return res?.data;
+};
+
+export const unBlockUser = async (id, access_token) => {
+  // gọi api / clearCookie("refresh_token") ;
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/user/unblock-user/${id}`,
+    {},
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
   return res?.data;
 };
 

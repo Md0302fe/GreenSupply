@@ -19,7 +19,7 @@ const Admin = (props) => {
       </div>
       <div className="admin-content w-full">
         {/* admin-header-content */}
-        <div className="w-full flex justify-between items-center bg-white shadow-md px-4 h-16 transition-all duration-300">
+        <div className="w-full flex justify-between items-center bg-white shadow-md px-4 h-16 transition-all duration-300 mb-4">
           <div className="flex items-center cursor-pointer">
             <FaBars
               onClick={() => {
