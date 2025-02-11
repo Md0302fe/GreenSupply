@@ -5,18 +5,17 @@ import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 
-import { BiBlock, BiImageAdd, BiTrash } from "react-icons/bi";
+import { BiBlock, BiImageAdd } from "react-icons/bi";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
-import ModalComponent from "../../../ModalComponent/ModalComponent";
+
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 
@@ -68,11 +67,6 @@ const BlockedUserComponent = () => {
     return res;
   };
 
-  // Handle Click Btn Edit Detail Product : Update product
-  const handleDetailsProduct = () => {
-    setIsDrawerOpen(true);
-  };
-
   // Mutation - Update Product
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, dataUpdate } = data;
@@ -107,6 +101,8 @@ const BlockedUserComponent = () => {
   // Mutation - Delete Productd
   const mutationDelete = useMutationHooks((data) => {
     const { id, token } = data;
+    console.log("selectedRow => ", rowSelected);
+    console.log("id => ", id);
     return UserServices.blockUser(id, token);
   });
 
@@ -182,9 +178,9 @@ const BlockedUserComponent = () => {
   const { isLoading, data: users } = queryUser;
 
   // Handle Confirm Delete Product
-  const handleConfirmBlock = () => {
+  const handleConfirmBlock = (accountId) => {
     mutationDelete.mutate(
-      { id: rowSelected, token: user?.access_token },
+      { id: accountId, token: user?.access_token },
       {
         onSettled: () => {
           queryUser.refetch();
@@ -192,12 +188,13 @@ const BlockedUserComponent = () => {
       }
     );
   };
-  // Handle Confirm Delete Product
-  const handleConfirmUnBlock = () => {
+  const handleConfirmUnBlock = (accountId) => {
+    console.log("Unblocking user with ID:", accountId);
     mutationUnBlock.mutate(
-      { id: rowSelected, token: user?.access_token },
+      { id: accountId, token: user?.access_token },
       {
         onSettled: () => {
+          console.log("User unblocked, refetching...");
           queryUser.refetch();
         },
       }
@@ -234,11 +231,6 @@ const BlockedUserComponent = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessUpdate, isErrorUpdate]);
-
-  // CANCEL MODAL - DELETE PRODUCT
-  const handleCancelDelete = () => {
-    setIsOpenDelete(false);
-  };
 
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
@@ -352,16 +344,9 @@ const BlockedUserComponent = () => {
       content: "Bạn có chắc chắn muốn chặn tài khoản này không?",
       okText: "Xác nhận",
       cancelText: "Hủy",
-      width: 600, // Tăng kích thước modal
+      width: 600,
       onOk() {
-        handleConfirmBlock(
-          { accountId: accountId },
-          {
-            onSettled: () => {
-              queryUser.refetch();
-            },
-          }
-        );
+        handleConfirmBlock(accountId); // Truyền đúng accountId
       },
     });
   };
@@ -372,16 +357,9 @@ const BlockedUserComponent = () => {
       content: "Bạn có chắc chắn muốn gỡ chặn tài khoản này không?",
       okText: "Xác nhận",
       cancelText: "Hủy",
-      width: 600, // Tăng kích thước modal
+      width: 600,
       onOk() {
-        handleConfirmUnBlock(
-          { accountId: accountId },
-          {
-            onSettled: () => {
-              queryUser.refetch();
-            },
-          }
-        );
+        handleConfirmUnBlock(accountId); // Truyền đúng accountId
       },
     });
   };

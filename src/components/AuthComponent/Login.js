@@ -30,6 +30,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [stateNotification, setStateNotification] = useState(false);
   const dishpatch = useDispatch();
+  const [messageBlocked, setMessageBlocked] = useState(null);  
 
   // FORGOT PASSWORD
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -50,9 +51,14 @@ const Login = () => {
   useEffect(() => {
     if (isSuccess) {
       // chuẩn bị active box notification (success/fails)
+
+
+      if (data.status === "BLOCKED") {
+        setMessageBlocked(data.message)
+        return null;
+      }
       setStateNotification(true);
 
-      console.log("Dữ liệu trả về từ API login:", data);
       if (data.status === "OK") {
         // lấy token từ phía BE
         const token = data?.access_token;
@@ -91,6 +97,9 @@ const Login = () => {
       if (status === "NEW_USER") {
 
         navigate("/google-register", { state: { user } });
+      } else if (status === "BLOCKED") {
+        setMessageBlocked(message)
+        return null;
       } else if (status === "OK") {
         // Đăng nhập thành công
         localStorage.setItem("access_token", JSON.stringify(response.access_token));
@@ -242,7 +251,13 @@ const Login = () => {
                 onChange={(event) => setPassword(event.target.value)}
               ></input>
             </div>
-
+            {messageBlocked && (
+              <>
+              <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded-lg shadow-md">
+                <strong>{messageBlocked} !</strong> 
+              </div>
+            </>
+            )}
             {/* Forget Password */}
             <div className="forget-password cursor-pointer" onClick={() => setIsForgotPassword(true)}>
               <span>Quên mật khẩu ?</span>

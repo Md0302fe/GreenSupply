@@ -39,7 +39,7 @@ const UserComponent = () => {
 
   //  State Details quản lý products khi có req edit
   const [stateDetailsUser, setStateDetailsUser] = useState({
-    name: "",
+    full_name: "",
     email: "",
     phone: "",
     role: "",
@@ -59,7 +59,7 @@ const UserComponent = () => {
     if (res?.data) {
       console.log("res?.data => ", res?.data);
       setStateDetailsUser({
-        name: res?.data.full_name,
+        full_name: res?.data.full_name,
         email: res?.data.email,
         phone: res?.data.phone,
         role: res?.data?.role_id?.role_name,
@@ -96,6 +96,7 @@ const UserComponent = () => {
       ...dataUpdate,
       role_id: dataUpdate?.role,
     };
+    console.log("updatedData => ", updatedData);
 
     //remember return . tránh việc mutationUpdate không trả về data
     return UserServices.updateUser({
@@ -226,7 +227,7 @@ const UserComponent = () => {
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
     setStateDetailsUser({
-      name: "",
+      full_name: "",
       email: "",
       phone: "",
       role: "",
@@ -435,11 +436,13 @@ const UserComponent = () => {
       render: (role) => <div style={{ textAlign: "center" }}>{role}</div>,
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Số điện thoại</div>,
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Số điện thoại</div>
+      ),
       dataIndex: "phone",
       key: "phone",
       ...getColumnSearchProps("phone"),
-      render: (phone) => <div style={{ textAlign: "center" }}>{phone}</div>
+      render: (phone) => <div style={{ textAlign: "center" }}>{phone}</div>,
     },
     {
       title: (
@@ -504,13 +507,13 @@ const UserComponent = () => {
           >
             <Form.Item
               label="Tên khách hàng"
-              name="name"
+              name="full_name"
               rules={[{ required: true, message: "Vui lòng điền tên !" }]}
             >
               <Input
-                value={stateDetailsUser.name}
+                value={stateDetailsUser.full_name}
                 onChange={(event) =>
-                  handleOnChangeDetails(event.target.value, "name")
+                  handleOnChangeDetails(event.target.value, "full_name")
                 }
                 placeholder="Tên khách hàng"
                 style={{ borderRadius: "5px" }} // Thêm bo góc
@@ -524,11 +527,9 @@ const UserComponent = () => {
             >
               <Input
                 value={stateDetailsUser.email}
-                onChange={(event) =>
-                  handleOnChangeDetails(event.target.value, "email")
-                }
                 placeholder="Email khách hàng"
                 style={{ borderRadius: "5px" }}
+                readOnly
               />
             </Form.Item>
             <Form.Item
@@ -540,11 +541,9 @@ const UserComponent = () => {
             >
               <Input
                 value={stateDetailsUser.phone}
-                onChange={(event) =>
-                  handleOnChangeDetails(event.target.value, "phone")
-                }
                 placeholder="Số điện thoại khách hàng"
                 style={{ borderRadius: "5px" }}
+                readOnly
               />
             </Form.Item>
 
@@ -602,12 +601,16 @@ const UserComponent = () => {
                 />
               </div>
             </Form.Item>
-            {console.log("statedeTails ", stateDetailsUser)}
+
             <Form.Item label="Ngày tạo" name="created">
-              <div>{converDateString(stateDetailsUser?.createdAt)}</div>
+              <div className="flex justify-end">
+                {converDateString(stateDetailsUser?.createdAt)}
+              </div>
             </Form.Item>
             <Form.Item label="Cập nhật gần nhất" name="created">
-              <div>{converDateString(stateDetailsUser?.updatedAt)}</div>
+              <div className="flex justify-end">
+                {converDateString(stateDetailsUser?.updatedAt)}
+              </div>
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
