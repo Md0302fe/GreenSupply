@@ -16,9 +16,12 @@ export const createHarvestRequest = async (harvestRequest) => {
   }
 };
 
-export const getAllHarvestRequests = async () => {
+export const getAllHarvestRequests = async (filters = {}) => {
   try {
-    const response = await axios.get(`${API_URL}/getAllHarvestRequests`);
+    const queryParams = new URLSearchParams(filters).toString();
+    const response = await axios.get(
+      `${API_URL}/getAllHarvestRequests?${queryParams}`
+    );
     return response.data.requests;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách yêu cầu:", error);
