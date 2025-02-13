@@ -23,6 +23,7 @@ const FuelOrderStatus = () => {
         const response = await axios.get("http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess");
         if (response.data.success) {
           setOrders(response.data.data);
+          
         } else {
           message.error("Lỗi khi lấy danh sách đơn hàng đã duyệt!");
         }
@@ -150,7 +151,7 @@ const FuelOrderStatus = () => {
       <Modal title="Chi tiết đơn hàng" open={isModalOpen} onCancel={handleCancel} footer={null}>
         {selectedOrder && (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Khách Hàng">{selectedOrder.customerName}</Descriptions.Item>
+            <Descriptions.Item label="Khách Hàng">{selectedOrder.supplier_id.full_name}</Descriptions.Item>
             <Descriptions.Item label="Loại Nhiên Liệu">{selectedOrder.fuel_name}</Descriptions.Item>
             <Descriptions.Item label="Giá Tiền">{selectedOrder.price}</Descriptions.Item>
             <Descriptions.Item label="Số Lượng">{selectedOrder.quantity}</Descriptions.Item>
