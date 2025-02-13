@@ -15,6 +15,7 @@ import { RiMenuFold4Line } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -32,6 +33,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
+  const userRedux = useSelector((state) => state.user);
 
   const handleClickMyAcc = (event) => {
     setAnchorMyAcc(event.currentTarget);
@@ -76,7 +78,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
             onClick={handleClickMyAcc}
           >
             <img
-              src="https://ecme-react.themenate.net/img/avatars/thumb-1.jpg"
+              src={userRedux.avatar}
               className="w-full h-full object-cover"
             />
           </div>
@@ -94,7 +96,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
                   position: "absolute",
                   top: "50px",
                   right: "10px",
-                  width: "200px",
+                  width: "250px",
                   overflow: "visible",
                   filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                   mt: 1.5,
@@ -126,14 +128,14 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
               <div className="flex items-center gap-3">
                 <div className="rounded-full w-[35px] h-[35px] overflow-hidden cursor-pointer">
                   <img
-                    src="https://ecme-react.themenate.net/img/avatars/thumb-1.jpg"
+                    src={userRedux.avatar}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="info">
-                  <h3 className="text-[15px] font-[500] leading-5">Whisky39</h3>
+                  <h3 className="text-[15px] font-[500] leading-5">{userRedux.full_name}</h3>
                   <p className="text-[12px] font-[400] opacity-70">
-                    supplier@gmail.com
+                    {userRedux.email}
                   </p>
                 </div>
               </div>
