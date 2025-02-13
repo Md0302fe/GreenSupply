@@ -1,11 +1,11 @@
 import axios from "axios";
-const API_URL = "http://localhost:3001/api/supply-request";
+const API_URL = "http://localhost:3001/api/fuel-supply-request";
 export const axiosJWT = axios.create();
 
-export const createSupplyRequest = async (supplyRequest) => {
+export const createFuelSupplyRequest = async (supplyRequest) => {
   try {
     const response = await axios.post(
-      `${API_URL}/createSupplyRequest`,
+      `${process.env.REACT_APP_API_URL}/fuel-supply-request/createFuelSupplyRequest`,
       supplyRequest,
       // { headers: { "Content-Type": "application/json" } }
     );
