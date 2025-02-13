@@ -4,6 +4,7 @@ import { FiRefreshCw } from "react-icons/fi";
 import { AiFillEdit } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { createHarvestRequest } from "../../../services/HarvestRequestService";
+import { useSelector } from "react-redux";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const HarvestRequestPage = () => {
     address: "",
     note: "",
   });
-
+  const userRedux = useSelector((state) => state.user);
   const [errors, setErrors] = useState({}); // Lưu thông báo lỗi
   const [fadeOut, setFadeOut] = useState(false);
 
@@ -90,7 +91,7 @@ const HarvestRequestPage = () => {
     }
 
     const fuelRequest = {
-      supplier_id: "6795145e3ab5ca4dfb3afab5",
+      supplier_id: userRedux.id,
       fuel_name: formData.fuel_name,
       quantity: Number(formData.quantity),
       price: Number(formData.price),
