@@ -4,7 +4,9 @@ import axios from "axios";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import "./FuelOrderStatus.scss"; // Tạo file CSS để tùy chỉnh giao diện
-
+import { converDateString } from "../../../../ultils";
+import { Tag } from "antd";
+import { Excel } from "antd-table-saveas-excel";
 const FuelOrderStatus = () => {
   const [orders, setOrders] = useState([]); // Danh sách đơn hàng
   const [loading, setLoading] = useState(false); // Trạng thái loading
@@ -36,6 +38,19 @@ const FuelOrderStatus = () => {
     fetchOrders();
   }, []);
 
+
+
+  const handleExportFileExcel = () => {
+    const excel = new Excel();
+    excel
+      .addSheet("Danh sách đơn hàng đã duyệt")
+      .addColumns(columns.filter(col => col.dataIndex !== "action")) // Bỏ cột "Hành động"
+      .addDataSource(tableData, {
+        str2Percent: true,
+      })
+      .saveAs("DanhSachDonHangDaDuyet.xlsx");
+  };
+  
   // 🟢 Xử lý tìm kiếm
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -82,16 +97,32 @@ const FuelOrderStatus = () => {
       ),
   });
 
+
   // 🟢 Hiển thị chi tiết đơn hàng
   const showOrderDetails = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
+ 
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
   };
+
+  const tableData =
+  orders?.length &&
+  orders?.map((order) => {
+    console.log("order" ,order)
+    return {
+      ...order,
+      key: order._id,
+      customerName: order?.supplier_id?.full_name,
+    };
+  });
+
+
+  
 
   // 🟢 Cấu hình bảng hiển thị đơn hàng
   const columns = [
@@ -128,7 +159,9 @@ const FuelOrderStatus = () => {
       key: "status",
       filters: [{ text: "Hoàn thành", value: "Đã duyệt" }], // Đổi chữ trong filter
       onFilter: (value, record) => record.status.includes(value),
-      render: (status) => <span>{status === "Đã duyệt" ? "Hoàn thành" : status}</span> // Chỉ đổi chữ hiển thị
+      render: (status) => {
+        return <Tag color="gold">Chờ Nhập kho</Tag>;
+      },
     },
     {
       title: "Hành động",
@@ -145,7 +178,9 @@ const FuelOrderStatus = () => {
   return (
     <div className="fuel-order-status">
       <h2>Danh sách đơn hàng đã duyệt</h2>
-      <Table columns={columns} dataSource={orders} loading={loading} rowKey="_id" pagination={{ pageSize: 10 }} />
+
+      <Button type="primary" onClick={handleExportFileExcel} style={{ backgroundColor: "black", borderColor: "black", marginBottom: 16 }}> Xuất File </Button>
+      <Table columns={columns} dataSource={tableData} loading={loading} rowKey="_id" pagination={{ pageSize: 8 }} />
 
       {/* 🟢 Modal hiển thị chi tiết đơn hàng */}
       <Modal title="Chi tiết đơn hàng" open={isModalOpen} onCancel={handleCancel} footer={null}>
@@ -158,9 +193,9 @@ const FuelOrderStatus = () => {
             <Descriptions.Item label="Tổng Giá">{selectedOrder.total_price}</Descriptions.Item>
             <Descriptions.Item label="Trạng Thái">{selectedOrder.status}</Descriptions.Item>
             <Descriptions.Item label="Ghi Chú">{selectedOrder.note}</Descriptions.Item>
-            <Descriptions.Item label="Ngày Tạo">{selectedOrder.createdAt}</Descriptions.Item>
-            <Descriptions.Item label="Cập Nhật">{selectedOrder.updatedAt}</Descriptions.Item>
-          </Descriptions>
+            <Descriptions.Item label="Ngày Tạo">{converDateString(selectedOrder.createdAt)}</Descriptions.Item>
+            <Descriptions.Item label="Cập Nhật">{converDateString(selectedOrder.updatedAt)}</Descriptions.Item>
+          </Descriptions> 
         )}
       </Modal>
     </div>

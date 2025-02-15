@@ -87,7 +87,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
               <Link to={"manage-provide-orders"} />
             </MenuItem>
             <MenuItem>
-              Đơn Hoàn Thành
+              Đơn Chờ Nhập Kho
               <Link to={"View-Order-Success"} />
             </MenuItem>
           </SubMenu>
