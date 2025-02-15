@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-
+import { Tag } from "antd";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
@@ -19,7 +19,10 @@ import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { message } from "antd";
-import { handleAcceptOrders, handleCancelOrders } from "../../../../services/OrderServices"; 
+import {
+  handleAcceptOrders,
+  handleCancelOrders,
+} from "../../../../services/OrderServices";
 
 const FuelRequestsManagement = () => {
   // gọi vào store redux get ra user
@@ -51,9 +54,8 @@ const FuelRequestsManagement = () => {
     status: "",
     supplier_id: {},
     total_price: "",
-
   });
-  console.log("statedetails",stateDetailsUser)
+  console.log("statedetails", stateDetailsUser);
 
   // Fetch : Get User Details
   const fetchGetUserDetails = async ({ id, access_token }) => {
@@ -61,20 +63,20 @@ const FuelRequestsManagement = () => {
     // Get respone từ api và gán vào state update details
 
     if (res?.data) {
-      setStateDetailsUser({   
-    _id: res?.data._id,
-    address: res?.data.address, 
-    createdAt: res?.data.createdAt,
-    updatedAt: res?.data.updatedAt,
-    fuel_name: res?.data.fuel_name,
-    is_deleted:res?.data.is_deleted,
-    note: res?.data.note,
-    price: res?.data.price,
-    priority: res?.data.priority,
-    quantity: res?.data.quantity,
-    status: res?.data.status,
-    supplier_id: res?.data.supplier_id,
-    total_price: res?.data.total_price,
+      setStateDetailsUser({
+        _id: res?.data._id,
+        address: res?.data.address,
+        createdAt: res?.data.createdAt,
+        updatedAt: res?.data.updatedAt,
+        fuel_name: res?.data.fuel_name,
+        is_deleted: res?.data.is_deleted,
+        note: res?.data.note,
+        price: res?.data.price,
+        priority: res?.data.priority,
+        quantity: res?.data.quantity,
+        status: res?.data.status,
+        supplier_id: res?.data.supplier_id,
+        total_price: res?.data.total_price,
       });
     }
 
@@ -82,11 +84,10 @@ const FuelRequestsManagement = () => {
     return res;
   };
 
-
-//accept order 
+  //accept order
   const handleApproveOrder = async () => {
     try {
-      const response = await handleAcceptOrders(stateDetailsUser._id,);
+      const response = await handleAcceptOrders(stateDetailsUser._id);
       if (response) {
         message.success("Đơn hàng đã được duyệt thành công!");
       } else {
@@ -96,10 +97,10 @@ const FuelRequestsManagement = () => {
       message.error("Có lỗi xảy ra khi duyệt đơn!");
     }
   };
-// cancel orders
+  // cancel orders
   const handleCancelOrder = async () => {
     try {
-      const response = await handleCancelOrders(stateDetailsUser._id, );
+      const response = await handleCancelOrders(stateDetailsUser._id);
       if (response) {
         message.success("Đơn hàng đã bị hủy thành công!");
       } else {
@@ -109,7 +110,6 @@ const FuelRequestsManagement = () => {
       message.error("Có lỗi xảy ra khi hủy đơn!");
     }
   };
-  
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -177,7 +177,6 @@ const FuelRequestsManagement = () => {
   });
   const { isLoading, data: orders } = queryOrder;
 
-
   // Submit Form Update Product
   const onFinishUpdate = () => {
     mutationUpdate.mutate(
@@ -236,16 +235,14 @@ const FuelRequestsManagement = () => {
     }));
   };
 
-
   // DATA FROM USERS LIST
   const tableData =
     orders?.data?.length &&
     orders?.data.map((order) => {
-
       return {
         ...order,
         key: order._id,
-        customerName: order?.supplier_id?.full_name
+        customerName: order?.supplier_id?.full_name,
       };
     });
 
@@ -257,18 +254,20 @@ const FuelRequestsManagement = () => {
         style={{ justifyContent: "space-around", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-        <span style={{ 
+        <span
+          style={{
             color: "#FF5733", // Màu sắc chữ
             fontWeight: "bold", // Đậm
             textDecoration: "underline", // Gạch chân
             fontSize: "16px", // Kích thước chữ
             transition: "color 0.3s", // Hiệu ứng chuyển màu
-        }}>
+          }}
+        >
           Xem Chi Tiết Đơn
         </span>
       </div>
     );
-};
+  };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -386,7 +385,7 @@ const FuelRequestsManagement = () => {
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
     },
-   
+
     {
       title: "Giá Tiền",
       dataIndex: "price",
@@ -398,26 +397,37 @@ const FuelRequestsManagement = () => {
       dataIndex: "status",
       key: "status",
       filters: [
-
         {
-          text: "Đang chờ",
-          value: "Đang chờ",
+          text: "Chờ duyệt",
+          value: "Chờ duyệt",
         },
-
         {
           text: "Đã duyệt",
           value: "Đã duyệt",
         },
         {
-          text: "Đã hủy",
-          value: "Đã hủy",
+          text: "Đã Hủy",
+          value: "Đã Hủy",
         },
-        
-
       ],
-      onFilter: (value, record) => {
-      return record.status.includes(value);
-        
+      onFilter: (value, record) => record.status.includes(value),
+      render: (status) => {
+        let color = "";
+        console.log("status", status);
+        switch (status) {
+          case "Chờ duyệt":
+            color = "orange";
+            break;
+          case "Đã duyệt":
+            color = "green";
+            break;
+          case "Đã Hủy":
+            color = "red";
+            break;
+          default:
+            color = "default";
+        }
+        return <Tag color={color}>{status}</Tag>;
       },
     },
     {
@@ -483,78 +493,69 @@ const FuelRequestsManagement = () => {
             form={formUpdate}
           >
             <Form.Item label="Khách Hàng" name="customerName">
-            <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
+              <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
             </Form.Item>
 
             <Form.Item label="Loại Nhiên Liệu" name="fuel_name">
-            <span>{stateDetailsUser?.fuel_name || ""}</span>
+              <span>{stateDetailsUser?.fuel_name || ""}</span>
             </Form.Item>
 
             <Form.Item label="Giá Tiền" name="price">
-            <span>{stateDetailsUser?.price|| ""}</span>
+              <span>{stateDetailsUser?.price || ""}</span>
             </Form.Item>
 
             <Form.Item label="Priority" name="priority">
-            <span>{stateDetailsUser?.priority || ""}</span>
-
-            </Form.Item><Form.Item label="Số Lượng" name="quantity">
-            <span>{stateDetailsUser?.quantity || ""}</span>
+              <span>{stateDetailsUser?.priority || ""}</span>
+            </Form.Item>
+            <Form.Item label="Số Lượng" name="quantity">
+              <span>{stateDetailsUser?.quantity || ""}</span>
             </Form.Item>
 
             <Form.Item label="Trạng Thái" name="status">
-            <span>{stateDetailsUser?.status || ""}</span>
-
+              <span>{stateDetailsUser?.status || ""}</span>
             </Form.Item>
-            
+
             <Form.Item label="Tổng Giá" name="total_price">
-            <span>{stateDetailsUser?.total_price || ""}</span>
+              <span>{stateDetailsUser?.total_price || ""}</span>
             </Form.Item>
 
             <Form.Item label="Ghi chú" name="note">
-            <span>{stateDetailsUser?.note || ""}</span>
+              <span>{stateDetailsUser?.note || ""}</span>
             </Form.Item>
 
-            
-
             <Form.Item label="Created At" name="createdAt">
-            <span>{stateDetailsUser?.createdAt || ""}</span>
-
-            </Form.Item><Form.Item label="Updated At" name="updatedAt">
-            <span>{stateDetailsUser?.updatedAt || ""}</span>
+              <span>{stateDetailsUser?.createdAt || ""}</span>
+            </Form.Item>
+            <Form.Item label="Updated At" name="updatedAt">
+              <span>{stateDetailsUser?.updatedAt || ""}</span>
             </Form.Item>
 
             <Form.Item
-                          wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                          }}
-                        >
-                          <div style={{ display: "flex", gap: "10px" }}>
-                          <Button 
-                            type="primary" 
-                               onClick={handleApproveOrder}  // Gọi API duyệt đơn
-                                >
-                            Duyệt đơn
-                              </Button>
-            
-            
-                              <Button 
-      type="default" 
-      danger
-      onClick={handleCancelOrder}  // Gọi API Hủy đơn
-    >
-      Hủy đơn
-    </Button>
-            </div>
-            
-                        </Form.Item>
-            
+              wrapperCol={{
+                offset: 8,
+                span: 16,
+              }}
+            >
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Button
+                  type="primary"
+                  onClick={handleApproveOrder} // Gọi API duyệt đơn
+                >
+                  Duyệt đơn
+                </Button>
 
+                <Button
+                  type="default"
+                  danger
+                  onClick={handleCancelOrder} // Gọi API Hủy đơn
+                >
+                  Hủy đơn
+                </Button>
+              </div>
+            </Form.Item>
           </Form>
         </Loading>
       </DrawerComponent>
-
-
     </div>
   );
 };

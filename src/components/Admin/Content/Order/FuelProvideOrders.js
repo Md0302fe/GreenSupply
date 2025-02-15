@@ -20,6 +20,8 @@ import Loading from "../../../LoadingComponent/Loading";
 import ModalComponent from "../../../ModalComponent/ModalComponent";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
+import { Tag } from "antd";
+
 
 import { message } from "antd";
 import {
@@ -416,22 +418,38 @@ const FuelProvideManagement = () => {
       key: "status",
       filters: [
         {
-          text: "Đang xử lý",
+          text: "Chờ duyệt",
           value: "Đang xử lý",
         },
-
         {
           text: "Đã duyệt",
           value: "Đã duyệt",
         },
-
         {
           text: "Đã hủy",
           value: "Đã hủy",
         },
       ],
-      onFilter: (value, record) => {
-        return record.status.includes(value);
+      onFilter: (value, record) => record.status.includes(value),
+      render: (status) => {
+        
+        let color = "";
+        console.log("status", status);
+        switch (status) {
+          case "Chờ duyệt":
+            color = "orange"; // Màu cam cho đơn hàng đang xử lý
+            break;
+          case "Đã duyệt":
+            color = "green"; // Màu xanh lá cho đơn hàng đã duyệt
+            break;
+          case "Đã hủy":
+            color = "red"; // Màu đỏ cho đơn hàng đã hủy
+            break;
+          default:
+            color = "default"; // Mặc định nếu trạng thái không khớp
+        }
+    
+        return <Tag color={color}>{status}</Tag>;
       },
     },
     {
