@@ -42,13 +42,13 @@ const TableUser = (props) => {
 
   return (
     <Loading isPending={isLoading}>
-      {/* <Button
+      <Button
         type="primary"
         className="button-exportFile"
         onClick={handleExportFileExcels}
       >
         Xuất File
-      </Button> */}
+      </Button>
 
       <Table
         rowSelection={{
@@ -56,6 +56,7 @@ const TableUser = (props) => {
         }}
         columns={columns}
         dataSource={dataSource}
+        pagination={{ pageSize: 8 }}
         {...rest}
       />
     </Loading>

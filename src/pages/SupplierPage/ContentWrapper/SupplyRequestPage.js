@@ -1,177 +1,222 @@
-import React, { useState, useEffect } from "react";
-import { AiFillEdit } from "react-icons/ai";
-import { FiRefreshCw } from "react-icons/fi";
-import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getAllFuelEntry } from "../../../services/FuelEntryServices";
+import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestService";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { createSupplyRequest } from "../../../services/SupplyRequestService";
 
 const SupplyRequestPage = () => {
+  const { id } = useParams();
+  const userRedux = useSelector((state) => state.user);
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [formData, setFormData] = useState({
+    quantity: "",
+    quality: "",
+    note: "",
+  });
+  const [error, setError] = useState(""); // Lưu lỗi nhập liệu
+  const [noteError, setNoteError] = useState(""); // Lưu lỗi ghi chú
+
+  const fetchOrders = async () => {
+    try {
+      const response = await getAllFuelEntry();
+      setAdminOrders(response.data);
+
+      if (id) {
+        const foundOrder = response.data.find((order) => order._id === id);
+        if (foundOrder) {
+          setSelectedOrder(foundOrder);
+          if (foundOrder.quantity < 50) {
+            setFormData({ ...formData, quantity: foundOrder.quantity });
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+    }
+  };
+  useEffect(() => {
+    fetchOrders();
+  }, [id]);
+
+  const handleSelectOrder = (orderId) => {
+    if (!orderId) {
+      // Nếu chọn "Chọn đơn hàng", đặt selectedOrder thành null
+      setSelectedOrder(null);
+      setFormData({ quantity: "", quality: "", note: "" });
+      setError("");
+      return;
+    }
+
+    const foundOrder = adminOrders.find((order) => order._id === orderId);
+    setSelectedOrder(foundOrder);
+    setError("");
+
+    // Nếu đơn còn dưới 50kg, đặt giá trị cố định
+    if (foundOrder.quantity < 50) {
+      setFormData({ quantity: foundOrder.quantity, quality: "", note: "" });
+    } else {
+      setFormData({ quantity: "", quality: "", note: "" });
+    }
+  };
+
+
+  const totalPrice = () => {
+    return (Number(formData.quantity) || 0) * (selectedOrder?.estimate_price || 0);
+  };
+
+  // Xử lý khi người dùng nhập số lượng
+  const handleQuantityChange = (e) => {
+    setError(""); // Xóa lỗi khi người dùng nhập
+    setFormData({ ...formData, quantity: e.target.value });
+  };
+
+  const handleNoteChange = (e) => {
+    if(e.target.value.length > 2000) {
+      setNoteError("Số lượng không được vượt quá 2000 ký tự!");
+    } else {
+      setFormData({ ...formData, note: e.target.value});
+    }
+  }
+
+  // Validate khi người dùng rời khỏi ô input hoặc nhấn gửi
+  const validateQuantity = () => {
+    if (!selectedOrder) return;
+    const quantity = Number(formData.quantity);
+
+    if (isNaN(quantity) || quantity <= 0) {
+      setError("Số lượng không hợp lệ.");
+      return false;
+    }
+
+    if (selectedOrder.quantity < 50 && quantity !== selectedOrder.quantity) {
+      setError(`Bạn phải nhập đúng ${selectedOrder.quantity} kg.`);
+      return false;
+    }
+
+    if (quantity > selectedOrder.quantity) {
+      setError(`Số lượng không được vượt quá ${selectedOrder.quantity} kg.`);
+      return false;
+    }
+
+    if (quantity % 10 !== 0) {
+      setError("Số lượng phải chia hết cho 10.");
+      return false;
+    }
+
+    setError(""); // Xóa lỗi nếu hợp lệ
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedOrder) {
+      toast.error("Vui lòng chọn đơn hàng!");
+      return;
+    }
+
+    if (!formData.quantity) {
+      toast.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    if (!validateQuantity()) {
+      toast.error("Vui lòng kiểm tra lại số lượng!");
+      return;
+    }
+
+    const quantity = Number(formData.quantity);
+
+    const supplyOrder = {
+      supplier_id: userRedux.id,
+      request_id: selectedOrder._id,
+      fuel_name: selectedOrder.request_name,
+      quantity: quantity,
+      quality: "Tốt",
+      price: selectedOrder.estimate_price,
+      start_received: "",
+      end_received: "",
+      total_price: totalPrice(),
+      note: formData.note,
+    };
+
+    try {
+      await createFuelSupplyRequest(supplyOrder);
+      toast.success("Tạo đơn cung cấp thành công!");
+      setSelectedOrder(null);
+      fetchOrders();
+      setFormData({ quantity: "", quality: "", note: "" });
+    } catch (error) {
+      console.error("Lỗi khi tạo đơn cung cấp:", error);
+      toast.error("Tạo đơn thất bại!");
+    }
+  };
+
   return (
-    <div className="px-2">
-      {/* Giới thiệu */}
-      <div className="w-full border border-gray-200 flex flex-col md:flex-row items-center gap-10 md:gap-16 lg:gap-20 mb-5 justify-between rounded-md p-6 bg-white shadow">
-        <div className="info md:text-left max-w-xl">
-          <h3 className="text-2xl md:text-3xl font-bold mb-3 text-black">
-            Chào mừng bạn đến với{" "}
-            <span className="text-[#006838]">Green Supply</span>🌿
-          </h3>
-          <p className="text-gray-700">
-            Hãy bắt đầu bằng cách{" "}
-            <span className="font-bold"> tạo đơn cung cấp hàng </span> cho chúng
-            tôi. Sau khi gửi yêu cầu, bạn có thể theo dõi trạng thái xử lý và
-            nhận phản hồi nhanh chóng từ hệ thống của chúng tôi.
-          </p>
-          <p className="text-gray-700 mt-3">
-            Chúng tôi mong muốn xây dựng một mối quan hệ hợp tác bền vững và
-            cùng nhau phát triển!
-          </p>
-        </div>
-        <img
-          src={Shop}
-          className="w-[180px] md:w-[220px] lg:w-[250px] object-contain"
-          alt="Shop Illustration"
-        />
-      </div>
+    <div>
+      <div className="p-6 bg-white shadow-md rounded">
+        <h2 className="text-xl font-bold mb-4">Tạo Đơn Cung Cấp Hàng</h2>
 
-      {/* Form Tạo Yêu Cầu Thu Hàng */}
-      <div className="w-full border border-gray-200 p-6 rounded-md bg-white shadow">
-        <h2 className="text-xl font-[800] mb-4 text-black flex items-center gap-3">
-          <AiFillEdit />
-          Tạo Đơn Cung Cấp Hàng
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {/* fuel_name */}
-          {/* <div>
-            <label className="block mb-1 font-semibold">Tên mặt hàng</label>
-            <input
-              type="text"
-              name="fuel_name"
-              maxLength="50"
-              placeholder="Tên mặt hàng..."
-              value={formData.fuel_name}
-              onChange={handleChange}
-              onKeyDown={(e) => {
-                if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9]*$/.test(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-              className="border p-2 rounded w-full mb-2"
-            />
-            {errors.fuel_name && (
-              <p className="text-red-500 text-sm">{errors.fuel_name}</p>
-            )}
-          </div> */}
-
-          {/* quantity */}
-          {/* <div>
-            <label className="block mb-1 font-semibold">Số lượng (kg )</label>
-            <input
-              type="number"
-              name="quantity"
-              min="1"
-              placeholder="Số lượng..."
-              value={formData.quantity}
-              onChange={handleChange}
-              onKeyDown={(e) => {
-                if (["e", "E", "-", "+", "."].includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-              className="border p-2 rounded w-full mb-2"
-            />
-            {errors.quantity && (
-              <p className="text-red-500 text-sm">{errors.quantity}</p>
-            )}
-          </div> */}
-
-          {/* price */}
-          {/* <div>
-            <label className="block mb-1 font-semibold">
-              Giá mỗi đơn vị (VNĐ)
-            </label>
-            <input
-              type="number"
-              name="price"
-              min="1"
-              placeholder="Giá bán..."
-              value={formData.price}
-              onChange={handleChange}
-              onKeyDown={(e) => {
-                if (["e", "E", "-", "+", "."].includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-              className="border p-2 rounded w-full mb-2"
-            />
-            {errors.price && (
-              <p className="text-red-500 text-sm">{errors.price}</p>
-            )}
-          </div> */}
-
-          {/* address */}
-          {/* <div>
-            <label className="block mb-1 font-semibold">Địa chỉ lấy hàng</label>
-            <input
-              type="text"
-              name="address"
-              maxLength="120"
-              placeholder="Nhập địa chỉ..."
-              value={formData.address}
-              onChange={handleChange}
-              className="border p-2 rounded w-full mb-2"
-            />
-            {errors.address && (
-              <p className="text-red-500 text-sm">{errors.address}</p>
-            )}
-          </div> */}
+        <div className="mb-4">
+          <label className="block mb-2 font-semibold">Chọn đơn yêu cầu:</label>
+          <select
+            onChange={(e) => handleSelectOrder(e.target.value)}
+            value={selectedOrder?._id || ""}
+            className="border p-2 rounded w-full"
+          >
+            <option value="">-- Chọn đơn hàng --</option>
+            {adminOrders.map((order) => (
+              <option key={order._id} value={order._id}>
+                {order.request_name} - {order.quantity} kg - {order.estimate_price.toLocaleString("vi-VN")} VNĐ
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Hiển thị total_price */}
-        {/* <div className="mt-4 mb-4">
-          <p>
-            <span className="font-semibold mr-2">Tổng giá:</span>
-            {totalPrice().toLocaleString("vi-VN")} VNĐ
-          </p>
-        </div> */}
+        {selectedOrder && (
+          <>
+            <div className="mb-4">
+              <label className="block font-semibold">Tên nhiên liệu:</label>
+              <p className="border p-2 rounded bg-gray-100">{selectedOrder.request_name}</p>
+            </div>
 
-        {/* note */}
-        {/* <div className="mb-4">
-          <label className="block mb-1 font-semibold">Ghi chú</label>
-          <textarea
-            name="note"
-            maxLength="200"
-            placeholder="Ghi chú (tối đa 200 ký tự)"
-            value={formData.note}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div> */}
+            <div className="mb-4">
+              <label className="block font-semibold">Số lượng bạn cung cấp:</label>
+              <input
+                type="number"
+                name="quantity"
+                placeholder="Nhập số lượng"
+                value={formData.quantity}
+                onChange={handleQuantityChange}
+                onBlur={validateQuantity} // Chỉ validate khi người dùng rời khỏi ô input
+                className="border p-2 rounded w-full"
+                min="10"
+                max={selectedOrder.quantity}
+                disabled={selectedOrder.quantity < 50}
+              />
+              {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            </div>
 
-        {/* Nút bấm */}
-        {/* <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-4">
-          <button
-            onClick={handleSubmit}
-            className="bg-[#FFE814] text-[#F14A00] font-bold px-4 py-2 rounded hover:bg-[#FBC02D] w-full md:w-auto"
-          >
-            Gửi Yêu Cầu
-          </button>
-          <button
-            onClick={() =>
-              setFormData({
-                fuel_name: "",
-                quantity: "",
-                price: "",
-                address: "",
-                note: "",
-              })
-            }
-            className="bg-[#006838] flex items-center text-white font-bold px-3 py-2 rounded hover:bg-[#028A48] w-full md:w-auto gap-2"
-          >
-            <FiRefreshCw />
-            Làm mới
-          </button>
-        </div> */}
+            {/* Nhập ghi chú */}
+            <div className="mb-4">
+              <label className="block font-semibold">Ghi chú:</label>
+              <textarea
+                type="text"
+                name="note"
+                placeholder="Nhập ghi chú"
+                value={formData.note}
+                onChange={handleNoteChange}
+                rows={4}
+                className="border p-2 rounded w-full resize-none"
+              />
+              {noteError && <p className="text-red-500 text-sm mt-1">{noteError}</p>}
+            </div>
+
+            <button onClick={handleSubmit} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+              Gửi Yêu Cầu
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ import { RiMenuFold4Line } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +40,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
-
   const userRedux = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -143,7 +143,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
                   position: "absolute",
                   top: "50px",
                   right: "10px",
-                  width: "200px",
+                  width: "250px",
                   overflow: "visible",
                   filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                   mt: 1.5,
