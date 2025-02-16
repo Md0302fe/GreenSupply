@@ -1,13 +1,18 @@
-/* eslint-disable jsx-a11y/alt-text */
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import "../../../styles/css/HeaderSupplier.css";
 import { styled } from "@mui/material/styles";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import "../../../styles/css/HeaderSupplier.css";
 
 import { RiMenuUnfold4Line } from "react-icons/ri";
 import { RiMenuFold4Line } from "react-icons/ri";
@@ -17,6 +22,11 @@ import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 import { useSelector } from "react-redux";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import * as UserServices from "../../../services/UserServices";
+import { resetUser } from "../../../redux/slides/userSlides";
+import { persistor } from "../../../redux/store";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -27,19 +37,52 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-
-
 const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
   const userRedux = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClickMyAcc = (event) => {
     setAnchorMyAcc(event.currentTarget);
   };
   const handleCloseMyAcc = () => {
     setAnchorMyAcc(null);
+  };
+
+  const truncateText = (text, maxLength = 20) => {
+    if (!text) return "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
+  // Hàm xử lý đăng xuất, tương tự như Header của HomePage
+  const handleLogout = async () => {
+    try {
+      // Gọi API đăng xuất
+      await UserServices.logoutUser();
+      // Reset state của user trong Redux
+      dispatch(resetUser());
+      // Xóa dữ liệu trong Redux Persist
+      persistor.purge();
+      // Xóa dữ liệu lưu trong localStorage
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      // Chuyển hướng về trang chủ (hoặc trang login)
+      navigate("/");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+
+  const [openUserInfo, setOpenUserInfo] = useState(false);
+  const handleOpenUserInfo = () => {
+    setOpenUserInfo(true);
+  };
+  const handleCloseUserInfo = () => {
+    setOpenUserInfo(false);
   };
 
   return (
@@ -78,7 +121,11 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
             onClick={handleClickMyAcc}
           >
             <img
-              src={userRedux.avatar}
+              src={
+                userRedux?.avatar ||
+                "https://ecme-react.themenate.net/img/avatars/thumb-1.jpg"
+              }
+              alt="avatar"
               className="w-full h-full object-cover"
             />
           </div>
@@ -125,17 +172,26 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             <MenuItem onClick={handleCloseMyAcc} className="!bg-white">
-              <div className="flex items-center gap-3">
+              <div
+                className="flex items-center gap-3"
+                onClick={handleOpenUserInfo}
+              >
                 <div className="rounded-full w-[35px] h-[35px] overflow-hidden cursor-pointer">
                   <img
-                    src={userRedux.avatar}
+                    src={
+                      userRedux?.avatar ||
+                      "https://ecme-react.themenate.net/img/avatars/thumb-1.jpg"
+                    }
+                    alt="avatar"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="info">
-                  <h3 className="text-[15px] font-[500] leading-5">{userRedux.full_name}</h3>
+                  <h3 className="text-[15px] font-[500] leading-5">
+                    {truncateText(userRedux?.full_name, 13) || "User"}
+                  </h3>
                   <p className="text-[12px] font-[400] opacity-70">
-                    {userRedux.email}
+                    {truncateText(userRedux?.email, 15) || "supplier@gmail.com"}
                   </p>
                 </div>
               </div>
@@ -146,17 +202,55 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
               className="flex items-center gap-3"
             >
               <FaRegUser className="text-[16px]" />
-              <a href="/profile"  className="text-[14px]">Profile</a>
+              <a href="/profile" className="text-[14px]">
+                Profile
+              </a>
             </MenuItem>
 
             <MenuItem
-              onClick={handleCloseMyAcc}
+              onClick={() => {
+                handleCloseMyAcc();
+                handleLogout();
+              }}
               className="flex items-center gap-3"
             >
               <FiLogOut className="text-[18px]" />
               <span className="text-[14px]">Đăng Xuất</span>
             </MenuItem>
           </Menu>
+
+          {/* Popup hiển thị thông tin user */}
+          <Dialog open={openUserInfo} onClose={handleCloseUserInfo}>
+            <DialogTitle>Thông tin người dùng</DialogTitle>
+            <DialogContent dividers>
+              <div className="flex items-center gap-3">
+                <div className="rounded-full w-[50px] h-[50px] overflow-hidden">
+                  <img
+                    src={
+                      userRedux?.avatar ||
+                      "https://ecme-react.themenate.net/img/avatars/thumb-1.jpg"
+                    }
+                    alt="avatar"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="info">
+                  <h3 className="text-[15px] font-[500] leading-5">
+                    {userRedux?.full_name || "User"}
+                  </h3>
+                  <p className="text-[12px] font-[400] opacity-70">
+                    {userRedux?.email || "supplier@gmail.com"}
+                  </p>
+                  {/* Bạn có thể hiển thị thêm thông tin khác nếu cần */}
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseUserInfo} color="primary">
+                Đóng
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </div>
     </header>

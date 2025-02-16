@@ -306,7 +306,7 @@ const HarvestRequestManagement = () => {
             label="Status"
           >
             <MenuItem value="">
-              <em>None</em>
+              <em>Tất cả</em>
             </MenuItem>
             <MenuItem value={10}>Chờ duyệt</MenuItem>
             <MenuItem value={20}>Đã duyệt</MenuItem>
