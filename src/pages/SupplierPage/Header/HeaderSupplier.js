@@ -20,8 +20,6 @@ import { RiMenuFold4Line } from "react-icons/ri";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
-import { useSelector } from "react-redux";
-
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as UserServices from "../../../services/UserServices";
