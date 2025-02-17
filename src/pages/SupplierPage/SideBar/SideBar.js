@@ -74,7 +74,7 @@ const SideBar = () => {
               <li className="w-full">
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-11 flex gap-3"
-                  onClick={() => handleClick("/supplier/order-management")}
+                  onClick={() => navigate("/supplier/supply-request-history")}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
                   Đơn Cung Cấp Hàng
@@ -100,15 +100,6 @@ const SideBar = () => {
           >
             <MdOutlineBorderColor className="text-[20px]" />
             <span>Tạo đơn cung cấp hàng</span>
-          </Button>
-        </li>
-        <li>
-          <Button
-            onClick={() => navigate("/supplier/supply-request-history")}
-            className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
-          >
-            <LuHistory className="text-[20px]" />
-            <span>Lịch sử cung cấp hàng</span>
           </Button>
         </li>
         <li>

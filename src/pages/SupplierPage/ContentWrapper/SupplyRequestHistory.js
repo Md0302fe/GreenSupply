@@ -113,13 +113,17 @@ const FuelSupplyRequestComponent = () => {
     try {
       const res = await FuelEntryServices.getFuelEntryDetail(record.request_id);
       if (res) {
-        setDetailData(res.res); // Lưu dữ liệu vào state
-        setIsDetailModalOpen(true); // Mở modal chi tiết
+        setDetailData({
+          ...res.res,
+          total_price: res.res.estimate_price * res.res.quantity, // Calculate total price
+        });
+        setIsDetailModalOpen(true);
       }
     } catch (error) {
       console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
     }
   };
+
   // Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -199,6 +203,13 @@ const FuelSupplyRequestComponent = () => {
       dataIndex: "quantity",
       key: "quantity",
       sorter: (a, b) => a.quantity - b.quantity, // 🔽 Sorting
+    },
+    {
+      title: "Tổng Giá (VNĐ)",
+      dataIndex: "total_price",
+      key: "total_price",
+      sorter: (a, b) => a.total_price - b.total_price, // Enable sorting
+      render: (_, record) => record.total_price, // Calculate dynamically
     },
     {
       title: "Trạng Thái",
@@ -347,17 +358,18 @@ const FuelSupplyRequestComponent = () => {
         {detailData ? (
           <div>
             <p><strong>Tên Nhiên Liệu:</strong> {detailData.request_name}</p>
-            <p><strong>Số Lượng:</strong> {detailData.quantity}</p>
-            <p><strong>Số Lượng Còn Lại:</strong> {detailData.quantity_remain}</p>
             <p><strong>Ghi Chú:</strong> {detailData.note || "Không có ghi chú"}</p>
             <p><strong>Trạng Thái:</strong> {detailData.status}</p>
-            <p><strong>Giá Ước Tính:</strong> {detailData.estimate_price} VND</p>
+            <p><strong>Giá Mỗi KG:</strong> {detailData.estimate_price} VND</p>
+            <p><strong>Số Lượng:</strong> {detailData.quantity} KG</p>
+            <p><strong>Tổng Giá:</strong> {detailData.total_price} VND</p>
             <p><strong>Ngày Cập Nhật:</strong> {converDateString(detailData.updatedAt)}</p>
           </div>
         ) : (
           <Loading isPending={true} />
         )}
       </Modal>
+
     </div>
   );
 };
