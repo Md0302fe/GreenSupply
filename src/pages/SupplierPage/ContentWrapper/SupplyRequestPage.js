@@ -21,14 +21,17 @@ const SupplyRequestPage = () => {
   const fetchOrders = async () => {
     try {
       const response = await getAllFuelEntry();
-      setAdminOrders(response.data);
+      const filteredOrders = response.data.filter(order =>
+        order.status === "Đang Nhận Đơn" && !order.is_deleted
+      );
 
+      setAdminOrders(filteredOrders);
       if (id) {
         const foundOrder = response.data.find((order) => order._id === id);
         if (foundOrder) {
           setSelectedOrder(foundOrder);
-          if (foundOrder.quantity < 50) {
-            setFormData({ ...formData, quantity: foundOrder.quantity });
+          if (foundOrder.quantity_remain <= 50) {
+            setFormData({ ...formData, quantity: foundOrder.quantity_remain });
           }
         }
       }
@@ -54,8 +57,8 @@ const SupplyRequestPage = () => {
     setError("");
 
     // Nếu đơn còn dưới 50kg, đặt giá trị cố định
-    if (foundOrder.quantity < 50) {
-      setFormData({ quantity: foundOrder.quantity, quality: "", note: "" });
+    if (foundOrder.quantity_remain <= 50) {
+      setFormData({ quantity: foundOrder.quantity_remain, quality: "", note: "" });
     } else {
       setFormData({ quantity: "", quality: "", note: "" });
     }
@@ -73,10 +76,10 @@ const SupplyRequestPage = () => {
   };
 
   const handleNoteChange = (e) => {
-    if(e.target.value.length > 2000) {
+    if (e.target.value.length > 2000) {
       setNoteError("Số lượng không được vượt quá 2000 ký tự!");
     } else {
-      setFormData({ ...formData, note: e.target.value});
+      setFormData({ ...formData, note: e.target.value });
     }
   }
 
@@ -90,13 +93,13 @@ const SupplyRequestPage = () => {
       return false;
     }
 
-    if (selectedOrder.quantity < 50 && quantity !== selectedOrder.quantity) {
-      setError(`Bạn phải nhập đúng ${selectedOrder.quantity} kg.`);
+    if (selectedOrder.quantity <= 50 && quantity !== selectedOrder.quantity_remain) {
+      setError(`Bạn phải nhập đúng ${selectedOrder.quantity_remain} kg.`);
       return false;
     }
 
-    if (quantity > selectedOrder.quantity) {
-      setError(`Số lượng không được vượt quá ${selectedOrder.quantity} kg.`);
+    if (quantity > selectedOrder.quantity_remain) {
+      setError(`Số lượng không được vượt quá ${selectedOrder.quantity_remain} kg.`);
       return false;
     }
 
@@ -167,7 +170,7 @@ const SupplyRequestPage = () => {
             <option value="">-- Chọn đơn hàng --</option>
             {adminOrders.map((order) => (
               <option key={order._id} value={order._id}>
-                {order.request_name} - {order.quantity} kg - {order.estimate_price.toLocaleString("vi-VN")} VNĐ
+                {order.request_name} - {order.quantity_remain} kg - {order.estimate_price.toLocaleString("vi-VN")} VNĐ
               </option>
             ))}
           </select>
@@ -191,8 +194,8 @@ const SupplyRequestPage = () => {
                 onBlur={validateQuantity} // Chỉ validate khi người dùng rời khỏi ô input
                 className="border p-2 rounded w-full"
                 min="10"
-                max={selectedOrder.quantity}
-                disabled={selectedOrder.quantity < 50}
+                max={selectedOrder.quantity_remain}
+                disabled={selectedOrder.quantity_remain < 51}
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             </div>

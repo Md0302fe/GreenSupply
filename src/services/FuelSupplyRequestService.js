@@ -16,23 +16,23 @@ export const createFuelSupplyRequest = async (supplyRequest) => {
   }
 };
 
-export const getAllSupplyRequest = async (filters = {}) => {
+export const getAllFuelSupplyRequest = async (access_token, filters = {}) => {
   try {
-    const queryParams = new URLSearchParams(filters).toString();
-    const response = await axios.get(
-      `${API_URL}/getAllSupplyRequest?${queryParams}`
-    );
-    return response.data.requests;
+    const queryParams = new URLSearchParams(filters).toString(); // Convert filters to query params
+    const response = await axios.get(`${API_URL}/getAllFuelSupplyRequest?${queryParams}`, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    return response.data.requests; // Ensure it returns only filtered requests
   } catch (error) {
     console.error("Lỗi khi lấy danh sách yêu cầu:", error);
     throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
   }
 };
 
-export const updateSupplyRequest = async (id, updatedData) => {
+export const updateFuelSupplyRequest = async (id, updatedData) => {
   try {
     const response = await axios.put(
-      `${API_URL}/updateSupplyRequest/${id}`,
+      `${API_URL}/updateFuelSupplyRequest/${id}`,
       updatedData,
       { headers: { "Content-Type": "application/json" } }
     );
@@ -44,9 +44,9 @@ export const updateSupplyRequest = async (id, updatedData) => {
   }
 };
 
-export const cancelSupplyRequest = async (id) => {
+export const deleteFuelRequest = async (id) => {
   try {
-    const response = await axios.put(`${API_URL}/cancelSupplyRequest/${id}`);
+    const response = await axios.put(`${API_URL}/deleteFuelSupplyRequest/${id}`);
     return response.data;
   } catch (error) {
     console.error("Lỗi khi hủy yêu cầu:", error);

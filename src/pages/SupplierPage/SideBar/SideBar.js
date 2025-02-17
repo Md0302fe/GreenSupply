@@ -104,6 +104,15 @@ const SideBar = () => {
         </li>
         <li>
           <Button
+            onClick={() => navigate("/supplier/supply-request-history")}
+            className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
+          >
+            <LuHistory className="text-[20px]" />
+            <span>Lịch sử cung cấp hàng</span>
+          </Button>
+        </li>
+        <li>
+          <Button
             onClick={() => navigate("/supplier/transactions-histories")}
             className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
