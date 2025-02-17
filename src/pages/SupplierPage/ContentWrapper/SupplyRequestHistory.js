@@ -23,6 +23,8 @@ const FuelSupplyRequestComponent = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [detailData, setDetailData] = useState(null);
 
   const fetchGetAllRequests = async () => {
     const access_token = user?.access_token;
@@ -107,7 +109,17 @@ const FuelSupplyRequestComponent = () => {
     }
   };
 
-
+  const handleViewDetail = async (record) => {
+    try {
+      const res = await FuelEntryServices.getFuelEntryDetail(record.request_id);
+      if (res) {
+        setDetailData(res.res); // Lưu dữ liệu vào state
+        setIsDetailModalOpen(true); // Mở modal chi tiết
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+    }
+  };
   // Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -226,6 +238,12 @@ const FuelSupplyRequestComponent = () => {
         return (
           <Space>
             <Button
+              type="default"
+              onClick={() => handleViewDetail(record)} // Gọi hàm xem chi tiết
+            >
+              Xem Chi Tiết
+            </Button>
+            <Button
               type="primary"
               icon={<EditOutlined />}
               onClick={() => handleEdit(record)}
@@ -313,6 +331,32 @@ const FuelSupplyRequestComponent = () => {
       {/* Modal Confirm Delete */}
       <Modal title="Xóa Yêu Cầu" open={isOpenDelete} onCancel={() => setIsOpenDelete(false)} onOk={handleConfirmDelete} confirmLoading={mutationDelete.isPending}>
         <p>Bạn có chắc muốn xóa yêu cầu này?</p>
+      </Modal>
+
+      {/* Modal chi tiết */}
+      <Modal
+        title="Chi Tiết Đơn Cung Cấp"
+        open={isDetailModalOpen}
+        onCancel={() => setIsDetailModalOpen(false)}
+        footer={[
+          <Button key="close" onClick={() => setIsDetailModalOpen(false)}>
+            Đóng
+          </Button>,
+        ]}
+      >
+        {detailData ? (
+          <div>
+            <p><strong>Tên Nhiên Liệu:</strong> {detailData.request_name}</p>
+            <p><strong>Số Lượng:</strong> {detailData.quantity}</p>
+            <p><strong>Số Lượng Còn Lại:</strong> {detailData.quantity_remain}</p>
+            <p><strong>Ghi Chú:</strong> {detailData.note || "Không có ghi chú"}</p>
+            <p><strong>Trạng Thái:</strong> {detailData.status}</p>
+            <p><strong>Giá Ước Tính:</strong> {detailData.estimate_price} VND</p>
+            <p><strong>Ngày Cập Nhật:</strong> {converDateString(detailData.updatedAt)}</p>
+          </div>
+        ) : (
+          <Loading isPending={true} />
+        )}
       </Modal>
     </div>
   );
