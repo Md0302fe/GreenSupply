@@ -33,7 +33,8 @@ import Login from "../components/AuthComponent/Login";
 import Register from "../components/AuthComponent/Register";
 import GoogleRegister from "../components/AuthComponent/GoogleRegister";
 import FuelRequestsComponent from "../components/Admin/Content/Order/FuelRequests";
-import OrderPage from "../components/Admin/Content/Order/FuelOrderStatus";
+import OrderPage from "../pages/OrderPage/OrderPage";
+import OrderViewPage from "../pages/OrderPage/OrderViewPage";
 
 const Router = () => {
   return (
@@ -66,6 +67,7 @@ const Router = () => {
           <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
           <Route path="View-Order-Success" element={<OrderPage />} />
+          <Route path="warehouse-receipt" element={<OrderViewPage />} />
           
         </Route>
         {/* Routes cho quản lý đơn hàng */}

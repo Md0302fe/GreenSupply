@@ -1,128 +1,143 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Table, Button, message, Space, Input, Modal, Descriptions } from "antd";
+import { Table, Button, message, Space, Input, Modal, Descriptions, Tag } from "antd";
 import axios from "axios";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import "./FuelOrderStatus.scss"; // Tạo file CSS để tùy chỉnh giao diện
-import { converDateString } from "../../../../ultils";
-import { Tag } from "antd";
 import { Excel } from "antd-table-saveas-excel";
+import "./FuelOrderStatus.scss";
+import { converDateString } from "../../../../ultils";
+import { useSelector } from "react-redux";
+
 const FuelOrderStatus = () => {
   const [orders, setOrders] = useState([]); // Danh sách đơn hàng
-  const [loading, setLoading] = useState(false); // Trạng thái loading
-  const [searchText, setSearchText] = useState(""); // Nội dung tìm kiếm
-  const [searchedColumn, setSearchedColumn] = useState(""); // Cột đang tìm kiếm
+  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal hiển thị chi tiết
-  const [selectedOrder, setSelectedOrder] = useState(null); // Đơn hàng được chọn
-
-  // 🟢 Gọi API để lấy danh sách đơn hàng đã duyệt
-  useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess");
-        if (response.data.success) {
-          setOrders(response.data.data);
-          
-        } else {
-          message.error("Lỗi khi lấy danh sách đơn hàng đã duyệt!");
-        }
-      } catch (error) {
-        message.error("Không thể kết nối đến server!");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [filterType, setFilterType] = useState("all"); 
+  const userRedux = useSelector((state) => state.user);
+  // 🟢 Gọi API dựa trên bộ lọc
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess"; // 🟢 Mặc định lấy tất cả
+  
+      if (filterType === "fuelRequests") {
+        url = "http://localhost:3001/api/orders/approved-fuel-requests"; // 🟢 Lấy đơn yêu cầu thu hàng
+      } else if (filterType === "fuelSupplyOrders") {
+        url = "http://localhost:3001/api/orders/approved-fuel-supply-orders"; // 🟢 Lấy đơn cung cấp nhiên liệu
       }
-      setLoading(false);
-    };
+       
+      const response = await axios.get(url);
+      console.log("response", response);
+      if (response.data.success) {
+        console.log("📌 API Trả về:", response.data.data); // 🔥 Kiểm tra dữ liệu trả về từ Backend
+  
+        setOrders(response.data.data); // 🟢 Lưu dữ liệu vào state
+      } else {
+        message.error("Lỗi khi lấy danh sách đơn hàng!");
+      }
+    } catch (error) {
+      message.error("Không thể kết nối đến server!");
+    }
+    setLoading(false);
+  };
+  
+  const createFuelStorageReceipt = async (order) => {
+    try {
+      const token = localStorage.getItem("access_token");
+  
+      if (!token) {
+        message.error("Bạn chưa đăng nhập!");
+        return;
+      }
+  
+      if (!order || !order._id) {
+        message.error("Lỗi: Không tìm thấy thông tin đơn hàng.");
+        return;
+      }
+  
+      // 🟢 Kiểm tra `receipt_type` từ Backend
+      if (!order.receipt_type) {
+        message.error("Lỗi: Không xác định được loại đơn hàng. Hãy kiểm tra lại Backend!");
+        return;
+      }
+  
+      const payload = order.receipt_type === "supply"
+        ? { receipt_supply_id: order._id }
+        : { receipt_request_id: order._id };
+  
+      console.log("📌 Dữ liệu gửi đi:", payload); // 🔥 Kiểm tra dữ liệu trước khi gửi request
+  
+      const response = await axios.post(
+        "http://localhost:3001/api/fuel-storage/create",
+        payload,
+        {
+          headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" },
+        }
+      );
+  
+      console.log("📌 Phản hồi API:", response.data); // 🔥 Kiểm tra phản hồi từ API
+  
+      if (response.data.success) {
+        message.success("Tạo đơn nhập kho thành công!");
+        fetchOrders(); // 🟢 Refresh danh sách đơn hàng
 
+      } else {
+        message.error(`Tạo đơn nhập kho thất bại: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("📌 Lỗi chi tiết:", error.response?.data || error.message);
+      message.error("Lỗi khi tạo đơn nhập kho!");
+    }
+  };
+  
+  
+  
+  
+
+  // 🟢 Gọi API khi component render hoặc filterType thay đổi
+  useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [filterType]);
 
 
+  // 🟢 Chuyển đổi bộ lọc
+  const handleFilterChange = (type) => {
+    setFilterType(type);
+  };
 
+  // 🟢 Xuất file Excel
   const handleExportFileExcel = () => {
     const excel = new Excel();
     excel
-      .addSheet("Danh sách đơn hàng đã duyệt")
-      .addColumns(columns.filter(col => col.dataIndex !== "action")) // Bỏ cột "Hành động"
+      .addSheet("Danh sách đơn hàng chờ nhập kho")
+      .addColumns(columns.filter((col) => col.dataIndex !== "action")) // Bỏ cột "Hành động"
       .addDataSource(tableData, {
         str2Percent: true,
       })
-      .saveAs("DanhSachDonHangDaDuyet.xlsx");
+      .saveAs("DanhSachDonChoNhapkho.xlsx");
   };
-  
-  // 🟢 Xử lý tìm kiếm
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText("");
-  };
-
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          ref={searchInput}
-          placeholder={`Tìm kiếm ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button type="primary" onClick={() => handleSearch(selectedKeys, confirm, dataIndex)} icon={<SearchOutlined />} size="small">
-            Tìm kiếm
-          </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
-            Xóa
-          </Button>
-          <Button type="link" size="small" onClick={() => close()}>
-            Đóng
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
-    onFilter: (value, record) => record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }} searchWords={[searchText]} autoEscape textToHighlight={text ? text.toString() : ""} />
-      ) : (
-        text
-      ),
-  });
-
 
   // 🟢 Hiển thị chi tiết đơn hàng
   const showOrderDetails = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
- 
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
   };
 
-  const tableData =
-  orders?.length &&
-  orders?.map((order) => {
-    console.log("order" ,order)
-    return {
-      ...order,
-      key: order._id,
-      customerName: order?.supplier_id?.full_name,
-    };
-  });
-
-
-  
+  // 🟢 Chuẩn bị dữ liệu bảng
+  const tableData = orders?.map((order) => ({
+    ...order,
+    key: order._id,
+    customerName: order?.supplier_id?.full_name,
+  }));
 
   // 🟢 Cấu hình bảng hiển thị đơn hàng
   const columns = [
@@ -130,13 +145,11 @@ const FuelOrderStatus = () => {
       title: "Khách Hàng",
       dataIndex: "customerName",
       key: "customerName",
-      ...getColumnSearchProps("customerName"),
     },
     {
       title: "Loại Nhiên Liệu",
       dataIndex: "fuel_name",
       key: "fuel_name",
-      ...getColumnSearchProps("fuel_name"),
     },
     {
       title: "Giá Tiền",
@@ -157,29 +170,55 @@ const FuelOrderStatus = () => {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
-      filters: [{ text: "Hoàn thành", value: "Đã duyệt" }], // Đổi chữ trong filter
-      onFilter: (value, record) => record.status.includes(value),
-      render: (status) => {
-        return <Tag color="gold">Chờ Nhập kho</Tag>;
-      },
+      render: () => <Tag color="gold">Chờ Nhập kho</Tag>,
+    },
+    {
+      title: "Loại Đơn Hàng",
+      dataIndex: "receipt_type",
+      key: "receipt_type",
+      render: (text) => <Tag color={text === "supply" ? "blue" : "green"}>{text === "supply" ? "Cung cấp" : "Thu hàng"}</Tag>,
     },
     {
       title: "Hành động",
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
-        <Button type="primary" icon={<EyeOutlined />} onClick={() => showOrderDetails(record)}>
-          Chi tiết
-        </Button>
+        <Space>
+          <Button type="primary" icon={<EyeOutlined />} onClick={() => showOrderDetails(record)}>
+
+          </Button>
+          <Button type="default" onClick={() => createFuelStorageReceipt(record)}>
+            Tạo Đơn Nhập Kho
+          </Button>
+        </Space>
       ),
     },
+    
+
   ];
 
   return (
     <div className="fuel-order-status">
-      <h2>Danh sách đơn hàng đã duyệt</h2>
+      <h2>Danh sách đơn hàng chờ nhập kho</h2>
 
-      <Button type="primary" onClick={handleExportFileExcel} style={{ backgroundColor: "black", borderColor: "black", marginBottom: 16 }}> Xuất File </Button>
+      {/* 🟢 Nút chọn danh sách */}
+      <Space style={{ marginBottom: 16 }}>
+        <Button  type={filterType === "all" ? "primary" : "default"} onClick={() => handleFilterChange("all")}>
+          Đơn chờ Nhập kho
+        </Button>
+        <Button type={filterType === "fuelRequests" ? "primary" : "default"} onClick={() => handleFilterChange("fuelRequests")}>
+          Đơn yêu cầu thu hàng
+        </Button>
+        <Button type={filterType === "fuelSupplyOrders" ? "primary" : "default"} onClick={() => handleFilterChange("fuelSupplyOrders")}>
+          Đơn cung cấp nhiên liệu
+        </Button>
+        <Button type="primary" onClick={handleExportFileExcel} style={{ backgroundColor: "black", borderColor: "black" }}>
+        Xuất File
+      </Button>
+      </Space>
+
+    
+
       <Table columns={columns} dataSource={tableData} loading={loading} rowKey="_id" pagination={{ pageSize: 8 }} />
 
       {/* 🟢 Modal hiển thị chi tiết đơn hàng */}
@@ -195,7 +234,7 @@ const FuelOrderStatus = () => {
             <Descriptions.Item label="Ghi Chú">{selectedOrder.note}</Descriptions.Item>
             <Descriptions.Item label="Ngày Tạo">{converDateString(selectedOrder.createdAt)}</Descriptions.Item>
             <Descriptions.Item label="Cập Nhật">{converDateString(selectedOrder.updatedAt)}</Descriptions.Item>
-          </Descriptions> 
+          </Descriptions>
         )}
       </Modal>
     </div>

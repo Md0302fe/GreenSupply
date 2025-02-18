@@ -282,6 +282,7 @@ const FuelRequestsManagement = () => {
 
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
+
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,

@@ -14,6 +14,8 @@ import {
 // import icons
 import { FaGem, FaGithub } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa"
+import { FaWarehouse } from "react-icons/fa";
+
 
 import sidebarBg from "../../assets/bg2.jpg";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
@@ -77,6 +79,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
           <SubMenu
             icon={<FaShoppingCart />}
             title="Quản Lý Đơn Hàng"
+            style={{ paddingTop: "10px", paddingBottom: "10px" }}
           >
             <MenuItem>
               Đơn yêu cầu thu nguyên liệu
@@ -89,6 +92,16 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             <MenuItem>
               Đơn Chờ Nhập Kho
               <Link to={"View-Order-Success"} />
+            </MenuItem>
+          </SubMenu>
+          <SubMenu
+            icon={<FaWarehouse />}
+            title="Quản Lý Kho"
+            style={{ paddingTop: "10px", paddingBottom: "10px" }}
+          >
+            <MenuItem>
+            Danh Sách Đơn Nhập Kho
+              <Link to={"warehouse-receipt"} />
             </MenuItem>
           </SubMenu>
         </Menu>
