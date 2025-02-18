@@ -72,7 +72,7 @@ const FuelOrderStatus = () => {
       console.log("📌 Dữ liệu gửi đi:", payload); // 🔥 Kiểm tra dữ liệu trước khi gửi request
   
       const response = await axios.post(
-        "http://localhost:3001/api/Storage/create",
+        "http://localhost:3001/api/fuel-storage/create",
         payload,
         {
           headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" },
@@ -185,7 +185,7 @@ const FuelOrderStatus = () => {
       render: (_, record) => (
         <Space>
           <Button type="primary" icon={<EyeOutlined />} onClick={() => showOrderDetails(record)}>
-            Xem
+
           </Button>
           <Button type="default" onClick={() => createFuelStorageReceipt(record)}>
             Tạo Đơn Nhập Kho
@@ -203,7 +203,7 @@ const FuelOrderStatus = () => {
 
       {/* 🟢 Nút chọn danh sách */}
       <Space style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={() => handleFilterChange("all")}>
+        <Button  type={filterType === "all" ? "primary" : "default"} onClick={() => handleFilterChange("all")}>
           Đơn chờ Nhập kho
         </Button>
         <Button type={filterType === "fuelRequests" ? "primary" : "default"} onClick={() => handleFilterChange("fuelRequests")}>
