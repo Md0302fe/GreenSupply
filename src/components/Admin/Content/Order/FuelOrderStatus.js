@@ -22,20 +22,26 @@ const FuelOrderStatus = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess"; // 🟢 Mặc định lấy tất cả
+      let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess";
   
       if (filterType === "fuelRequests") {
-        url = "http://localhost:3001/api/orders/approved-fuel-requests"; // 🟢 Lấy đơn yêu cầu thu hàng
+        url = "http://localhost:3001/api/orders/approved-fuel-requests";
       } else if (filterType === "fuelSupplyOrders") {
-        url = "http://localhost:3001/api/orders/approved-fuel-supply-orders"; // 🟢 Lấy đơn cung cấp nhiên liệu
+        url = "http://localhost:3001/api/orders/approved-fuel-supply-orders";
       }
-       
+  
       const response = await axios.get(url);
       console.log("response", response);
-      if (response.data.success) {
-        console.log("📌 API Trả về:", response.data.data); // 🔥 Kiểm tra dữ liệu trả về từ Backend
   
-        setOrders(response.data.data); // 🟢 Lưu dữ liệu vào state
+      if (response.data.success) {
+        console.log("📌 API Trả về:", response.data.data);
+  
+        // ✅ Sắp xếp đơn hàng theo thời gian tạo giảm dần (đơn mới nhất lên đầu)
+        const sortedOrders = response.data.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+  
+        setOrders(sortedOrders);
       } else {
         message.error("Lỗi khi lấy danh sách đơn hàng!");
       }
@@ -44,6 +50,7 @@ const FuelOrderStatus = () => {
     }
     setLoading(false);
   };
+  
   
   const createFuelStorageReceipt = async (order) => {
     try {
