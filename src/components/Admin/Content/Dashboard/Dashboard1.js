@@ -30,17 +30,20 @@ const DashboardWarehouse = () => {
         message.error("Bạn chưa đăng nhập!");
         return;
       }
-  
+
       console.log("🔍 Gửi request từ Dashboard với token:", token);
-  
-      const response = await axios.get("http://localhost:3001/api/fuel-storage/getAll", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
+
+      const response = await axios.get(
+        "http://localhost:3001/api/fuel-storage/getAll",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       if (response.data.success) {
         let allReceipts = response.data.data;
         console.log("📌 API Response:", response.data);
-  
+
         if (allReceipts.length > 0) {
           console.log("📌 Danh sách allReceipts:", allReceipts);
 
@@ -48,41 +51,54 @@ const DashboardWarehouse = () => {
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Đặt giờ về đầu ngày
 
+          // ✅ Lọc đơn nhập kho trong ngày & Sắp xếp mới nhất trước
           allReceipts = allReceipts
-            .filter(receipt => receipt.createdAt) // Loại bỏ đơn không có ngày tạo
-            .map(receipt => ({
+            .filter((receipt) => receipt.createdAt) // Loại bỏ đơn không có ngày tạo
+            .map((receipt) => ({
               ...receipt,
-              createdAt: new Date(receipt.createdAt) // Chuyển đổi `createdAt` thành Date object
+              createdAt: new Date(receipt.createdAt), // Chuyển thành đối tượng Date
             }))
-            .filter(receipt => receipt.createdAt >= today); // Lọc đơn nhập kho trong ngày
+            .filter((receipt) => receipt.createdAt >= today) // Chỉ lấy đơn nhập kho trong ngày
+            .sort((a, b) => b.createdAt - a.createdAt); // 🔥 Sắp xếp mới nhất trước
+
+          // Lọc đơn nhập kho trong ngày
 
           console.log("📌 Đơn nhập kho trong ngày:", allReceipts);
 
           // ✅ Tìm đơn nhập kho đầu tiên có storage_id hợp lệ
-          const validStorageReceipt = allReceipts.find(receipt => receipt.storage_id !== null);
-  
+          const validStorageReceipt = allReceipts.find(
+            (receipt) => receipt.storage_id !== null
+          );
+
           if (validStorageReceipt) {
             const storageData = validStorageReceipt.storage_id;
             console.log("📌 Kho hợp lệ:", storageData);
-  
+
             setStorage({
               name_storage: storageData?.name_storage || "Chưa có tên kho",
               capacity: storageData?.capacity || 0,
               remaining_capacity: storageData?.remaining_capacity || 0,
             });
           } else {
-            console.warn("⚠️ Không tìm thấy đơn nhập kho nào có `storage_id` hợp lệ!");
-            message.warning("Không tìm thấy thông tin kho từ danh sách đơn nhập kho!");
+            console.warn(
+              "⚠️ Không tìm thấy đơn nhập kho nào có `storage_id` hợp lệ!"
+            );
+            message.warning(
+              "Không tìm thấy thông tin kho từ danh sách đơn nhập kho!"
+            );
           }
-  
-    
+
           // ✅ Thống kê số lượng đơn nhập kho trong ngày
           const totalReceipts = allReceipts.length;
-          const pendingReceipts = allReceipts.filter((r) => r.status === "Chờ duyệt").length;
-          const approvedReceipts = allReceipts.filter((r) => r.status === "Đã duyệt").length;
-  
+          const pendingReceipts = allReceipts.filter(
+            (r) => r.status === "Chờ duyệt"
+          ).length;
+          const approvedReceipts = allReceipts.filter(
+            (r) => r.status === "Đã duyệt"
+          ).length;
+
           setStats({ totalReceipts, pendingReceipts, approvedReceipts });
-  
+
           // ✅ Lưu danh sách đơn nhập kho trong ngày
           setReceipts(allReceipts);
         } else {
@@ -98,16 +114,18 @@ const DashboardWarehouse = () => {
     setLoading(false);
   };
 
-  
   useEffect(() => {
     fetchWarehouseData();
   }, []);
 
   // ✅ Tính phần trăm sức chứa kho
-  const usagePercent = storage.capacity > 0
-    ? ((storage.capacity - storage.remaining_capacity) / storage.capacity) * 100
-    : 0;
+  const usagePercent =
+    storage.capacity > 0
+      ? ((storage.capacity - storage.remaining_capacity) / storage.capacity) *
+        100
+      : 0;
 
+      const formattedUsagePercent = usagePercent.toFixed(2);
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* 🟢 Header */}
@@ -121,19 +139,30 @@ const DashboardWarehouse = () => {
           <Statistic title="Tổng đơn nhập kho" value={stats.totalReceipts} />
         </Card>
         <Card>
-          <Statistic title="Đơn Chờ Duyệt" value={stats.pendingReceipts} valueStyle={{ color: "#faad14" }} />
+          <Statistic
+            title="Đơn Chờ Duyệt"
+            value={stats.pendingReceipts}
+            valueStyle={{ color: "#faad14" }}
+          />
         </Card>
         <Card>
-          <Statistic title="Đơn Đã Duyệt" value={stats.approvedReceipts} valueStyle={{ color: "#52c41a" }} />
+          <Statistic
+            title="Đơn Đã Duyệt"
+            value={stats.approvedReceipts}
+            valueStyle={{ color: "#52c41a" }}
+          />
         </Card>
       </div>
 
       {/* 🟢 Thông tin kho */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-4">Thông tin kho: {storage.name_storage}</h2>
-        <Progress percent={usagePercent} status="active" />
+        <h2 className="text-xl font-semibold mb-4">
+          Thông tin kho: {storage.name_storage}
+        </h2>
+        <Progress percent={formattedUsagePercent} status="active" />
         <p className="mt-2 text-gray-600">
-          {storage.capacity - storage.remaining_capacity} / {storage.capacity} đã sử dụng
+          {storage.capacity - storage.remaining_capacity} / {storage.capacity}{" "}
+          đã sử dụng
         </p>
       </div>
 
@@ -143,14 +172,21 @@ const DashboardWarehouse = () => {
         <Table
           columns={[
             { title: "Mã đơn", dataIndex: "_id", key: "_id", width: 150 },
-            { title: "Người quản lý", dataIndex: ["manager_id", "full_name"], key: "manager_id" },
+            {
+              title: "Người quản lý",
+              dataIndex: ["manager_id", "full_name"],
+              key: "manager_id",
+            },
             { title: "Trạng thái", dataIndex: "status", key: "status" },
             { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
             {
               title: "Ngày nhập",
               dataIndex: "createdAt",
               key: "createdAt",
-              render: (date) => date ? moment(date).format("DD/MM/YYYY HH:mm") : "Không có dữ liệu"
+              render: (date) =>
+                date
+                  ? moment(date).format("DD/MM/YYYY HH:mm")
+                  : "Không có dữ liệu",
             },
           ]}
           dataSource={receipts}

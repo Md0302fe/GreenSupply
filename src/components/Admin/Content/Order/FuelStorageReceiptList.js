@@ -282,7 +282,11 @@ const handleExportFileExcel = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Ngày Nhập Kho">{selectedReceipt.createdAt ? converDateString(selectedReceipt.createdAt) : "Không có dữ liệu"}</Descriptions.Item>
                 <Descriptions.Item label="Ngày Cập Nhật">{selectedReceipt.updatedAt ? converDateString(selectedReceipt.updatedAt) : "Không có dữ liệu"}</Descriptions.Item>
-                <Descriptions.Item label="Ghi Chú">{selectedReceipt.note || "Không có ghi chú"}</Descriptions.Item>
+                <Descriptions.Item label="Ghi Chú">
+                    {selectedReceipt.receipt_request_id?.note || 
+                     selectedReceipt.receipt_supply_id?.note || 
+                    "Không có ghi chú"}
+               </Descriptions.Item>
             </Descriptions>
 
             {/* 🟢 Nút Duyệt & Hủy đơn */}
