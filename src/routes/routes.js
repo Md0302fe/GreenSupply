@@ -9,7 +9,7 @@ import ManageUser from "../components/Admin/Content/User/AdminUser";
 import ManageBlockedUser from "../components/Admin/Content/User/BlockedUser";
 
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
-
+import Dashboard1 from "../components/Admin/Content/Dashboard/Dashboard1";
 // Toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -57,13 +57,14 @@ const Router = () => {
 
         {/* admin-page  : LayoutAdmin*/}
         <Route path="/system/admin" element={<Admin />}>
-          <Route index element={<Dashboard />} />
+        <Route index element={<Dashboard />} />
           <Route path="manage-users" element={<ManageUser />} />
           <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
           
         </Route>
 
         <Route path="/system/admin" element={<Admin />}>
+          <Route path="manage-warehouse" element={<Dashboard1 />} />
           <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
           <Route path="View-Order-Success" element={<OrderPage />} />

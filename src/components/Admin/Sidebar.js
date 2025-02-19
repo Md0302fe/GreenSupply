@@ -99,6 +99,10 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             title="Quản Lý Kho"
             style={{ paddingTop: "10px", paddingBottom: "10px" }}
           >
+              <MenuItem>
+              Dashboard
+              <Link to={"manage-warehouse"} />
+            </MenuItem>
             <MenuItem>
             Danh Sách Đơn Nhập Kho
               <Link to={"warehouse-receipt"} />

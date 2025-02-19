@@ -5,7 +5,7 @@ import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { converDateString } from "../../../../ultils";
-
+import { Excel } from "antd-table-saveas-excel";
 const FuelStorageReceiptList = () => {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,11 +61,15 @@ const FuelStorageReceiptList = () => {
 
         setLoading(true); // Chặn spam nút
 
+        console.log("📌 Gửi request cập nhật trạng thái:", { id, newStatus });
+
         const response = await axios.put(
             `http://localhost:3001/api/fuel-storage/update/${id}`,
             { status: newStatus },
             { headers: { Authorization: `Bearer ${token}` } }
         );
+
+        console.log("✅ API Response:", response.data);
 
         if (response.data.success) {
             message.success(`Đã cập nhật trạng thái thành: ${newStatus}`);
@@ -79,14 +83,48 @@ const FuelStorageReceiptList = () => {
             // 🔄 Load lại danh sách đơn hàng
             fetchReceipts();
         } else {
+            console.error("❌ API báo lỗi:", response.data);
             message.error("Lỗi khi cập nhật trạng thái!");
         }
     } catch (error) {
-        message.error("Lỗi khi cập nhật trạng thái!");
+        console.error("❌ Lỗi API:", error);
+
+        if (error.response) {
+            console.error("🔴 Chi tiết lỗi:", error.response);
+            message.error(`Lỗi API: ${error.response.status} - ${error.response.data.message || "Không rõ lỗi"}`);
+        } else {
+            message.error("Không thể kết nối đến server!");
+        }
     }
     setLoading(false); // Kích hoạt lại nút
 };
 
+
+const handleExportFileExcel = () => {
+  if (!receipts.length) {
+    message.warning("Không có dữ liệu để xuất!");
+    return;
+  }
+
+  const excel = new Excel();
+  excel
+    .addSheet("Danh sách Đơn Nhập Kho")
+    .addColumns(columns.filter((col) => col.dataIndex !== "action")) // Bỏ cột "Hành động"
+    .addDataSource(
+      receipts.map((receipt) => ({
+        manager: receipt.manager_id?.full_name || "Không có dữ liệu",
+        storage: receipt.storage_id?.name_storage || "Không có dữ liệu",
+        receiptType: receipt.receipt_supply_id ? "Cung cấp" : "Thu hàng",
+        quantity: receipt.receipt_request_id?.quantity || receipt.receipt_supply_id?.quantity || "Không có dữ liệu",
+        status: receipt.status,
+        createdAt: converDateString(receipt.createdAt),
+        updatedAt: converDateString(receipt.updatedAt),
+        note: receipt.note || "Không có ghi chú",
+      })),
+      { str2Percent: true }
+    )
+    .saveAs("DanhSachDonNhapKho.xlsx");
+};
 
   // 🔍 Tìm kiếm
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -211,8 +249,17 @@ const FuelStorageReceiptList = () => {
 
   return (
     <div className="fuel-storage-receipt-list">
+      
       <h2>Danh sách Đơn Nhập Kho</h2>
+      <Button 
+            type="primary" 
+            className="mb-4 mt-4"
+             onClick={handleExportFileExcel} 
+             style={{ backgroundColor: "black", borderColor: "black"}} >Xuất File 
+      </Button>
+
       <Table columns={columns} dataSource={receipts} loading={loading} rowKey="_id" pagination={{ pageSize: 10 }} />
+      
       <Modal title="Chi tiết Đơn Nhập Kho" open={isModalOpen} onCancel={handleCancel} footer={null}>
     {selectedReceipt && (
         <>
@@ -245,7 +292,7 @@ const FuelStorageReceiptList = () => {
             <Button 
                 type="primary" 
                 onClick={() => updateReceiptStatus(selectedReceipt._id, "Đã duyệt")}
-                disabled={loading || selectedReceipt.status === "Đã duyệt" || selectedReceipt.status === "Đã huỷ"} // 🔴 Chặn bấm khi đã duyệt/hủy
+                disabled={loading || selectedReceipt.status === "Đã duyệt" || selectedReceipt.status === "Đã huỷ"} 
             >
                 Duyệt
             </Button>
@@ -253,7 +300,7 @@ const FuelStorageReceiptList = () => {
                 type="default" 
                 danger
                 onClick={() => updateReceiptStatus(selectedReceipt._id, "Đã huỷ")}
-                disabled={loading || selectedReceipt.status === "Đã huỷ" || selectedReceipt.status === "Đã duyệt"} // 🔴 Chặn bấm khi đã duyệt/hủy
+                disabled={loading || selectedReceipt.status === "Đã huỷ" || selectedReceipt.status === "Đã duyệt"}
             >
                 Hủy
             </Button>
