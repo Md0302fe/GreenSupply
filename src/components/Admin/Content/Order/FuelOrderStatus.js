@@ -56,6 +56,7 @@ const FuelOrderStatus = () => {
     setLoading(false);
   };
   
+  
   const createFuelStorageReceipt = async (order) => {
     try {
       const token = localStorage.getItem("access_token");

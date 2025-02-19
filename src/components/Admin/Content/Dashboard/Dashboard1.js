@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Progress, Table, Card, Statistic, message } from "antd";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { Pie, Column } from "@ant-design/plots";
+
 import moment from "moment";
 
 const DashboardWarehouse = () => {
@@ -47,7 +49,7 @@ const DashboardWarehouse = () => {
         if (allReceipts.length > 0) {
           console.log("📌 Danh sách allReceipts:", allReceipts);
 
-          // ✅ Lọc các đơn nhập kho chỉ trong ngày hôm nay
+          // ✅ Lọc các đơn nhập kho chỉ trong ngày hôm nay & sắp xếp theo thời gian giảm dần
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Đặt giờ về đầu ngày
 
@@ -63,7 +65,10 @@ const DashboardWarehouse = () => {
 
           // Lọc đơn nhập kho trong ngày
 
-          console.log("📌 Đơn nhập kho trong ngày:", allReceipts);
+          console.log(
+            "📌 Đơn nhập kho hôm nay (sắp xếp giảm dần):",
+            allReceipts
+          );
 
           // ✅ Tìm đơn nhập kho đầu tiên có storage_id hợp lệ
           const validStorageReceipt = allReceipts.find(
@@ -125,7 +130,32 @@ const DashboardWarehouse = () => {
         100
       : 0;
 
-      const formattedUsagePercent = usagePercent.toFixed(2);
+  // ✅ Làm tròn số phần trăm hiển thị
+const formattedUsagePercent = usagePercent.toFixed(2); // Giữ 2 số sau dấu thập phân
+
+  // ✅ Cấu hình biểu đồ cột cho thống kê đơn nhập kho
+  const receiptsChartData = [
+    { status: "Tổng đơn", count: stats.totalReceipts },
+    { status: "Chờ duyệt", count: stats.pendingReceipts },
+    { status: "Đã duyệt", count: stats.approvedReceipts },
+  ];
+
+  const receiptsChartConfig = {
+  data: receiptsChartData,
+  xField: "status",
+  yField: "count",
+  color: ({ status }) => {
+    return status === "Đã duyệt" ? "#52c41a" : status === "Chờ duyệt" ? "#faad14" : "#1890ff";
+  },
+  label: { 
+    position: "top",  // ✅ Thay "middle" thành "top" hoặc "bottom"
+    style: { fill: "#FFFFFF", fontSize: 12 } 
+  },
+  xAxis: { label: { autoHide: true, autoRotate: false } },
+};
+
+
+      
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* 🟢 Header */}
@@ -166,9 +196,15 @@ const DashboardWarehouse = () => {
         </p>
       </div>
 
+      {/* 🟢 Biểu đồ cột thống kê đơn nhập kho */}
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 className="text-xl font-semibold mb-4">Thống kê đơn nhập kho</h2>
+        <Column {...receiptsChartConfig} />
+      </div>
+
       {/* 🟢 Danh sách đơn nhập kho gần đây */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Đơn nhập kho gần đây</h2>
+        <h2 className="text-xl font-semibold mb-4">Đơn nhập kho trong ngày</h2>
         <Table
           columns={[
             { title: "Mã đơn", dataIndex: "_id", key: "_id", width: 150 },
