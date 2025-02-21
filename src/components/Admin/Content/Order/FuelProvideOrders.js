@@ -23,7 +23,9 @@ import { message } from "antd";
 import {
   handleAcceptProvideOrders,
   handleCancelProvideOrders,
+  handleCompleteProvideOrders,
 } from "../../../../services/OrderServices";
+import { FaEye } from "react-icons/fa";
 
 const FuelProvideManagement = () => {
   // gọi vào store redux get ra user
@@ -39,6 +41,9 @@ const FuelProvideManagement = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
+
+  // State để lưu trạng thái đơn hàng
+  const [orderStatus, setOrderStatus] = useState("");
 
   //  State Details quản lý products khi có req edit
   const [stateDetailsUser, setStateDetailsUser] = useState({
@@ -75,6 +80,7 @@ const FuelProvideManagement = () => {
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
       });
+      setOrderStatus(res?.data.status); // Cập nhật trạng thái đơn hàng từ dữ liệu
     }
 
     setIsLoadDetails(false);
@@ -85,28 +91,47 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleAcceptProvideOrders(stateDetailsUser._id);
       if (response) {
+        setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
+        
       } else {
         message.error("Duyệt đơn thất bại!");
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi duyệt đơn!");
+      message.error(`Có lỗi xảy ra khi duyệt đơn: ${error.message}`);
     }
   };
   
-  // cancel orders
   const handleCancelProvideOrder = async () => {
     try {
       const response = await handleCancelProvideOrders(stateDetailsUser._id);
       if (response) {
+        setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
+       
       } else {
         message.error("Hủy đơn thất bại!");
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi hủy đơn!");
+      message.error(`Có lỗi xảy ra khi hủy đơn: ${error.message}`);
     }
   };
+
+  //hoan thanh don
+    const handleCompleteProvideOrder = async () => {
+      try {
+        const response = await handleCompleteProvideOrders(stateDetailsUser._id);
+        if (response) {
+          setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+          message.success("Đơn hàng đã được hoàn thành thành công!");
+        } else {
+          message.error("Hoàn thành đơn thất bại!");
+        }
+      } catch (error) {
+        message.error("Có lỗi xảy ra khi hoàn thành đơn!");
+      }
+    };
+  
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -270,17 +295,11 @@ const FuelProvideManagement = () => {
         style={{ justifyContent: "space-around", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-        <span
-          style={{
-            color: "#FF5733", // Màu sắc chữ
-            fontWeight: "bold", // Đậm
-            textDecoration: "underline", // Gạch chân
-            fontSize: "16px", // Kích thước chữ
-            transition: "color 0.3s", // Hiệu ứng chuyển màu
-          }}
+        <button
+          className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md"
         >
-          Xem Chi Tiết Đơn
-        </span>
+          <FaEye size={16} />Chi Tiết
+        </button>
       </div>
     );
   };
@@ -441,6 +460,9 @@ const FuelProvideManagement = () => {
           case "Đã hủy":
             color = "red"; // Màu đỏ cho đơn hàng đã hủy
             break;
+            case "Hoàn thành":
+            color = "blue"; // Thêm màu cho trạng thái "Đã hoàn thành"
+            break;
           default:
             color = "default"; // Mặc định nếu trạng thái không khớp
         }
@@ -529,35 +551,32 @@ const FuelProvideManagement = () => {
             </Form.Item>
 
             <Form.Item label="Trạng Thái" name="status">
-              <span>{stateDetailsUser?.status || ""}</span>
+                    <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
             </Form.Item>
             <Form.Item label="Tổng Giá" name="total_price">
               <span>{stateDetailsUser?.total_price || ""}</span>
             </Form.Item>
 
-            <Form.Item
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
-            >
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Button
-                  type="primary"
-                  onClick={handleAcceptProvideOrder} // Gọi API duyệt đơn
-                >
-                  Duyệt đơn
-                </Button>
-
-                <Button
-                  type="default"
-                  danger
-                  onClick={handleCancelProvideOrder} // Gọi API Hủy đơn
-                >
-                  Hủy đơn
-                </Button>
-              </div>
-            </Form.Item>
+           <Form.Item
+             wrapperCol={{
+               offset: 4, // Giảm offset để đẩy UI qua trái
+               span: 16,
+             }}
+           >
+             <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
+               <Button type="primary" onClick={handleAcceptProvideOrder}>
+                 Duyệt đơn
+               </Button>
+           
+               <Button type="default" danger onClick={handleCancelProvideOrder}>
+                 Hủy đơn
+               </Button>
+           
+               <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteProvideOrder}>
+                 Hoàn thành
+               </Button>
+             </div>
+           </Form.Item>
           </Form>
         </Loading>
       </DrawerComponent>
