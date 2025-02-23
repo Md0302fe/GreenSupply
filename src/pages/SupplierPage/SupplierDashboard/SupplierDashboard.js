@@ -5,7 +5,10 @@ import SideBar from "../SideBar/SideBar";
 import "../../../styles/css/HeaderSupplier.css";
 import HarvestRequestPage from "../ContentWrapper/HarvestRequestPage";
 import HarvestRequestManagement from "../ContentWrapper/HarvestRequestManagement";
+import HistoryRequestOrder from "../ContentWrapper/HistoryRequestOrder";
+import HistoryProvideOrder from "../ContentWrapper/HistoryProvideOrder";
 import SupplyRequestPage from "../ContentWrapper/SupplyRequestPage";
+import SupplyRequestHistory from "../ContentWrapper/SupplyRequestHistory";
 import { ToastContainer } from "react-toastify";
 
 const SupplierDashboard = () => {
@@ -52,7 +55,10 @@ const SupplierDashboard = () => {
               />
               <Route path="harvest-request" element={<HarvestRequestPage />} />
               <Route path="harvest-request-management" element={<HarvestRequestManagement />} />
+              <Route path="history-request-order" element={<HistoryRequestOrder />} />
+              <Route path="history-provide-order" element={<HistoryProvideOrder />} />
               <Route path="supply-request" element={<SupplyRequestPage />} />
+              <Route path="supply-request-history" element={<SupplyRequestHistory />} />
             </Routes>
           </div>
         </div>

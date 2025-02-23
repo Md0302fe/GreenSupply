@@ -1,8 +1,9 @@
 .admin-container {
   display: flex;
+  height: 100%;
   .admin-sidebar {
     .pro-sidebar {
-      height: 100vh;
+      height: 100%;
     }
 
     .pro-sidebar-layout {

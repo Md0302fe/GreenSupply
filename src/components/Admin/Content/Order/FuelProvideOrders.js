@@ -93,7 +93,7 @@ const FuelProvideManagement = () => {
       if (response) {
         setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
-        
+
       } else {
         message.error("Duyệt đơn thất bại!");
       }
@@ -101,14 +101,14 @@ const FuelProvideManagement = () => {
       message.error(`Có lỗi xảy ra khi duyệt đơn: ${error.message}`);
     }
   };
-  
+
   const handleCancelProvideOrder = async () => {
     try {
       const response = await handleCancelProvideOrders(stateDetailsUser._id);
       if (response) {
         setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
-       
+
       } else {
         message.error("Hủy đơn thất bại!");
       }
@@ -118,20 +118,20 @@ const FuelProvideManagement = () => {
   };
 
   //hoan thanh don
-    const handleCompleteProvideOrder = async () => {
-      try {
-        const response = await handleCompleteProvideOrders(stateDetailsUser._id);
-        if (response) {
-          setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
-          message.success("Đơn hàng đã được hoàn thành thành công!");
-        } else {
-          message.error("Hoàn thành đơn thất bại!");
-        }
-      } catch (error) {
-        message.error("Có lỗi xảy ra khi hoàn thành đơn!");
+  const handleCompleteProvideOrder = async () => {
+    try {
+      const response = await handleCompleteProvideOrders(stateDetailsUser._id);
+      if (response) {
+        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        message.success("Đơn hàng đã được hoàn thành thành công!");
+      } else {
+        message.error("Hoàn thành đơn thất bại!");
       }
-    };
-  
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi hoàn thành đơn!");
+    }
+  };
+
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -447,7 +447,7 @@ const FuelProvideManagement = () => {
       ],
       onFilter: (value, record) => record.status.includes(value),
       render: (status) => {
-        
+
         let color = "";
         console.log("status", status);
         switch (status) {
@@ -460,13 +460,13 @@ const FuelProvideManagement = () => {
           case "Đã hủy":
             color = "red"; // Màu đỏ cho đơn hàng đã hủy
             break;
-            case "Hoàn thành":
+          case "Hoàn thành":
             color = "blue"; // Thêm màu cho trạng thái "Đã hoàn thành"
             break;
           default:
             color = "default"; // Mặc định nếu trạng thái không khớp
         }
-    
+
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -551,32 +551,42 @@ const FuelProvideManagement = () => {
             </Form.Item>
 
             <Form.Item label="Trạng Thái" name="status">
-                    <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
+              <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
             </Form.Item>
             <Form.Item label="Tổng Giá" name="total_price">
               <span>{stateDetailsUser?.total_price || ""}</span>
             </Form.Item>
 
-           <Form.Item
-             wrapperCol={{
-               offset: 4, // Giảm offset để đẩy UI qua trái
-               span: 16,
-             }}
-           >
-             <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
-               <Button type="primary" onClick={handleAcceptProvideOrder}>
-                 Duyệt đơn
-               </Button>
-           
-               <Button type="default" danger onClick={handleCancelProvideOrder}>
-                 Hủy đơn
-               </Button>
-           
-               <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteProvideOrder}>
-                 Hoàn thành
-               </Button>
-             </div>
-           </Form.Item>
+            <Form.Item
+              wrapperCol={{
+                offset: 4, // Giảm offset để đẩy UI qua trái
+                span: 16,
+              }}
+            >
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
+
+                {orderStatus === 'Chờ duyệt' && (
+                  <>
+                    <Button type="primary" onClick={handleAcceptProvideOrder}>
+                      Duyệt đơn
+                    </Button>
+
+                    <Button type="default" danger onClick={handleCancelProvideOrder}>
+                      Hủy đơn
+                    </Button>
+                  </>
+                )}
+
+
+                {orderStatus === 'Đã duyệt' && (
+                  <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteProvideOrder}>
+                    Hoàn thành
+                  </Button>
+                )}
+
+                  
+              </div>
+            </Form.Item>
           </Form>
         </Loading>
       </DrawerComponent>

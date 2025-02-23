@@ -224,6 +224,7 @@ const FuelRequestsManagement = () => {
 
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
+
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -481,17 +482,23 @@ const FuelRequestsManagement = () => {
   }}
 >
   <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
-    <Button type="primary" onClick={handleApproveOrder}>
-      Duyệt đơn
-    </Button>
+    {orderStatus === 'Chờ duyệt' && (
+      <>
+        <Button type="primary" onClick={handleApproveOrder}>
+          Duyệt đơn
+        </Button>
 
-    <Button type="default" danger onClick={handleCancelOrder}>
-      Hủy đơn
-    </Button>
+        <Button type="default" danger onClick={handleCancelOrder}>
+          Hủy đơn
+        </Button>
+      </>
+    )}
 
-    <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteOrder}>
-      Hoàn thành
-    </Button>
+    {orderStatus === 'Đã duyệt' && (
+      <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteOrder}>
+        Hoàn thành
+      </Button>
+    )}
   </div>
 </Form.Item>
 
