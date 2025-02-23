@@ -103,14 +103,42 @@ const SideBar = () => {
           </Button>
         </li>
         <li>
-          <Button
-            onClick={() => navigate("/supplier/transactions-histories")}
-            className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
-          >
-            <LuHistory className="text-[20px]" />
-            <span>Lịch sử giao dịch</span>
-          </Button>
-        </li>
+  <Button
+    onClick={() => isOpenSubMenu(2)}
+    className="w-full !capitalize flex items-center gap-2 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1] text-left"
+  >
+    <RiBillLine className="text-[24px] shrink-0" />
+    <span className="whitespace-nowrap">Lịch sử đơn hàng</span>
+    <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
+      <FaAngleDown
+        className={`transition-all ${subMenuIndex === 2 ? "rotate-180" : ""}`}
+      />
+    </span>
+  </Button>
+
+  <Collapse isOpened={subMenuIndex === 2}>
+    <ul className="w-full">
+      <li className="w-full">
+        <Button
+          className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
+          onClick={() => handleClick("/supplier/history-request-order")}
+        >
+          <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
+          Đơn yêu cầu thu nguyên liệu
+        </Button>
+      </li>
+      <li className="w-full">
+        <Button
+          className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
+          onClick={() => handleClick("/supplier/history-provide-order")}
+        >
+          <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
+          Đơn cung cấp nguyên liệu
+        </Button>
+      </li>
+    </ul>
+  </Collapse>
+</li>
         <li>
           <Button
             onClick={() => navigate("/supplier/tracking-shipment")}
