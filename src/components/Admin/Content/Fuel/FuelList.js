@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { converDateString } from "../../../../ultils";
 import { Excel } from "antd-table-saveas-excel";
+import {  EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const FuelList = () => {
   const [fuels, setFuels] = useState([]);
@@ -16,6 +17,10 @@ const FuelList = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [isDeletedFilter, setIsDeletedFilter] = useState(null); // Filter by is_deleted
   const searchInput = useRef(null);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [editingFuel, setEditingFuel] = useState(null);
+  const [updateData, setUpdateData] = useState({ type_name: "", description: "" });
+
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -49,6 +54,50 @@ const FuelList = () => {
     }
     setLoading(false);
   };
+  const openUpdateModal = (fuel) => {
+    setEditingFuel(fuel);
+    setUpdateData({ type_name: fuel.type_name, description: fuel.description });
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const res = await axios.put(`http://localhost:3001/api/fuel/update/${editingFuel._id}`, updateData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data.success) {
+        message.success("Cập nhật thành công!");
+        setFuels((prev) =>
+          prev.map((fuel) => (fuel._id === editingFuel._id ? { ...fuel, ...updateData } : fuel))
+        );
+        setIsUpdateModalOpen(false);
+      } else {
+        message.error("Cập nhật thất bại!");
+      }
+    } catch (error) {
+      message.error("Lỗi kết nối đến server!");
+    }
+  };
+
+  const handleCancelFuel = async (id) => {
+    try {
+      const res = await axios.put(`http://localhost:3001/api/fuel/cancel/${id}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      if (res.data.success) {
+        message.success("Đã chuyển nhiên liệu vào trạng thái Đã xóa!");
+        setFuels((prev) => prev.map((fuel) => (fuel._id === id ? { ...fuel, is_deleted: true } : fuel)));
+      } else {
+        message.error("Hủy thất bại!");
+      }
+    } catch (error) {
+      message.error("Lỗi kết nối đến server!");
+    }
+  };
+  
+
 
   useEffect(() => {
     fetchFuels();
@@ -190,9 +239,11 @@ const FuelList = () => {
       title: "Hành Động",
       key: "action",
       render: (_, record) => (
-        <Button type="primary" icon={<EyeOutlined />} onClick={() => showFuelDetails(record)}>
-          Xem
-        </Button>
+        <Space>
+  <Button type="primary" icon={<EyeOutlined />} onClick={() => showFuelDetails(record)} />
+  <Button type="default" icon={<EditOutlined />} onClick={() => openUpdateModal(record)} />
+  <Button danger icon={<DeleteOutlined />} onClick={() => handleCancelFuel(record._id)} />
+</Space>
       ),
     },
   ];
@@ -218,7 +269,7 @@ const FuelList = () => {
         pagination={{ pageSize: 10 }}
       />
 
-      <Modal title="Chi tiết Loại Nhiên Liệu" visible={isModalOpen} onCancel={handleCancel} footer={null}>
+      <Modal title="Chi tiết Loại Nhiên Liệu" visible={isModalOpen} onCancel={handleCancel} footer={null} >
         {selectedFuel && (
           <Descriptions bordered column={1}>
             <Descriptions.Item label="Tên Loại Nhiên Liệu">{selectedFuel.type_name}</Descriptions.Item>
@@ -233,6 +284,32 @@ const FuelList = () => {
           </Descriptions>
         )}
       </Modal>
+      <Modal
+        title="Cập nhật Loại Nhiên Liệu"
+        open={isUpdateModalOpen}
+        onCancel={() => setIsUpdateModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsUpdateModalOpen(false)}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleUpdate}>
+            Lưu
+          </Button>,
+        ]}
+      >
+        <Input
+          value={updateData.type_name}
+          onChange={(e) => setUpdateData({ ...updateData, type_name: e.target.value })}
+          placeholder="Tên Loại Nhiên Liệu"
+          className="mb-2"
+        />
+        <Input.TextArea
+          value={updateData.description}
+          onChange={(e) => setUpdateData({ ...updateData, description: e.target.value })}
+          placeholder="Mô Tả"
+        />
+      </Modal>
+
     </div>
   );
 };
