@@ -7,6 +7,7 @@ import Highlighter from "react-highlight-words";
 import { converDateString } from "../../../../ultils";
 import { Excel } from "antd-table-saveas-excel";
 import {  EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { toast } from "react-toastify";
 
 const FuelList = () => {
   const [fuels, setFuels] = useState([]);
@@ -62,6 +63,10 @@ const FuelList = () => {
 
   const handleUpdate = async () => {
     try {
+      if (updateData.type_name === "") {
+        toast.error('Tên nhiên liệu không được để trống');
+        return;
+      }
       const res = await axios.put(`http://localhost:3001/api/fuel/update/${editingFuel._id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` },
       });
