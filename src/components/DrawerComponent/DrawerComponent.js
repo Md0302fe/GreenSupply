@@ -10,7 +10,7 @@ const DrawerComponent = ({
 }) => {
   return (
     <>
-      <Drawer title={title} placement={placement} open={isOpen} {...rest} width={470}>
+      <Drawer title={title} placement={placement} open={isOpen} {...rest}>
         {children}
       </Drawer>
     </>

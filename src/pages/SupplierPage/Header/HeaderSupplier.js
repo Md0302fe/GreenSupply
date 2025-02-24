@@ -26,6 +26,9 @@ import * as UserServices from "../../../services/UserServices";
 import { resetUser } from "../../../redux/slides/userSlides";
 import { persistor } from "../../../redux/store";
 
+
+import { MdDashboardCustomize } from "react-icons/md";
+
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     right: -3,
@@ -202,6 +205,16 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
               <FaRegUser className="text-[16px]" />
               <a href="/profile" className="text-[14px]">
                 Profile
+              </a>
+            </MenuItem>
+
+            <MenuItem
+              onClick={handleCloseMyAcc}
+              className="flex items-center gap-3"
+            >
+              <MdDashboardCustomize className="text-[16px]" />
+              <a href="/system/admin" className="text-[14px]">
+                Quản lý hệ thống
               </a>
             </MenuItem>
 

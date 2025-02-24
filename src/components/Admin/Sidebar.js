@@ -15,6 +15,8 @@ import {
 import { FaGem, FaGithub } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa"
 import { FaWarehouse } from "react-icons/fa";
+import { VscListOrdered } from "react-icons/vsc";
+
 
 
 import sidebarBg from "../../assets/bg2.jpg";
@@ -67,6 +69,35 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
               <MenuItem>
                 Quản lý người dùng
                 <Link to={"manage-users"} />
+              </MenuItem>
+              <MenuItem>
+                Quản lý tài khoản
+                <Link to={"manage-blocked-users"} />
+              </MenuItem>
+            </SubMenu>
+          </Menu>
+          {/* Purchase Order Request */}
+          <Menu iconShape="circle">
+            <SubMenu
+              // suffix={<span className="badge yellow">3</span>}
+              icon={<VscListOrdered />}
+              title="Đơn Thu Nhiên Liệu"
+            >
+              <MenuItem>
+                Quản Lý Đơn
+                <Link to={"manage-users"} />
+              </MenuItem>
+              <MenuItem>
+                Tạo Yêu Cầu
+                <Link to={"C_purchase-order"} />
+              </MenuItem>
+              <MenuItem>
+                Danh Sách Yêu Cầu Đã Tạo
+                <Link to={"R_purchase-orders"} />
+              </MenuItem>
+              <MenuItem>
+                Danh Sách Yêu Cầu Đã Hoàn Thành
+                <Link to={"manage-blocked-users"} />
               </MenuItem>
               <MenuItem>
                 Quản lý tài khoản

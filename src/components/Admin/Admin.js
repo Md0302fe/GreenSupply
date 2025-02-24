@@ -12,9 +12,9 @@ const Admin = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   return (
-    <div className="admin-container">
+    <div className="admin-container min-h-screen overflow-y-auto">
       {/* Admin-Sidebar - [AS] */}
-      <div className="admin-sidebar">
+      <div className="admin-sidebar min-h-screen">
         <Sidebar collapsed={collapsed}></Sidebar>
       </div>
       <div className="admin-content w-full">

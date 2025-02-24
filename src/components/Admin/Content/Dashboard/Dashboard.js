@@ -5,7 +5,7 @@ const DashboardComponent = () => {
     <div className="min-h-screen bg-gray-100">
       <header className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-6 shadow-lg">
         <h1 className="text-4xl font-bold">
-          Hệ Thống Quản Lý Sản Xuất và Phân Phối
+          Hệ Thống Quản Lý GreenSupply
         </h1>
         <nav className="mt-4">
           <ul className="flex space-x-6">
