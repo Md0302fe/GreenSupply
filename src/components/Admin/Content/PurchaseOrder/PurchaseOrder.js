@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import Shop from "../../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
-import { toast, ToastContainer } from "react-toastify";
-import { createHarvestRequest } from "../../../../services/HarvestRequestService";
+import { toast } from "react-toastify";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -49,23 +48,9 @@ const HarvestRequestPage = () => {
   // Xử lý input
   const handleChange = (e) => {
     const { name, value } = e.target;
-    let newErrors = { ...errors };
-
-    // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
-    if (name === "request_name") {
-      if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9]+$/.test(value)) {
-        toast.warning("Tên mặt hàng chỉ chứa chữ, số và khoảng trắng!");
-        return;
-      }
-      setFormData((prev) => ({ ...prev, [name]: value }));
-      setErrors(newErrors);
-      return;
-    }
-
     if ((name === "quantity" || name === "price") && value === "0") {
       return;
     }
-
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -236,9 +221,9 @@ const HarvestRequestPage = () => {
                   <option value="" disabled>
                     Chọn loại nhiên liệu
                   </option>
-                  <option value="67950da386a0a462d408c7b9">Xăng</option>
-                  <option value="67950fec8465df03b29bf753">Dầu Diesel</option>
-                  <option value="67950f9f8465df03b29bf752">Khí hóa lỏng</option>
+                  <option value="67950da386a0a462d408c7b9">Xoài thanh ca</option>
+                  <option value="67950fec8465df03b29bf753">Xoài cát hòa lộc</option>
+                  <option value="67950f9f8465df03b29bf752">Xoài keo</option>
                 </select>
               </div>
 
@@ -391,7 +376,6 @@ const HarvestRequestPage = () => {
                 </span>
               </div>
 
-              {/* Nút bấm */}
               {/* Nút bấm */}
               <div className="flex flex-col md:flex-row md:justify-between gap-4">
                 <button

@@ -737,21 +737,21 @@ const UserComponent = () => {
                 </div>
 
                 {/* Nút bấm */}
-                {/* <div className="flex flex-col md:flex-row md:justify-between gap-4">
-            <button
-              onClick={() => handleSubmit()}
-              className="bg-yellow-400 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
-            >
-              📨 Gửi Yêu Cầu
-            </button>
-            <button
-              type="button"
-              onClick={() => setFormData({})}
-              className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
-            >
-              🔄 Làm mới
-            </button>
-          </div> */}
+                <div className="flex flex-col md:flex-row md:justify-between gap-4">
+                  <button
+                    onClick={() => {}}
+                    className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+                  >
+                    📨 Xác nhận yêu cầu
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {}}
+                    className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
+                  >
+                    ❌ Hủy yêu cầu
+                  </button>
+                </div>
               </div>
             </div>
           </div>
