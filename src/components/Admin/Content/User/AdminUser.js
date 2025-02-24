@@ -5,7 +5,7 @@ import { Button, Form, Input, Select, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 
-import { BiBlock, BiImageAdd, BiTrash } from "react-icons/bi";
+import { BiImageAdd } from "react-icons/bi";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
 import { converDateString } from "../../../../ultils";
 
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
