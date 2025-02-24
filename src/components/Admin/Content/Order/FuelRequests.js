@@ -22,25 +22,24 @@ import { message } from "antd";
 import {
   handleAcceptOrders,
   handleCancelOrders,
+  handleCompleteOrders,
 } from "../../../../services/OrderServices";
+import { FaEye } from "react-icons/fa";
 
 const FuelRequestsManagement = () => {
-  // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
-
+  const [orderStatus, setOrderStatus] = useState(""); // State để lưu trạng thái đơn hàng
+  const [reload, setReload] = useState(false);
   const user = useSelector((state) => state.user);
-
-  //  Search Props
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
 
-  //  State Details quản lý products khi có req edit
-  const [stateDetailsUser, setStateDetailsUser] = useState({
+  const [stateDetailsUser , setStateDetailsUser ] = useState({
     _id: "",
     address: "",
     createdAt: "",
@@ -55,15 +54,11 @@ const FuelRequestsManagement = () => {
     supplier_id: {},
     total_price: "",
   });
-  console.log("statedetails", stateDetailsUser);
 
-  // Fetch : Get User Details
   const fetchGetUserDetails = async ({ id, access_token }) => {
     const res = await OrderServices.getDetailOrders(id, access_token);
-    // Get respone từ api và gán vào state update details
-
     if (res?.data) {
-      setStateDetailsUser({
+      setStateDetailsUser ({
         _id: res?.data._id,
         address: res?.data.address,
         createdAt: res?.data.createdAt,
@@ -78,17 +73,22 @@ const FuelRequestsManagement = () => {
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
       });
+      setOrderStatus(res?.data.status); // Cập nhật trạng thái đơn hàng từ dữ liệu
     }
-
     setIsLoadDetails(false);
     return res;
   };
+  
+  useEffect(() => {
+    fetchGetAllOrder();
+    
+  }, [reload]);
 
-  //accept order
   const handleApproveOrder = async () => {
     try {
-      const response = await handleAcceptOrders(stateDetailsUser._id);
+      const response = await handleAcceptOrders(stateDetailsUser ._id);
       if (response) {
+        setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
       } else {
         message.error("Duyệt đơn thất bại!");
@@ -97,11 +97,12 @@ const FuelRequestsManagement = () => {
       message.error("Có lỗi xảy ra khi duyệt đơn!");
     }
   };
-  // cancel orders
+
   const handleCancelOrder = async () => {
     try {
-      const response = await handleCancelOrders(stateDetailsUser._id);
+      const response = await handleCancelOrders(stateDetailsUser ._id);
       if (response) {
+        setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
       } else {
         message.error("Hủy đơn thất bại!");
@@ -111,34 +112,31 @@ const FuelRequestsManagement = () => {
     }
   };
 
+  const handleCompleteOrder = async () => {
+    try {
+      
+      const response = await handleCompleteOrders(stateDetailsUser ._id);
+      if (response) {
+        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        message.success("Đơn hàng đã được hoàn thành thành công!");
+        setReload(!reload);
+      } else {
+        message.error("Hoàn thành đơn thất bại!");
+        
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi hoàn thành đơn!");
+    }
+  };
+
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
     setIsDrawerOpen(true);
   };
 
-  // Mutation - Update Product
-  const mutationUpdate = useMutationHooks((data) => {
-    const { id, token, dataUpdate } = data;
-    // convert data tại đây tránh lỗi vặt
-    const updatedData = {
-      ...dataUpdate,
-      isAdmin: dataUpdate?.isAdmin === "admin",
-    };
+  
 
-    // remember return . tránh việc mutationUpdate không trả về data
-    return UserServices.updateUser({
-      id,
-      access_token: token,
-      data: updatedData,
-    });
-  });
-
-  const {
-    data: dataRes,
-    isError: isErrorUpdate,
-    isPending: isPendingUpDate,
-    isSuccess: isSuccessUpdate,
-  } = mutationUpdate;
+ 
 
   // Handle each time rowSelected was call
   useEffect(() => {
@@ -177,63 +175,13 @@ const FuelRequestsManagement = () => {
   });
   const { isLoading, data: orders } = queryOrder;
 
-  // Submit Form Update Product
-  const onFinishUpdate = () => {
-    mutationUpdate.mutate(
-      // params 1: Object {chứa thông tin của }
-      {
-        id: rowSelected,
-        token: user?.access_token,
-        dataUpdate: stateDetailsUser,
-      },
-      // callback onSettled : đây là 1 chức năng của useQuery giúp tự động gọi hàm get lại danh sách sản phẩm (cập nhật list mới nhất)
-      {
-        onSettled: () => {
-          queryOrder.refetch();
-        },
-      }
-    );
-  };
+ 
 
-  // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
-  useEffect(() => {
-    if (isSuccessUpdate) {
-      if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
-        handleCancelUpdate();
-      } else {
-        toast.error(dataRes?.message);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessUpdate, isErrorUpdate]);
+ 
 
-  // CANCEL MODAL - DELETE PRODUCT
-  const handleCancelDelete = () => {
-    setIsOpenDelete(false);
-  };
+ 
 
-  // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
-  const handleCancelUpdate = () => {
-    setStateDetailsUser({
-      name: "",
-      email: "",
-      phone: "",
-      isAdmin: "",
-      avatar: "",
-      address: "",
-    });
-    formUpdate.resetFields();
-    setIsDrawerOpen(false);
-  };
-
-  // ONCHANGE FIELDS - UPDATE
-  const handleOnChangeDetails = (value, name) => {
-    setStateDetailsUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+ 
 
   // DATA FROM USERS LIST
   const tableData =
@@ -254,17 +202,11 @@ const FuelRequestsManagement = () => {
         style={{ justifyContent: "space-around", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-        <span
-          style={{
-            color: "#FF5733", // Màu sắc chữ
-            fontWeight: "bold", // Đậm
-            textDecoration: "underline", // Gạch chân
-            fontSize: "16px", // Kích thước chữ
-            transition: "color 0.3s", // Hiệu ứng chuyển màu
-          }}
-        >
-          Xem Chi Tiết Đơn
-        </span>
+        <button
+  className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md"
+>
+  <FaEye size={16} />Chi Tiết
+</button>
       </div>
     );
   };
@@ -414,7 +356,6 @@ const FuelRequestsManagement = () => {
       onFilter: (value, record) => record.status.includes(value),
       render: (status) => {
         let color = "";
-        console.log("status", status);
         switch (status) {
           case "Chờ duyệt":
             color = "orange";
@@ -424,6 +365,9 @@ const FuelRequestsManagement = () => {
             break;
           case "Đã Hủy":
             color = "red";
+            break;
+          case "Hoàn thành":
+            color = "blue"; // Thêm màu cho trạng thái "Đã hoàn thành"
             break;
           default:
             color = "default";
@@ -474,7 +418,7 @@ const FuelRequestsManagement = () => {
         forceRender
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
-        <Loading isPending={isLoadDetails || isPendingUpDate}>
+        <Loading isPending={isLoadDetails}>
           <Form
             name="update-form"
             labelCol={{
@@ -489,7 +433,7 @@ const FuelRequestsManagement = () => {
             initialValues={{
               remember: true,
             }}
-            onFinish={onFinishUpdate}
+        
             autoComplete="on"
             form={formUpdate}
           >
@@ -513,7 +457,7 @@ const FuelRequestsManagement = () => {
             </Form.Item>
 
             <Form.Item label="Trạng Thái" name="status">
-              <span>{stateDetailsUser?.status || ""}</span>
+        <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
             </Form.Item>
 
             <Form.Item label="Tổng Giá" name="total_price">
@@ -532,28 +476,32 @@ const FuelRequestsManagement = () => {
             </Form.Item>
 
             <Form.Item
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
-            >
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Button
-                  type="primary"
-                  onClick={handleApproveOrder} // Gọi API duyệt đơn
-                >
-                  Duyệt đơn
-                </Button>
+  wrapperCol={{
+    offset: 4, // Giảm offset để đẩy UI qua trái
+    span: 16,
+  }}
+>
+  <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
+    {orderStatus === 'Chờ duyệt' && (
+      <>
+        <Button type="primary" onClick={handleApproveOrder}>
+          Duyệt đơn
+        </Button>
 
-                <Button
-                  type="default"
-                  danger
-                  onClick={handleCancelOrder} // Gọi API Hủy đơn
-                >
-                  Hủy đơn
-                </Button>
-              </div>
-            </Form.Item>
+        <Button type="default" danger onClick={handleCancelOrder}>
+          Hủy đơn
+        </Button>
+      </>
+    )}
+
+    {orderStatus === 'Đã duyệt' && (
+      <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteOrder}>
+        Hoàn thành
+      </Button>
+    )}
+  </div>
+</Form.Item>
+
           </Form>
         </Loading>
       </DrawerComponent>

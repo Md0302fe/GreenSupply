@@ -35,6 +35,7 @@ import GoogleRegister from "../components/AuthComponent/GoogleRegister";
 import FuelRequestsComponent from "../components/Admin/Content/Order/FuelRequests";
 import OrderPage from "../pages/OrderPage/OrderPage";
 import OrderViewPage from "../pages/OrderPage/OrderViewPage";
+import FuelList from "../components/Admin/Content/Fuel/FuelList";
 
 const Router = () => {
   return (
@@ -71,6 +72,15 @@ const Router = () => {
           <Route path="warehouse-receipt" element={<OrderViewPage />} />
           
         </Route>
+
+        {/* Quản lý loại nhiên liệu */}
+        <Route path="/system/admin" element={<Admin />}>
+          <Route path="manage-fuel" element={<Dashboard1 />} />
+          <Route path="fuel-list" element={<FuelList />} />
+          
+        </Route>
+
+        
         {/* Routes cho quản lý đơn hàng */}
       
 

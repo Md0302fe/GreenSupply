@@ -337,7 +337,7 @@ const HarvestRequestManagement = () => {
           <table className="w-full table-fixed text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-9z00 uppercase bg-gray-100 whitespace-nowrap">
               <tr>
-                <th className="px-8 py-3 text-center">Tên Mặt Hàng</th>
+                <th className="px-8 py-3 text-center">Tên Mặt hàng</th>
                 <th className="px-8 py-3 text-center">Số lượng (Kg)</th>
                 <th className="px-8 py-3 text-center">Giá mỗi đơn vị</th>
                 <th className="px-8 py-3 text-center">Tổng giá</th>

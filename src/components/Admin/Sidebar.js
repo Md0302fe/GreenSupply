@@ -108,6 +108,20 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
               <Link to={"warehouse-receipt"} />
             </MenuItem>
           </SubMenu>
+          <SubMenu
+            icon={<FaWarehouse />}
+            title="Quản Lý Nhiên liệu"
+            style={{ paddingTop: "10px", paddingBottom: "10px" }}
+          >
+              {/* <MenuItem>
+              Dashboard
+              <Link to={"manage-fuel"} />
+            </MenuItem> */}
+            <MenuItem>
+              Danh Sách Nhiên Liệu
+              <Link to={"fuel-list"} />
+            </MenuItem>
+          </SubMenu>
         </Menu>
 
 

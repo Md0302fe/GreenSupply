@@ -117,6 +117,29 @@ export const handleCancelProvideOrders = async (id,) => {
   }
 };
 
+export const handleCompleteOrders = async (id) => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/orders/fuel-requests/${id}/complete`
+    );
+    return res?.data;
+  } catch (error) {
+    console.log("Error :", error);
+  }
+};
+
+export const handleCompleteProvideOrders = async (id) => {
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/orders/fuel-supply-orders/${id}/complete`
+    );
+    return res?.data;
+  } catch (error) {
+    console.log("Error :", error);
+  }
+};
+
+
 
 
 
