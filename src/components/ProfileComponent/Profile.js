@@ -31,7 +31,6 @@ import {
   InPut,
   StyledMDBCardImage,
   WrapperContent,
-  WrapperProfileTitle,
   WrapperProfileUser,
 } from "./styles";
 

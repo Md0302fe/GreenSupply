@@ -1,0 +1,26 @@
+// Main layout
+.Wrapper-Admin-User {
+  //content Layout
+  .Main-Content {
+    .content-title {
+      text-transform: uppercase;
+      color: black;
+    }
+    .content-addUser {
+      Button {
+        width: 100px;
+        height: 100px;
+        border: 1px dashed green;
+        font-size: 20px;
+      }
+    }
+    // Css table user
+    .content-main-table-user {
+      margin-top: 20px;
+      .button-exportFile {
+        background-color: black;
+        margin: 12px 0 24px 0;
+      }
+    }
+  }
+}

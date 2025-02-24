@@ -90,7 +90,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
               }}
             >
               <a
-                href="https://github.com/Md0302fe/Md.dev.QuizApp"
+                href="https://github.com/Md0302fe/GreenSupply"
                 target="_blank"
                 className="sidebar-btn"
                 rel="noopener noreferrer"

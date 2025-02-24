@@ -37,6 +37,9 @@ import OrderPage from "../pages/OrderPage/OrderPage";
 import OrderViewPage from "../pages/OrderPage/OrderViewPage";
 import FuelList from "../components/Admin/Content/Fuel/FuelList";
 
+import PurchaseOrder from "../components/Admin/Content/PurchaseOrder/PurchaseOrder"
+import PurchaseOrders from "../components/Admin/Content/PurchaseOrder/AdminListOrder"
+
 const Router = () => {
   return (
     <>
@@ -70,7 +73,10 @@ const Router = () => {
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
           <Route path="View-Order-Success" element={<OrderPage />} />
           <Route path="warehouse-receipt" element={<OrderViewPage />} />
-          
+          {/* Purchase Order Routes */}
+          <Route path="C_purchase-order" element={<PurchaseOrder />} />
+          <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+
         </Route>
 
         {/* Quản lý loại nhiên liệu */}
