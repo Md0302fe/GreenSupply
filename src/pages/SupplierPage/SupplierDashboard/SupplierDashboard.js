@@ -57,7 +57,7 @@ const SupplierDashboard = () => {
               <Route path="harvest-request-management" element={<HarvestRequestManagement />} />
               <Route path="history-request-order" element={<HistoryRequestOrder />} />
               <Route path="history-provide-order" element={<HistoryProvideOrder />} />
-              <Route path="supply-request" element={<SupplyRequestPage />} />
+              <Route path="supply-request/:id?" element={<SupplyRequestPage />} />
               <Route path="supply-request-history" element={<SupplyRequestHistory />} />
             </Routes>
           </div>

@@ -59,7 +59,6 @@ const FuelProvideManagement = () => {
     supplier_id: "",
     total_price: "",
   });
-  console.log("statedetails ddd", stateDetailsUser);
 
   // Fetch : Get User Details
   const fetchGetUserDetails = async ({ id, access_token }) => {
@@ -93,7 +92,7 @@ const FuelProvideManagement = () => {
       if (response) {
         setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
-
+        queryOrder.refetch();
       } else {
         message.error("Duyệt đơn thất bại!");
       }
@@ -108,7 +107,7 @@ const FuelProvideManagement = () => {
       if (response) {
         setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
-
+        queryOrder.refetch();
       } else {
         message.error("Hủy đơn thất bại!");
       }
@@ -284,8 +283,10 @@ const FuelProvideManagement = () => {
         ...order,
         key: order._id,
         customerName: order?.supplier_id?.full_name,
+        createdAt: order?.createdAt,
       };
-    });
+    })
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Actions
   const renderAction = () => {
@@ -434,7 +435,7 @@ const FuelProvideManagement = () => {
       filters: [
         {
           text: "Chờ duyệt",
-          value: "Đang xử lý",
+          value: "Chờ duyệt",
         },
         {
           text: "Đã duyệt",
@@ -449,7 +450,6 @@ const FuelProvideManagement = () => {
       render: (status) => {
 
         let color = "";
-        console.log("status", status);
         switch (status) {
           case "Chờ duyệt":
             color = "orange"; // Màu cam cho đơn hàng đang xử lý
@@ -470,6 +470,30 @@ const FuelProvideManagement = () => {
         return <Tag color={color}>{status}</Tag>;
       },
     },
+    {
+      title: "Ngày Tạo",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (createdAt) => {
+        if (!createdAt) return <span>Không có dữ liệu</span>; // Tránh lỗi khi createdAt là null hoặc undefined
+        
+        const date = new Date(createdAt);
+        if (isNaN(date.getTime())) return <span>Không hợp lệ</span>; // Kiểm tra xem date có hợp lệ không
+        
+        const vietnamTime = new Intl.DateTimeFormat("vi-VN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZone: "Asia/Ho_Chi_Minh",
+        }).format(date);
+        
+        return <span>{vietnamTime}</span>;
+      },
+    },    
     {
       title: "Chức năng",
       dataIndex: "action",

@@ -4,9 +4,10 @@ import { getAllFuelEntry } from "../../../services/FuelEntryServices";
 import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestService";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-
+import { useSearchParams } from "react-router-dom";
 const SupplyRequestPage = () => {
   const { id } = useParams();
+  console.log(id)
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -22,9 +23,9 @@ const SupplyRequestPage = () => {
     try {
       const response = await getAllFuelEntry();
       const filteredOrders = response.data.filter(order =>
-        order.status === "Đang Nhận Đơn" && !order.is_deleted
+        order.status === "Chờ duyệt" && !order.is_deleted
       );
-
+      console.log(filteredOrders)
       setAdminOrders(filteredOrders);
       if (id) {
         const foundOrder = response.data.find((order) => order._id === id);
@@ -40,7 +41,11 @@ const SupplyRequestPage = () => {
     }
   };
   useEffect(() => {
-    fetchOrders();
+    if (id) {
+      fetchOrders();
+  console.log(id)
+
+    }
   }, [id]);
 
   const handleSelectOrder = (orderId) => {
@@ -66,7 +71,7 @@ const SupplyRequestPage = () => {
 
 
   const totalPrice = () => {
-    return (Number(formData.quantity) || 0) * (selectedOrder?.estimate_price || 0);
+    return (Number(formData.quantity) || 0) * (selectedOrder?.price || 0);
   };
 
   // Xử lý khi người dùng nhập số lượng
@@ -117,7 +122,7 @@ const SupplyRequestPage = () => {
       toast.error("Vui lòng chọn đơn hàng!");
       return;
     }
-
+    console.log(formData.quantity)
     if (!formData.quantity) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
@@ -136,7 +141,7 @@ const SupplyRequestPage = () => {
       fuel_name: selectedOrder.request_name,
       quantity: quantity,
       quality: "Tốt",
-      price: selectedOrder.estimate_price,
+      price: selectedOrder.price,
       start_received: "",
       end_received: "",
       total_price: totalPrice(),
@@ -154,7 +159,7 @@ const SupplyRequestPage = () => {
       toast.error("Tạo đơn thất bại!");
     }
   };
-
+console.log(adminOrders)
   return (
     <div>
       <div className="p-6 bg-white shadow-md rounded">
@@ -170,7 +175,7 @@ const SupplyRequestPage = () => {
             <option value="">-- Chọn đơn hàng --</option>
             {adminOrders.map((order) => (
               <option key={order._id} value={order._id}>
-                {order.request_name} - {order.quantity_remain} kg - {order.estimate_price.toLocaleString("vi-VN")} VNĐ
+                {order.request_name} - {order.quantity_remain} kg - {order.price.toLocaleString("vi-VN")} VNĐ
               </option>
             ))}
           </select>
