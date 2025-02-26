@@ -133,7 +133,7 @@ const HarvestRequestPage = () => {
         fuel_type: formData.fuel_type,
         fuel_image: fuelImage,
         quantity: Number(formData.quantity),
-        quantity_remain: 0,
+        quantity_remain: Number(formData.quantity),
         due_date: formData.due_date,
         is_deleted: formData.is_deleted,
         start_received: formData.start_received,
