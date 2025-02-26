@@ -5,6 +5,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { createHarvestRequest } from "../../../services/HarvestRequestService";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -13,10 +14,13 @@ const HarvestRequestPage = () => {
     price: "",
     address: "",
     note: "",
+    fuel_type: "",
   });
   const userRedux = useSelector((state) => state.user);
   const [errors, setErrors] = useState({}); // Lưu thông báo lỗi
   const [fadeOut, setFadeOut] = useState(false);
+  const token = userRedux?.access_token || localStorage.getItem("access_token");
+  const [fuelTypeList, setFuelTypeList] = useState([]);
 
   // Tính tổng giá
   const totalPrice = () => {
@@ -41,7 +45,10 @@ const HarvestRequestPage = () => {
       setErrors(newErrors);
       return;
     }
-
+    if (name === "fuel_type") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      return;
+    }
     if ((name === "quantity" || name === "price") && value === "0") {
       return;
     }
@@ -58,6 +65,20 @@ const HarvestRequestPage = () => {
     setErrors(newErrors);
   };
 
+  const fetchListFuelType = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFuelTypeList(response.data.requests || []); // Cập nhật danh sách fuel type
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách loại nhiên liệu:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchListFuelType();
+  }, []);
   // 🕒 Tự động ẩn lỗi sau 3 giây
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
@@ -89,7 +110,6 @@ const HarvestRequestPage = () => {
       setErrors(newErrors);
       return; // Không gửi form nếu có lỗi
     }
-
     const fuelRequest = {
       supplier_id: userRedux.id,
       fuel_name: formData.fuel_name,
@@ -99,6 +119,7 @@ const HarvestRequestPage = () => {
       address: formData.address,
       note: formData.note,
       status: "Chờ duyệt",
+      fuel_type: formData.fuel_type,
     };
 
     try {
@@ -111,6 +132,7 @@ const HarvestRequestPage = () => {
         price: "",
         address: "",
         note: "",
+        fuel_type: "",
       });
       setErrors({});
     } catch (error) {
@@ -169,6 +191,27 @@ const HarvestRequestPage = () => {
             />
             {errors.fuel_name && (
               <p className="text-red-500 text-sm">{errors.fuel_name}</p>
+            )}
+          </div>
+
+          {/* fuel_type */}
+          <div>
+            <label className="block mb-1 font-semibold">Loại nhiên liệu</label>
+            <select
+              name="fuel_type"
+              value={formData.fuel_type}
+              onChange={handleChange}
+              className="border p-2 rounded w-full mb-2"
+            >
+              <option value="">Chọn loại nhiên liệu</option>
+              {fuelTypeList.map((fuel) => (
+                <option key={fuel._id} value={fuel._id}>
+                  {fuel.type_name}
+                </option>
+              ))}
+            </select>
+            {errors.fuel_type && (
+              <p className="text-red-500 text-sm">{errors.fuel_type}</p>
             )}
           </div>
 

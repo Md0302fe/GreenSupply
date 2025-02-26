@@ -352,6 +352,10 @@ const FuelRequestsManagement = () => {
           text: "Đã Hủy",
           value: "Đã Hủy",
         },
+        {
+          text: "Hoàn thành",
+          value: "Hoàn thành",
+        },
       ],
       onFilter: (value, record) => record.status.includes(value),
       render: (status) => {
