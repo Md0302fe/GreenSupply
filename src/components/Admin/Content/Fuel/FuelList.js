@@ -36,15 +36,9 @@ const FuelList = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:3001/api/fuel/getAll", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get("http://localhost:3001/api/fuel/getAll");
       if (response.data.success) {
-        // Sort by createdAt (newest first)
         const sortedFuels = response.data.requests
-          .filter(item => item.createdAt) // Remove invalid data
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         setFuels(sortedFuels);
       } else {
         message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
@@ -181,8 +175,6 @@ const FuelList = () => {
           typeName: fuel.type_name,
           description: fuel.description,
           isDeleted: fuel.is_deleted ? "Đã xóa" : "Chưa xóa",
-          createdAt: converDateString(fuel.createdAt),
-          updatedAt: converDateString(fuel.updatedAt),
         }))
       )
       .saveAs("DanhSachLoaiNhienLieu.xlsx");
@@ -225,20 +217,6 @@ const FuelList = () => {
       render: (is_deleted) => (
         <Tag color={is_deleted ? "red" : "green"}>{is_deleted ? "Đã xóa" : "Chưa xóa"}</Tag>
       ),
-    },
-    {
-      title: "Ngày Nhập Kho",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (date) => (date ? converDateString(date) : "Không có dữ liệu"),
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-    },
-    {
-      title: "Ngày Cập Nhật",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (date) => (date ? converDateString(date) : "Không có dữ liệu"),
-      sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
     },
     {
       title: "Hành Động",
@@ -284,8 +262,6 @@ const FuelList = () => {
                 {selectedFuel.is_deleted ? "Đã xóa" : "Chưa xóa"}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Ngày Nhập Kho">{selectedFuel.createdAt ? converDateString(selectedFuel.createdAt) : "Không có dữ liệu"}</Descriptions.Item>
-            <Descriptions.Item label="Ngày Cập Nhật">{selectedFuel.updatedAt ? converDateString(selectedFuel.updatedAt) : "Không có dữ liệu"}</Descriptions.Item>
           </Descriptions>
         )}
       </Modal>

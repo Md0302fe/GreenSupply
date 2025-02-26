@@ -12,7 +12,10 @@ import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { MDBCardText } from "mdb-react-ui-kit";
 
 import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServices";
+import * as FuelTypeServices from "../../../../services/FuelTypesServices";
+
 import { useSelector } from "react-redux";
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -32,10 +35,7 @@ const HarvestRequestPage = () => {
     is_deleted: false, // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
   });
 
-  const [errors, setErrors] = useState({}); // Lưu thông báo lỗi
-  const [fadeOut, setFadeOut] = useState(false);
   const [fuelImage, setFuelImage] = useState(null);
-
   const user = useSelector((state) => state.user);
 
   // Tính tổng giá
@@ -58,6 +58,11 @@ const HarvestRequestPage = () => {
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
   const handleChangeFuelImage = async (info) => {
     // C2: getBase64
+    if (!info.fileList.length) {
+      setFuelImage(null);
+      return;
+    }
+
     const file = info.fileList[0];
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -148,9 +153,25 @@ const HarvestRequestPage = () => {
   };
 
   const mutationCreateOrder = useMutationHooks((data) => {
-    const { access_token, dataRequest } = data;
     return PurchaseOrderServices.createPurchaseOrder(data);
   });
+
+
+  // Get All Fuel List here
+  const fetchGetAllFuelType = async () => {
+    const response = await FuelTypeServices.getAllFuelType();
+    if(response.success){
+      console.log("ressponsese => ", response)
+    }
+    return response;
+  }
+
+  const queryAllFuelType = useQuery({
+    queryKey: ["fuel_list"],
+    queryFn: fetchGetAllFuelType
+  })
+
+  const { isLoading , data: fuelType } = queryAllFuelType;
 
   const { data, isError, isPending, isSuccess } = mutationCreateOrder;
 
@@ -175,6 +196,7 @@ const HarvestRequestPage = () => {
           note: "", // Ghi chú thêm về đơn hàng
         });
       } else {
+        return ;
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,8 +243,12 @@ const HarvestRequestPage = () => {
                   <option value="" disabled>
                     Chọn loại nhiên liệu
                   </option>
-                  <option value="67950da386a0a462d408c7b9">Xoài thanh ca</option>
-                  <option value="67950fec8465df03b29bf753">Xoài cát hòa lộc</option>
+                  <option value="67950da386a0a462d408c7b9">
+                    Xoài thanh ca
+                  </option>
+                  <option value="67950fec8465df03b29bf753">
+                    Xoài cát hòa lộc
+                  </option>
                   <option value="67950f9f8465df03b29bf752">Xoài keo</option>
                 </select>
               </div>
@@ -369,9 +395,11 @@ const HarvestRequestPage = () => {
 
               {/* Tổng giá */}
               <div className="font-semibold text-lg text-gray-800">
-                Tổng giá:{" "}
+                Tổng giá :{" "}
                 <span className="text-red-500 font-bold">
-                  {(formData.quantity * formData.price).toLocaleString("vi-VN")}{" "}
+                  {(formData.quantity * formData.price || 0).toLocaleString(
+                    "vi-VN"
+                  )}{" "}
                   VNĐ
                 </span>
               </div>
@@ -400,7 +428,11 @@ const HarvestRequestPage = () => {
         <div className="w-full md:w-[15%] border border-gray-200 flex flex-col items-center justify-center text-center rounded-md px-6 bg-white shadow py-4">
           <div className="info max-w-xs">
             <h3 className="text-xl md:text-lg font-bold text-black">
-              Tạo Đơn <span className="text-[#006838]">Thu Nhiên Liệu</span> 🌿
+              Tạo Đơn{" "}
+              <span className="text-[#006838]">
+                <br></br>Thu Nhiên Liệu
+              </span>{" "}
+              🌿
             </h3>
           </div>
           <img
