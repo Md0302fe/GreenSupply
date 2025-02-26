@@ -74,17 +74,24 @@ const DashboardWarehouse = () => {
           const validStorageReceipt = allReceipts.find(
             (receipt) => receipt.storage_id !== null
           );
-
           if (validStorageReceipt) {
-            const storageData = validStorageReceipt.storage_id;
-            console.log("📌 Kho hợp lệ:", storageData);
-
-            setStorage({
-              name_storage: storageData?.name_storage || "Chưa có tên kho",
-              capacity: storageData?.capacity || 0,
-              remaining_capacity: storageData?.remaining_capacity || 0,
-            });
-          } else {
+            const storageId = validStorageReceipt.storage_id?._id; // ✅ Lấy ID kho
+            console.log("📌 ID kho hợp lệ:", storageId);
+          
+            if (storageId) {
+              const storageDetails = await fetchStorageById(storageId); // 🔥 Gọi API mới
+              if (storageDetails) {
+                setStorage({
+                  name_storage: storageDetails.name_storage || "Chưa có tên kho",
+                  capacity: storageDetails.capacity || 0,  // ✅ Dữ liệu từ API
+                  remaining_capacity: storageDetails.remaining_capacity || 0,
+                });
+              } else {
+                message.warning("Không tìm thấy thông tin kho!");
+              }
+            }
+          }
+           else {
             console.warn(
               "⚠️ Không tìm thấy đơn nhập kho nào có `storage_id` hợp lệ!"
             );
@@ -122,6 +129,20 @@ const DashboardWarehouse = () => {
   useEffect(() => {
     fetchWarehouseData();
   }, []);
+
+  const fetchStorageById = async (storageId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/api/fuel-storage/storage/${storageId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data.success ? res.data.data : null;
+    } catch (error) {
+      console.error("❌ Lỗi khi lấy kho:", error);
+      return null;
+    }
+  };
+  
 
   // ✅ Tính phần trăm sức chứa kho
   const usagePercent =

@@ -19,94 +19,193 @@ const FuelOrderStatus = () => {
   const [filterType, setFilterType] = useState("all"); 
   const userRedux = useSelector((state) => state.user);
   // 🟢 Gọi API dựa trên bộ lọc
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess"; // Mặc định lấy tất cả
-  
-      if (filterType === "fuelRequests") {
-        url = "http://localhost:3001/api/orders/approved-fuel-requests"; // Lấy đơn yêu cầu thu hàng
-      } else if (filterType === "fuelSupplyOrders") {
-        url = "http://localhost:3001/api/orders/approved-fuel-supply-orders"; // Lấy đơn cung cấp nhiên liệu
-      }
-  
-      const response = await axios.get(url);
-      console.log("response", response);
-  
-      if (response.data.success) {
-        let sortedOrders = response.data.data;
-        
-        console.log("📌 API Trả về:", sortedOrders); 
-  
-        // ✅ Sắp xếp danh sách đơn hàng theo `createdAt` mới nhất trước
-        sortedOrders = sortedOrders
-          .map(order => ({
-            ...order,
-            createdAt: new Date(order.createdAt) // Chuyển `createdAt` thành Date object
-          }))
-          .sort((a, b) => b.createdAt - a.createdAt); // 🔥 Sắp xếp giảm dần theo thời gian
-  
-        setOrders(sortedOrders); // 🟢 Cập nhật danh sách đơn hàng
-      } else {
-        message.error("Lỗi khi lấy danh sách đơn hàng!");
-      }
-    } catch (error) {
-      message.error("Không thể kết nối đến server!");
-    }
-    setLoading(false);
-  };
-  
-  
-  const createFuelStorageReceipt = async (order) => {
-    try {
-      const token = localStorage.getItem("access_token");
-  
-      if (!token) {
-        message.error("Bạn chưa đăng nhập!");
-        return;
-      }
-  
-      if (!order || !order._id) {
-        message.error("Lỗi: Không tìm thấy thông tin đơn hàng.");
-        return;
-      }
-  
-      // 🟢 Kiểm tra `receipt_type` từ Backend
-      if (!order.receipt_type) {
-        message.error("Lỗi: Không xác định được loại đơn hàng. Hãy kiểm tra lại Backend!");
-        return;
-      }
-  
-      const payload = order.receipt_type === "supply"
-        ? { receipt_supply_id: order._id }
-        : { receipt_request_id: order._id };
-  
-      console.log("📌 Dữ liệu gửi đi:", payload); // 🔥 Kiểm tra dữ liệu trước khi gửi request
-  
-      const response = await axios.post(
-        "http://localhost:3001/api/fuel-storage/create",
-        payload,
-        {
-          headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" },
-        }
-      );
-  
-      console.log("📌 Phản hồi API:", response.data); // 🔥 Kiểm tra phản hồi từ API
-  
-      if (response.data.success) {
-        message.success("Tạo đơn nhập kho thành công!");
-        fetchOrders(); // 🟢 Refresh danh sách đơn hàng
+//   const fetchOrders = async () => {
+//     setLoading(true);
+//     try {
+//         let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess";
 
+//         if (filterType === "fuelRequests") {
+//             url = "http://localhost:3001/api/orders/approved-fuel-requests";
+//         } else if (filterType === "fuelSupplyOrders") {
+//             url = "http://localhost:3001/api/orders/approved-fuel-supply-orders";
+//         }
+
+//         const response = await axios.get(url);
+//         if (response.data.success) {
+//             let sortedOrders = response.data.data;
+
+//             sortedOrders = sortedOrders
+//                 .map(order => ({
+//                     ...order,
+//                     createdAt: new Date(order.createdAt)
+//                 }))
+//                 .sort((a, b) => b.createdAt - a.createdAt);
+
+//             setOrders(sortedOrders);
+//         } else {
+//             message.error("Lỗi khi lấy danh sách đơn hàng!");
+//         }
+//     } catch (error) {
+//         message.error("Không thể kết nối đến server!");
+//     }
+//     setLoading(false);
+// };
+
+const fetchOrders = async () => {
+  setLoading(true);
+  try {
+      const response = await axios.get("http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess");
+
+      if (response.data.success) {
+          let sortedOrders = response.data.data;
+
+          sortedOrders = sortedOrders
+              .map(order => ({
+                  ...order,
+                  createdAt: new Date(order.createdAt)
+              }))
+              .sort((a, b) => b.createdAt - a.createdAt);
+
+          setOrders(sortedOrders);
       } else {
-        message.error(`Tạo đơn nhập kho thất bại: ${response.data.message}`);
+          message.error("Lỗi khi lấy danh sách đơn hàng!");
       }
-    } catch (error) {
-      console.error("📌 Lỗi chi tiết:", error.response?.data || error.message);
+  } catch (error) {
+      message.error("Không thể kết nối đến server!");
+  }
+  setLoading(false);
+};
+
+  
+const confirmCreateFuelStorageReceipt = (order) => {
+  Modal.confirm({
+      title: "Xác nhận tạo đơn nhập kho",
+      content: `Bạn có chắc chắn muốn tạo đơn nhập kho cho đơn hàng này không?`,
+      cancelText: "Hủy",
+      okText: "Xác nhận",
+      
+      onOk: () => createFuelStorageReceipt(order), // ✅ Nếu nhấn OK, gọi hàm tạo đơn
+  });
+};  
+
+//   const createFuelStorageReceipt = async (order) => {
+//     try {
+//         const token = localStorage.getItem("access_token");
+//         if (!token) {
+//             message.error("Bạn chưa đăng nhập!");
+//             return;
+//         }
+
+//         if (!order || !order._id) {
+//             message.error("Lỗi: Không tìm thấy thông tin đơn hàng.");
+//             return;
+//         }
+
+//         if (!order.receipt_type) {
+//             message.error("Lỗi: Không xác định được loại đơn hàng!");
+//             return;
+//         }
+
+//         const payload = order.receipt_type === "supply"
+//             ? { receipt_supply_id: order._id }
+//             : { receipt_request_id: order._id };
+
+//         console.log("📌 Dữ liệu gửi đi:", payload);
+
+//         // 🟢 Gửi yêu cầu tạo đơn nhập kho
+//         const response = await axios.post(
+//             "http://localhost:3001/api/fuel-storage/create",
+//             payload,
+//             {
+//                 headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" },
+//             }
+//         );
+//         console.log("📌 Phản hồi API:", response.data);
+
+//         if (response.data.success) {
+//             message.success("Tạo đơn nhập kho thành công!");
+
+//             // ✅ Gọi API cập nhật trạng thái đơn hàng thành "Đang xử lý"
+//             await updateOrderStatus(order._id, "Đang xử lý");
+
+//             // ✅ Cập nhật danh sách hiển thị ngay lập tức để UI thay đổi mà không cần reload
+//             setOrders(prevOrders =>
+//                 prevOrders.map(o => o._id === order._id ? { ...o, status: "Đang xử lý" } : o)
+//             );
+//         } else {
+//             message.error(`Tạo đơn nhập kho thất bại: ${response.data.message}`);
+//         }
+//     } catch (error) {
+//         console.error("📌 Lỗi chi tiết:", error.response?.data || error.message);
+//         message.error("Lỗi khi tạo đơn nhập kho!");
+//     }
+// };
+
+const createFuelStorageReceipt = async (order) => {
+  try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+          message.error("Bạn chưa đăng nhập!");
+          return;
+      }
+
+      if (!order || !order._id) {
+          message.error("Lỗi: Không tìm thấy thông tin đơn hàng.");
+          return;
+      }
+
+      if (!order.receipt_type) {
+          message.error("Lỗi: Không xác định được loại đơn hàng!");
+          return;
+      }
+
+      const payload = order.receipt_type === "supply"
+          ? { receipt_supply_id: order._id }
+          : { receipt_request_id: order._id };
+
+      const response = await axios.post(
+          "http://localhost:3001/api/fuel-storage/create",
+          payload,
+          { headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" } }
+      );
+
+      if (response.data.success) {
+          message.success("Tạo đơn nhập kho thành công!");
+
+          // ✅ Gọi lại API để cập nhật danh sách
+          fetchOrders();
+      } else {
+          message.error(`Tạo đơn nhập kho thất bại: ${response.data.message}`);
+      }
+  } catch (error) {
       message.error("Lỗi khi tạo đơn nhập kho!");
+  }
+};
+
+
+
+// 🟢 Hàm cập nhật trạng thái đơn hàng
+const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+        const response = await axios.put(
+            `http://localhost:3001/api/orders/${orderId}/update-status`,
+            { status: newStatus },
+            {
+                headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" },
+            }
+        );
+
+        if (response.data.success) {
+            console.log(`✅ Cập nhật trạng thái đơn hàng ${orderId} thành công: ${newStatus}`);
+        } else {
+            console.error(`❌ Lỗi cập nhật trạng thái: ${response.data.message}`);
+        }
+    } catch (error) {
+        console.error("📌 Lỗi khi cập nhật trạng thái:", error.response?.data || error.message);
     }
-  };
-  
-  
+};
+
+
   
   
 
@@ -182,7 +281,15 @@ const FuelOrderStatus = () => {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
-      render: () => <Tag color="gold">Chờ Nhập kho</Tag>,
+      render: (status) => {
+        let color = "default";
+        if (status === "Chờ Nhập Kho") color = "gold";
+        else if (status === "Đang xử lý") color = "blue";
+        else if (status === "Nhập kho thành công") color = "green";
+        else if (status === "Nhập kho thất bại") color = "red";
+    
+        return <Tag color={color}>{status}</Tag>;
+      },
     },
     {
       title: "Loại Đơn Hàng",
@@ -197,14 +304,14 @@ const FuelOrderStatus = () => {
       render: (_, record) => (
         <Space>
           <Button type="primary" icon={<EyeOutlined />} onClick={() => showOrderDetails(record)}>
-
           </Button>
-          <Button type="default" onClick={() => createFuelStorageReceipt(record)}>
+          <Button type="default" onClick={() => confirmCreateFuelStorageReceipt(record)}> 
             Tạo Đơn Nhập Kho
           </Button>
         </Space>
       ),
     },
+    
     
 
   ];
