@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
 import { converDateString } from "../../../../ultils";
 
+
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 
 import TableOrder from "./TableOrder";
@@ -32,6 +33,10 @@ const UserComponent = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [isConfirmUpdateOpen, setIsConfirmUpdateOpen] = useState(false);
+  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  
 
   const user = useSelector((state) => state.user);
 
@@ -97,6 +102,99 @@ const UserComponent = () => {
     });
   };
 
+  const mutationUpdatePurchaseOrder = useMutationHooks((data) => {
+    return PurchaseOrderServices.updatePurchaseOrder(data);
+  });
+
+  const mutationSoftDelete = useMutationHooks((data) => {
+    return PurchaseOrderServices.deletePurchaseOrder(data.id, data.access_token);
+  });
+  
+
+  const handleUpdatePurchaseOrder = () => {
+    const validationErrors = validatePurchaseDetails();
+  
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => toast.warning(error));
+      return; // Dừng lại nếu có lỗi
+    }
+  
+    mutationUpdatePurchaseOrder.mutate(
+      {
+        id: rowSelected,
+        access_token: user?.access_token,
+        dataUpdate: purchaseDetails,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Cập nhật đơn hàng thành công!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+  
+          // Đóng drawer mà không gọi thêm toast
+          setIsDrawerOpen(false);
+        },
+        onError: () => {
+          toast.error("Cập nhật đơn hàng thất bại!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        },
+        onSettled: () => {
+          queryUser.refetch(); // Cập nhật danh sách đơn hàng
+        },
+      }
+    );
+  };
+  
+  const validatePurchaseDetails = () => {
+    const errors = [];
+  
+    if (!purchaseDetails.request_name || purchaseDetails.request_name.trim() === "") {
+      errors.push("Tên đơn hàng không được để trống!");
+    }
+  
+    if (!purchaseDetails.fuel_type || purchaseDetails.fuel_type.trim() === "") {
+      errors.push("Loại nhiên liệu không được để trống!");
+    }
+  
+    if (!purchaseDetails.start_received) {
+      errors.push("Vui lòng chọn ngày bắt đầu nhận đơn!");
+    }
+  
+    if (!purchaseDetails.end_received) {
+      errors.push("Vui lòng chọn ngày kết thúc nhận đơn!");
+    }
+  
+    if (!purchaseDetails.due_date) {
+      errors.push("Vui lòng chọn hạn chót hoàn thành đơn!");
+    }
+  
+    // Convert về dạng timestamp để so sánh
+    const startDate = new Date(purchaseDetails.start_received).getTime();
+    const endDate = new Date(purchaseDetails.end_received).getTime();
+    const dueDate = new Date(purchaseDetails.due_date).getTime();
+  
+    // Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
+// Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
+    return errors;
+  };
+  
+  
+
   // Mutation - Update Product
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, dataUpdate } = data;
@@ -156,18 +254,28 @@ const UserComponent = () => {
   }, [isSuccessDelete]);
 
   // Handle each time rowSelected was call
+  // useEffect(() => {
+  //   if (rowSelected) {
+  //     if (isDrawerOpen) {
+  //       setIsLoadDetails(true);
+  //       fetchGetPurchaseDetail({
+  //         id: rowSelected,
+  //         access_token: user?.access_token,
+  //       });
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [rowSelected, isDrawerOpen, isOpenDelete]);
+
   useEffect(() => {
-    if (rowSelected) {
-      if (isDrawerOpen) {
-        setIsLoadDetails(true);
-        fetchGetPurchaseDetail({
-          id: rowSelected,
-          access_token: user?.access_token,
-        });
-      }
+    if (rowSelected && isDrawerOpen) {
+      fetchGetPurchaseDetail({
+        id: rowSelected,
+        access_token: user?.access_token,
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rowSelected, isDrawerOpen, isOpenDelete]);
+  }, [rowSelected, isDrawerOpen]);
+  
 
   // Update stateDetails for form
   useEffect(() => {
@@ -221,19 +329,18 @@ const UserComponent = () => {
       }
     );
   };
-
   // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
-  useEffect(() => {
-    if (isSuccessUpdate) {
-      if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
-        handleCancelUpdate();
-      } else {
-        toast.error(dataRes?.message);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessUpdate, isErrorUpdate]);
+  // useEffect(() => {
+  //   if (isSuccessUpdate) {
+  //     if (dataRes?.status === "OK") {
+  //       toast.success(dataRes?.message);
+  //       handleCancelUpdate();
+  //     } else {
+  //       toast.error(dataRes?.message);
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isSuccessUpdate, isErrorUpdate]);
 
   // CANCEL MODAL - DELETE PRODUCT
   const handleCancelDelete = () => {
@@ -242,21 +349,35 @@ const UserComponent = () => {
 
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
-    setPurchaseDetails({
-      full_name: "",
-      email: "",
-      phone: "",
-      role: "",
-      avatar: "",
-      address: "",
-      birth_day: "",
-      createdAt: "",
-      gender: "",
-      updatedAt: "",
-    });
-    formUpdate.resetFields();
-    setIsDrawerOpen(false);
+    if (!rowSelected) {
+      toast.error("Không có đơn hàng nào được chọn để hủy!");
+      return;
+    }
+  
+    console.log("🟢 Hủy đơn hàng với ID:", rowSelected);
+  
+    mutationSoftDelete.mutate(
+      {
+        id: rowSelected,
+        access_token: user?.access_token,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Đã hủy đơn hàng!");
+          queryUser.refetch(); // Cập nhật danh sách đơn hàng
+          setIsDrawerOpen(false); // 🔹 Đóng form sau khi hủy
+        },
+        onError: (error) => {
+          console.error("🔴 Lỗi khi gọi API:", error);
+          toast.error("Hủy đơn hàng thất bại!");
+        },
+      }
+    );
   };
+  
+  
+  
+  
 
   // ONCHANGE FIELDS - UPDATE
   const handleOnChangeDetails = (value, name) => {
@@ -283,24 +404,79 @@ const UserComponent = () => {
     }
   };
   console.log("checl => ", purchaseDetails);
+
+
+  
   // Xử lý input
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
-    if (name === "request_name") {
-      if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9]+$/.test(value)) {
-        toast.warning("Tên mặt hàng chỉ chứa chữ, số và khoảng trắng!");
-        return;
+    if (name === "start_received"  )
+     {
+     if (value <= currentDate){
+      toast.error("Ngày bắt đầu nhận đơn không thể lớn hơn ngày kết thúc!");
+     }
+    }else if(name === "end_received"){
+      if(value < purchaseDetails.start_received){
+        toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu nhận đơn !");
       }
-      setPurchaseDetails((prev) => ({ ...prev, [name]: value }));
 
-      return;
+    }else if(name === "due_date" ){
+      if(value > purchaseDetails.end_received){
+        toast.error("Hạn chót nhận đơn trên phái lớn hơn ngày kết thúc!");
+      }
     }
+    
+
+
+  
+    // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
     if ((name === "quantity" || name === "price") && value === "0") {
       return;
     }
     setPurchaseDetails((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Khi bấm "Cập Nhật" -> Hiện Modal xác nhận cập nhật
+  const handleOpenConfirmUpdate = () => {
+    setIsConfirmUpdateOpen(true);
+  };
+
+  // Khi bấm "Hủy yêu cầu" -> Hiện Modal xác nhận hủy cập nhật
+  const handleOpenConfirmCancel = () => {
+    setIsConfirmCancelOpen(true);
+  };
+
+  // Khi chọn "Có" trong Modal Xác Nhận Cập Nhật
+  const handleConfirmUpdate = () => {
+    setIsConfirmUpdateOpen(false);
+    handleUpdatePurchaseOrder(); // Thực hiện cập nhật đơn hàng
+  };
+
+  // Khi chọn "Có" trong Modal Xác Nhận Hủy
+  const handleConfirmCancel = () => {
+    setIsConfirmCancelOpen(false); // 🔹 Đóng modal xác nhận trước
+    setIsDrawerOpen(false); // 🔹 Đóng drawer ngay lập tức để UI phản hồi nhanh hơn
+  
+    // 🔹 Gọi API để cập nhật trạng thái hủy đơn hàng
+    mutationSoftDelete.mutate(
+      {
+        id: rowSelected,
+        access_token: user?.access_token,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Đã hủy đơn hàng!");
+          queryUser.refetch(); // Cập nhật danh sách đơn hàng
+        },
+        onError: (error) => {
+          console.error("🔴 Lỗi khi gọi API:", error);
+          toast.error("Hủy đơn hàng thất bại!");
+        },
+      }
+    );
+  };
+  
+  
 
   // DATA FROM USERS LIST
   const tableData =
@@ -739,17 +915,18 @@ const UserComponent = () => {
                 {/* Nút bấm */}
                 <div className="flex flex-col md:flex-row md:justify-between gap-4">
                   <button
-                    onClick={() => {}}
+                    onClick={handleOpenConfirmUpdate}
                     className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
                   >
-                    📨 Xác nhận yêu cầu
+                    Cập Nhật
                   </button>
+
                   <button
                     type="button"
-                    onClick={() => {}}
-                    className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
+                    onClick={handleOpenConfirmCancel} // Chỉ đóng form, không cập nhật
+                    className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
                   >
-                    ❌ Hủy yêu cầu
+                    Hủy yêu cầu
                   </button>
                 </div>
               </div>
@@ -768,6 +945,26 @@ const UserComponent = () => {
         <Loading isPending={isPendingDelete}>
           <div>Bạn có chắc muốn xóa sản phẩm không ?</div>
         </Loading>
+      </ModalComponent>
+
+      {/* Modal Xác Nhận Cập Nhật */}
+      <ModalComponent
+        title="Xác nhận cập nhật đơn hàng"
+        open={isConfirmUpdateOpen}
+        onCancel={() => setIsConfirmUpdateOpen(false)}
+        onOk={handleConfirmUpdate}
+      >
+        <p>Bạn có chắc chắn muốn cập nhật thông tin đơn hàng không?</p>
+      </ModalComponent>
+
+      {/* Modal Xác Nhận Hủy */}
+      <ModalComponent
+        title="Xác nhận hủy cập nhật"
+        open={isConfirmCancelOpen}
+        onCancel={() => setIsConfirmCancelOpen(false)}
+        onOk={handleCancelUpdate}
+      >
+        <p>Bạn có chắc chắn muốn hủy cập nhật đơn hàng không?</p>
       </ModalComponent>
     </div>
   );

@@ -38,3 +38,30 @@ export const getDetailPurchaseOrder = async (id, access_token) => {
     console.log("Error :", error);
   }
 };
+
+export const updatePurchaseOrder = async (data) => {
+  const { id, access_token, dataUpdate } = data;
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/purchase-order/updatePurchaseOrder/${id}`,
+    dataUpdate,
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
+
+export const deletePurchaseOrder = async (id, access_token) => {
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/purchase-order/softDelete/${id}`, 
+    { is_deleted: true }, // Đánh dấu đơn hàng đã bị xóa
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
