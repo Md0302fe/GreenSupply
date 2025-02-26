@@ -12,7 +12,10 @@ import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { MDBCardText } from "mdb-react-ui-kit";
 
 import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServices";
+import * as FuelTypeServices from "../../../../services/FuelTypesServices";
+
 import { useSelector } from "react-redux";
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -32,10 +35,8 @@ const HarvestRequestPage = () => {
     is_deleted: false, // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
   });
 
-  const [errors, setErrors] = useState({}); // Lưu thông báo lỗi
-  const [fadeOut, setFadeOut] = useState(false);
   const [fuelImage, setFuelImage] = useState(null);
-
+  const [fuel_types, setFuel_Types] = useState({});
   const user = useSelector((state) => state.user);
 
   // Tính tổng giá
@@ -58,6 +59,11 @@ const HarvestRequestPage = () => {
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
   const handleChangeFuelImage = async (info) => {
     // C2: getBase64
+    if (!info.fileList.length) {
+      setFuelImage(null);
+      return;
+    }
+
     const file = info.fileList[0];
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -148,11 +154,65 @@ const HarvestRequestPage = () => {
   };
 
   const mutationCreateOrder = useMutationHooks((data) => {
-    const { access_token, dataRequest } = data;
     return PurchaseOrderServices.createPurchaseOrder(data);
   });
 
+
+  // Get All Fuel List here
+  const fetchGetAllFuelType = async () => {
+    const response = await FuelTypeServices.getAllFuelType();
+    return response;
+  }
+
+  const queryAllFuelType = useQuery({
+    queryKey: ["fuel_list"],
+    queryFn: fetchGetAllFuelType
+  })
+
+  const { data: fuelType , isSuccess: getFuelSuccess } = queryAllFuelType;
+
+  useEffect(() => {
+    if(getFuelSuccess){
+      if(fuelType.success){
+        setFuel_Types(fuelType.requests)
+      }
+    }
+  }, [getFuelSuccess])
+
   const { data, isError, isPending, isSuccess } = mutationCreateOrder;
+
+  const setNewForm = () => {
+    setFormData({
+      request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
+      fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
+      fuel_image: "",
+      quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
+      quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
+      start_received: null, // Ngày bắt đầu nhận nhiên liệu
+      due_date: null, // Hạn chót cần hoàn thành đơn hàng (YYYY-MM-DD)
+      end_received: null, // Ngày kết thúc nhận nhiên liệu
+      price: "", // Giá thực tế đã được chốt cho đơn hàng
+      total_price: 0, // Tổng giá của yêu cầu cần thu
+      priority: "", // Mức độ ưu tiên của đơn hàng (VD: Cao, Trung bình, Thấp)
+      status: "", // Trạng thái đơn hàng (VD: Đang chờ, Đã hoàn thành, Đã hủy)
+      note: "", // Ghi chú thêm về đơn hàng
+      is_deleted: false, // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
+    })
+    setFuelImage(null);
+  }
+
+  console.log("data > ", data);
+  // Notification when created success
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.PurchaseOrder.status)
+      setTimeout(() => {
+        setNewForm();
+      }, 1000)
+    } else {
+      toast.error(data?.PurchaseOrder.message)
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -174,7 +234,9 @@ const HarvestRequestPage = () => {
           status: "", // Trạng thái đơn hàng (VD: Đang chờ, Đã hoàn thành, Đã hủy)
           note: "", // Ghi chú thêm về đơn hàng
         });
+        setFuelImage(null);
       } else {
+        return ;
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,9 +283,15 @@ const HarvestRequestPage = () => {
                   <option value="" disabled>
                     Chọn loại nhiên liệu
                   </option>
-                  <option value="67950da386a0a462d408c7b9">Xoài thanh ca</option>
-                  <option value="67950fec8465df03b29bf753">Xoài cát hòa lộc</option>
-                  <option value="67950f9f8465df03b29bf752">Xoài keo</option>
+                  {fuel_types && fuel_types.length > 0 ? (
+                      fuel_types.map((fuel) => (
+                        <option key={fuel._id} value={fuel._id}>
+                          {fuel.type_name}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Không có dữ liệu</option>
+                    )}
                 </select>
               </div>
 
@@ -369,9 +437,11 @@ const HarvestRequestPage = () => {
 
               {/* Tổng giá */}
               <div className="font-semibold text-lg text-gray-800">
-                Tổng giá:{" "}
+                Tổng giá :{" "}
                 <span className="text-red-500 font-bold">
-                  {(formData.quantity * formData.price).toLocaleString("vi-VN")}{" "}
+                  {(formData.quantity * formData.price || 0).toLocaleString(
+                    "vi-VN"
+                  )}{" "}
                   VNĐ
                 </span>
               </div>
@@ -386,7 +456,7 @@ const HarvestRequestPage = () => {
                 </button>
                 <button
                   type="button" // Tránh việc form bị submit khi nhấn nút làm mới
-                  onClick={() => setFormData({})} // Reset dữ liệu khi nhấn
+                  onClick={() => setNewForm()} // Reset dữ liệu khi nhấn
                   className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
                 >
                   🔄 Làm mới
@@ -400,7 +470,11 @@ const HarvestRequestPage = () => {
         <div className="w-full md:w-[15%] border border-gray-200 flex flex-col items-center justify-center text-center rounded-md px-6 bg-white shadow py-4">
           <div className="info max-w-xs">
             <h3 className="text-xl md:text-lg font-bold text-black">
-              Tạo Đơn <span className="text-[#006838]">Thu Nhiên Liệu</span> 🌿
+              Tạo Đơn{" "}
+              <span className="text-[#006838]">
+                <br></br>Thu Nhiên Liệu
+              </span>{" "}
+              🌿
             </h3>
           </div>
           <img

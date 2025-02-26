@@ -85,7 +85,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             >
               <MenuItem>
                 Quản Lý Đơn
-                <Link to={"manage-users"} />
+                {/* <Link to={"manage-users"} /> */}
               </MenuItem>
               <MenuItem>
                 Tạo Yêu Cầu
@@ -97,11 +97,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
               </MenuItem>
               <MenuItem>
                 Danh Sách Yêu Cầu Đã Hoàn Thành
-                <Link to={"manage-blocked-users"} />
-              </MenuItem>
-              <MenuItem>
-                Quản lý tài khoản
-                <Link to={"manage-blocked-users"} />
+                {/* <Link to={"manage-blocked-users"} /> */}
               </MenuItem>
             </SubMenu>
           </Menu>

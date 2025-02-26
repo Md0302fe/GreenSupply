@@ -39,10 +39,26 @@ export const getDetailPurchaseOrder = async (id, access_token) => {
   }
 };
 
+// Update info
 export const updatePurchaseOrder = async (data) => {
   const { id, access_token, dataUpdate } = data;
   const res = await axiosJWT.put(
     `${process.env.REACT_APP_API_URL}/purchase-order/updatePurchaseOrder/${id}`,
+    dataUpdate,
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
+
+// Accept order
+export const acceptPurchaseOrder = async (data) => {
+  const { id, access_token, dataUpdate } = data;
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/purchase-order/acceptPurchaseOrder/${id}`,
     dataUpdate,
     {
       headers: {

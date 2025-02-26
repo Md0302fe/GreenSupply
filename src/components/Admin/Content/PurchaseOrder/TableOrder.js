@@ -10,7 +10,9 @@ const TableUser = (props) => {
 
   // useMemo thực thi ghi nhớ và trả về 1 giá trị .
   const dataColumnsExport = useMemo(() => {
-    const arr = columns?.filter((col) => col.dataIndex !== "action");
+    const arr = columns?.filter(
+      (col) => col.dataIndex !== "action" && col.dataIndex !== "quantity_remain" && col.dataIndex !== "fuel_image"
+    );
     return arr;
   }, [columns]);
 
@@ -31,6 +33,10 @@ const TableUser = (props) => {
   };
 
   const handleExportFileExcels = () => {
+    const date = new Date();
+    const formattedDate = date.toLocaleDateString("vi-VN"); // Output: "27-02-2025"
+    console.log(formattedDate);
+
     const excel = new Excel();
     excel
       .addSheet("test")
@@ -38,15 +44,18 @@ const TableUser = (props) => {
       .addDataSource(dataSource, {
         str2Percent: true,
       })
-      .saveAs("Excel.xlsx");
+      .saveAs(`DanhSáchThuNhiênLiệu${formattedDate}.xlsx`);
   };
-
+  console.log("datasource => ", dataSource);
   return (
     <Loading isPending={isLoading}>
-      
-      {/* <Button type="primary" className="button-exportFile" onClick={handleExportFileExcels}>
+      <Button
+        type="primary"
+        className="button-exportFile"
+        onClick={handleExportFileExcels}
+      >
         Xuất file
-      </Button> */}
+      </Button>
 
       <Table
         rowSelection={{
@@ -54,16 +63,12 @@ const TableUser = (props) => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={dataSource || []} // Đảm bảo không truyền undefined
         pagination={{ pageSize: 6 }}
         {...rest}
       />
     </Loading>
   );
 };
-
-
-
-
 
 export default TableUser;

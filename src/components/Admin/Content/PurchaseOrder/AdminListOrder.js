@@ -1,22 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Order.scss";
 
-import { Button, Descriptions, Form, Input, Select, Space, Upload } from "antd";
+import { Button, Form, Input, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServices";
 
-import { BiBlock, BiImageAdd, BiTrash } from "react-icons/bi";
+import { Tag } from "antd";
+
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
-import { converDateString } from "../../../../ultils";
+import { convertDateStringV1 } from "../../../../ultils";
 
-
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 
 import TableOrder from "./TableOrder";
 import Loading from "../../../LoadingComponent/Loading";
@@ -27,6 +27,7 @@ import Highlighter from "react-highlight-words";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 const UserComponent = () => {
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
@@ -35,8 +36,10 @@ const UserComponent = () => {
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [isConfirmUpdateOpen, setIsConfirmUpdateOpen] = useState(false);
   const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
+  const [isConfirmAccept, setIsConfirmAccept] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
-  
+
+  const [fuel_types, setFuel_Types] = useState({});
 
   const user = useSelector((state) => state.user);
 
@@ -68,7 +71,6 @@ const UserComponent = () => {
         access_token
       );
 
-      console.log("Fetched Purchase Order Details:", res);
       if (res?.PurchaseOrderDetail) {
         setPurchaseDetails({
           request_name: res.PurchaseOrderDetail.request_name,
@@ -83,6 +85,7 @@ const UserComponent = () => {
           updatedAt: res.PurchaseOrderDetail.updatedAt,
           fuel_image: res.PurchaseOrderDetail.fuel_image,
           total_price: res.PurchaseOrderDetail.total_price,
+          priority: res.PurchaseOrderDetail.priority,
           note: res.PurchaseOrderDetail.note,
         });
       }
@@ -106,19 +109,54 @@ const UserComponent = () => {
     return PurchaseOrderServices.updatePurchaseOrder(data);
   });
 
-  const mutationSoftDelete = useMutationHooks((data) => {
-    return PurchaseOrderServices.deletePurchaseOrder(data.id, data.access_token);
-  });
-  
+  const { isSuccess: updateSuccess, data: dataUpdate } =
+    mutationUpdatePurchaseOrder;
 
+  useEffect(() => {
+    if (updateSuccess) {
+      if (dataUpdate.status) {
+        toast.success("Update Purchased Order Success");
+        setIsDrawerOpen(false);
+      } else {
+        toast.success("Update Purchased Order Fail");
+      }
+    }
+  }, [updateSuccess]);
+
+  const mutationAcceptPurchaseOrder = useMutationHooks((data) => {
+    return PurchaseOrderServices.acceptPurchaseOrder(data);
+  });
+
+  const { isSuccess: AcceptSuccess, data: dataAccept } =
+  mutationAcceptPurchaseOrder;
+
+  useEffect(() => {
+    if (AcceptSuccess) {
+      if (dataAccept.status) {
+        toast.success("Accept Purchased Order Success");
+        setIsDrawerOpen(false);
+      } else {
+        toast.success("Accept Purchased Order Fail");
+      }
+    }
+  }, [AcceptSuccess]);
+
+  const mutationSoftDelete = useMutationHooks((data) => {
+    return PurchaseOrderServices.deletePurchaseOrder(
+      data.id,
+      data.access_token
+    );
+  });
+
+  // Cập nhật thông tin
   const handleUpdatePurchaseOrder = () => {
     const validationErrors = validatePurchaseDetails();
-  
+
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => toast.warning(error));
       return; // Dừng lại nếu có lỗi
     }
-  
+
     mutationUpdatePurchaseOrder.mutate(
       {
         id: rowSelected,
@@ -126,106 +164,66 @@ const UserComponent = () => {
         dataUpdate: purchaseDetails,
       },
       {
-        onSuccess: () => {
-          toast.success("Cập nhật đơn hàng thành công!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-  
-          // Đóng drawer mà không gọi thêm toast
-          setIsDrawerOpen(false);
-        },
-        onError: () => {
-          toast.error("Cập nhật đơn hàng thất bại!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        },
         onSettled: () => {
-          queryUser.refetch(); // Cập nhật danh sách đơn hàng
+          queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
         },
       }
     );
   };
-  
+
+  // Cập nhật trạng thái - Duyệt đơn
+  const handleAcceptPurchaseOrder = () => {
+    const validationErrors = validatePurchaseDetails();
+
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => toast.warning(error));
+      return; // Dừng lại nếu có lỗi
+    }
+
+    mutationAcceptPurchaseOrder.mutate(
+      {
+        id: rowSelected,
+        access_token: user?.access_token,
+        dataUpdate: purchaseDetails,
+      },
+      {
+        onSettled: () => {
+          queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
+        },
+      }
+    );
+  };
+
   const validatePurchaseDetails = () => {
     const errors = [];
-  
-    if (!purchaseDetails.request_name || purchaseDetails.request_name.trim() === "") {
+
+    if (
+      !purchaseDetails.request_name ||
+      purchaseDetails.request_name.trim() === ""
+    ) {
       errors.push("Tên đơn hàng không được để trống!");
     }
-  
+
     if (!purchaseDetails.fuel_type || purchaseDetails.fuel_type.trim() === "") {
       errors.push("Loại nhiên liệu không được để trống!");
     }
-  
+
     if (!purchaseDetails.start_received) {
       errors.push("Vui lòng chọn ngày bắt đầu nhận đơn!");
     }
-  
+
     if (!purchaseDetails.end_received) {
       errors.push("Vui lòng chọn ngày kết thúc nhận đơn!");
     }
-  
+
     if (!purchaseDetails.due_date) {
       errors.push("Vui lòng chọn hạn chót hoàn thành đơn!");
     }
-  
-    // Convert về dạng timestamp để so sánh
-    const startDate = new Date(purchaseDetails.start_received).getTime();
-    const endDate = new Date(purchaseDetails.end_received).getTime();
-    const dueDate = new Date(purchaseDetails.due_date).getTime();
-  
+
     // Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
-// Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
+    // Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
     return errors;
   };
-  
-  
-
-  // Mutation - Update Product
-  const mutationUpdate = useMutationHooks((data) => {
-    const { id, token, dataUpdate } = data;
-    // convert data tại đây tránh lỗi vặt
-    if (dataUpdate?.role === "Admin") {
-      dataUpdate.role = "67950da386a0a462d408c7b9";
-    } else if (dataUpdate?.role === "User") {
-      dataUpdate.role = "67950f9f8465df03b29bf752";
-    } else if (dataUpdate?.role === "Supplier") {
-      dataUpdate.role = "67950fec8465df03b29bf753";
-    }
-    const updatedData = {
-      ...dataUpdate,
-      role_id: dataUpdate?.role,
-    };
-    console.log("updatedData => ", updatedData);
-
-    //remember return . tránh việc mutationUpdate không trả về data
-    return UserServices.updateUser({
-      id,
-      access_token: token,
-      data: updatedData,
-    });
-  });
-
-  const {
-    data: dataRes,
-    isError: isErrorUpdate,
-    isPending: isPendingUpDate,
-    isSuccess: isSuccessUpdate,
-  } = mutationUpdate;
 
   // Mutation - Delete Productd
   const mutationDelete = useMutationHooks((data) => {
@@ -253,20 +251,6 @@ const UserComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessDelete]);
 
-  // Handle each time rowSelected was call
-  // useEffect(() => {
-  //   if (rowSelected) {
-  //     if (isDrawerOpen) {
-  //       setIsLoadDetails(true);
-  //       fetchGetPurchaseDetail({
-  //         id: rowSelected,
-  //         access_token: user?.access_token,
-  //       });
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [rowSelected, isDrawerOpen, isOpenDelete]);
-
   useEffect(() => {
     if (rowSelected && isDrawerOpen) {
       fetchGetPurchaseDetail({
@@ -275,7 +259,6 @@ const UserComponent = () => {
       });
     }
   }, [rowSelected, isDrawerOpen]);
-  
 
   // Update stateDetails for form
   useEffect(() => {
@@ -294,11 +277,11 @@ const UserComponent = () => {
 
   // Usequery TỰ GET DỮ LIỆU TỪ PHÍA BE NGAY LẦN ĐẦU RENDER COMPONENT Này (Hiển thị list sản phẩm).
   // Tự động lấy dữ liệu: Ngay khi component chứa useQuery được render, useQuery sẽ tự động gọi hàm fetchGetAllProduct để lấy danh sách sản phẩm từ API.
-  const queryUser = useQuery({
+  const queryPurchased = useQuery({
     queryKey: ["purchase_order"],
     queryFn: fetchGetAllPurchaseOrder,
   });
-  const { isLoading, data: data_purchase } = queryUser;
+  const { isLoading, data: data_purchase } = queryPurchased;
 
   // Handle Confirm Delete Product
   const handleConfirmDelete = () => {
@@ -306,43 +289,12 @@ const UserComponent = () => {
       { id: rowSelected, token: user?.access_token },
       {
         onSettled: () => {
-          queryUser.refetch();
+          queryPurchased.refetch();
         },
       }
     );
   };
 
-  // Submit Form Update Product
-  const onFinishUpdate = () => {
-    mutationUpdate.mutate(
-      // params 1: Object {chứa thông tin của }
-      {
-        id: rowSelected,
-        token: user?.access_token,
-        dataUpdate: purchaseDetails,
-      },
-      // callback onSettled : đây là 1 chức năng của useQuery giúp tự động gọi hàm get lại danh sách sản phẩm (cập nhật list mới nhất)
-      {
-        onSettled: () => {
-          queryUser.refetch();
-        },
-      }
-    );
-  };
-  // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
-  // useEffect(() => {
-  //   if (isSuccessUpdate) {
-  //     if (dataRes?.status === "OK") {
-  //       toast.success(dataRes?.message);
-  //       handleCancelUpdate();
-  //     } else {
-  //       toast.error(dataRes?.message);
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isSuccessUpdate, isErrorUpdate]);
-
-  // CANCEL MODAL - DELETE PRODUCT
   const handleCancelDelete = () => {
     setIsOpenDelete(false);
   };
@@ -353,9 +305,9 @@ const UserComponent = () => {
       toast.error("Không có đơn hàng nào được chọn để hủy!");
       return;
     }
-  
+
     console.log("🟢 Hủy đơn hàng với ID:", rowSelected);
-  
+
     mutationSoftDelete.mutate(
       {
         id: rowSelected,
@@ -364,7 +316,7 @@ const UserComponent = () => {
       {
         onSuccess: () => {
           toast.success("Đã hủy đơn hàng!");
-          queryUser.refetch(); // Cập nhật danh sách đơn hàng
+          queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
           setIsDrawerOpen(false); // 🔹 Đóng form sau khi hủy
         },
         onError: (error) => {
@@ -374,10 +326,6 @@ const UserComponent = () => {
       }
     );
   };
-  
-  
-  
-  
 
   // ONCHANGE FIELDS - UPDATE
   const handleOnChangeDetails = (value, name) => {
@@ -387,48 +335,43 @@ const UserComponent = () => {
     }));
   };
 
-  // CHANGE AVATAR - UPDATE
-  const handleChangeAvatarDetails = async (info) => {
-    // C2: getBase64
-    try {
-      const file = info?.fileList[0];
-      if (!file?.url && !file?.preview) {
-        file.preview = await getBase64(file?.originFileObj);
-      }
-      setPurchaseDetails((prev) => ({
-        ...prev,
-        avatar: file.preview,
-      }));
-    } catch (error) {
-      console.log("Error", error);
-    }
+  // Get All Fuel List here
+  const fetchGetAllFuelType = async () => {
+    const response = await FuelTypeServices.getAllFuelType();
+    return response;
   };
-  console.log("checl => ", purchaseDetails);
 
+  const queryAllFuelType = useQuery({
+    queryKey: ["fuel_list"],
+    queryFn: fetchGetAllFuelType,
+  });
 
-  
+  const { data: fuelType, isSuccess: getFuelSuccess } = queryAllFuelType;
+
+  useEffect(() => {
+    if (getFuelSuccess) {
+      if (fuelType.success) {
+        setFuel_Types(fuelType.requests);
+      }
+    }
+  }, [getFuelSuccess, isLoading]);
+
   // Xử lý input
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "start_received"  )
-     {
-     if (value <= currentDate){
-      toast.error("Ngày bắt đầu nhận đơn không thể lớn hơn ngày kết thúc!");
-     }
-    }else if(name === "end_received"){
-      if(value < purchaseDetails.start_received){
+    if (name === "start_received") {
+      if (value <= currentDate) {
+        toast.error("Ngày bắt đầu nhận đơn không thể lớn hơn ngày kết thúc!");
+      }
+    } else if (name === "end_received") {
+      if (value < purchaseDetails.start_received) {
         toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu nhận đơn !");
       }
-
-    }else if(name === "due_date" ){
-      if(value > purchaseDetails.end_received){
+    } else if (name === "due_date") {
+      if (value > purchaseDetails.end_received) {
         toast.error("Hạn chót nhận đơn trên phái lớn hơn ngày kết thúc!");
       }
     }
-    
-
-
-  
     // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
     if ((name === "quantity" || name === "price") && value === "0") {
       return;
@@ -439,6 +382,11 @@ const UserComponent = () => {
   // Khi bấm "Cập Nhật" -> Hiện Modal xác nhận cập nhật
   const handleOpenConfirmUpdate = () => {
     setIsConfirmUpdateOpen(true);
+  };
+
+  // Khi bấm "Cập Nhật" -> Hiện Modal xác nhận cập nhật
+  const handleOpenConfirmAccept = () => {
+    setIsConfirmAccept(true);
   };
 
   // Khi bấm "Hủy yêu cầu" -> Hiện Modal xác nhận hủy cập nhật
@@ -452,11 +400,16 @@ const UserComponent = () => {
     handleUpdatePurchaseOrder(); // Thực hiện cập nhật đơn hàng
   };
 
+  const handleConfirmAccept = () => {
+    setIsConfirmAccept(false);
+    handleAcceptPurchaseOrder();
+  };
+
   // Khi chọn "Có" trong Modal Xác Nhận Hủy
   const handleConfirmCancel = () => {
     setIsConfirmCancelOpen(false); // 🔹 Đóng modal xác nhận trước
     setIsDrawerOpen(false); // 🔹 Đóng drawer ngay lập tức để UI phản hồi nhanh hơn
-  
+
     // 🔹 Gọi API để cập nhật trạng thái hủy đơn hàng
     mutationSoftDelete.mutate(
       {
@@ -466,7 +419,7 @@ const UserComponent = () => {
       {
         onSuccess: () => {
           toast.success("Đã hủy đơn hàng!");
-          queryUser.refetch(); // Cập nhật danh sách đơn hàng
+          queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
         },
         onError: (error) => {
           console.error("🔴 Lỗi khi gọi API:", error);
@@ -475,31 +428,26 @@ const UserComponent = () => {
       }
     );
   };
-  
-  
 
-  // DATA FROM USERS LIST
-  const tableData =
-    data_purchase?.data?.length &&
-    data_purchase?.data.map((purchaseOrder) => {
-      return {
+  // Kiểm tra nếu `data_purchase?.data` là một mảng hợp lệ
+  const tableData = Array.isArray(data_purchase?.data)
+    ? data_purchase.data.map((purchaseOrder) => ({
         ...purchaseOrder,
-        key: purchaseOrder._id,
-        quantity_remain: purchaseOrder?.quantity_remain || 0,
-        quantity: purchaseOrder?.quantity || 0,
-      };
-    });
+        key: purchaseOrder._id || "",
+        // start_received: convertDateStringV1(purchaseOrder.start_received),
+        // end_received: convertDateStringV1(purchaseOrder.end_received),
+      }))
+    : [];
 
   // Actions
-  const renderAction = () => {
+  const renderAction = (text, record) => {
     return (
       <div
         className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%]"
-        onClick={handleDetailsProduct}
+        onClick={() => handleDetailsProduct(record)}
       >
-        <AiOutlineEdit className="text-xl" style={{ color: "blueviolet" }} />
         <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          Chi tiết
+          ✅ Duyệt đơn
         </span>
       </div>
     );
@@ -606,49 +554,114 @@ const UserComponent = () => {
         text
       ),
   });
+
+  const statusColors = {
+    "Chờ duyệt": "gold",
+    "Đang xử lý": "blue",
+    "Từ chối": "red",
+    "Đã huỷ": "volcano",
+    "Đã Hoàn Thành": "green",
+  };
+  // Định nghĩa danh sách mức độ ưu tiên
+  const priorityOptions = [
+    { id: 1, label: "Cao" },
+    { id: 2, label: "Trung bình" },
+    { id: 3, label: "Thấp" },
+  ];
+
+  // Chuyển đổi từ số (API trả về) sang text hiển thị
+  const priorityText =
+    priorityOptions.find((p) => p.id === purchaseDetails.priority)?.label || "";
+
+  // Xử lý sự kiện thay đổi giá trị
+  const handlePriorityChange = (e) => {
+    const selectedPriority = priorityOptions.find(
+      (p) => p.label === e.target.value
+    );
+    setPurchaseDetails((prev) => ({
+      ...prev,
+      priority: selectedPriority ? selectedPriority.id : "",
+    }));
+  };
   const columns = [
-    // {
-    //   title: "Hình ảnh",
-    //   dataIndex: "fuel_image",
-    // },
+    {
+      title: "Mặt hàng",
+      dataIndex: "fuel_image",
+      key: "fuel_image",
+      render: (fuel_image) => (
+        fuel_image ? (
+          <img
+            src={fuel_image} // Base64 hoặc URL hình ảnh
+            alt="Fuel"
+            style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "5px" }}
+          />
+        ) : (
+          <span style={{ color: "red" }}>Không có ảnh</span> // Hiển thị nếu không có ảnh
+        )
+      ),
+    },
     {
       title: "Tên đơn hàng",
       dataIndex: "request_name",
       key: "request_name",
-      ...getColumnSearchProps("request_name"),
+      ...(getColumnSearchProps("request_name") || {}),
       sorter: (a, b) => a?.request_name.length - b?.request_name.length,
+      align: "right",
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>SL Cần thu</div>
-      ),
-      dataIndex: "quantity_remain",
-      key: "quantity_remain",
-      render: (text, record) => {
-        if (
-          record?.quantity_remain !== undefined &&
-          record?.quantity !== undefined
-        ) {
-          return (
-            <div style={{ textAlign: "center" }}>
-              <b>
-                {record.quantity_remain} / {record.quantity}
-              </b>
-            </div>
-          );
-        }
-        return <div style={{ textAlign: "center", color: "red" }}>N/A</div>;
+      title: "Tổng thu (Kg)",
+      dataIndex: "quantity",
+      key: "quantity",
+      filters: [
+        { text: "Trên 200kg", value: "above200" },
+        { text: "Dưới 500kg", value: "under500" },
+        { text: "Trên 1000kg", value: "above1000" },
+      ],
+      onFilter: (value, record) => {
+        if (value === "above200") return record.quantity > 200;
+        if (value === "under500") return record.quantity < 500;
+        if (value === "above1000") return record.quantity > 1000;
+        return true;
       },
-      sorter: (a, b) => (a.quantity_remain || 0) - (b.quantity_remain || 0),
+      sorter: (a, b) => a.quantity - b.quantity, // Sắp xếp từ nhỏ đến lớn
+      render: (quantity) => `${quantity} Kg` ,
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng thái</div>
-      ),
+      title: "Ngày tạo đơn",
+      dataIndex: "start_received",
+      key: "start_received",
+      sorter: (a, b) => new Date(a.start_received) - new Date(b.start_received),
+      render: (date) => convertDateStringV1(date), // Hiển thị ngày đã format
+    },
+
+    {
+      title: "Ngày kết thúc đơn",
+      dataIndex: "end_received",
+      key: "end_received",
+      sorter: (a, b) => new Date(a.end_received) - new Date(b.end_received),
+      render: (date) => convertDateStringV1(date), // Hiển thị ngày đã format
+    },
+
+    {
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      ...getColumnSearchProps("status"),
-      render: (status) => <div style={{ textAlign: "center" }}>{status}</div>,
+      filters: [
+        { text: "Chờ duyệt", value: "Chờ duyệt" },
+        { text: "Đang xử lý", value: "Đang xử lý" },
+        { text: "Từ chối", value: "Từ chối" },
+        { text: "Đã huỷ", value: "Đã huỷ" },
+        { text: "Đã Hoàn Thành", value: "Đã Hoàn Thành" },
+      ],
+      onFilter: (value, record) => record.status === value,
+      render: (status) => (
+        <Tag
+          color={statusColors[status] || "default"}
+          style={{ textAlign: "center", fontSize: "15px" , padding : "5px"}}
+        >
+          {status}
+        </Tag>
+      ),
     },
 
     {
@@ -738,11 +751,15 @@ const UserComponent = () => {
                     <option value="" disabled>
                       Chọn loại nhiên liệu
                     </option>
-                    <option value="67950da386a0a462d408c7b9">Xăng</option>
-                    <option value="67950fec8465df03b29bf753">Dầu Diesel</option>
-                    <option value="67950f9f8465df03b29bf752">
-                      Khí hóa lỏng
-                    </option>
+                    {fuel_types && fuel_types.length > 0 ? (
+                      fuel_types.map((fuel) => (
+                        <option key={fuel._id} value={fuel._id}>
+                          {fuel.type_name}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Không có dữ liệu</option>
+                    )}
                   </select>
                 </div>
 
@@ -873,8 +890,8 @@ const UserComponent = () => {
                   </label>
                   <select
                     name="priority"
-                    value={purchaseDetails.priority}
-                    onChange={handleChange}
+                    value={priorityText}
+                    onChange={handlePriorityChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   >
                     <option value="" disabled>
@@ -913,22 +930,31 @@ const UserComponent = () => {
                 </div>
 
                 {/* Nút bấm */}
-                <div className="flex flex-col md:flex-row md:justify-between gap-4">
-                  <button
-                    onClick={handleOpenConfirmUpdate}
-                    className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
-                  >
-                    Cập Nhật
-                  </button>
+                {purchaseDetails?.status !== "Đang xử lý" && (
+                  <div className="flex flex-col md:flex-row md:justify-between gap-4">
+                    <button
+                      onClick={handleOpenConfirmUpdate}
+                      className="bg-yellow-200 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+                    >
+                      ⏳Cập Nhật
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={handleOpenConfirmCancel} // Chỉ đóng form, không cập nhật
-                    className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
-                  >
-                    Hủy yêu cầu
-                  </button>
-                </div>
+                    <button
+                      onClick={handleOpenConfirmAccept}
+                      className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+                    >
+                      ✅Duyệt đơn
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleOpenConfirmCancel} // Chỉ đóng form, không cập nhật
+                      className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
+                    >
+                      Hủy yêu cầu
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -955,6 +981,16 @@ const UserComponent = () => {
         onOk={handleConfirmUpdate}
       >
         <p>Bạn có chắc chắn muốn cập nhật thông tin đơn hàng không?</p>
+      </ModalComponent>
+
+      {/* Modal Xác Nhận Cập Nhật */}
+      <ModalComponent
+        title="Xác nhận đơn hàng"
+        open={isConfirmAccept}
+        onCancel={() => setIsConfirmAccept(false)}
+        onOk={handleConfirmAccept}
+      >
+        <p>Bạn có chắc chắn muốn Duyệt đơn hàng không?</p>
       </ModalComponent>
 
       {/* Modal Xác Nhận Hủy */}

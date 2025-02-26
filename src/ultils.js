@@ -44,3 +44,17 @@ export const converDateString = (dateString) => {
     console.log("Lỗi trong quá trình convert thời gian : ", error);
   }
 };
+
+export const convertDateStringV1 = (dateString) => {
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`; // Chỉ lấy ngày-tháng-năm
+  } catch (error) {
+    console.log("Lỗi trong quá trình convert thời gian: ", error);
+    return ""; // Tránh lỗi hiển thị nếu có lỗi
+  }
+};
