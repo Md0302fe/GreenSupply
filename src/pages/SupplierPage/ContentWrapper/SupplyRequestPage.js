@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 const SupplyRequestPage = () => {
   const { id } = useParams();
-  console.log(id)
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -41,11 +40,7 @@ const SupplyRequestPage = () => {
     }
   };
   useEffect(() => {
-    if (id) {
-      fetchOrders();
-  console.log(id)
-
-    }
+    fetchOrders();
   }, [id]);
 
   const handleSelectOrder = (orderId) => {
@@ -159,7 +154,6 @@ const SupplyRequestPage = () => {
       toast.error("Tạo đơn thất bại!");
     }
   };
-console.log(adminOrders)
   return (
     <div>
       <div className="p-6 bg-white shadow-md rounded">
