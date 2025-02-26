@@ -54,7 +54,7 @@ const Footer = () => {
           <h4 className="text-sm leading-6">
             Giải pháp hiệu quả dành cho nông sản của bạn
           </h4>
-          <p className="text-sm leading-6 mt-4">
+          <p className="text-sm leading-6 mt-4 text-white">
             Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền
             vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách
             hiệu quả.
@@ -64,8 +64,8 @@ const Footer = () => {
         {/* Văn phòng */}
         <div>
           <h3 className="font-bold text-lg mb-4">Văn phòng</h3>
-          <p className="text-sm">Công ty TNHH Green Supply</p>
-          <p className="text-sm mt-2">
+          <p className="text-sm text-white">Công ty TNHH Green Supply</p>
+          <p className="text-sm mt-2 text-white">
             Địa chỉ: 120 đường Nguyễn Văn Cừ, phường Long Tuyền, quận Bình Thủy
             - Cần Thơ
           </p>
@@ -74,8 +74,8 @@ const Footer = () => {
         {/* Thông tin liên lạc */}
         <div>
           <h3 className="font-bold text-lg mb-4">Thông tin liên lạc</h3>
-          <p className="text-sm">Email: Greensupply@gmail.com</p>
-          <p className="text-sm mt-2">Điện thoại: 0976 000 000</p>
+          <p className="text-sm text-white">Email: Greensupply@gmail.com</p>
+          <p className="text-sm mt-2 text-white">Điện thoại: 0976 000 000</p>
           {/* Mạng xã hội */}
           <div className="flex gap-4 mt-6">
             <img src={FacebookIcon} alt="Facebook" className="w-6 h-6" />

@@ -103,10 +103,10 @@ const ProductItem = ({ product }) => {
         <h3 className="text-sm sm:text-lg font-bold font-instrument">
           {product.request_name}
         </h3>
-        <h4 className="text-xs sm:text-sm text-gray-700 mt-2 mb-3 font-bold">
+        {/* <h4 className="text-xs sm:text-sm text-gray-700 mt-2 mb-3 font-bold">
           Loại nhiên liệu:{" "}
           <span className="text-[#006838] font-bold">{product.fuel_type}</span>
-        </h4>
+        </h4> */}
         <p className="text-xs sm:text-sm text-gray-700">
           Số lượng: <span className="font-bold">{product.quantity}</span>
         </p>
