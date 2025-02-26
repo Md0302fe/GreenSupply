@@ -115,7 +115,7 @@ const FuelSupplyRequestComponent = () => {
       if (res) {
         setDetailData({
           ...res.res,
-          total_price: res.res.estimate_price * res.res.quantity, // Calculate total price
+          total_price: res.res.price * res.res.quantity, // Calculate total price
         });
         setIsDetailModalOpen(true);
       }
@@ -364,7 +364,7 @@ const FuelSupplyRequestComponent = () => {
             <p><strong>Tên Nhiên Liệu:</strong> {detailData.request_name}</p>
             <p><strong>Ghi Chú:</strong> {detailData.note || "Không có ghi chú"}</p>
             <p><strong>Trạng Thái:</strong> {detailData.status}</p>
-            <p><strong>Giá Mỗi KG:</strong> {detailData.estimate_price} VND</p>
+            <p><strong>Giá Mỗi KG:</strong> {detailData.price} VND</p>
             <p><strong>Số Lượng:</strong> {detailData.quantity} KG</p>
             <p><strong>Tổng Giá:</strong> {detailData.total_price} VND</p>
             <p><strong>Ngày Cập Nhật:</strong> {converDateString(detailData.updatedAt)}</p>
