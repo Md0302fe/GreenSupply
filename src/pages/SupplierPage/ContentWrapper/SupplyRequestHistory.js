@@ -279,7 +279,7 @@ const FuelSupplyRequestComponent = () => {
   return (
     <div className="Wrapper-Admin-FuelRequest">
       <div className="Main-Content">
-        <h5 className="content-title">Quản lý Yêu Cầu Cung Cấp Nhiên Liệu</h5>
+        <h5 className="content-title"> </h5>
         <Table columns={columns} dataSource={fuelRequests} loading={isLoading} rowKey={(record) => record._id} pagination={{ pageSize: 5 }} />
       </div>
 
@@ -322,7 +322,11 @@ const FuelSupplyRequestComponent = () => {
                   }),
                 ]}
               >
-                <Input type="number" />
+                <Input type="number" onKeyDown={(e) => {
+                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}/>
               </Form.Item>
             </Form.Item>
             <Form.Item label="Ghi Chú" name="note">
