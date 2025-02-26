@@ -81,7 +81,6 @@ const FuelProvideManagement = () => {
       });
       setOrderStatus(res?.data.status); // Cập nhật trạng thái đơn hàng từ dữ liệu
     }
-
     setIsLoadDetails(false);
     return res;
   };
@@ -533,7 +532,6 @@ const FuelProvideManagement = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
-        width="50%"
         forceRender
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
@@ -572,6 +570,9 @@ const FuelProvideManagement = () => {
             </Form.Item>
             <Form.Item label="Số Lượng" name="quantity">
               <span>{stateDetailsUser?.quantity || ""}</span>
+            </Form.Item>
+            <Form.Item label="Ghi chú" name="note">
+              <span>{stateDetailsUser?.note || ""}</span>
             </Form.Item>
 
             <Form.Item label="Trạng Thái" name="status">

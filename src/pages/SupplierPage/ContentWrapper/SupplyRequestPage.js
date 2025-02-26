@@ -190,11 +190,16 @@ const SupplyRequestPage = () => {
                 placeholder="Nhập số lượng"
                 value={formData.quantity}
                 onChange={handleQuantityChange}
-                onBlur={validateQuantity} // Chỉ validate khi người dùng rời khỏi ô input
+                onBlur={validateQuantity} 
                 className="border p-2 rounded w-full"
                 min="10"
                 max={selectedOrder.quantity_remain}
                 disabled={selectedOrder.quantity_remain < 51}
+                onKeyDown={(e) => {
+                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             </div>
