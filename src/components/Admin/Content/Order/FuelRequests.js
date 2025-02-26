@@ -498,11 +498,6 @@ const FuelRequestsManagement = () => {
       </>
     )}
 
-    {orderStatus === 'Đã duyệt' && (
-      <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteOrder}>
-        Hoàn thành
-      </Button>
-    )}
   </div>
 </Form.Item>
 

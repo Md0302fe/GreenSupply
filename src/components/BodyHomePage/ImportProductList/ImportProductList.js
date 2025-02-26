@@ -14,7 +14,7 @@ const ImportProductList = () => {
     try {
       const response = await getAllFuelEntry();
       const filteredOrders = response.data.filter(
-        (order) => order.status === "Chờ duyệt" && !order.is_deleted
+        (order) => order.status === "Đang xử lý" && !order.is_deleted
       );
       setProductList(filteredOrders);
     } catch (error) {
