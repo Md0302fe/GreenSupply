@@ -175,6 +175,16 @@ const HarvestRequestPage = () => {
 
   const { data, isError, isPending, isSuccess } = mutationCreateOrder;
 
+  console.log("data > ", data);
+  // Notification when created success
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.PurchaseOrder.status)
+    } else {
+      toast.error(data?.PurchaseOrder.message)
+    }
+  }, [isSuccess]);
+
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {

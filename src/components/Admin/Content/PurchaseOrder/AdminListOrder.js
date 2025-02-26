@@ -403,7 +403,7 @@ const UserComponent = () => {
       console.log("Error", error);
     }
   };
-  console.log("checl => ", purchaseDetails);
+
 
 
   
