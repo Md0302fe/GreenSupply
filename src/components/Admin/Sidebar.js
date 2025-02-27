@@ -16,6 +16,8 @@ import { FaGem, FaGithub } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa"
 import { FaWarehouse } from "react-icons/fa";
 import { VscListOrdered } from "react-icons/vsc";
+import { FaClipboard } from "react-icons/fa6";
+
 
 
 
@@ -80,7 +82,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
           <Menu iconShape="circle">
             <SubMenu
               // suffix={<span className="badge yellow">3</span>}
-              icon={<VscListOrdered />}
+              icon={<FaClipboard />}
               title="Đơn Thu Nhiên Liệu"
             >
               <MenuItem>

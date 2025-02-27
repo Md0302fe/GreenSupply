@@ -609,6 +609,13 @@ const UserComponent = () => {
       align: "right",
     },
     {
+      title: "Tiến độ còn thu",
+      dataIndex: "quantity_remain",
+      key: "quantity_remain",
+      sorter: (a, b) => a?.quantity_remain - b?.quantity_remain,
+    },
+    
+    {
       title: "Tổng thu (Kg)",
       dataIndex: "quantity",
       key: "quantity",
@@ -930,7 +937,7 @@ const UserComponent = () => {
                 </div>
 
                 {/* Nút bấm */}
-                {purchaseDetails?.status !== "Đang xử lý" && (
+                {purchaseDetails?.status === "Chờ duyệt" && (
                   <div className="flex flex-col md:flex-row md:justify-between gap-4">
                     <button
                       onClick={handleOpenConfirmUpdate}

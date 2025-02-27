@@ -90,6 +90,7 @@ const FuelRequestsManagement = () => {
       if (response) {
         setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
+        queryOrder.refetch();
       } else {
         message.error("Duyệt đơn thất bại!");
       }
@@ -104,6 +105,7 @@ const FuelRequestsManagement = () => {
       if (response) {
         setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
+        queryOrder.refetch();
       } else {
         message.error("Hủy đơn thất bại!");
       }
