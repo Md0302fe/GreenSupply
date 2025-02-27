@@ -22,7 +22,7 @@ const SupplyRequestPage = () => {
     try {
       const response = await getAllFuelEntry();
       const filteredOrders = response.data.filter(order =>
-        order.status === "Chờ duyệt" && !order.is_deleted
+        order.status === "Đang xử lý" && !order.is_deleted
       );
       console.log(filteredOrders)
       setAdminOrders(filteredOrders);
