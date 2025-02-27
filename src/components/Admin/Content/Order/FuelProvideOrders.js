@@ -600,16 +600,7 @@ const FuelProvideManagement = () => {
                       Hủy đơn
                     </Button>
                   </>
-                )}
-
-
-                {orderStatus === 'Đã duyệt' && (
-                  <Button type="default" style={{ backgroundColor: "#52c41a", color: "white" }} onClick={handleCompleteProvideOrder}>
-                    Hoàn thành
-                  </Button>
-                )}
-
-                  
+                )}   
               </div>
             </Form.Item>
           </Form>

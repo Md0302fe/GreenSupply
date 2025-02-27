@@ -225,7 +225,7 @@ const FuelList = () => {
         <Space>
   <Button type="primary" icon={<EyeOutlined />} onClick={() => showFuelDetails(record)} />
   <Button type="default" icon={<EditOutlined />} onClick={() => openUpdateModal(record)} />
-  <Button danger icon={<DeleteOutlined />} onClick={() => handleCancelFuel(record._id)} />
+  {/* <Button danger icon={<DeleteOutlined />} onClick={() => handleCancelFuel(record._id)} /> */}
 </Space>
       ),
     },
