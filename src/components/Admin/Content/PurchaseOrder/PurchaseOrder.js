@@ -38,6 +38,7 @@ const HarvestRequestPage = () => {
   const [fuelImage, setFuelImage] = useState(null);
   const [fuel_types, setFuel_Types] = useState({});
   const user = useSelector((state) => state.user);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   // Tính tổng giá
   const totalPrice = () => {
@@ -46,14 +47,29 @@ const HarvestRequestPage = () => {
     return q * p;
   };
 
-  // Xử lý input
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if ((name === "quantity" || name === "price") && value === "0") {
+  // Xử lý onchange <-> input
+const handleChange = (e) => {
+  const { name, value } = e?.target;
+
+  if (name === "start_received") {
+    if (value <= currentDate) {
+      toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
       return;
     }
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  } else if (name === "end_received") {
+    if (value < formData.start_received) {
+      toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
+      return;
+    }
+  } else if (name === "due_date") {
+    if (value > formData.end_received) {
+      toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
+      return;
+    }
+  }
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
+
 
   // Tuy nhiên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
@@ -90,6 +106,13 @@ const HarvestRequestPage = () => {
       {
         condition: !fuelImage || fuelImage.trim() === "",
         message: "Hình ảnh nhiên liệu không được để trống!",
+      },
+      {
+        condition: !formData.quantity || formData.quantity.trim() === "",
+        message: "Tổng sl nhiên liệu cần thu không được để trống!",
+      },{
+        condition: !formData.price || formData.price.trim() === "",
+        message: "Giá nhiên liệu không được để trống!",
       },
       {
         condition: !formData.start_received,
@@ -157,27 +180,26 @@ const HarvestRequestPage = () => {
     return PurchaseOrderServices.createPurchaseOrder(data);
   });
 
-
   // Get All Fuel List here
   const fetchGetAllFuelType = async () => {
     const response = await FuelTypeServices.getAllFuelType();
     return response;
-  }
+  };
 
   const queryAllFuelType = useQuery({
     queryKey: ["fuel_list"],
-    queryFn: fetchGetAllFuelType
-  })
+    queryFn: fetchGetAllFuelType,
+  });
 
-  const { data: fuelType , isSuccess: getFuelSuccess } = queryAllFuelType;
+  const { data: fuelType, isSuccess: getFuelSuccess } = queryAllFuelType;
 
   useEffect(() => {
-    if(getFuelSuccess){
-      if(fuelType.success){
-        setFuel_Types(fuelType.requests)
+    if (getFuelSuccess) {
+      if (fuelType.success) {
+        setFuel_Types(fuelType.requests);
       }
     }
-  }, [getFuelSuccess])
+  }, [getFuelSuccess]);
 
   const { data, isError, isPending, isSuccess } = mutationCreateOrder;
 
@@ -197,20 +219,20 @@ const HarvestRequestPage = () => {
       status: "", // Trạng thái đơn hàng (VD: Đang chờ, Đã hoàn thành, Đã hủy)
       note: "", // Ghi chú thêm về đơn hàng
       is_deleted: false, // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
-    })
+    });
     setFuelImage(null);
-  }
+  };
 
-  console.log("data > ", data);
+
   // Notification when created success
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data?.PurchaseOrder.status)
+      toast.success(data?.PurchaseOrder.status);
       setTimeout(() => {
         setNewForm();
-      }, 1000)
+      }, 1000);
     } else {
-      toast.error(data?.PurchaseOrder.message)
+      toast.error(data?.PurchaseOrder.message);
     }
   }, [isSuccess]);
 
@@ -236,7 +258,7 @@ const HarvestRequestPage = () => {
         });
         setFuelImage(null);
       } else {
-        return ;
+        return;
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -284,14 +306,14 @@ const HarvestRequestPage = () => {
                     Chọn loại nhiên liệu
                   </option>
                   {fuel_types && fuel_types.length > 0 ? (
-                      fuel_types.map((fuel) => (
-                        <option key={fuel._id} value={fuel._id}>
-                          {fuel.type_name}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Không có dữ liệu</option>
-                    )}
+                    fuel_types.map((fuel) => (
+                      <option key={fuel._id} value={fuel._id}>
+                        {fuel.type_name}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Không có dữ liệu</option>
+                  )}
                 </select>
               </div>
 
@@ -328,6 +350,11 @@ const HarvestRequestPage = () => {
                   placeholder="Nhập số lượng..."
                   value={formData.quantity}
                   onChange={handleChange}
+                  onKeyDown={(e) => {
+                    if (["e", "E", "-", "."].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 />
               </div>
@@ -344,6 +371,11 @@ const HarvestRequestPage = () => {
                   placeholder="Nhập giá..."
                   value={formData.price}
                   onChange={handleChange}
+                  onKeyDown={(e) => {
+                    if (["e", "E", "-", "."].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 />
               </div>
