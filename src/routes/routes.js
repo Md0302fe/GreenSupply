@@ -39,6 +39,8 @@ import FuelList from "../components/Admin/Content/Fuel/FuelList";
 
 import PurchaseOrder from "../components/Admin/Content/PurchaseOrder/PurchaseOrder"
 import PurchaseOrders from "../components/Admin/Content/PurchaseOrder/AdminListOrder"
+import ProductionRequest from "../components/Admin/Content/ProductionRequest/ProductionRequest";
+import ProductionRequestList from "../components/Admin/Content/ProductionRequest/ProductionRequestList";
 
 const Router = () => {
   return (
@@ -83,6 +85,12 @@ const Router = () => {
         <Route path="/system/admin" element={<Admin />}>
           <Route path="manage-fuel" element={<Dashboard1 />} />
           <Route path="fuel-list" element={<FuelList />} />
+          
+        </Route>
+        {/* Quản lý sản xuất */}
+        <Route path="/system/admin" element={<Admin />}>
+          <Route path="production-request" element={<ProductionRequest />} />
+          <Route path="production-request-list" element={<ProductionRequestList />} />
           
         </Route>
 
