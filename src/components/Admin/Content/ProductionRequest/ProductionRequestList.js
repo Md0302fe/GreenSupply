@@ -1,0 +1,691 @@
+import React, { useEffect, useState, useRef } from "react";
+import {
+    Table,
+    Input,
+    Space,
+    Tag,
+    Button,
+    Form,
+    InputNumber,
+    DatePicker,
+    Select,
+    message,
+    Modal, // Thêm import Modal
+} from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import Highlighter from "react-highlight-words";
+import { toast } from "react-toastify";
+import moment from "moment";
+import axios from "axios";
+import dayjs from "dayjs";
+import { convertDateStringV1 } from "../../../../ultils";
+import Loading from "../../../LoadingComponent/Loading";
+import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
+
+// Hàm lấy danh sách nhiên liệu
+export const getAllFuelType = async () => {
+    const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/fuel-management/getAll`
+    );
+    return res?.data; // Giả sử { success, requests: [...] }
+};
+
+const statusColors = {
+    "Chờ duyệt": "gold",
+    "Đang xử lý": "blue",
+    "Đã Hoàn Thành": "purple",
+    "Đã duyệt": "green",
+    "Vô hiệu hóa": "gray",
+};
+
+const ProductionRequestList = () => {
+    const user = useSelector((state) => state.user);
+
+    // State quản lý Drawer & chế độ Edit
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+
+    // Form để bind data khi chỉnh sửa
+    const [form] = Form.useForm();
+
+    // Search
+    const [searchText, setSearchText] = useState("");
+    const [searchedColumn, setSearchedColumn] = useState("");
+    const searchInput = useRef(null);
+
+    // Danh sách nhiên liệu
+    const [fuelLoading, setFuelLoading] = useState(false);
+    const [fuelTypes, setFuelTypes] = useState([]);
+
+    // Lấy danh sách nhiên liệu 1 lần
+    useEffect(() => {
+        const fetchFuelTypes = async () => {
+            setFuelLoading(true);
+            try {
+                const data = await getAllFuelType();
+                setFuelTypes(data.requests || []);
+            } catch (error) {
+                message.error("Có lỗi xảy ra khi tải danh sách nhiên liệu.");
+            } finally {
+                setFuelLoading(false);
+            }
+        };
+        fetchFuelTypes();
+    }, []);
+
+    // 1. FETCH danh sách đơn (GET)
+    const fetchProductionRequests = async () => {
+        const access_token = user?.access_token;
+        const dataRequest = {};
+        const res = await ProductionRequestServices.getAll({ access_token, dataRequest });
+        // Giả sử BE trả về { success, status, requests }
+        return res.requests; // Mảng requests
+    };
+
+    const {
+        isLoading,
+        data,
+        error,
+        isError,
+        refetch: refetchRequests,
+    } = useQuery({
+        queryKey: ["production_requests"],
+        queryFn: fetchProductionRequests,
+        retry: false,
+    });
+
+    if (isError) {
+        console.log("Lỗi:", error);
+    }
+
+    const tableData = Array.isArray(data)
+        ? data.map((req) => ({ ...req, key: req._id }))
+        : [];
+
+    // 2. MUTATION cập nhật (PATCH)
+    const mutationUpdate = useMutation({
+        mutationFn: ProductionRequestServices.updateProductionRequest,
+        onSuccess: (dataResponse) => {
+            if (dataResponse?.success) {
+                toast.success("Cập nhật đơn thành công!");
+                refetchRequests();
+                setIsEditMode(false);
+                setIsDrawerOpen(false);
+            } else {
+                toast.error("Cập nhật đơn thất bại!");
+            }
+        },
+        onError: (err) => {
+            console.log("Update error:", err);
+            toast.error("Có lỗi xảy ra khi cập nhật!");
+        },
+    });
+
+    // 3. Mutation xóa
+    const mutationDelete = useMutation({
+        mutationFn: ProductionRequestServices.deleteProductionRequest,
+        onSuccess: (dataResponse) => {
+            if (dataResponse?.success) {
+                toast.success("Xóa đơn thành công!");
+                refetchRequests(); // gọi lại để cập nhật danh sách
+            } else {
+                toast.error("Xóa đơn thất bại!");
+            }
+        },
+        onError: (err) => {
+            console.log("Delete error:", err);
+            toast.error("Có lỗi xảy ra khi xóa!");
+        },
+    });
+
+    //  “duyệt” (chỉ đổi trạng thái)
+    
+    const handleApprove = (record) => {
+        ProductionRequestServices.changeStatus({
+            access_token: user?.access_token,
+            id: record._id,
+        })
+            .then((res) => {
+                if (res?.success) {
+                    toast.success("Đã duyệt thành công!");
+                    refetchRequests();
+                    setIsDrawerOpen(false);
+                } else {
+                    toast.error("Duyệt thất bại!");
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("Có lỗi xảy ra!");
+            });
+    };
+
+    // Hàm gọi API xóa
+    const handleDelete = (record) => {
+        mutationDelete.mutate({
+            id: record._id,
+            token: user?.access_token,
+        });
+    };
+
+    // Hàm hiển thị popup confirm
+    const confirmDelete = (record) => {
+        Modal.confirm({
+            title: "Xác nhận xóa",
+            content: "Bạn có chắc chắn muốn xóa đơn sản xuất này?",
+            okText: "Đồng ý",
+            cancelText: "Hủy",
+            onOk: () => handleDelete(record),
+        });
+    };
+
+    // Tìm tồn kho nhiên liệu hiện tại
+    const getAvailableFuel = () => {
+        const materialId = form.getFieldValue("material");
+        if (!materialId) return 0;
+        const found = fuelTypes.find((ft) => ft._id === materialId);
+        return found ? found.quantity : 0;
+    };
+
+    // Tính toán nguyên liệu khi thay đổi số lượng thành phẩm
+    const handleProductQuantityChange = (value) => {
+        if (!value || value < 1) {
+            form.setFieldsValue({ material_quantity: 0 });
+            return;
+        }
+        // ví dụ: needed = product / 0.9
+        const needed = Math.ceil(value / 0.9);
+
+        const available = getAvailableFuel();
+        if (available > 0 && needed > available) {
+            // Vượt quá
+            const maxProduction = Math.floor(available * 0.9);
+            message.warning(
+                `Sản lượng mong muốn vượt quá số nhiên liệu. Sản lượng tối đa là ${maxProduction} Kg.`
+            );
+            form.setFieldsValue({
+                product_quantity: maxProduction,
+                material_quantity: Math.ceil(maxProduction / 0.9),
+            });
+            return;
+        }
+        // set needed
+        form.setFieldsValue({ material_quantity: needed });
+    };
+
+    // Khi đổi loại nhiên liệu -> tính lại
+    const handleFuelChange = () => {
+        const productQty = form.getFieldValue("product_quantity");
+        if (productQty) {
+            handleProductQuantityChange(productQty);
+        }
+    };
+
+    // Không cho chọn ngày sản xuất ở quá khứ
+    const disabledProductionDate = (current) => {
+        return current && current < moment().startOf("day");
+    };
+
+    // Không cho chọn ngày kết thúc trước ngày sản xuất
+    const disabledEndDate = (current) => {
+        const productionDate = form.getFieldValue("production_date");
+        if (!productionDate) {
+            return current && current < moment().startOf("day");
+        }
+        return current && current.isBefore(productionDate, "day");
+    };
+
+    // Khi bấm Lưu
+    const handleSaveUpdate = () => {
+        form
+            .validateFields()
+            .then((values) => {
+                // Chuyển DatePicker -> ISO
+                if (values.production_date) {
+                    values.production_date = values.production_date.toISOString();
+                }
+                if (values.end_date) {
+                    values.end_date = values.end_date.toISOString();
+                }
+
+                // Gọi API update
+                mutationUpdate.mutate({
+                    id: selectedRequest._id,
+                    token: user?.access_token,
+                    dataUpdate: values,
+                });
+            })
+            .catch((err) => {
+                console.log("Validate Failed:", err);
+            });
+    };
+
+    // Search
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText("");
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }) => (
+            <div
+                style={{
+                    padding: 8,
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: 4,
+                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+                    width: 220,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder="Tìm kiếm"
+                    value={selectedKeys[0]}
+                    onChange={(e) =>
+                        setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: "block",
+                        borderRadius: 4,
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 70 }}
+                    >
+                        Tìm
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{ width: 70 }}
+                    >
+                        Đặt lại
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => clearFilters && confirm()}
+                        style={{ padding: 0 }}
+                    >
+                        Đóng
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ""}
+                />
+            ) : (
+                text
+            ),
+    });
+
+    // Cấu hình cột
+    const columns = [
+        {
+            title: "Tên đơn",
+            dataIndex: "request_name",
+            key: "request_name",
+            ...getColumnSearchProps("request_name"),
+            sorter: (a, b) => a.request_name.localeCompare(b.request_name),
+        },
+        {
+            title: "Thành phẩm (Kg)",
+            dataIndex: "product_quantity",
+            key: "product_quantity",
+            sorter: (a, b) => a.product_quantity - b.product_quantity,
+            render: (val) => `${val} Kg`,
+        },
+        {
+            title: "Nguyên liệu (Kg)",
+            dataIndex: "material_quantity",
+            key: "material_quantity",
+            sorter: (a, b) => a.material_quantity - b.material_quantity,
+            render: (val) => `${val} Kg`,
+        },
+        {
+            title: "Ngày bắt đầu",
+            dataIndex: "production_date",
+            key: "production_date",
+            sorter: (a, b) =>
+                new Date(a.production_date) - new Date(b.production_date),
+            render: (date) => convertDateStringV1(date),
+        },
+        {
+            title: "Ngày kết thúc",
+            dataIndex: "end_date",
+            key: "end_date",
+            sorter: (a, b) => new Date(a.end_date) - new Date(b.end_date),
+            render: (date) => convertDateStringV1(date),
+        },
+        {
+            title: "Trạng thái",
+            dataIndex: "status",
+            key: "status",
+            filters: [
+                { text: "Chờ duyệt", value: "Chờ duyệt" },
+                { text: "Đang xử lý", value: "Đang xử lý" },
+                { text: "Từ chối", value: "Từ chối" },
+                { text: "Đã huỷ", value: "Đã huỷ" },
+                { text: "Đã Hoàn Thành", value: "Đã Hoàn Thành" },
+            ],
+            onFilter: (value, record) => record.status === value,
+            render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
+        },
+        {
+            title: "Hành động",
+            key: "action",
+            render: (record) => (
+                <Space>
+                    <Button type="link" onClick={() => handleViewDetail(record)}>
+                        Xem chi tiết
+                    </Button>
+                    {record.status === "Chờ duyệt" && (
+                        <Button
+                            type="link"
+                            danger
+                            onClick={() => confirmDelete(record)}
+                            loading={mutationDelete.isLoading}
+                        >
+                            Xóa
+                        </Button>
+                    )}
+                </Space>
+            ),
+        },
+    ];
+
+    // Mở Drawer (Xem / Chỉnh sửa)
+    const handleViewDetail = (record) => {
+        setSelectedRequest(record);
+        setIsDrawerOpen(true);
+        setIsEditMode(false);
+    };
+
+    const handleCloseDrawer = () => {
+        setIsDrawerOpen(false);
+        setSelectedRequest(null);
+        setIsEditMode(false);
+    };
+
+    // Bấm “Chỉnh sửa”
+    const handleEdit = () => {
+        setIsEditMode(true);
+
+        form.setFieldsValue({
+            request_name: selectedRequest?.request_name,
+            request_type: selectedRequest?.request_type,
+            product_quantity: selectedRequest?.product_quantity,
+            material_quantity: selectedRequest?.material_quantity,
+            production_date: selectedRequest?.production_date
+                ? dayjs(selectedRequest.production_date).startOf("day")
+                : null,
+            end_date: selectedRequest?.end_date
+                ? dayjs(selectedRequest.end_date).startOf("day")
+                : null,
+            status: selectedRequest?.status,
+            note: selectedRequest?.note,
+            material: selectedRequest?.material,
+        });
+    };
+
+    // Bấm “Hủy”
+    const handleCancelEdit = () => {
+        setIsEditMode(false);
+    };
+
+    return (
+        <div className="production-request-list">
+            <h5>Quản lý Đơn Sản Xuất</h5>
+
+            <Loading isPending={isLoading || fuelLoading}>
+                <Table columns={columns} dataSource={tableData} />
+            </Loading>
+
+            <DrawerComponent
+                title="Chi tiết đơn sản xuất"
+                isOpen={isDrawerOpen}
+                onClose={handleCloseDrawer}
+                placement="right"
+                width="40%"
+            >
+                {/* Chế độ XEM CHI TIẾT */}
+                {selectedRequest && !isEditMode && (
+                    <div
+                        style={{
+                            backgroundColor: "#fff",
+                            borderRadius: "8px",
+                            padding: "16px",
+                            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+                        }}
+                    >
+                        <h2
+                            style={{
+                                marginBottom: "16px",
+                                fontSize: "18px",
+                                fontWeight: "bold",
+                                textTransform: "uppercase",
+                                color: "#333",
+                            }}
+                        >
+                            Thông tin chi tiết
+                        </h2>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Tên đơn:</strong> {selectedRequest.request_name}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Loại đơn:</strong> {selectedRequest.request_type}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Nhiên liệu (ID):</strong> {selectedRequest.material}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Thành phẩm (Kg):</strong>{" "}
+                            {selectedRequest.product_quantity}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Nguyên liệu (Kg):</strong>{" "}
+                            {selectedRequest.material_quantity}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Ngày sản xuất:</strong>{" "}
+                            {convertDateStringV1(selectedRequest.production_date)}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Ngày kết thúc:</strong>{" "}
+                            {convertDateStringV1(selectedRequest.end_date)}
+                        </p>
+                        <p style={{ marginBottom: "8px" }}>
+                            <strong>Trạng thái:</strong>{" "}
+                            <Tag color={statusColors[selectedRequest.status] || "default"}>
+                                {selectedRequest.status}
+                            </Tag>
+                        </p>
+                        {selectedRequest.note && (
+                            <p style={{ marginBottom: "8px" }}>
+                                <strong>Ghi chú:</strong> {selectedRequest.note}
+                            </p>
+                        )}
+
+                        <Button type="primary" onClick={handleEdit} style={{ marginTop: 16 }}>
+                            Chỉnh sửa
+                        </Button>
+                        {selectedRequest.status === "Chờ duyệt" && (
+                            <Button
+                                type="default"
+                                style={{ marginLeft: 8 }}
+                                onClick={() => handleApprove(selectedRequest)}
+                            >
+                                Duyệt
+                            </Button>
+                        )}
+                    </div>
+                )}
+
+                {/* Chế độ CHỈNH SỬA */}
+                {selectedRequest && isEditMode && (
+                    <div
+                        style={{
+                            backgroundColor: "#fff",
+                            borderRadius: "8px",
+                            padding: "16px",
+                            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+                        }}
+                    >
+                        <h2
+                            style={{
+                                marginBottom: "16px",
+                                fontSize: "18px",
+                                fontWeight: "bold",
+                                textTransform: "uppercase",
+                                color: "#333",
+                            }}
+                        >
+                            Cập nhật đơn
+                        </h2>
+
+                        <Form form={form} layout="vertical">
+                            {/* Tên đơn (bắt buộc) */}
+                            <Form.Item
+                                label="Tên đơn"
+                                name="request_name"
+                                rules={[{ required: true, message: "Vui lòng nhập tên đơn" }]}
+                            >
+                                <Input />
+                            </Form.Item>
+
+                            {/* Loại đơn: có thể cho sửa nếu muốn */}
+                            <Form.Item label="Loại đơn" name="request_type">
+                                <Input />
+                            </Form.Item>
+
+                            {/* Chọn Nhiên liệu */}
+                            <Form.Item
+                                label="Nhiên liệu"
+                                name="material"
+                                rules={[{ required: true, message: "Vui lòng chọn nhiên liệu" }]}
+                            >
+                                <Select placeholder="Chọn loại nhiên liệu" onChange={handleFuelChange}>
+                                    {fuelTypes.map((fuel) => (
+                                        <Select.Option key={fuel._id} value={fuel._id}>
+                                            {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg)
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
+                            {/* Thành phẩm -> Tự tính nguyên liệu */}
+                            <Form.Item
+                                label="Thành phẩm (Kg)"
+                                name="product_quantity"
+                                rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+                            >
+                                <InputNumber
+                                    className="w-full"
+                                    min={1}
+                                    onChange={handleProductQuantityChange}
+                                />
+                            </Form.Item>
+
+                            {/* Nguyên liệu (Kg) -> disabled */}
+                            <Form.Item label="Nguyên liệu (Kg)" name="material_quantity">
+                                <InputNumber className="w-full" disabled />
+                            </Form.Item>
+
+                            {/* Ngày sản xuất -> DatePicker */}
+                            <Form.Item
+                                label="Ngày sản xuất"
+                                name="production_date"
+                                rules={[{ required: true, message: "Vui lòng chọn ngày sản xuất" }]}
+                            >
+                                <DatePicker
+                                    format="DD/MM/YYYY"
+                                    className="w-full"
+                                    disabledDate={disabledProductionDate}
+                                />
+                            </Form.Item>
+
+                            {/* Ngày kết thúc -> DatePicker */}
+                            <Form.Item
+                                label="Ngày kết thúc"
+                                name="end_date"
+                                dependencies={["production_date"]}
+                                rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
+                            >
+                                <DatePicker
+                                    format="DD/MM/YYYY"
+                                    className="w-full"
+                                    disabledDate={disabledEndDate}
+                                />
+                            </Form.Item>
+
+                            {/* Trạng thái -> disable */}
+                            <Form.Item label="Trạng thái" name="status">
+                                <Select disabled>
+                                    <Select.Option value="Chờ duyệt">Chờ duyệt</Select.Option>
+                                    <Select.Option value="Đang xử lý">Đang xử lý</Select.Option>
+                                    <Select.Option value="Từ chối">Từ chối</Select.Option>
+                                    <Select.Option value="Đã huỷ">Đã huỷ</Select.Option>
+                                    <Select.Option value="Đã Hoàn Thành">Đã Hoàn Thành</Select.Option>
+                                </Select>
+                            </Form.Item>
+
+                            {/* Ghi chú */}
+                            <Form.Item label="Ghi chú" name="note">
+                                <Input.TextArea rows={3} />
+                            </Form.Item>
+                        </Form>
+
+                        <Space style={{ marginTop: 16 }}>
+                            <Button
+                                type="primary"
+                                onClick={handleSaveUpdate}
+                                loading={mutationUpdate.isLoading}
+                            >
+                                Lưu
+                            </Button>
+                            <Button onClick={handleCancelEdit} disabled={mutationUpdate.isLoading}>
+                                Hủy
+                            </Button>
+                        </Space>
+                    </div>
+                )}
+            </DrawerComponent>
+        </div>
+    );
+};
+
+export default ProductionRequestList;
