@@ -16,6 +16,8 @@ import { FaGem, FaGithub } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa"
 import { FaWarehouse } from "react-icons/fa";
 import { VscListOrdered } from "react-icons/vsc";
+import { FaClipboard } from "react-icons/fa6";
+import { AiFillProduct } from "react-icons/ai";
 
 
 
@@ -80,7 +82,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
           <Menu iconShape="circle">
             <SubMenu
               // suffix={<span className="badge yellow">3</span>}
-              icon={<VscListOrdered />}
+              icon={<FaClipboard />}
               title="Đơn Thu Nhiên Liệu"
             >
               <MenuItem>
@@ -147,6 +149,24 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             <MenuItem>
               Danh Sách Nhiên Liệu
               <Link to={"fuel-list"} />
+            </MenuItem>
+          </SubMenu>
+          <SubMenu
+            icon={<AiFillProduct />}
+            title="Quản Lý Sản Xuất"
+            style={{ paddingTop: "10px", paddingBottom: "10px" }}
+          >
+              {/* <MenuItem>
+              Dashboard
+              <Link to={"manage-fuel"} />
+            </MenuItem> */}
+            <MenuItem>
+              Tạo Yêu Cầu Sản Xuất
+              <Link to={"production-request"} />
+            </MenuItem>
+            <MenuItem>
+              Danh Sách Yêu Cầu Đã Tạo
+              <Link to={"production-request-list"} />
             </MenuItem>
           </SubMenu>
         </Menu>

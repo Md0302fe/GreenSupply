@@ -11,7 +11,7 @@ const TableUser = (props) => {
   // useMemo thực thi ghi nhớ và trả về 1 giá trị .
   const dataColumnsExport = useMemo(() => {
     const arr = columns?.filter(
-      (col) => col.dataIndex !== "action" && col.dataIndex !== "quantity_remain" && col.dataIndex !== "fuel_image"
+      (col) => col.dataIndex !== "action" && col.dataIndex !== "fuel_image"
     );
     return arr;
   }, [columns]);
