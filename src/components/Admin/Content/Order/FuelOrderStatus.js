@@ -19,16 +19,19 @@ const FuelOrderStatus = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [filterType, setFilterType] = useState("all"); 
   const userRedux = useSelector((state) => state.user);
+
+ 
+
   // 🟢 Gọi API dựa trên bộ lọc
   const fetchOrders = async () => {
     setLoading(true);
     try {
-        let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess";
+        let url = `${process.env.REACT_APP_API_URL}/orders/fuel-request/GetALLstatusSuccess`;
 
         if (filterType === "fuelRequests") {
-            url = "http://localhost:3001/api/orders/approved-fuel-requests";
+            url = `${process.env.REACT_APP_API_URL}/orders/approved-fuel-requests`;
         } else if (filterType === "fuelSupplyOrders") {
-            url = "http://localhost:3001/api/orders/approved-fuel-supply-orders";
+            url = `${process.env.REACT_APP_API_URL}/orders/approved-fuel-supply-orders`;
         }
 
         const response = await axios.get(url);
@@ -165,7 +168,7 @@ const createFuelStorageReceipt = async (order) => {
           : { receipt_request_id: order._id };
 
       const response = await axios.post(
-          "http://localhost:3001/api/fuel-storage/create",
+          `${process.env.REACT_APP_API_URL}/fuel-storage/create`,
           payload,
           { headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" } }
       );
@@ -189,7 +192,7 @@ const createFuelStorageReceipt = async (order) => {
 const updateOrderStatus = async (orderId, newStatus) => {
     try {
         const response = await axios.put(
-            `http://localhost:3001/api/orders/${orderId}/update-status`,
+            `${process.env.REACT_APP_API_URL}/orders/${orderId}/update-status`,
             { status: newStatus },
             {
                 headers: { Authorization: `Bearer ${userRedux.access_token}`, "Content-Type": "application/json" },

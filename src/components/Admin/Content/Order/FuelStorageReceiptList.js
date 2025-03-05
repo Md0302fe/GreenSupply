@@ -43,7 +43,7 @@ const FuelStorageReceiptList = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:3001/api/fuel-storage/getAll",
+        `${process.env.REACT_APP_API_URL}/fuel-storage/getAll`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params: {
@@ -92,8 +92,12 @@ const FuelStorageReceiptList = () => {
 
       console.log("📌 Gửi request cập nhật trạng thái:", { id, newStatus });
 
+
+
+
+  
       const response = await axios.put(
-        `http://localhost:3001/api/fuel-storage/update/${id}`,
+        `${process.env.REACT_APP_API_URL}/fuel-storage/update/${id}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
