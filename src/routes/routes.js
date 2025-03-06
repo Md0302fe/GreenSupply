@@ -41,6 +41,8 @@ import PurchaseOrder from "../components/Admin/Content/PurchaseOrder/PurchaseOrd
 import PurchaseOrders from "../components/Admin/Content/PurchaseOrder/AdminListOrder"
 import ProductionRequest from "../components/Admin/Content/ProductionRequest/ProductionRequest";
 import ProductionRequestList from "../components/Admin/Content/ProductionRequest/ProductionRequestList";
+import RawmaterialBatchList from "../components/Admin/Content/RawMaterialBatch/RawmaterialBatchList";
+import RawMaterialBatch from "../components/Admin/Content/RawMaterialBatch/RawMaterialBatch";
 
 const Router = () => {
   return (
@@ -78,20 +80,20 @@ const Router = () => {
           {/* Purchase Order Routes */}
           <Route path="C_purchase-order" element={<PurchaseOrder />} />
           <Route path="R_purchase-orders" element={<PurchaseOrders />} />
-
+          {/* Raw Material Batch */}
+          <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>
+          <Route path="raw-material-batch-list" element={<RawmaterialBatchList/>}/>
         </Route>
 
         {/* Quản lý loại nhiên liệu */}
         <Route path="/system/admin" element={<Admin />}>
           <Route path="manage-fuel" element={<Dashboard1 />} />
           <Route path="fuel-list" element={<FuelList />} />
-          
         </Route>
         {/* Quản lý sản xuất */}
         <Route path="/system/admin" element={<Admin />}>
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
-          
         </Route>
 
         

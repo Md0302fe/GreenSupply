@@ -136,6 +136,10 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             Danh Sách Đơn Nhập Kho
               <Link to={"warehouse-receipt"} />
             </MenuItem>
+            <MenuItem>
+            D.Sách Lô Nguyên Liệu Thô
+              <Link to={"raw-material-batch-list"} />
+            </MenuItem>
           </SubMenu>
           <SubMenu
             icon={<FaWarehouse />}
