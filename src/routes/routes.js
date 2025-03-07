@@ -43,6 +43,7 @@ import ProductionRequest from "../components/Admin/Content/ProductionRequest/Pro
 import ProductionRequestList from "../components/Admin/Content/ProductionRequest/ProductionRequestList";
 import RawmaterialBatchList from "../components/Admin/Content/RawMaterialBatch/RawmaterialBatchList";
 import RawMaterialBatch from "../components/Admin/Content/RawMaterialBatch/RawMaterialBatch";
+import MaterialStorageExport from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExport";
 
 const Router = () => {
   return (
@@ -83,6 +84,8 @@ const Router = () => {
           {/* Raw Material Batch */}
           <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>
           <Route path="raw-material-batch-list" element={<RawmaterialBatchList/>}/>
+          {/* Material Storage Export */}
+          <Route path="material-storage-export" element={<MaterialStorageExport/>} />
         </Route>
 
         {/* Quản lý loại nhiên liệu */}

@@ -1,15 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Table,
-  Input,
-  Space,
-  Tag,
-  Button,
-  Modal,
-  message,
-  Form,
-} from "antd";
+import { Table, Input, Space, Tag, Button, Modal, message, Form } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
@@ -41,24 +32,25 @@ const RawMaterialBatchList = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [fuelBatchs, setFuelBatchs] = useState([]);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const searchInput = useRef(null);
 
   // Fetch danh sách lô nguyên liệu
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await RawMaterialBatchServices.getAllRawMaterialBatches();
-        console.log(response);
-        if (response) {
-          setFuelBatchs(response);
-        }
-      } catch (error) {
-        message.error("Lỗi khi tải danh sách lô nguyên liệu!");
-      } finally {
-        setLoading(false); // Kết thúc loading
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response =
+        await RawMaterialBatchServices.getAllRawMaterialBatches();
+      console.log(response);
+      if (response) {
+        setFuelBatchs(response);
       }
-    };
+    } catch (error) {
+      message.error("Lỗi khi tải danh sách lô nguyên liệu!");
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
+  };
 
   // Gọi API khi component mount hoặc khi có thay đổi
   useEffect(() => {
@@ -72,7 +64,7 @@ const RawMaterialBatchList = () => {
         fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
       }))
     : [];
-    console.log(tableData);
+  console.log(tableData);
 
   // Search trong bảng
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -80,7 +72,6 @@ const RawMaterialBatchList = () => {
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
-  
 
   const handleReset = (clearFilters) => {
     clearFilters();
@@ -237,13 +228,22 @@ const RawMaterialBatchList = () => {
         <h5 className="text-2xl font-bold text-gray-800">
           Quản lý Lô Nguyên Liệu
         </h5>
-        <Button
-          type="primary"
-          className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-6"
-          onClick={() => navigate("/system/admin/raw-material-batch")}
-        >
-          Tạo lô bổ sung
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            type="primary"
+            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-6"
+            onClick={() => navigate("/system/admin/raw-material-batch")}
+          >
+            Tạo lô bổ sung
+          </Button>
+          <Button
+            type="primary"
+            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-4"
+            onClick={() => navigate("/system/admin/material-storage-export")}
+          >
+            Tạo đơn xuất kho
+          </Button>
+        </div>
       </div>
 
       <Loading isPending={loading}>
@@ -270,14 +270,17 @@ const RawMaterialBatchList = () => {
               <p className="text-black">{selectedBatch.batch_name}</p>
 
               <p className="font-bold text-black">Loại nguyên liệu:</p>
-              <p className="text-black">{selectedBatch?.fuel_type_id?.fuel_type_id?.type_name || "N/A"}</p>
+              <p className="text-black">
+                {selectedBatch?.fuel_type_id?.fuel_type_id?.type_name || "N/A"}
+              </p>
 
               <p className="font-bold text-black">Số lượng (Kg):</p>
               <p className="text-black">{selectedBatch.quantity} Kg</p>
 
               <p className="font-bold text-black">Kho lưu trữ:</p>
               <p className="text-black">
-                {selectedBatch?.fuel_type_id?.storage_id?.name_storage || "Không có"}
+                {selectedBatch?.fuel_type_id?.storage_id?.name_storage ||
+                  "Không có"}
               </p>
             </div>
 
