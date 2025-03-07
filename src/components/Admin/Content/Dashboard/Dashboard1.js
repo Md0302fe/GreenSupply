@@ -20,9 +20,13 @@ const DashboardWarehouse = () => {
     approvedReceipts: 0,
   });
 
+  const [filterType, setFilterType] = useState("day"); // "day", "week", "month"
+
   // ✅ Lấy token từ Redux hoặc localStorage
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
+
+
 
   // ✅ Gọi API lấy dữ liệu kho + đơn nhập kho gần đây
   const fetchWarehouseData = async () => {
@@ -36,40 +40,47 @@ const DashboardWarehouse = () => {
       console.log("🔍 Gửi request từ Dashboard với token:", token);
 
       const response = await axios.get(
-        "http://localhost:3001/api/fuel-storage/getAll",
+        `${process.env.REACT_APP_API_URL}/fuel-storage/getAll`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
+      console.log("📌 API Response:", response.data);
+
       if (response.data.success) {
         let allReceipts = response.data.data;
-        console.log("📌 API Response:", response.data);
 
         if (allReceipts.length > 0) {
-          console.log("📌 Danh sách allReceipts:", allReceipts);
+          console.log("📌 Danh sách đơn nhập kho từ API:", allReceipts);
 
-          // ✅ Lọc các đơn nhập kho chỉ trong ngày hôm nay & sắp xếp theo thời gian giảm dần
-          const today = new Date();
-          today.setHours(0, 0, 0, 0); // Đặt giờ về đầu ngày
+          // ✅ Chuyển `createdAt` về Date object
+          allReceipts = allReceipts.map((receipt) => ({
+            ...receipt,
+            createdAt: new Date(receipt.createdAt),
+          }));
 
-          // ✅ Lọc đơn nhập kho trong ngày & Sắp xếp mới nhất trước
-          allReceipts = allReceipts
-            .filter((receipt) => receipt.createdAt) // Loại bỏ đơn không có ngày tạo
-            .map((receipt) => ({
-              ...receipt,
-              createdAt: new Date(receipt.createdAt), // Chuyển thành đối tượng Date
-            }))
-            .filter((receipt) => receipt.createdAt >= today) // Chỉ lấy đơn nhập kho trong ngày
-            .sort((a, b) => b.createdAt - a.createdAt); // 🔥 Sắp xếp mới nhất trước
-
-          // Lọc đơn nhập kho trong ngày
-
-          console.log(
-            "📌 Đơn nhập kho hôm nay (sắp xếp giảm dần):",
-            allReceipts
-          );
-
+          // ✅ Xác định thời gian lọc dựa vào filterType
+          const now = new Date();
+          let startDate;
+          
+          if (filterType === "day") {
+            // 🔹 Lấy từ đầu ngày hôm nay
+            startDate = new Date();
+            startDate.setHours(0, 0, 0, 0);
+          } else if (filterType === "week") {
+            // 🔹 Lấy từ ngày hiện tại - 7 ngày
+            startDate = new Date(now);
+            startDate.setDate(now.getDate() - 7);
+            startDate.setHours(0, 0, 0, 0);
+          } else if (filterType === "month") {
+            // 🔹 Lấy từ ngày hiện tại - 30 ngày
+            startDate = new Date(now);
+            startDate.setDate(now.getDate() - 30);
+            startDate.setHours(0, 0, 0, 0);
+          }
+          
+          console.log("📌 Thời gian lọc startDate:", startDate.toISOString());
           // ✅ Tìm đơn nhập kho đầu tiên có storage_id hợp lệ
           const validStorageReceipt = allReceipts.find(
             (receipt) => receipt.storage_id !== null
@@ -100,21 +111,24 @@ const DashboardWarehouse = () => {
             );
           }
 
-          // ✅ Thống kê số lượng đơn nhập kho trong ngày
-          const totalReceipts = allReceipts.length;
-          const pendingReceipts = allReceipts.filter(
-            (r) => r.status === "Chờ duyệt"
-          ).length;
-          const approvedReceipts = allReceipts.filter(
-            (r) => r.status === "Đã duyệt"
-          ).length;
 
-          setStats({ totalReceipts, pendingReceipts, approvedReceipts });
+          // ✅ Lọc đơn nhập kho theo khoảng thời gian
+          const filteredReceipts = allReceipts.filter((receipt) => {
+            return receipt.createdAt >= startDate;
+          });
 
-          // ✅ Lưu danh sách đơn nhập kho trong ngày
-          setReceipts(allReceipts);
+          console.log("📌 Đơn nhập kho sau khi lọc:", filteredReceipts);
+
+          // ✅ Cập nhật dữ liệu hiển thị
+          setStats({
+            totalReceipts: filteredReceipts.length,
+            pendingReceipts: filteredReceipts.filter((r) => r.status === "Chờ duyệt").length,
+            approvedReceipts: filteredReceipts.filter((r) => r.status === "Đã duyệt").length,
+          });
+
+          setReceipts(filteredReceipts);
         } else {
-          message.warning("Không có dữ liệu đơn nhập kho hôm nay!");
+          message.warning("Không có dữ liệu đơn nhập kho!");
         }
       } else {
         throw new Error("Dữ liệu API không hợp lệ");
@@ -127,8 +141,9 @@ const DashboardWarehouse = () => {
   };
 
   useEffect(() => {
+    console.log("🔄 Gọi API với bộ lọc:", filterType);
     fetchWarehouseData();
-  }, []);
+  }, [filterType]);
 
   const fetchStorageById = async (storageId) => {
     try {
@@ -144,6 +159,8 @@ const DashboardWarehouse = () => {
   };
   
 
+  
+
   // ✅ Tính phần trăm sức chứa kho
   const usagePercent =
     storage.capacity > 0
@@ -152,7 +169,7 @@ const DashboardWarehouse = () => {
       : 0;
 
   // ✅ Làm tròn số phần trăm hiển thị
-const formattedUsagePercent = usagePercent.toFixed(2); // Giữ 2 số sau dấu thập phân
+  const formattedUsagePercent = usagePercent.toFixed(2); // Giữ 2 số sau dấu thập phân
 
   // ✅ Cấu hình biểu đồ cột cho thống kê đơn nhập kho
   const receiptsChartData = [
@@ -162,21 +179,23 @@ const formattedUsagePercent = usagePercent.toFixed(2); // Giữ 2 số sau dấu
   ];
 
   const receiptsChartConfig = {
-  data: receiptsChartData,
-  xField: "status",
-  yField: "count",
-  color: ({ status }) => {
-    return status === "Đã duyệt" ? "#52c41a" : status === "Chờ duyệt" ? "#faad14" : "#1890ff";
-  },
-  label: { 
-    position: "top",  // ✅ Thay "middle" thành "top" hoặc "bottom"
-    style: { fill: "#FFFFFF", fontSize: 12 } 
-  },
-  xAxis: { label: { autoHide: true, autoRotate: false } },
-};
+    data: receiptsChartData,
+    xField: "status",
+    yField: "count",
+    color: ({ status }) => {
+      return status === "Đã duyệt"
+        ? "#52c41a"
+        : status === "Chờ duyệt"
+        ? "#faad14"
+        : "#1890ff";
+    },
+    label: {
+      position: "top", // ✅ Thay "middle" thành "top" hoặc "bottom"
+      style: { fill: "#FFFFFF", fontSize: 12 },
+    },
+    xAxis: { label: { autoHide: true, autoRotate: false } },
+  };
 
-
-      
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* 🟢 Header */}
@@ -225,6 +244,40 @@ const formattedUsagePercent = usagePercent.toFixed(2); // Giữ 2 số sau dấu
 
       {/* 🟢 Danh sách đơn nhập kho gần đây */}
       <div className="bg-white p-6 rounded-lg shadow-md">
+        {/* Nút chọn lọc theo Ngày / Tuần / Tháng */}
+        <div className="flex justify-start mb-4">
+          <button
+            className={`px-4 py-2 rounded-l ${
+              filterType === "day"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setFilterType("day")}
+          >
+            Theo Ngày
+          </button>
+          <button
+            className={`px-4 py-2 ${
+              filterType === "week"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setFilterType("week")}
+          >
+            Theo Tuần
+          </button>
+          <button
+            className={`px-4 py-2 rounded-r ${
+              filterType === "month"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setFilterType("month")}
+          >
+            Theo Tháng
+          </button>
+        </div>
+
         <h2 className="text-xl font-semibold mb-4">Đơn nhập kho trong ngày</h2>
         <Table
           columns={[
