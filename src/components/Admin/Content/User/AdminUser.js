@@ -466,7 +466,7 @@ const UserComponent = () => {
             <BsPersonAdd></BsPersonAdd>
           </Button>
         </div> */}
-        <div className="content-main-table-user">
+        <div className="content-main-table-u  ser">
           <TableUser
             // Props List
             columns={columns}

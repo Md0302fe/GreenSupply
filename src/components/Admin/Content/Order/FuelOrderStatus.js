@@ -7,6 +7,7 @@ import { Excel } from "antd-table-saveas-excel";
 import "./FuelOrderStatus.scss";
 import { converDateString } from "../../../../ultils";
 import { useSelector } from "react-redux";
+import { AiOutlineEdit } from "react-icons/ai";
 
 const FuelOrderStatus = () => {
   const [orders, setOrders] = useState([]); // Danh sách đơn hàng
@@ -19,62 +20,62 @@ const FuelOrderStatus = () => {
   const [filterType, setFilterType] = useState("all"); 
   const userRedux = useSelector((state) => state.user);
   // 🟢 Gọi API dựa trên bộ lọc
-//   const fetchOrders = async () => {
-//     setLoading(true);
-//     try {
-//         let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess";
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+        let url = "http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess";
 
-//         if (filterType === "fuelRequests") {
-//             url = "http://localhost:3001/api/orders/approved-fuel-requests";
-//         } else if (filterType === "fuelSupplyOrders") {
-//             url = "http://localhost:3001/api/orders/approved-fuel-supply-orders";
-//         }
+        if (filterType === "fuelRequests") {
+            url = "http://localhost:3001/api/orders/approved-fuel-requests";
+        } else if (filterType === "fuelSupplyOrders") {
+            url = "http://localhost:3001/api/orders/approved-fuel-supply-orders";
+        }
 
-//         const response = await axios.get(url);
-//         if (response.data.success) {
-//             let sortedOrders = response.data.data;
+        const response = await axios.get(url);
+        if (response.data.success) {
+            let sortedOrders = response.data.data;
 
-//             sortedOrders = sortedOrders
-//                 .map(order => ({
-//                     ...order,
-//                     createdAt: new Date(order.createdAt)
-//                 }))
-//                 .sort((a, b) => b.createdAt - a.createdAt);
+            sortedOrders = sortedOrders
+                .map(order => ({
+                    ...order,
+                    createdAt: new Date(order.createdAt)
+                }))
+                .sort((a, b) => b.createdAt - a.createdAt);
 
-//             setOrders(sortedOrders);
-//         } else {
-//             message.error("Lỗi khi lấy danh sách đơn hàng!");
-//         }
-//     } catch (error) {
-//         message.error("Không thể kết nối đến server!");
-//     }
-//     setLoading(false);
-// };
-
-const fetchOrders = async () => {
-  setLoading(true);
-  try {
-      const response = await axios.get("http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess");
-
-      if (response.data.success) {
-          let sortedOrders = response.data.data;
-
-          sortedOrders = sortedOrders
-              .map(order => ({
-                  ...order,
-                  createdAt: new Date(order.createdAt)
-              }))
-              .sort((a, b) => b.createdAt - a.createdAt);
-
-          setOrders(sortedOrders);
-      } else {
-          message.error("Lỗi khi lấy danh sách đơn hàng!");
-      }
-  } catch (error) {
-      message.error("Không thể kết nối đến server!");
-  }
-  setLoading(false);
+            setOrders(sortedOrders);
+        } else {
+            message.error("Lỗi khi lấy danh sách đơn hàng!");
+        }
+    } catch (error) {
+        message.error("Không thể kết nối đến server!");
+    }
+    setLoading(false);
 };
+
+// const fetchOrders = async () => {
+//   setLoading(true);
+//   try {
+//       const response = await axios.get("http://localhost:3001/api/orders/fuel-request/GetALLstatusSuccess");
+
+//       if (response.data.success) {
+//           let sortedOrders = response.data.data;
+
+//           sortedOrders = sortedOrders
+//               .map(order => ({
+//                   ...order,
+//                   createdAt: new Date(order.createdAt)
+//               }))
+//               .sort((a, b) => b.createdAt - a.createdAt);
+
+//           setOrders(sortedOrders);
+//       } else {
+//           message.error("Lỗi khi lấy danh sách đơn hàng!");
+//       }
+//   } catch (error) {
+//       message.error("Không thể kết nối đến server!");
+//   }
+//   setLoading(false);
+// };
 
   
 const confirmCreateFuelStorageReceipt = (order) => {
@@ -303,8 +304,12 @@ const updateOrderStatus = async (orderId, newStatus) => {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="primary" icon={<EyeOutlined />} onClick={() => showOrderDetails(record)}>
-          </Button>
+          {/* <Button type="default" icon={<EyeOutlined />} onClick={() => showOrderDetails(record)}> */}
+          <AiOutlineEdit className="text-xl" style={{ color: "blueviolet", borderRadius: 18, border: 1 }} onClick={() => showOrderDetails(record)} />
+          {/* </Button> */}
+          <span className="border-b-2 border-transparent hover:border-black transition-all duration-200" onClick={() => showOrderDetails(record)}>
+          Chi tiết
+        </span>
           <Button type="default" onClick={() => confirmCreateFuelStorageReceipt(record)}> 
             Tạo Đơn Nhập Kho
           </Button>
