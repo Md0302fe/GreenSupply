@@ -10,6 +10,10 @@ const ProductDetail = () => {
   const [error, setError] = useState(null); // Trạng thái lỗi
   const navigate = useNavigate();
 
+  const handleCreateOrder = () => {
+    navigate(`/customer/orders-production/${product._id}`);
+  };
+
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
@@ -47,6 +51,8 @@ const ProductDetail = () => {
   if (error) {
     return <div className="text-center py-10 text-red-500">{error}</div>;
   }
+
+
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-8 pt-12 pb-20">
@@ -108,7 +114,8 @@ const ProductDetail = () => {
             </p>
 
             {/* Nút đặt hàng */}
-            <button className="flex items-center justify-center w-full md:w-auto bg-[#FFE814] text-[#F14A00] px-6 py-3 rounded-lg font-bold text-sm hover:bg-[#FBC02D] hover:scale-105 md:hover:scale-105 transition duration-300 mt-6">
+            <button onClick={handleCreateOrder}
+              className="flex items-center justify-center w-full md:w-auto bg-[#FFE814] text-[#F14A00] px-6 py-3 rounded-lg font-bold text-sm hover:bg-[#FBC02D] hover:scale-105 md:hover:scale-105 transition duration-300 mt-6">
               Tạo đơn đặt hàng
               <span className="ml-3 w-6 h-6 bg-[#F14A00] text-white rounded-full flex items-center justify-center hover:bg-[#D84315]">
                 <i className="fa-solid fa-chevron-right text-xs"></i>
@@ -118,7 +125,7 @@ const ProductDetail = () => {
         </div>
       )}
     </div>
-  );
+  );  
 };
 
 export default ProductDetail;
