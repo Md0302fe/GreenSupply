@@ -144,6 +144,10 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             D.Sách Đơn Xuất Kho
               <Link to={"material-storage-export-list"} />
             </MenuItem>
+            <MenuItem>
+            L.Sử Đơn Xuất Kho
+              <Link to={"batch-history"} />
+            </MenuItem>
           </SubMenu>
           <SubMenu
             icon={<FaWarehouse />}

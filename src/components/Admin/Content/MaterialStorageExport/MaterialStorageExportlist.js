@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, message, Descriptions, Tag, Input, Select } from "antd";
+import { Table, Button, message, Tag, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 
+import { useMutationHooks } from "../../../../hooks/useMutationHook";
+import { toast } from "react-toastify";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent"; // ✅ dùng Drawer thay vì Modal
-
+import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 const { Option } = Select;
 
 const statusColors = {
@@ -90,6 +92,7 @@ const MaterialStorageExportList = () => {
 
   useEffect(() => {
     fetchExports();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, typeFilter, sortOrder]);
 
   const columns = [
@@ -138,6 +141,70 @@ const MaterialStorageExportList = () => {
       ),
     },
   ];
+
+  // Accept Request
+  const mutationAccept = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleAcceptMaterialExport(data);
+    return response;
+  });
+  const { isPending, isSuccess, data } = mutationAccept;
+  const handleAccept = () => {
+    mutationAccept.mutate(
+      {
+        access_token: userRedux?.access_token,
+        storage_export_id: selectedExport._id,
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (data?.success) {
+        toast.success("Xác nhận đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xác nhận đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, data]);
+
+  // Reject Request
+  const mutationReject = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleRejectMaterialExport(data);
+    return response;
+  });
+  
+  const {
+    isPending: isPendingDelete,
+    isSuccess: isSuccessDelete,
+    data: dataDelete,
+  } = mutationReject;
+
+  const handleReject = () => {
+    mutationReject.mutate(
+      {
+        access_token: userRedux?.access_token,
+        storage_export_id: selectedExport._id,
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      if (dataDelete?.success) {
+        toast.success("Xóa đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xóa đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessDelete, dataDelete]);
 
   return (
     <div className="material-storage-export-list">
@@ -197,44 +264,64 @@ const MaterialStorageExportList = () => {
         width="30%"
       >
         {selectedExport ? (
-          <div className="p-6 space-y-4">
-            <h2 className="text-lg font-bold text-black border-b pb-2">
-              Thông tin chi tiết
-            </h2>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-              <p className="font-bold text-black">Người tạo đơn:</p>
-              <p className="text-black">
-                {selectedExport?.user_id?.full_name || "Không rõ"}
-              </p>
-              <p className="font-bold text-black">Đơn sản xuất:</p>
-              <p className="text-black">
-                {selectedExport?.production_request_id?.request_name ||
-                  "Không có"}
-              </p>
-              <p className="font-bold text-black">Lô nguyên liệu:</p>
-              <p className="text-black">
-                {selectedExport?.batch_id?.batch_name || "Không có"}
-              </p>
-              <p className="font-bold text-black">Tên Xuất Kho:</p>
-              <p className="text-black">{selectedExport.export_name}</p>
+          <Loading isPending={isPending || isPendingDelete}>
+            <div className="p-6 space-y-4">
+              <h2 className="text-lg font-bold text-black border-b pb-2">
+                Thông tin chi tiết
+              </h2>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                <p className="font-bold text-black">Người tạo đơn:</p>
+                <p className="text-black">
+                  {selectedExport?.user_id?.full_name || "Không rõ"}
+                </p>
+                <p className="font-bold text-black">Đơn sản xuất:</p>
+                <p className="text-black">
+                  {selectedExport?.production_request_id?.request_name ||
+                    "Không có"}
+                </p>
+                <p className="font-bold text-black">Lô nguyên liệu:</p>
+                <p className="text-black">
+                  {selectedExport?.batch_id?.batch_name || "Không có"}
+                </p>
+                <p className="font-bold text-black">Tên Xuất Kho:</p>
+                <p className="text-black">{selectedExport.export_name}</p>
 
-              <p className="font-bold text-black">Loại Xuất Kho:</p>
-              <p className="text-black">{selectedExport.type_export}</p>
+                <p className="font-bold text-black">Loại Xuất Kho:</p>
+                <p className="text-black">{selectedExport.type_export}</p>
 
-              <p className="font-bold text-black">Trạng Thái:</p>
-              <Tag
-                color={statusColors[selectedExport.status]}
-                className="px-2 py-1 text-sm font-semibold"
-              >
-                {selectedExport.status}
-              </Tag>
+                <p className="font-bold text-black">Trạng Thái:</p>
+                <Tag
+                  color={statusColors[selectedExport.status]}
+                  className="px-2 py-1 text-sm font-semibold"
+                >
+                  {selectedExport.status}
+                </Tag>
 
-              <p className="font-bold text-black">Ghi chú:</p>
-              <p className="text-black">
-                {selectedExport.note || "Không có ghi chú"}
-              </p>
+                <p className="font-bold text-black">Ghi chú:</p>
+                <p className="text-black">
+                  {selectedExport.note || "Không có ghi chú"}
+                </p>
+                {selectedExport?.status && (
+                  <div className="flex flex-col md:flex-row md:justify-between gap-4">
+                    <button
+                      type="button"
+                      onClick={handleReject} // Chỉ đóng form, không cập nhật
+                      className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
+                    >
+                      Hủy yêu cầu
+                    </button>
+
+                    <button
+                      onClick={handleAccept}
+                      className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+                    >
+                      ✅Duyệt đơn
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          </Loading>
         ) : (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">Đang tải dữ liệu...</p>
