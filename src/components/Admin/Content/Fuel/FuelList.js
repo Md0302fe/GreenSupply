@@ -4,7 +4,6 @@ import axios from "axios";
 import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
-import { converDateString } from "../../../../ultils";
 import { Excel } from "antd-table-saveas-excel";
 import {  EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { toast } from "react-toastify";
@@ -210,8 +209,8 @@ const FuelList = () => {
       dataIndex: "is_deleted",
       key: "is_deleted",
       filters: [
-        { text: "Đã xóa", value: true },
-        { text: "Chưa xóa", value: false },
+        { text: "deleted", value: true },
+        { text: "active", value: false },
       ],
       onFilter: (value, record) => record.is_deleted === value,
       render: (is_deleted) => (
@@ -252,7 +251,7 @@ const FuelList = () => {
         pagination={{ pageSize: 10 }}
       />
 
-      <Modal title="Chi tiết Loại Nhiên Liệu" visible={isModalOpen} onCancel={handleCancel} footer={null} >
+      <Modal title="Chi tiết Loại Nhiên Liệu"  onCancel={handleCancel} footer={null} >
         {selectedFuel && (
           <Descriptions bordered column={1}>
             <Descriptions.Item label="Tên Loại Nhiên Liệu">{selectedFuel.type_name}</Descriptions.Item>

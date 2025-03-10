@@ -3,17 +3,17 @@ import { Button, Form, Input, InputNumber, Select, message } from "antd";
 import { useSelector } from "react-redux";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
+import { toast } from "react-toastify";
 
 const { Option } = Select;
 
 const RawMaterialBatch = () => {
   const [form] = Form.useForm();
-  const [fuelTypes, setFuelTypes] = useState([]);
+  const [fuel_managements, set_fuel_managements] = useState([]);
   const [storages, setStorages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState([]);
   const user = useSelector((state) => state.user);
-  const [selectedRequestId, setSelectedRequestId] = useState(null);
 
   const generateBatchId = (prefix = "XMTH") => {
     const today = new Date();
@@ -27,7 +27,7 @@ const RawMaterialBatch = () => {
 
     return `${prefix}${year}${month}${day}-${batchNumber}`;
   };
-
+  console.log("fuel_managements => ", fuel_managements);
   const [formData, setFormData] = useState({
     batch_id: generateBatchId(),
     batch_name: "",
@@ -79,11 +79,23 @@ const RawMaterialBatch = () => {
           data
         );
         const storageRes = await RawMaterialBatchServices.getAllStorages(data);
+        const getAllManagements =
+          await RawMaterialBatchServices.getAllFuelManagements();
         if (processingRes.success) {
           setProcessing(processingRes.requests);
+        } else {
+          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
-
-        if (storageRes.success) setStorages(storageRes.data);
+        if (storageRes.success) {
+          setStorages(storageRes.data);
+        } else {
+          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+        }
+        if (getAllManagements) {
+          set_fuel_managements(getAllManagements.requests);
+        } else {
+          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+        }
       } catch (error) {
         message.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
       } finally {
@@ -101,15 +113,15 @@ const RawMaterialBatch = () => {
         access_token: user?.access_token,
         formData: {
           ...formData,
-          fuel_type_id: formData.fuel_type_id._id, // Chỉ gửi _id của fuel_type_id
           production_request_id: formData.production_request_id, // production_request_id là ObjectId
           storage_id: formData.storage_id, // storage_id là ObjectId
         },
       };
+      console.log("dataRequest => ", dataRequest);
 
       const response = await RawMaterialBatchServices.createRawMaterialBatch(
         dataRequest
-      ); 
+      );
 
       if (response.success) {
         message.success("Tạo lô nguyên liệu thành công!");
@@ -188,25 +200,36 @@ const RawMaterialBatch = () => {
             name="fuel_type_id"
             className="flex-1"
           >
-            {/* <Select
+            <Select
               placeholder="Chọn Loại nhiên liệu"
               className="rounded border-gray-300"
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, fuel_type_id: value }))
-              }
+              onChange={(value) => {
+                const selectedFuel = fuel_managements?.find(
+                  (fuel) => fuel._id === value
+                );
+                if (selectedFuel) {
+                  console.log("selectedFuel._id => ", selectedFuel._id)
+                  setFormData((prev) => ({
+                    ...prev,
+                    fuel_type_id: selectedFuel._id, 
+                    fuel_quantity: selectedFuel.quantity,
+                  }));
+                } else {
+                  setFormData((prev) => ({
+                    ...prev,
+                    fuel_type_id: value,
+                  }));
+                }
+              }}
             >
-              {fuelTypes
+              {fuel_managements
                 ?.filter((fuel) => fuel.quantity > 0)
                 .map((fuel) => (
                   <Select.Option key={fuel._id} value={fuel._id}>
                     {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
                   </Select.Option>
                 ))}
-            </Select> */}
-            <div>
-              {/* Check if fuel_type_id exists and show type_name */}
-              {formData?.fuel_type_id?.type_name || "Chưa có dữ liệu"}
-            </div>
+            </Select>
           </Form.Item>
 
           {/* Nhập số lượng */}

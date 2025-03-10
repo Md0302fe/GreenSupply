@@ -56,7 +56,7 @@ const RawMaterialBatchList = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  console.log("fuelBatchs => ", fuelBatchs)
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
         ...batch,
@@ -64,7 +64,6 @@ const RawMaterialBatchList = () => {
         fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
       }))
     : [];
-  console.log(tableData);
 
   // Search trong bảng
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
