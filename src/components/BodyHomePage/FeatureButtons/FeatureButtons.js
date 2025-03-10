@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Icon1 from "../../../assets/NewProject/Icon-GreenSupply/OrderManagement.png";
 import Icon2 from "../../../assets/NewProject/Icon-GreenSupply/Truck-icon.png";
 import Icon3 from "../../../assets/NewProject/Icon-GreenSupply/Headset-icon.png";
+import { useSelector } from "react-redux";
 
 const FeatureButtons = () => {
   const navigate = useNavigate();
-
+  const user = useSelector((state) => state.user);
   const features = [
     {
       id: 1,
@@ -33,6 +34,7 @@ const FeatureButtons = () => {
       {features.map((feature, index) => (
         <React.Fragment key={feature.id}>
           {/* Button */}
+          {/* {if (feature.text !== "YÊU CẦU THU HÀNG" && user) } */}
           <button
             key={feature.id}
             className="flex flex-col items-center justify-center bg-yellow-400 text-black font-bold w-[340px] h-[140px] rounded-3xl hover:bg-yellow-500 hover:scale-105 transition duration-300"
