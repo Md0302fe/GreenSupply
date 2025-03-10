@@ -1,61 +1,46 @@
 import React, { useEffect, useState } from "react";
+import { Table, Button, message, Space, Tag, Select, Input, Modal } from "antd";
 import {
-  Table,
-  Button,
-  message,
-  Space,
-  Modal,
-  Descriptions,
-  Tag,
-  Select,
-  Input,
-} from "antd";
+  EyeOutlined,
+  SearchOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { converDateString } from "../../../../ultils";
 import { Excel } from "antd-table-saveas-excel";
-import _ from "lodash"; // 🛠️ Thêm lodash để debounce API calls
+import _ from "lodash";
+import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 
 const { Option } = Select;
 
 const FuelStorageReceiptList = () => {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState(null);
-  const [searchText, setSearchText] = useState(""); // 🔍 Tìm kiếm nâng cao
-  const [debouncedSearch, setDebouncedSearch] = useState(""); // Debounce Search
-  const [statusFilterVal, setStatusFilterVal] = useState(""); // 🎛 Lọc trạng thái
-  const [sortOrder, setSortOrder] = useState("desc"); // ⬆⬇ Sắp xếp theo ngày nhập kho (mặc định mới nhất)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [statusFilterVal, setStatusFilterVal] = useState("");
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
 
-  // 🟢 Fetch dữ liệu từ API
   const fetchReceipts = async () => {
     setLoading(true);
     try {
-      if (!token) {
-        message.error("Bạn chưa đăng nhập!");
-        setLoading(false);
-        return;
-      }
-
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/fuel-storage/getAll`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params: {
-            search: debouncedSearch, // 🔍 Gửi search text đã debounce
-            status: statusFilterVal, // 🎛 Lọc theo trạng thái
-            sortOrder: sortOrder, // ⬆⬇ Sắp xếp theo ngày nhập kho (asc/desc)
+            search: debouncedSearch,
+            status: statusFilterVal,
+            sortOrder,
           },
         }
       );
-
-      console.log("🟢 Dữ liệu nhận về từ API:", response.data);
-
       if (response.data.success) {
         setReceipts(response.data.data);
       } else {
@@ -67,101 +52,59 @@ const FuelStorageReceiptList = () => {
     setLoading(false);
   };
 
-
-
+  // ✅ Hàm cập nhật trạng thái có xác nhận
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
-        title: `Xác nhận ${newStatus === "Đã duyệt" ? "Duyệt Đơn" : "Hủy Đơn"}`,
-        content: `Bạn có chắc chắn muốn ${newStatus === "Đã duyệt" ? "duyệt" : "hủy"} đơn này không?`,
-        okText: "Xác nhận",
-        cancelText: "Hủy",
-        onOk: () => updateReceiptStatus(id, newStatus), // ✅ Nếu nhấn OK, gọi API cập nhật trạng thái
+      title: `Xác nhận ${newStatus === "Đã duyệt" ? "Duyệt Đơn" : "Hủy Đơn"}`,
+      content: `Bạn có chắc chắn muốn ${
+        newStatus === "Đã duyệt" ? "duyệt" : "hủy"
+      } đơn này không?`,
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: () => updateReceiptStatus(id, newStatus),
     });
-};
+  };
 
-
-  // 🔄 Cập nhật trạng thái đơn
   const updateReceiptStatus = async (id, newStatus) => {
     try {
-      if (!token) {
-        message.error("Bạn chưa đăng nhập!");
-        return;
-      }
-
-      setLoading(true); // Chặn spam nút
-
-      console.log("📌 Gửi request cập nhật trạng thái:", { id, newStatus });
-
-
-
-
-  
+      setLoading(true);
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/fuel-storage/update/${id}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("✅ API Response:", response.data);
-
       if (response.data.success) {
         message.success(`Đã cập nhật trạng thái thành: ${newStatus}`);
 
-        // 🟢 Cập nhật ngay trạng thái trong modal, không cần reload
+        // ✅ Cập nhật trong Drawer
         setSelectedReceipt((prev) => ({ ...prev, status: newStatus }));
 
-        // 🔄 Cập nhật trạng thái trên bảng danh sách
-        setReceipts((prevReceipts) =>
-          prevReceipts.map((receipt) =>
-            receipt._id === id ? { ...receipt, status: newStatus } : receipt
-          )
+        // ✅ Cập nhật trong danh sách bảng
+        setReceipts((prev) =>
+          prev.map((r) => (r._id === id ? { ...r, status: newStatus } : r))
         );
       } else {
-        console.error("❌ API báo lỗi:", response.data);
-        message.error("Lỗi khi cập nhật trạng thái!");
+        message.error("Cập nhật trạng thái thất bại!");
       }
     } catch (error) {
-      console.error("❌ Lỗi API:", error);
       message.error("Không thể kết nối đến server!");
     }
-    setLoading(false); // Kích hoạt lại nút
+    setLoading(false);
   };
 
-  // 🛠️ Dùng debounce cho search (tránh gọi API liên tục khi gõ)
   useEffect(() => {
     const debounceFn = _.debounce(() => {
       setDebouncedSearch(searchText);
-    }, 500); // ⏳ Delay 500ms trước khi gọi API
-
+    }, 500);
     debounceFn();
-    return () => debounceFn.cancel(); // Cleanup debounce khi component unmount
+    return () => debounceFn.cancel();
   }, [searchText]);
 
-  // 🔄 Gọi API khi có thay đổi trong tìm kiếm, lọc hoặc sắp xếp
   useEffect(() => {
     fetchReceipts();
   }, [debouncedSearch, statusFilterVal, sortOrder]);
 
-  // 🛠️ Cập nhật bộ lọc trạng thái
-  const handleStatusChange = (value) => {
-    setStatusFilterVal(value);
-  };
-
-  // 🛠️ Cập nhật sắp xếp ngày
-  const handleSortChange = (value) => {
-    setSortOrder(value);
-  };
-
-  // 🛠️ Xử lý ô tìm kiếm
-  const handleSearchChange = (e) => {
-    setSearchText(e.target.value);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false); // Đóng Modal
-    setSelectedReceipt(null); // Xóa dữ liệu đơn nhập kho đã chọn
-  };
-
-  // 🛠️ Xuất file Excel
   const handleExportFileExcel = () => {
     if (!receipts.length) {
       message.warning("Không có dữ liệu để xuất!");
@@ -184,14 +127,16 @@ const FuelStorageReceiptList = () => {
           status: receipt.status,
           createdAt: converDateString(receipt.createdAt),
           updatedAt: converDateString(receipt.updatedAt),
-          note: receipt.note || "Không có ghi chú",
+          note:
+            receipt.receipt_request_id?.note ||
+            receipt.receipt_supply_id?.note ||
+            "Không có ghi chú",
         })),
         { str2Percent: true }
       )
       .saveAs("DanhSachDonNhapKho.xlsx");
   };
 
-  // 🛠️ Cấu hình cột bảng
   const columns = [
     {
       title: "Người Quản Lý",
@@ -200,7 +145,6 @@ const FuelStorageReceiptList = () => {
     },
     {
       title: "Loại Đơn Hàng",
-      dataIndex: "receipt_supply_id",
       key: "receipt_type",
       render: (_, record) =>
         record.receipt_supply_id ? (
@@ -242,62 +186,77 @@ const FuelStorageReceiptList = () => {
     },
     {
       title: "Hành động",
-      dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <Button
-          type="primary"
-          icon={<EyeOutlined />}
-          onClick={() => showReceiptDetails(record)}
+          type="link"
+          onClick={() => {
+            setSelectedReceipt(record);
+            setIsDrawerOpen(true);
+          }}
         >
-          Xem
+          Xem chi tiết
         </Button>
       ),
     },
   ];
-  // 🟢 Hiển thị chi tiết đơn nhập kho
-  const showReceiptDetails = (receipt) => {
-    setSelectedReceipt(receipt);
-    setIsModalOpen(true);
-  };
 
   return (
     <div className="fuel-storage-receipt-list">
-      <h2>Danh sách Đơn Nhập Kho</h2>
-      {/* 🔍 Ô tìm kiếm + Bộ lọc trạng thái + Sắp xếp */}
-      <div
-        className="filters"
-        style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
-      >
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h5 className="text-2xl font-bold text-gray-800">
+          Quản lý Đơn Nhập Kho
+        </h5>
+        {/* <Button
+          icon={<DownloadOutlined />}
+          type="primary"
+          className="bg-blue-600 text-white"
+          onClick={handleExportFileExcel}
+        >
+          Xuất Excel
+        </Button> */}
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4 mb-6">
         <Input
           placeholder="Tìm kiếm nâng cao..."
           prefix={<SearchOutlined />}
           value={searchText}
-          onChange={handleSearchChange}
-          style={{ width: 250 }}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ width: 280 }}
         />
-
         <Select
-          onChange={handleStatusChange}
           value={statusFilterVal}
+          onChange={(val) => setStatusFilterVal(val)}
           placeholder="Lọc theo trạng thái"
-          style={{ width: 150 }}
+          style={{ width: 180 }}
         >
-          <Option value="">Tất cả</Option>
+          <Option value="">Tất cả trạng thái</Option>
           <Option value="Chờ duyệt">Chờ duyệt</Option>
           <Option value="Đã duyệt">Đã duyệt</Option>
           <Option value="Đã huỷ">Đã huỷ</Option>
         </Select>
-
         <Select
-          onChange={handleSortChange}
           value={sortOrder}
-          style={{ width: 150 }}
+          onChange={(val) => setSortOrder(val)}
+          style={{ width: 180 }}
         >
-          <Option value="asc">Cũ nhất trước</Option>
-          <Option value="desc">Mới nhất trước</Option>
+          <Option value="desc">Mới nhất</Option>
+          <Option value="asc">Cũ nhất</Option>
         </Select>
+        <Button
+          icon={<DownloadOutlined />}
+          type="primary"
+          className="bg-blue-600 text-white"
+          onClick={handleExportFileExcel}
+        >
+          Xuất Excel
+        </Button>
       </div>
+
+      {/* Table */}
       <Table
         columns={columns}
         dataSource={receipts}
@@ -305,86 +264,98 @@ const FuelStorageReceiptList = () => {
         rowKey="_id"
         pagination={{ pageSize: 10 }}
       />
-      \
-      <Modal
+
+      {/* Drawer Chi tiết */}
+      <DrawerComponent
         title="Chi tiết Đơn Nhập Kho"
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={null}
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedReceipt(null);
+        }}
+        placement="right"
+        width="30%"
       >
-        {selectedReceipt && (
-          <>
-            <Descriptions bordered column={1}>
-              <Descriptions.Item label="Người Quản Lý">
-                {selectedReceipt.manager_id?.full_name || "Không có dữ liệu"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Kho">
-                {selectedReceipt.storage_id?.name_storage || "Không có dữ liệu"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Loại Đơn Hàng">
+        {selectedReceipt ? (
+          <div className="p-6 space-y-4">
+            <h2 className="text-lg font-bold text-black border-b pb-2">
+              Thông tin chi tiết
+            </h2>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+              <p className="font-bold">Người Quản Lý:</p>
+              <p>{selectedReceipt.manager_id?.full_name || "Không có"}</p>
+              <p className="font-bold">Kho:</p>
+              <p>{selectedReceipt.storage_id?.name_storage || "Không có"}</p>
+              <p className="font-bold">Loại Đơn Hàng:</p>
+              <p>
                 {selectedReceipt.receipt_supply_id ? "Cung cấp" : "Thu hàng"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Số Lượng">
+              </p>
+              <p className="font-bold">Số Lượng:</p>
+              <p>
                 {selectedReceipt.receipt_request_id?.quantity ||
                   selectedReceipt.receipt_supply_id?.quantity ||
-                  "Không có dữ liệu"}
-              </Descriptions.Item>
-
-              <Descriptions.Item label="Trạng Thái">
-                <Tag
-                  color={
-                    selectedReceipt.status === "Chờ duyệt"
-                      ? "gold"
-                      : selectedReceipt.status === "Đã duyệt"
-                      ? "green"
-                      : "red"
-                  }
-                >
-                  {selectedReceipt.status || "Không có dữ liệu"}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày Nhập Kho">
-                {selectedReceipt.createdAt
-                  ? converDateString(selectedReceipt.createdAt)
-                  : "Không có dữ liệu"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày Cập Nhật">
-                {selectedReceipt.updatedAt
-                  ? converDateString(selectedReceipt.updatedAt)
-                  : "Không có dữ liệu"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ghi Chú">
+                  "Không có"}
+              </p>
+              <p className="font-bold">Trạng Thái:</p>
+              <Tag
+                color={
+                  selectedReceipt.status === "Chờ duyệt"
+                    ? "gold"
+                    : selectedReceipt.status === "Đã duyệt"
+                    ? "green"
+                    : "red"
+                }
+              >
+                {selectedReceipt.status}
+              </Tag>
+              <p className="font-bold">Ngày Nhập Kho:</p>
+              <p>{converDateString(selectedReceipt.createdAt) || "Không có"}</p>
+              <p className="font-bold">Ngày Cập Nhật:</p>
+              <p>{converDateString(selectedReceipt.updatedAt) || "Không có"}</p>
+              <p className="font-bold">Ghi chú:</p>
+              <p>
                 {selectedReceipt.receipt_request_id?.note ||
                   selectedReceipt.receipt_supply_id?.note ||
-                  "Không có ghi chú"}
-              </Descriptions.Item>
-            </Descriptions>
-            {/* 🟢 Nút Duyệt & Hủy đơn */}
-{selectedReceipt && (
-    <div style={{ textAlign: "center", marginTop: 16 }}>
-        <Space size="large">
-            <Button 
-                type="primary" 
-                onClick={() => confirmUpdateStatus(selectedReceipt._id, "Đã duyệt")}
-                disabled={loading || selectedReceipt.status === "Đã duyệt" || selectedReceipt.status === "Đã huỷ"} 
-            >
-                Duyệt
-            </Button>
-            <Button 
-                type="default" 
-                danger
-                onClick={() => confirmUpdateStatus(selectedReceipt._id, "Đã huỷ")}
-                disabled={loading || selectedReceipt.status === "Đã huỷ" || selectedReceipt.status === "Đã duyệt"}
-            >
-                Hủy
-            </Button>
-        </Space>
-    </div>
-)}
+                  "Không có"}
+              </p>
+            </div>
 
-          </>
+            {/* Nút duyệt/hủy */}
+            <div className="text-center mt-4">
+              <Space size="large">
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    confirmUpdateStatus(selectedReceipt._id, "Đã duyệt")
+                  }
+                  disabled={
+                    loading ||
+                    selectedReceipt.status === "Đã duyệt" ||
+                    selectedReceipt.status === "Đã huỷ"
+                  }
+                >
+                  Duyệt
+                </Button>
+                <Button
+                  danger
+                  onClick={() =>
+                    confirmUpdateStatus(selectedReceipt._id, "Đã huỷ")
+                  }
+                  disabled={
+                    loading ||
+                    selectedReceipt.status === "Đã huỷ" ||
+                    selectedReceipt.status === "Đã duyệt"
+                  }
+                >
+                  Hủy
+                </Button>
+              </Space>
+            </div>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">Đang tải chi tiết...</p>
         )}
-      </Modal>
+      </DrawerComponent>
     </div>
   );
 };
