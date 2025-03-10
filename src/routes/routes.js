@@ -32,7 +32,7 @@ import FuelProvideManagement from "../components/Admin/Content/Order/FuelProvide
 import Login from "../components/AuthComponent/Login";
 import Register from "../components/AuthComponent/Register";
 import GoogleRegister from "../components/AuthComponent/GoogleRegister";
-import FuelRequestsComponent from "../components/Admin/Content/Order/FuelRequests";
+// import FuelRequestsComponent from "../components/Admin/Content/Order/FuelRequests";
 import OrderPage from "../pages/OrderPage/OrderPage";
 import OrderViewPage from "../pages/OrderPage/OrderViewPage";
 import FuelList from "../components/Admin/Content/Fuel/FuelList";
@@ -45,6 +45,7 @@ import RawmaterialBatchList from "../components/Admin/Content/RawMaterialBatch/R
 import RawMaterialBatch from "../components/Admin/Content/RawMaterialBatch/RawMaterialBatch";
 import MaterialStorageExport from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExport";
 import MaterialStorageExportList from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportlist";
+import BatchHistory from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportHistory"
 
 const Router = () => {
   return (
@@ -74,6 +75,7 @@ const Router = () => {
         </Route>
 
         <Route path="/system/admin" element={<Admin />}>
+        {/* Ware house */}
           <Route path="manage-warehouse" element={<Dashboard1 />} />
           <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
@@ -88,7 +90,7 @@ const Router = () => {
           {/* Material Storage Export */}
           <Route path="material-storage-export" element={<MaterialStorageExport/>} />
           <Route path="material-storage-export-list" element={<MaterialStorageExportList/>} />
-          
+          <Route path="batch-history" element={<BatchHistory/>} />
 
         </Route>
 
