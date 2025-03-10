@@ -24,6 +24,7 @@ import AddressPage from "../pages/AddressPage/AddressPage";
 import AddressCreate from "../pages/AddressPage/AddressCreate";
 import AddressUpdate from "../pages/AddressPage/AddressUpdate";
 import SupplierDashboard from "../pages/SupplierPage/SupplierDashboard/SupplierDashboard";
+import CustomerDashboard from "../pages/OrderProductionPage/OrderProductionDashboard.js/CustomerDashboard";
 
 // Import các component OrderManagement và OrderDetails
 import FuelRequestsManagement from "../components/Admin/Content/Order/FuelRequests";
@@ -121,6 +122,9 @@ const Router = () => {
 
         {/* Supplier Page*/}
         <Route path="/supplier/*" element={<SupplierDashboard />} />
+
+        {/* Customer Page*/}
+        <Route path="/customer/*" element={<CustomerDashboard />} />
 
         
       </Routes>
