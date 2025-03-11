@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Table, Button, message, Space, Modal, Descriptions, Tag, Input, Select } from "antd";
+import { Table, Button, message, Space, Modal, Descriptions, Tag, Input, Drawer } from "antd";
 import axios from "axios";
 import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { Excel } from "antd-table-saveas-excel";
-import {  EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { toast } from "react-toastify";
 
 const FuelList = () => {
@@ -20,7 +20,8 @@ const FuelList = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [editingFuel, setEditingFuel] = useState(null);
   const [updateData, setUpdateData] = useState({ type_name: "", description: "" });
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -35,10 +36,20 @@ const FuelList = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:3001/api/fuel/getAll");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`);
       if (response.data.success) {
-        const sortedFuels = response.data.requests
-        setFuels(sortedFuels);
+        const transformedFuels = response.data.requests.map((item) => ({
+          _id: item._id,
+          type_name: item.fuel_type_id?.type_name || "Không có dữ liệu",
+          description: item.fuel_type_id?.description || "Không có mô tả",
+          is_deleted: item.is_deleted,
+          quantity: item.quantity,
+          storage_id: item.storage_id,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+        }));
+
+        setFuels(transformedFuels);
       } else {
         message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
       }
@@ -56,20 +67,23 @@ const FuelList = () => {
 
   const handleUpdate = async () => {
     try {
-      if (updateData.type_name === "") {
-        toast.error('Tên nhiên liệu không được để trống');
+      if (updateData.type_name.trim() === "") {
+        toast.error("Tên nhiên liệu không được để trống");
         return;
       }
-      const res = await axios.put(`http://localhost:3001/api/fuel/update/${editingFuel._id}`, updateData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_URL}/fuel/update/${editingFuel._id}`,
+        updateData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       if (res.data.success) {
         message.success("Cập nhật thành công!");
         setFuels((prev) =>
           prev.map((fuel) => (fuel._id === editingFuel._id ? { ...fuel, ...updateData } : fuel))
         );
-        setIsUpdateModalOpen(false);
+        setIsUpdateDrawerOpen(false); // Đóng Drawer cập nhật
       } else {
         message.error("Cập nhật thất bại!");
       }
@@ -78,12 +92,13 @@ const FuelList = () => {
     }
   };
 
+
   const handleCancelFuel = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:3001/api/fuel/cancel/${id}`, {}, {
+      const res = await axios.put(`${process.env.REACT_APP_API_URL}/fuel/cancel/${id}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+
       if (res.data.success) {
         message.success("Đã chuyển nhiên liệu vào trạng thái Đã xóa!");
         setFuels((prev) => prev.map((fuel) => (fuel._id === id ? { ...fuel, is_deleted: true } : fuel)));
@@ -94,7 +109,7 @@ const FuelList = () => {
       message.error("Lỗi kết nối đến server!");
     }
   };
-  
+
 
 
   useEffect(() => {
@@ -178,16 +193,19 @@ const FuelList = () => {
       )
       .saveAs("DanhSachLoaiNhienLieu.xlsx");
   };
-
-  // Handle Modal for Fuel Details
-  const showFuelDetails = (fuel) => {
-    setSelectedFuel(fuel);
-    setIsModalOpen(true);
+  const openUpdateDrawer = (fuel) => {
+    setEditingFuel(fuel);
+    setUpdateData({
+      type_name: fuel.type_name,
+      description: fuel.description,
+      quantity: fuel.quantity
+    });
+    setIsUpdateDrawerOpen(true); // Mở Drawer cập nhật
   };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setSelectedFuel(null);
+  const showFuelDetails = (fuel) => {
+    console.log("Dữ liệu nhiên liệu:", fuel); // Debug dữ liệu
+    setSelectedFuel(fuel);
+    setIsDrawerOpen(true);
   };
 
   // Columns definition
@@ -222,12 +240,12 @@ const FuelList = () => {
       key: "action",
       render: (_, record) => (
         <Space>
-  <Button type="primary" icon={<EyeOutlined />} onClick={() => showFuelDetails(record)} />
-  <Button type="default" icon={<EditOutlined />} onClick={() => openUpdateModal(record)} />
-  {/* <Button danger icon={<DeleteOutlined />} onClick={() => handleCancelFuel(record._id)} /> */}
-</Space>
+          <Button type="primary" icon={<EyeOutlined />} onClick={() => showFuelDetails(record)} />
+          <Button type="default" icon={<EditOutlined />} onClick={() => openUpdateDrawer(record)} />
+        </Space>
       ),
     },
+
   ];
 
   return (
@@ -245,50 +263,82 @@ const FuelList = () => {
 
       <Table
         columns={columns}
-        dataSource={fuels.filter((fuel) => (isDeletedFilter !== null ? fuel.is_deleted === isDeletedFilter : true))}
+        dataSource={fuels?.filter((fuel) => (isDeletedFilter !== null ? fuel.is_deleted === isDeletedFilter : true))}
         loading={loading}
         rowKey="_id"
         pagination={{ pageSize: 10 }}
       />
 
-      <Modal title="Chi tiết Loại Nhiên Liệu"  onCancel={handleCancel} footer={null} >
-        {selectedFuel && (
+      <Drawer
+        title="Chi tiết Loại Nhiên Liệu"
+        open={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedFuel(null);
+        }}
+        placement="right"
+        width={400}
+      >
+        {selectedFuel ? (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Tên Loại Nhiên Liệu">{selectedFuel.type_name}</Descriptions.Item>
-            <Descriptions.Item label="Mô Tả">{selectedFuel.description}</Descriptions.Item>
+            <Descriptions.Item label="Tên Loại Nhiên Liệu">{selectedFuel.type_name || "Không có dữ liệu"}</Descriptions.Item>
+            <Descriptions.Item label="Mô Tả">{selectedFuel.description || "Không có mô tả"}</Descriptions.Item>
             <Descriptions.Item label="Trạng Thái Xóa">
               <Tag color={selectedFuel.is_deleted ? "red" : "green"}>
                 {selectedFuel.is_deleted ? "Đã xóa" : "Chưa xóa"}
               </Tag>
             </Descriptions.Item>
+            <Descriptions.Item label="Số Lượng">{selectedFuel.quantity ?? "Không có"}</Descriptions.Item>
+            <Descriptions.Item label="Kho Lưu Trữ">{selectedFuel.storage_id ?? "Không có"}</Descriptions.Item>
+            <Descriptions.Item label="Ngày Tạo">{new Date(selectedFuel.createdAt).toLocaleString()}</Descriptions.Item>
+            <Descriptions.Item label="Cập Nhật Lần Cuối">{new Date(selectedFuel.updatedAt).toLocaleString()}</Descriptions.Item>
           </Descriptions>
+        ) : (
+          <p>Đang tải dữ liệu...</p>
         )}
-      </Modal>
-      <Modal
+      </Drawer>
+
+      <Drawer
         title="Cập nhật Loại Nhiên Liệu"
-        open={isUpdateModalOpen}
-        onCancel={() => setIsUpdateModalOpen(false)}
-        footer={[
-          <Button key="cancel" onClick={() => setIsUpdateModalOpen(false)}>
-            Hủy
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleUpdate}>
-            Lưu
-          </Button>,
-        ]}
+        open={isUpdateDrawerOpen}
+        onClose={() => {
+          setIsUpdateDrawerOpen(false);
+          setEditingFuel(null);
+        }}
+        placement="right"
+        width={400}
       >
-        <Input
-          value={updateData.type_name}
-          onChange={(e) => setUpdateData({ ...updateData, type_name: e.target.value })}
-          placeholder="Tên Loại Nhiên Liệu"
-          className="mb-2"
-        />
-        <Input.TextArea
-          value={updateData.description}
-          onChange={(e) => setUpdateData({ ...updateData, description: e.target.value })}
-          placeholder="Mô Tả"
-        />
-      </Modal>
+        {editingFuel ? (
+          <div>
+            <Input
+              value={updateData.type_name}
+              onChange={(e) => setUpdateData({ ...updateData, type_name: e.target.value })}
+              placeholder="Tên Loại Nhiên Liệu"
+              className="mb-2"
+            />
+            <Input.TextArea
+              value={updateData.description}
+              onChange={(e) => setUpdateData({ ...updateData, description: e.target.value })}
+              placeholder="Mô Tả"
+              className="mb-2"
+            />
+            <Input
+              value={updateData.quantity}
+              type="number"
+              onChange={(e) => setUpdateData({ ...updateData, quantity: e.target.value })}
+              placeholder="Số Lượng"
+              className="mb-2"
+            />
+            <Space style={{ marginTop: "10px" }}>
+              <Button onClick={() => setIsUpdateDrawerOpen(false)}>Hủy</Button>
+              <Button type="primary" onClick={handleUpdate}>Lưu</Button>
+            </Space>
+          </div>
+        ) : (
+          <p>Đang tải dữ liệu...</p>
+        )}
+      </Drawer>
+
 
     </div>
   );
