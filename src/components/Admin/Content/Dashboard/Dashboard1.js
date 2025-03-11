@@ -278,7 +278,7 @@ const DashboardWarehouse = () => {
           </button>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4">Đơn nhập kho trong ngày</h2>
+        <h2 className="text-xl font-semibold mb-4">Đơn nhập kho </h2>
         <Table
           columns={[
             { title: "Mã đơn", dataIndex: "_id", key: "_id", width: 150 },
