@@ -67,3 +67,19 @@ export const getAllProcessing = async (data) => {
   );
   return res?.data;
 };
+
+export const updateRawMaterialBatch = async (id, dataRequest) => {
+  const { formData, access_token } = dataRequest;
+
+  const res = await axiosJWT.put(
+    `${process.env.REACT_APP_API_URL}/raw-material-batch/updateRawMaterialBatch/${id}`,
+    { formData },
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
+
