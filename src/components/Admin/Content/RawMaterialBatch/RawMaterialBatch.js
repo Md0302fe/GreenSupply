@@ -63,7 +63,7 @@ const RawMaterialBatch = () => {
         setFormData((prev) => ({
           ...prev,
           production_request_id: value,
-          fuel_type_id: selectedRequest.material?.fuel_type_id,
+          fuel_type_id: selectedRequest.material?._id,
           storage_id: selectedRequest.material?.storage_id?.name_storage || "",
         }));
       }
@@ -161,6 +161,7 @@ const RawMaterialBatch = () => {
           ...formData,
           production_request_id: formData.production_request_id, // production_request_id là ObjectId
           storage_id: formData.storage_id, // storage_id là ObjectId
+          quantity: requiredMaterial,
         },
       };
       console.log("dataRequest => ", dataRequest);
