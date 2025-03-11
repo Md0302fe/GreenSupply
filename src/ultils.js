@@ -39,7 +39,7 @@ export const converDateString = (dateString) => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
-    return `${hours}:${minutes}:${seconds} ${day}-${month}-${year}`;
+    return `${hours}:${minutes}:${seconds} Days ${day}-${month}-${year}`;
   } catch (error) {
     console.log("Lỗi trong quá trình convert thời gian : ", error);
   }
