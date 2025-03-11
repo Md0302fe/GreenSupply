@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, message, Descriptions, Tag, Input, Select } from "antd";
+import { Table, Button, message,Descriptions, Tag, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 
+import { useMutationHooks } from "../../../../hooks/useMutationHook";
+import { toast } from "react-toastify";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent"; // ✅ dùng Drawer thay vì Modal
-
+import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 const { Option } = Select;
 
 const statusColors = {
@@ -90,6 +92,7 @@ const MaterialStorageExportList = () => {
 
   useEffect(() => {
     fetchExports();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, typeFilter, sortOrder]);
 
   const columns = [
@@ -138,6 +141,70 @@ const MaterialStorageExportList = () => {
       ),
     },
   ];
+
+  // Accept Request
+  const mutationAccept = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleAcceptMaterialExport(data);
+    return response;
+  });
+  const { isPending, isSuccess, data } = mutationAccept;
+  const handleAccept = () => {
+    mutationAccept.mutate(
+      {
+        access_token: userRedux?.access_token,
+        storage_export_id: selectedExport._id,
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (data?.success) {
+        toast.success("Xác nhận đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xác nhận đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, data]);
+
+  // Reject Request
+  const mutationReject = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleRejectMaterialExport(data);
+    return response;
+  });
+  
+  const {
+    isPending: isPendingDelete,
+    isSuccess: isSuccessDelete,
+    data: dataDelete,
+  } = mutationReject;
+
+  const handleReject = () => {
+    mutationReject.mutate(
+      {
+        access_token: userRedux?.access_token,
+        storage_export_id: selectedExport._id,
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      if (dataDelete?.success) {
+        toast.success("Xóa đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xóa đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessDelete, dataDelete]);
 
   return (
     <div className="material-storage-export-list">

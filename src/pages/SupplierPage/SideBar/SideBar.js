@@ -65,15 +65,6 @@ const SideBar = () => {
               <li className="w-full">
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-11 flex gap-3"
-                  onClick={() => handleClick("/supplier/order-management")}
-                >
-                  <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  Đơn Nhập Hàng
-                </Button>
-              </li>
-              <li className="w-full">
-                <Button
-                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-11 flex gap-3"
                   onClick={() => navigate("/supplier/supply-request-history")}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>

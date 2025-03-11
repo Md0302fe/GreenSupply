@@ -19,3 +19,73 @@ export const createMaterialStorageExport = async (dataRequest) => {
 
   return res?.data;
 };
+
+
+export const getAllBatchStorageExportHistory = async (dataRequest) => {
+  const {access_token} = dataRequest;
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/batch-history/getAllRawMaterialBatch`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return res?.data;
+};
+
+
+export const getAllBatchStorageExport = async (dataRequest) => {
+  const {access_token} = dataRequest;
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/material-storage-export/getAllRawMaterialBatch`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return res?.data;
+};
+
+
+
+export const handleAcceptMaterialExport = async (data) => {
+  const {access_token , storage_export_id} = data
+ 
+  const res = await axiosJWT.post(
+    `${process.env.REACT_APP_API_URL}/material-storage-export/accept_storage_export`,
+    {storage_export_id},
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return res?.data;
+};
+
+export const handleRejectMaterialExport = async (data) => {
+  const {access_token , storage_export_id} = data
+ 
+  const res = await axiosJWT.post(
+    `${process.env.REACT_APP_API_URL}/material-storage-export/reject_storage_export`,
+    {storage_export_id},
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return res?.data;
+};

@@ -13,10 +13,8 @@ import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { getBase64 } from "../../../../ultils";
 import { convertDateStringV1 } from "../../../../ultils";
 
-import { AiOutlineEdit } from "react-icons/ai";
 
 import TableOrder from "./TableOrder";
 import Loading from "../../../LoadingComponent/Loading";
@@ -361,15 +359,19 @@ const UserComponent = () => {
     const { name, value } = e.target;
     if (name === "start_received") {
       if (value <= currentDate) {
-        toast.error("Ngày bắt đầu nhận đơn không thể lớn hơn ngày kết thúc!");
+        toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
+        return;
       }
     } else if (name === "end_received") {
       if (value < purchaseDetails.start_received) {
-        toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu nhận đơn !");
+        toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
+        return;
+
       }
     } else if (name === "due_date") {
       if (value > purchaseDetails.end_received) {
-        toast.error("Hạn chót nhận đơn trên phái lớn hơn ngày kết thúc!");
+        toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
+        return;
       }
     }
     // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)

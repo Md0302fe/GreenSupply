@@ -3,17 +3,19 @@ import { Button, Form, Input, InputNumber, Select, message } from "antd";
 import { useSelector } from "react-redux";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
+import { toast } from "react-toastify";
 
 const { Option } = Select;
 
 const RawMaterialBatch = () => {
   const [form] = Form.useForm();
-  const [fuelTypes, setFuelTypes] = useState([]);
+  const [fuel_managements, set_fuel_managements] = useState([]);
   const [storages, setStorages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState([]);
   const user = useSelector((state) => state.user);
-  const [selectedRequestId, setSelectedRequestId] = useState(null);
+  const [requiredMaterial, setRequiredMaterial] = useState(0);
+  const [isFuelSelected, setIsFuelSelected] = useState(false);
 
   const generateBatchId = (prefix = "XMTH") => {
     const today = new Date();
@@ -27,7 +29,7 @@ const RawMaterialBatch = () => {
 
     return `${prefix}${year}${month}${day}-${batchNumber}`;
   };
-
+  console.log("fuel_managements => ", fuel_managements);
   const [formData, setFormData] = useState({
     batch_id: generateBatchId(),
     batch_name: "",
@@ -55,10 +57,13 @@ const RawMaterialBatch = () => {
     if (name === "production_request_id") {
       const selectedRequest = processing.find((item) => item._id === value);
       if (selectedRequest) {
+        console.log("selectedRequest:", selectedRequest);
+        console.log("selectedRequest.material:", selectedRequest.material);
+        
         setFormData((prev) => ({
           ...prev,
           production_request_id: value,
-          fuel_type_id: selectedRequest.material?.fuel_type_id, // Lấy thông tin đầy đủ của fuel_type_id
+          fuel_type_id: selectedRequest.material?._id,
           storage_id: selectedRequest.material?.storage_id?.name_storage || "",
         }));
       }
@@ -79,11 +84,24 @@ const RawMaterialBatch = () => {
           data
         );
         const storageRes = await RawMaterialBatchServices.getAllStorages(data);
+        console.log("Dữ liệu API trả về:", processingRes);
+        const getAllManagements =
+          await RawMaterialBatchServices.getAllFuelManagements();
         if (processingRes.success) {
           setProcessing(processingRes.requests);
+        } else {
+          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
-
-        if (storageRes.success) setStorages(storageRes.data);
+        if (storageRes.success) {
+          setStorages(storageRes.data);
+        } else {
+          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+        }
+        if (getAllManagements) {
+          set_fuel_managements(getAllManagements.requests);
+        } else {
+          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+        }
       } catch (error) {
         message.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
       } finally {
@@ -94,6 +112,46 @@ const RawMaterialBatch = () => {
     fetchData();
   }, []);
 
+  const handleEstimatedProductionChange = (value) => {
+    if (value === null || value === undefined || value === "") {
+      form.setFieldsValue({ quantity: null }); // Không đặt về 0
+      setRequiredMaterial(0);
+      return;
+    }
+
+    const required = Math.ceil(value / 0.9);
+    setRequiredMaterial(required);
+
+    const selectedFuelId = form.getFieldValue("storage_id");
+
+    if (selectedFuelId) {
+      const selectedFuel = fuel_managements.find(
+        (fuel) => fuel._id === selectedFuelId
+      );
+      if (selectedFuel) {
+        const availableFuel = selectedFuel.quantity;
+        if (required > availableFuel) {
+          const maxProduction = Math.floor(availableFuel * 0.9);
+          message.warning(
+            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
+          );
+          form.setFieldsValue({
+            quantity: maxProduction,
+          });
+          setRequiredMaterial(Math.ceil(maxProduction / 0.9));
+          return;
+        }
+      }
+    }
+
+    form.setFieldsValue({ quantity: value });
+  };
+
+  const handleFuelTypeChange = (value) => {
+    form.setFieldsValue({ fuel_type_id: value });
+    setIsFuelSelected(true); // ✅ Khi chọn loại nhiên liệu, mở khóa ô nhập sản lượng mong muốn
+  };
+
   const onFinish = async (values) => {
     setLoading(true);
     try {
@@ -101,15 +159,16 @@ const RawMaterialBatch = () => {
         access_token: user?.access_token,
         formData: {
           ...formData,
-          fuel_type_id: formData.fuel_type_id._id, // Chỉ gửi _id của fuel_type_id
           production_request_id: formData.production_request_id, // production_request_id là ObjectId
           storage_id: formData.storage_id, // storage_id là ObjectId
+          quantity: requiredMaterial,
         },
       };
+      console.log("dataRequest => ", dataRequest);
 
       const response = await RawMaterialBatchServices.createRawMaterialBatch(
         dataRequest
-      ); 
+      );
 
       if (response.success) {
         message.success("Tạo lô nguyên liệu thành công!");
@@ -186,42 +245,53 @@ const RawMaterialBatch = () => {
           <Form.Item
             label="Loại nhiên liệu"
             name="fuel_type_id"
-            className="flex-1"
+            rules={[
+              { required: true, message: "Vui lòng chọn loại nhiên liệu!" },
+            ]}
           >
-            {/* <Select
-              placeholder="Chọn Loại nhiên liệu"
+            <Select
+              placeholder="Chọn loại nhiên liệu"
               className="rounded border-gray-300"
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, fuel_type_id: value }))
-              }
+              onChange={handleFuelTypeChange}
             >
-              {fuelTypes
+              {fuel_managements
                 ?.filter((fuel) => fuel.quantity > 0)
                 .map((fuel) => (
                   <Select.Option key={fuel._id} value={fuel._id}>
                     {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
                   </Select.Option>
                 ))}
-            </Select> */}
-            <div>
-              {/* Check if fuel_type_id exists and show type_name */}
-              {formData?.fuel_type_id?.type_name || "Chưa có dữ liệu"}
-            </div>
+            </Select>
           </Form.Item>
 
           {/* Nhập số lượng */}
           <Form.Item
-            label="Số lượng (Kg)"
+            label="Sản lượng mong muốn (Kg)"
             name="quantity"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập sản lượng mong muốn!" },
+            ]}
           >
             <InputNumber
-              min={1}
-              className="w-full"
-              placeholder="Nhập số lượng"
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, quantity: value }))
-              }
+              min={null}
+              className="w-full rounded border-gray-300"
+              placeholder="Nhập sản lượng mong muốn"
+              onChange={handleEstimatedProductionChange}
+              onBlur={() => {
+                const currentValue = form.getFieldValue("quantity");
+                if (!currentValue) {
+                  form.setFieldsValue({ quantity: null }); // Không thay đổi giá trị thành 0
+                }
+              }}
+              disabled={!isFuelSelected}
+            />
+          </Form.Item>
+
+          <Form.Item label="Số lượng nguyên liệu cần thiết ước tính (kg)">
+            <InputNumber
+              disabled
+              className="w-full rounded border-gray-300 bg-gray-50"
+              value={requiredMaterial}
             />
           </Form.Item>
 

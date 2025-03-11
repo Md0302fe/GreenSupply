@@ -85,6 +85,7 @@ const ProductionRequest = () => {
     // Chuyển đổi ngày sang ISO string nếu có
     const formattedValues = {
       ...values,
+      request_name: values.request_name.toUpperCase(),
       production_date: values.production_date
         ? values.production_date.toISOString()
         : null,

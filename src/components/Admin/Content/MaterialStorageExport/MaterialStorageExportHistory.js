@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Table, Input, Space, Tag, Button, Modal, message, Form } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
-import { toast } from "react-toastify";
-import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
+import { useQuery } from "@tanstack/react-query";
+import { SearchOutlined } from "@ant-design/icons";
 import Loading from "../../../LoadingComponent/Loading";
+import React, { useState, useRef } from "react";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import { Table, Input, Space, Tag, Button } from "antd";
+import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
@@ -18,51 +17,43 @@ const statusColors = {
 };
 
 const RawMaterialBatchList = () => {
-  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
 
   // Drawer state
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Form cho chỉnh sửa
-  const [form] = Form.useForm();
-
   // Search state
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-  const [fuelBatchs, setFuelBatchs] = useState([]);
-  const [loading, setLoading] = useState(false);
   const searchInput = useRef(null);
 
-  // Fetch danh sách lô nguyên liệu
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response =
-        await RawMaterialBatchServices.getAllRawMaterialBatches();
-      console.log(response);
-      if (response) {
-        setFuelBatchs(response);
-      }
-    } catch (error) {
-      message.error("Lỗi khi tải danh sách lô nguyên liệu!");
-    } finally {
-      setLoading(false); // Kết thúc loading
-    }
+  // GET ALL PRODUCT FROM DB
+  const fetchBatchHistories = async () => {
+    const access_token = user?.access_token;
+    const res = await MaterialServices.getAllBatchStorageExportHistory(access_token);
+    return res;
   };
 
-  // Gọi API khi component mount hoặc khi có thay đổi
-  useEffect(() => {
-    fetchData();
-  }, []);
-  console.log("fuelBatchs => ", fuelBatchs)
-  const tableData = Array.isArray(fuelBatchs)
-    ? fuelBatchs.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-      }))
+  const queryBatchHistories = useQuery({
+    queryKey: ["batch_histories"],
+    queryFn: fetchBatchHistories,
+  });
+  const { isLoading, data } = queryBatchHistories;
+
+  const tableData = Array.isArray(data?.requests)
+    ? data?.requests?.map(
+        (batch) => (
+          {
+            ...batch,
+            key: batch._id,
+            batch_id: batch.material_export_id.batch_id.batch_id,
+            batch_name: batch.material_export_id.batch_id.batch_name,
+            type_export: batch.material_export_id.type_export,
+            status : batch.material_export_id.status
+          }
+        )
+      )
     : [];
 
   // Search trong bảng
@@ -156,23 +147,9 @@ const RawMaterialBatchList = () => {
       sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
     },
     {
-      title: "Loại nguyên liệu",
-      dataIndex: "fuel_name",
-      key: "fuel_name",
-    },
-    {
-      title: "Số lượng (Kg)",
-      dataIndex: "quantity",
-      key: "quantity",
-      sorter: (a, b) => a.quantity - b.quantity,
-      render: (val) => `${val} Kg`,
-    },
-    {
-      title: "Kho lưu trữ",
-      dataIndex: "name_storage",
-      key: "name_storage",
-      render: (_, record) =>
-        record?.fuel_type_id?.storage_id?.name_storage || "Không có",
+      title: "Loại đơn",
+      dataIndex: "type_export",
+      key: "type_export",
     },
     {
       title: "Trạng thái",
@@ -182,7 +159,6 @@ const RawMaterialBatchList = () => {
         text: status,
         value: status,
       })),
-      onFilter: (value, record) => record.status === value,
       render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
     },
     {
@@ -208,44 +184,13 @@ const RawMaterialBatchList = () => {
     setSelectedBatch(null);
   };
 
-  const confirmDelete = (record) => {
-    Modal.confirm({
-      title: "Xác nhận xóa",
-      content: "Bạn có chắc chắn muốn xóa lô nguyên liệu này?",
-      okText: "Đồng ý",
-      cancelText: "Hủy",
-      onOk: () => {
-        toast.success("Lô nguyên liệu đã được xóa!");
-        fetchData();
-      },
-    });
-  };
-
   return (
     <div className="raw-material-batch-list">
       <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-bold text-gray-800">
-          Quản lý Lô Nguyên Liệu
-        </h5>
-        <div className="flex gap-4">
-          <Button
-            type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-6"
-            onClick={() => navigate("/system/admin/raw-material-batch")}
-          >
-            Tạo lô bổ sung
-          </Button>
-          <Button
-            type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-4"
-            onClick={() => navigate("/system/admin/material-storage-export")}
-          >
-            Tạo đơn xuất kho
-          </Button>
-        </div>
+        <h5 className="text-2xl font-bold text-gray-800">Lịch Sử Xuất Lô</h5>
       </div>
 
-      <Loading isPending={loading}>
+      <Loading isPending={isLoading}>
         <Table columns={columns} dataSource={tableData} />
       </Loading>
 

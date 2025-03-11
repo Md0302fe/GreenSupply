@@ -15,7 +15,7 @@ export const getRawMaterialBatchById = async (id) => {
   return res?.data.batch;
 };
 
-export const getAllFuelTypes = async () => {
+export const getAllFuelManagements = async () => {
   const res = await axiosJWT.get(
     `${process.env.REACT_APP_API_URL}/fuel-management/getAll`
   );
