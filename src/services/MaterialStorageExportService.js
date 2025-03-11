@@ -24,7 +24,7 @@ export const createMaterialStorageExport = async (dataRequest) => {
 export const getAllBatchStorageExportHistory = async (dataRequest) => {
   const {access_token} = dataRequest;
   const res = await axiosJWT.get(
-    `${process.env.REACT_APP_API_URL}/batch-history/getAllRawMaterialBatch`,
+    `${process.env.REACT_APP_API_URL}/batch-history/getAllBatchStorageExportHistory`,
     {},
     {
       headers: {
@@ -37,6 +37,20 @@ export const getAllBatchStorageExportHistory = async (dataRequest) => {
   return res?.data;
 };
 
+export const getAllBatchStorageExportHistoryDetail = async (storage_export_id,access_token) => {
+  const dataRequest = {storage_export_id}
+  const res = await axiosJWT.post(
+    `${process.env.REACT_APP_API_URL}/batch-history/getBatchStorageExportDetails`,
+    {dataRequest},
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return res?.data;
+};
 
 export const getAllBatchStorageExport = async (dataRequest) => {
   const {access_token} = dataRequest;
