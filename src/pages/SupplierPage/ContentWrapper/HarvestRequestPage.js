@@ -70,7 +70,17 @@ const HarvestRequestPage = () => {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setFuelTypeList(response.data.requests || []); // Cập nhật danh sách fuel type
+      const transformedFuels = response.data.requests.map((item) => ({
+        _id: item._id,
+        type_name: item.fuel_type_id?.type_name || "Không có dữ liệu",
+        description: item.fuel_type_id?.description || "Không có mô tả",
+        is_deleted: item.is_deleted,
+        quantity: item.quantity,
+        storage_id: item.storage_id,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }));
+      setFuelTypeList(transformedFuels || []); // Cập nhật danh sách fuel type
     } catch (error) {
       console.error("Lỗi khi lấy danh sách loại nhiên liệu:", error);
     }

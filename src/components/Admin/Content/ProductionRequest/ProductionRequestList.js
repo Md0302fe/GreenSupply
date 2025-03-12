@@ -493,72 +493,64 @@ const ProductionRequestList = () => {
         {selectedRequest && !isEditMode && (
           <div className="">
             {/* <h2 className="text-xl font-bold uppercase text-gray-800 text-center mb-4">
-              Thông tin chi tiết
-            </h2> */}
+      Thông tin chi tiết
+    </h2> */}
 
-            <div className="border border-gray-300 rounded-lg p-4">
-              <div className="grid grid-cols-10 gap-0">
-                {/* Tên đơn */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+            <div className="border border-gray-300 rounded-lg overflow-hidden">
+              <div className="grid grid-cols-2 gap-0">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Tên đơn
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {selectedRequest.request_name}
                 </div>
 
-                {/* Loại đơn */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Loại đơn
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {selectedRequest.request_type}
                 </div>
 
-                {/* Nhiên liệu */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Nhiên liệu (ID)
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {selectedRequest.material}
                 </div>
 
-                {/* Thành phẩm */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Thành phẩm (Kg)
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {selectedRequest.product_quantity} Kg
                 </div>
 
-                {/* Nguyên liệu */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Nguyên liệu (Kg)
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {selectedRequest.material_quantity} Kg
                 </div>
 
-                {/* Ngày sản xuất */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Ngày sản xuất
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {convertDateStringV1(selectedRequest.production_date)}
                 </div>
 
-                {/* Ngày kết thúc */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Ngày kết thúc
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   {convertDateStringV1(selectedRequest.end_date)}
                 </div>
 
-                {/* Trạng thái */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Trạng thái
                 </div>
-                <div className="col-span-6 p-3 border border-gray-300">
+                <div className="p-3 border border-gray-300">
                   <Tag
                     color={statusColors[selectedRequest.status] || "default"}
                   >
@@ -566,13 +558,12 @@ const ProductionRequestList = () => {
                   </Tag>
                 </div>
 
-                {/* Ghi chú (Nếu có) */}
                 {selectedRequest.note && (
                   <>
-                    <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                    <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                       Ghi chú
                     </div>
-                    <div className="col-span-6 p-3 border border-gray-300 whitespace-pre-wrap">
+                    <div className="p-3 border border-gray-300 whitespace-pre-wrap">
                       {selectedRequest.note}
                     </div>
                   </>
