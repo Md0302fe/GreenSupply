@@ -472,7 +472,11 @@ const ProductionRequestList = () => {
 
   return (
     <div className="production-request-list">
-      <h5>Quản lý Đơn Sản Xuất</h5>
+      <div className="flex justify-between items-center mb-4">
+        <h5 className="text-2xl font-bold text-gray-800">
+          Danh sách yêu cầu sản xuất
+        </h5>
+      </div>
 
       <Loading isPending={isLoading || fuelLoading}>
         <Table columns={columns} dataSource={tableData} />

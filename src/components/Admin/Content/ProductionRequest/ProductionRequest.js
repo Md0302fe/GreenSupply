@@ -40,12 +40,17 @@ const ProductionRequest = () => {
 
   // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn nhiên liệu
   const handleEstimatedProductionChange = (value) => {
+    const selectedFuelId = form.getFieldValue("material");
+    if (!selectedFuelId) {
+      message.warning("Vui lòng chọn loại nhiên liệu trước khi nhập sản lượng mong muốn.");
+      form.setFieldsValue({ product_quantity: 1, material_quantity: 1 }); // Reset sản lượng và nguyên liệu
+      return;
+    }
     if (!value || value < 1) {
-      form.setFieldsValue({ material_quantity: 0 });
+      form.setFieldsValue({ material_quantity: 1 });
       return;
     }
     const required = Math.ceil(value / 0.9);
-    const selectedFuelId = form.getFieldValue("material");
     if (selectedFuelId) {
       const selectedFuel = fuelTypes.find((f) => f._id === selectedFuelId);
       if (selectedFuel) {
