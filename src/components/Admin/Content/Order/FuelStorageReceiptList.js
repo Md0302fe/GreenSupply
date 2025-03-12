@@ -277,76 +277,135 @@ const FuelStorageReceiptList = () => {
         width="30%"
       >
         {selectedReceipt ? (
-  <div >
-    {/* <h2 className="text-lg font-bold text-black border-b pb-2">
-      Thông tin chi tiết
-    </h2> */}
+          <div className="">
+            {/* Tiêu đề */}
+            {/* <h2 className="text-xl font-bold uppercase text-gray-800 text-center mb-4">
+              Thông tin chi tiết
+            </h2> */}
 
-    <div className="border border-gray-300 rounded-md p-4">
-      <div className="grid grid-cols-2 gap-2 ">
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Người Quản Lý</div>
-        <div className="border-b border-gray-200 p-2">{selectedReceipt.manager_id?.full_name || "Không có"}</div>
+            {/* Bảng hiển thị dữ liệu */}
+            <div className="border border-gray-300 rounded-lg p-4">
+              <div className="grid grid-cols-10 gap-0">
+                {/* Người Quản Lý */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Người Quản Lý
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.manager_id?.full_name || "Không có"}
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Kho</div>
-        <div className="border-b border-gray-200 p-2">{selectedReceipt.storage_id?.name_storage || "Không có"}</div>
+                {/* Kho */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Kho
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.storage_id?.name_storage || "Không có"}
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Loại Đơn Hàng</div>
-        <div className="border-b border-gray-200 p-2">{selectedReceipt.receipt_supply_id ? "Cung cấp" : "Thu hàng"}</div>
+                {/* Loại Đơn Hàng */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Loại Đơn Hàng
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.receipt_supply_id ? "Cung cấp" : "Thu hàng"}
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Số Lượng</div>
-        <div className="border-b border-gray-200 p-2">{selectedReceipt.receipt_request_id?.quantity || selectedReceipt.receipt_supply_id?.quantity || "Không có"}</div>
+                {/* Số Lượng */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Số Lượng
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.receipt_request_id?.quantity ||
+                    selectedReceipt.receipt_supply_id?.quantity ||
+                    "Không có"}
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Trạng Thái</div>
-        <div className="border-b border-gray-200 p-2">
-          <Tag
-            color={
-              selectedReceipt.status === "Chờ duyệt"
-                ? "gold"
-                : selectedReceipt.status === "Đã duyệt"
-                ? "green"
-                : "red"
-            }
-          >
-            {selectedReceipt.status}
-          </Tag>
-        </div>
+                {/* Trạng Thái */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Trạng Thái
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  <Tag
+                    color={
+                      selectedReceipt.status === "Chờ duyệt"
+                        ? "gold"
+                        : selectedReceipt.status === "Đã duyệt"
+                        ? "green"
+                        : "red"
+                    }
+                  >
+                    {selectedReceipt.status}
+                  </Tag>
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Ngày Nhập Kho</div>
-        <div className="border-b border-gray-200 p-2">{converDateString(selectedReceipt.createdAt) || "Không có"}</div>
+                {/* Ngày Nhập Kho */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Ngày Nhập Kho
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {converDateString(selectedReceipt.createdAt) || "Không có"}
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Ngày Cập Nhật</div>
-        <div className="border-b border-gray-200 p-2">{converDateString(selectedReceipt.updatedAt) || "Không có"}</div>
+                {/* Ngày Cập Nhật */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  Ngày Cập Nhật
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {converDateString(selectedReceipt.updatedAt) || "Không có"}
+                </div>
 
-        <div className="border-b border-gray-200 p-2 font-bold bg-gray-100 ">Ghi chú</div>
-        <div className="border-b border-gray-200 p-2">{selectedReceipt.receipt_request_id?.note || selectedReceipt.receipt_supply_id?.note || "Không có"}</div>
-      </div>
-    </div>
+                {/* Ghi chú (Nếu có) */}
+                {selectedReceipt.receipt_request_id?.note ||
+                selectedReceipt.receipt_supply_id?.note ? (
+                  <>
+                    <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                      Ghi chú
+                    </div>
+                    <div className="col-span-6 p-3 border border-gray-300 whitespace-pre-wrap">
+                      {selectedReceipt.receipt_request_id?.note ||
+                        selectedReceipt.receipt_supply_id?.note}
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            </div>
 
-    {/* Nút duyệt/hủy */}
-    <div className="text-center mt-4">
-      <Space size="large">
-        <Button
-          type="primary"
-          onClick={() => confirmUpdateStatus(selectedReceipt._id, "Đã duyệt")}
-          disabled={loading || selectedReceipt.status === "Đã duyệt" || selectedReceipt.status === "Đã huỷ"}
-        >
-          Duyệt
-        </Button>
-        <Button
-          danger
-          onClick={() => confirmUpdateStatus(selectedReceipt._id, "Đã huỷ")}
-          disabled={loading || selectedReceipt.status === "Đã huỷ" || selectedReceipt.status === "Đã duyệt"}
-        >
-          Hủy
-        </Button>
-      </Space>
-    </div>
-  </div>
-) : (
-  <p className="text-center text-gray-500">Đang tải chi tiết...</p>
-)}
-
-      </DrawerComponent>  
+            {/* Nút Duyệt / Hủy */}
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                type="primary"
+                className="px-6 py-2 text-lg"
+                onClick={() =>
+                  confirmUpdateStatus(selectedReceipt._id, "Đã duyệt")
+                }
+                disabled={
+                  loading ||
+                  selectedReceipt.status === "Đã duyệt" ||
+                  selectedReceipt.status === "Đã huỷ"
+                }
+              >
+                Duyệt
+              </Button>
+              <Button
+                danger
+                className="px-6 py-2 text-lg"
+                onClick={() =>
+                  confirmUpdateStatus(selectedReceipt._id, "Đã huỷ")
+                }
+                disabled={
+                  loading ||
+                  selectedReceipt.status === "Đã huỷ" ||
+                  selectedReceipt.status === "Đã duyệt"
+                }
+              >
+                Hủy
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">Đang tải chi tiết...</p>
+        )}
+      </DrawerComponent>
     </div>
   );
 };
