@@ -12,14 +12,11 @@ import {
 } from "react-pro-sidebar";
 
 // import icons
-import { FaGem, FaGithub } from "react-icons/fa";
-import { FaShoppingCart } from "react-icons/fa"
+import { FaGithub } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 import { FaWarehouse } from "react-icons/fa";
-import { VscListOrdered } from "react-icons/vsc";
 import { FaClipboard } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
-
-
 
 import sidebarBg from "../../assets/bg2.jpg";
 import logo from "../../assets/NewProject/Logo/GreenSupply.png";
@@ -105,85 +102,83 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
           </Menu>
 
           <Menu iconShape="circle">
-          <SubMenu
-            icon={<FaShoppingCart />}
-            title="Quản Lý Đơn Hàng"
-            style={{ paddingTop: "10px", paddingBottom: "10px" }}
-          >
-            <MenuItem>
-              Đơn yêu cầu thu nguyên liệu
-              <Link to={"manage-fuel-orders"} />
-            </MenuItem>
-            <MenuItem>
-              Đơn cung cấp nguyên liệu
-              <Link to={"manage-provide-orders"} />
-            </MenuItem>
-            <MenuItem>
-              Đơn Chờ Nhập Kho
-              <Link to={"View-Order-Success"} />
-            </MenuItem>
-          </SubMenu>
-          <SubMenu
-            icon={<FaWarehouse />}
-            title="Quản Lý Kho"
-            style={{ paddingTop: "10px", paddingBottom: "10px" }}
-          >
+            <SubMenu
+              icon={<FaShoppingCart />}
+              title="Quản Lý Đơn Hàng"
+              style={{ paddingTop: "10px", paddingBottom: "10px" }}
+            >
               <MenuItem>
-              Dashboard
-              <Link to={"manage-warehouse"} />
-            </MenuItem>
-            <MenuItem>
-            Danh Sách Đơn Nhập Kho
-              <Link to={"warehouse-receipt"} />
-            </MenuItem>
-            <MenuItem>
-            D.Sách Lô Nguyên Liệu Thô
-              <Link to={"raw-material-batch-list"} />
-            </MenuItem>
-            <MenuItem>
-            D.Sách Đơn Xuất Kho
-              <Link to={"material-storage-export-list"} />
-            </MenuItem>
-            <MenuItem>
-            L.Sử Đơn Xuất Kho
-              <Link to={"batch-history"} />
-            </MenuItem>
-          </SubMenu>
-          <SubMenu
-            icon={<FaWarehouse />}
-            title="Quản Lý Nhiên liệu"
-            style={{ paddingTop: "10px", paddingBottom: "10px" }}
-          >
+                Đơn yêu cầu thu nguyên liệu
+                <Link to={"manage-fuel-orders"} />
+              </MenuItem>
+              <MenuItem>
+                Đơn cung cấp nguyên liệu
+                <Link to={"manage-provide-orders"} />
+              </MenuItem>
+              <MenuItem>
+                Đơn Chờ Nhập Kho
+                <Link to={"View-Order-Success"} />
+              </MenuItem>
+            </SubMenu>
+            <SubMenu
+              icon={<FaWarehouse />}
+              title="Quản Lý Kho"
+              style={{ paddingTop: "10px", paddingBottom: "10px" }}
+            >
+              <MenuItem>
+                Dashboard
+                <Link to={"manage-warehouse"} />
+              </MenuItem>
+              <MenuItem>
+                Danh Sách Đơn Nhập Kho
+                <Link to={"warehouse-receipt"} />
+              </MenuItem>
+              <MenuItem>
+                D.Sách Lô Nguyên Liệu Thô
+                <Link to={"raw-material-batch-list"} />
+              </MenuItem>
+              <MenuItem>
+                D.Sách Đơn Xuất Kho
+                <Link to={"material-storage-export-list"} />
+              </MenuItem>
+              <MenuItem>
+                L.Sử Đơn Xuất Kho
+                <Link to={"batch-history"} />
+              </MenuItem>
+            </SubMenu>
+            <SubMenu
+              icon={<FaWarehouse />}
+              title="Quản Lý Nhiên liệu"
+              style={{ paddingTop: "10px", paddingBottom: "10px" }}
+            >
               {/* <MenuItem>
               Dashboard
               <Link to={"manage-fuel"} />
             </MenuItem> */}
-            <MenuItem>
-              Danh Sách Nhiên Liệu
-              <Link to={"fuel-list"} />
-            </MenuItem>
-          </SubMenu>
-          <SubMenu
-            icon={<AiFillProduct />}
-            title="Quản Lý Sản Xuất"
-            style={{ paddingTop: "10px", paddingBottom: "10px" }}
-          >
+              <MenuItem>
+                Danh Sách Nhiên Liệu
+                <Link to={"fuel-list"} />
+              </MenuItem>
+            </SubMenu>
+            <SubMenu
+              icon={<AiFillProduct />}
+              title="Quản Lý Sản Xuất"
+              style={{ paddingTop: "10px", paddingBottom: "10px" }}
+            >
               {/* <MenuItem>
               Dashboard
               <Link to={"manage-fuel"} />
             </MenuItem> */}
-            <MenuItem>
-              Tạo Yêu Cầu Sản Xuất
-              <Link to={"production-request"} />
-            </MenuItem>
-            <MenuItem>
-              Danh Sách Yêu Cầu Đã Tạo
-              <Link to={"production-request-list"} />
-            </MenuItem>
-          </SubMenu>
-        </Menu>
-
-
+              <MenuItem>
+                Tạo Yêu Cầu Sản Xuất
+                <Link to={"production-request"} />
+              </MenuItem>
+              <MenuItem>
+                Danh Sách Yêu Cầu Đã Tạo
+                <Link to={"production-request-list"} />
+              </MenuItem>
+            </SubMenu>
+          </Menu>
         </SidebarContent>
 
         <SidebarFooter className="SidebarFooter">
