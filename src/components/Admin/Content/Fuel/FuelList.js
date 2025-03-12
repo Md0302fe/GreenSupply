@@ -1,12 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Table, Button, message, Space, Modal, Descriptions, Tag, Input, Drawer } from "antd";
+import {
+  Table,
+  Button,
+  message,
+  Space,
+  Modal,
+  Descriptions,
+  Tag,
+  Input,
+  Drawer,
+} from "antd";
 import axios from "axios";
 import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { Excel } from "antd-table-saveas-excel";
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
+import { Tooltip } from "antd";
 
 const FuelList = () => {
   const [fuels, setFuels] = useState([]);
@@ -19,7 +30,10 @@ const FuelList = () => {
   const searchInput = useRef(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [editingFuel, setEditingFuel] = useState(null);
-  const [updateData, setUpdateData] = useState({ type_name: "", description: "" });
+  const [updateData, setUpdateData] = useState({
+    type_name: "",
+    description: "",
+  });
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
 
@@ -36,7 +50,9 @@ const FuelList = () => {
         return;
       }
 
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/fuel/getAll`
+      );
       if (response.data.success) {
         const transformedFuels = response.data.requests.map((item) => ({
           _id: item._id,
@@ -55,7 +71,7 @@ const FuelList = () => {
       }
     } catch (error) {
       message.error("Không thể kết nối đến server!");
-      console.log(error)
+      console.log(error);
     }
     setLoading(false);
   };
@@ -81,7 +97,9 @@ const FuelList = () => {
       if (res.data.success) {
         message.success("Cập nhật thành công!");
         setFuels((prev) =>
-          prev.map((fuel) => (fuel._id === editingFuel._id ? { ...fuel, ...updateData } : fuel))
+          prev.map((fuel) =>
+            fuel._id === editingFuel._id ? { ...fuel, ...updateData } : fuel
+          )
         );
         setIsUpdateDrawerOpen(false); // Đóng Drawer cập nhật
       } else {
@@ -92,16 +110,23 @@ const FuelList = () => {
     }
   };
 
-
   const handleCancelFuel = async (id) => {
     try {
-      const res = await axios.put(`${process.env.REACT_APP_API_URL}/fuel/cancel/${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_URL}/fuel/cancel/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (res.data.success) {
         message.success("Đã chuyển nhiên liệu vào trạng thái Đã xóa!");
-        setFuels((prev) => prev.map((fuel) => (fuel._id === id ? { ...fuel, is_deleted: true } : fuel)));
+        setFuels((prev) =>
+          prev.map((fuel) =>
+            fuel._id === id ? { ...fuel, is_deleted: true } : fuel
+          )
+        );
       } else {
         message.error("Hủy thất bại!");
       }
@@ -109,8 +134,6 @@ const FuelList = () => {
       message.error("Lỗi kết nối đến server!");
     }
   };
-
-
 
   useEffect(() => {
     fetchFuels();
@@ -129,13 +152,20 @@ const FuelList = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder="Tìm kiếm"
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
@@ -149,17 +179,28 @@ const FuelList = () => {
           >
             Tìm
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
             Đặt lại
           </Button>
-          <Button type="link" size="small" onClick={() => clearFilters && confirm()}>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => clearFilters && confirm()}
+          >
             Đóng
           </Button>
         </Space>
       </div>
     ),
-    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
-    onFilter: (value, record) => record[dataIndex].toLowerCase().includes(value.toLowerCase()),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toLowerCase().includes(value.toLowerCase()),
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -198,7 +239,7 @@ const FuelList = () => {
     setUpdateData({
       type_name: fuel.type_name,
       description: fuel.description,
-      quantity: fuel.quantity
+      quantity: fuel.quantity,
     });
     setIsUpdateDrawerOpen(true); // Mở Drawer cập nhật
   };
@@ -232,7 +273,9 @@ const FuelList = () => {
       ],
       onFilter: (value, record) => record.is_deleted === value,
       render: (is_deleted) => (
-        <Tag color={is_deleted ? "red" : "green"}>{is_deleted ? "Đã xóa" : "Chưa xóa"}</Tag>
+        <Tag color={is_deleted ? "red" : "green"}>
+          {is_deleted ? "Đã xóa" : "Chưa xóa"}
+        </Tag>
       ),
     },
     {
@@ -240,14 +283,20 @@ const FuelList = () => {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="primary" icon={<EyeOutlined />} onClick={() => showFuelDetails(record)} />
-          <Button type="default" icon={<EditOutlined />} onClick={() => openUpdateDrawer(record)} />
+          {/* Nút Xem chi tiết */}
+          <Button type="link" onClick={() => showFuelDetails(record)}>
+            Xem chi tiết
+          </Button>
+          {/* Nút Chỉnh sửa */}
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => openUpdateDrawer(record)}
+          ></Button>
         </Space>
       ),
     },
-
   ];
-
   return (
     <div className="fuel-list">
       <h2>Danh sách Loại Nhiên Liệu</h2>
@@ -263,7 +312,9 @@ const FuelList = () => {
 
       <Table
         columns={columns}
-        dataSource={fuels?.filter((fuel) => (isDeletedFilter !== null ? fuel.is_deleted === isDeletedFilter : true))}
+        dataSource={fuels?.filter((fuel) =>
+          isDeletedFilter !== null ? fuel.is_deleted === isDeletedFilter : true
+        )}
         loading={loading}
         rowKey="_id"
         pagination={{ pageSize: 10 }}
@@ -281,17 +332,29 @@ const FuelList = () => {
       >
         {selectedFuel ? (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Tên Loại Nhiên Liệu">{selectedFuel.type_name || "Không có dữ liệu"}</Descriptions.Item>
-            <Descriptions.Item label="Mô Tả">{selectedFuel.description || "Không có mô tả"}</Descriptions.Item>
+            <Descriptions.Item label="Tên Loại Nhiên Liệu">
+              {selectedFuel.type_name || "Không có dữ liệu"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Mô Tả">
+              {selectedFuel.description || "Không có mô tả"}
+            </Descriptions.Item>
             <Descriptions.Item label="Trạng Thái Xóa">
               <Tag color={selectedFuel.is_deleted ? "red" : "green"}>
                 {selectedFuel.is_deleted ? "Đã xóa" : "Chưa xóa"}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Số Lượng">{selectedFuel.quantity ?? "Không có"}</Descriptions.Item>
-            <Descriptions.Item label="Kho Lưu Trữ">{selectedFuel.storage_id ?? "Không có"}</Descriptions.Item>
-            <Descriptions.Item label="Ngày Tạo">{new Date(selectedFuel.createdAt).toLocaleString()}</Descriptions.Item>
-            <Descriptions.Item label="Cập Nhật Lần Cuối">{new Date(selectedFuel.updatedAt).toLocaleString()}</Descriptions.Item>
+            <Descriptions.Item label="Số Lượng">
+              {selectedFuel.quantity ?? "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Kho Lưu Trữ">
+              {selectedFuel.storage_id ?? "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Ngày Tạo">
+              {new Date(selectedFuel.createdAt).toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Cập Nhật Lần Cuối">
+              {new Date(selectedFuel.updatedAt).toLocaleString()}
+            </Descriptions.Item>
           </Descriptions>
         ) : (
           <p>Đang tải dữ liệu...</p>
@@ -312,34 +375,40 @@ const FuelList = () => {
           <div>
             <Input
               value={updateData.type_name}
-              onChange={(e) => setUpdateData({ ...updateData, type_name: e.target.value })}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, type_name: e.target.value })
+              }
               placeholder="Tên Loại Nhiên Liệu"
               className="mb-2"
             />
             <Input.TextArea
               value={updateData.description}
-              onChange={(e) => setUpdateData({ ...updateData, description: e.target.value })}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, description: e.target.value })
+              }
               placeholder="Mô Tả"
               className="mb-2"
             />
             <Input
               value={updateData.quantity}
               type="number"
-              onChange={(e) => setUpdateData({ ...updateData, quantity: e.target.value })}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, quantity: e.target.value })
+              }
               placeholder="Số Lượng"
               className="mb-2"
             />
             <Space style={{ marginTop: "10px" }}>
               <Button onClick={() => setIsUpdateDrawerOpen(false)}>Hủy</Button>
-              <Button type="primary" onClick={handleUpdate}>Lưu</Button>
+              <Button type="primary" onClick={handleUpdate}>
+                Lưu
+              </Button>
             </Space>
           </div>
         ) : (
           <p>Đang tải dữ liệu...</p>
         )}
       </Drawer>
-
-
     </div>
   );
 };
