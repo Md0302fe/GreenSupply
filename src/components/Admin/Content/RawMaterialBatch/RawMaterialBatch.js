@@ -38,6 +38,7 @@ const RawMaterialBatch = () => {
     status: "Đang chuẩn bị",
     quantity: 0,
     storage_id: "",
+    note: "",
     is_automatic: false,
     is_deleted: false,
   });
@@ -59,7 +60,7 @@ const RawMaterialBatch = () => {
       if (selectedRequest) {
         console.log("selectedRequest:", selectedRequest);
         console.log("selectedRequest.material:", selectedRequest.material);
-        
+
         setFormData((prev) => ({
           ...prev,
           production_request_id: value,
@@ -112,10 +113,22 @@ const RawMaterialBatch = () => {
     fetchData();
   }, []);
 
+  const handleKeyDown = (event) => {
+    if (/[^0-9]/.test(event.key) && event.key !== 'Backspace' && event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  };
+
   const handleEstimatedProductionChange = (value) => {
     if (value === null || value === undefined || value === "") {
       form.setFieldsValue({ quantity: null }); // Không đặt về 0
       setRequiredMaterial(0);
+      return;
+    }
+
+    if (value === 0 || /e|E|[^0-9]/.test(value)) {
+      message.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
+      form.setFieldsValue({ quantity: null });
       return;
     }
 
@@ -149,7 +162,7 @@ const RawMaterialBatch = () => {
 
   const handleFuelTypeChange = (value) => {
     form.setFieldsValue({ fuel_type_id: value });
-    setIsFuelSelected(true); // ✅ Khi chọn loại nhiên liệu, mở khóa ô nhập sản lượng mong muốn
+    setIsFuelSelected(true); // Khi chọn loại nhiên liệu, mở khóa ô nhập sản lượng mong muốn
   };
 
   const onFinish = async (values) => {
@@ -162,6 +175,7 @@ const RawMaterialBatch = () => {
           production_request_id: formData.production_request_id, // production_request_id là ObjectId
           storage_id: formData.storage_id, // storage_id là ObjectId
           quantity: requiredMaterial,
+          note: formData.note,
         },
       };
       console.log("dataRequest => ", dataRequest);
@@ -186,18 +200,25 @@ const RawMaterialBatch = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">
+        <h2 className="text-2xl font-bold text-center mb-5 text-black">
           Tạo Lô Nguyên Liệu Bổ Sung
         </h2>
 
-        {loading && (
+        {/* {loading && (
           <div className="text-center text-blue-600 font-medium">
             Đang tải dữ liệu...
           </div>
-        )}
+        )} */}
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <div>{formData?.batch_id}</div>
+          {/* Mã lô */}
+          <div className="mb-4">
+            <span className="text-xl font-bold text-gray-800">Mã Lô: </span>
+            <span className="text-xl font-semibold text-[#A31D1D]">
+              {formData?.batch_id}
+            </span>
+          </div>
+
           {/* Nhập tên lô */}
           <Form.Item
             label="Tên lô"
@@ -277,6 +298,7 @@ const RawMaterialBatch = () => {
               className="w-full rounded border-gray-300"
               placeholder="Nhập sản lượng mong muốn"
               onChange={handleEstimatedProductionChange}
+              onKeyDown={handleKeyDown}
               onBlur={() => {
                 const currentValue = form.getFieldValue("quantity");
                 if (!currentValue) {
@@ -287,7 +309,7 @@ const RawMaterialBatch = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Số lượng nguyên liệu cần thiết ước tính (kg)">
+          <Form.Item label="Số lượng nguyên liệu cần thiết ước tính (Kg)">
             <InputNumber
               disabled
               className="w-full rounded border-gray-300 bg-gray-50"
@@ -324,9 +346,19 @@ const RawMaterialBatch = () => {
             </Select>
           </Form.Item>
 
-          {/* Ghi chú */}
+          {/* Nhập ghi chú */}
           <Form.Item label="Ghi chú" name="note">
-            <Input.TextArea rows={4} placeholder="Nhập ghi chú (nếu có)" />
+            <Input.TextArea
+              rows={4}
+              placeholder="Nhập ghi chú (nếu có)"
+              value={formData.note}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  note: e.target.value,
+                }))
+              }
+            />
           </Form.Item>
 
           {/* Nút xác nhận */}
