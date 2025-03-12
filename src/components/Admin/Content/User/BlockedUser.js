@@ -18,6 +18,7 @@ import Loading from "../../../LoadingComponent/Loading";
 
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
+import { useNavigate } from "react-router-dom";
 
 const BlockedUserComponent = () => {
   // gọi vào store redux get ra user
@@ -33,6 +34,9 @@ const BlockedUserComponent = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
+
+    const navigate = useNavigate();
+  
 
   //  State Details quản lý products khi có req edit
   const [stateDetailsUser, setStateDetailsUser] = useState({
@@ -577,6 +581,26 @@ const BlockedUserComponent = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
+      <button
+          onClick={() => navigate(-1)} // Quay lại trang trước đó
+          className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
         <h5 className="content-title">quản lý tài khoản</h5>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>

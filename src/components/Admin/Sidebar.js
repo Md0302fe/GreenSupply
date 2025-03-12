@@ -60,125 +60,28 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
             {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
           </Menu>
           <Menu iconShape="circle">
-            <SubMenu
-              // suffix={<span className="badge yellow">3</span>}
-              icon={<FaUserGear />}
-              title="Người Dùng"
-            >
-              <MenuItem>
-                Quản lý người dùng
-                <Link to={"manage-users"} />
-              </MenuItem>
-              <MenuItem>
-                Quản lý tài khoản
-                <Link to={"manage-blocked-users"} />
-              </MenuItem>
-            </SubMenu>
+            <MenuItem icon={<MdDashboardCustomize />}>
+              Lên Lịch
+              <Link to={"/system/admin"} />
+            </MenuItem>
+            {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
           </Menu>
-          {/* Purchase Order Request */}
           <Menu iconShape="circle">
-            <SubMenu
-              // suffix={<span className="badge yellow">3</span>}
-              icon={<FaClipboard />}
-              title="Đơn Thu Nhiên Liệu"
-            >
-              <MenuItem>
-                Quản Lý Đơn
-                {/* <Link to={"manage-users"} /> */}
-              </MenuItem>
-              <MenuItem>
-                Tạo Yêu Cầu
-                <Link to={"C_purchase-order"} />
-              </MenuItem>
-              <MenuItem>
-                Danh Sách Yêu Cầu Đã Tạo
-                <Link to={"R_purchase-orders"} />
-              </MenuItem>
-              <MenuItem>
-                Danh Sách Yêu Cầu Đã Hoàn Thành
-                {/* <Link to={"manage-blocked-users"} /> */}
-              </MenuItem>
-            </SubMenu>
+            <MenuItem icon={<MdDashboardCustomize />}>
+              Phân tích thị trường
+              <Link to={"/system/admin"} />
+            </MenuItem>
+            {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
+          </Menu>
+          <Menu iconShape="circle">
+            <MenuItem icon={<MdDashboardCustomize />}>
+              Kết nối supplier
+              <Link to={"/system/admin"} />
+            </MenuItem>
+            {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
           </Menu>
 
-          <Menu iconShape="circle">
-            <SubMenu
-              icon={<FaShoppingCart />}
-              title="Quản Lý Đơn Hàng"
-              style={{ paddingTop: "10px", paddingBottom: "10px" }}
-            >
-              <MenuItem>
-                Đơn yêu cầu thu nguyên liệu
-                <Link to={"manage-fuel-orders"} />
-              </MenuItem>
-              <MenuItem>
-                Đơn cung cấp nguyên liệu
-                <Link to={"manage-provide-orders"} />
-              </MenuItem>
-              <MenuItem>
-                Đơn Chờ Nhập Kho
-                <Link to={"View-Order-Success"} />
-              </MenuItem>
-            </SubMenu>
-            <SubMenu
-              icon={<FaWarehouse />}
-              title="Quản Lý Kho"
-              style={{ paddingTop: "10px", paddingBottom: "10px" }}
-            >
-              <MenuItem>
-                Dashboard
-                <Link to={"manage-warehouse"} />
-              </MenuItem>
-              <MenuItem>
-                Danh Sách Đơn Nhập Kho
-                <Link to={"warehouse-receipt"} />
-              </MenuItem>
-              <MenuItem>
-                D.Sách Lô Nguyên Liệu Thô
-                <Link to={"raw-material-batch-list"} />
-              </MenuItem>
-              <MenuItem>
-                D.Sách Đơn Xuất Kho
-                <Link to={"material-storage-export-list"} />
-              </MenuItem>
-              <MenuItem>
-                L.Sử Đơn Xuất Kho
-                <Link to={"batch-history"} />
-              </MenuItem>
-            </SubMenu>
-            <SubMenu
-              icon={<FaWarehouse />}
-              title="Quản Lý Nhiên liệu"
-              style={{ paddingTop: "10px", paddingBottom: "10px" }}
-            >
-              {/* <MenuItem>
-              Dashboard
-              <Link to={"manage-fuel"} />
-            </MenuItem> */}
-              <MenuItem>
-                Danh Sách Nhiên Liệu
-                <Link to={"fuel-list"} />
-              </MenuItem>
-            </SubMenu>
-            <SubMenu
-              icon={<AiFillProduct />}
-              title="Quản Lý Sản Xuất"
-              style={{ paddingTop: "10px", paddingBottom: "10px" }}
-            >
-              {/* <MenuItem>
-              Dashboard
-              <Link to={"manage-fuel"} />
-            </MenuItem> */}
-              <MenuItem>
-                Tạo Yêu Cầu Sản Xuất
-                <Link to={"production-request"} />
-              </MenuItem>
-              <MenuItem>
-                Danh Sách Yêu Cầu Đã Tạo
-                <Link to={"production-request-list"} />
-              </MenuItem>
-            </SubMenu>
-          </Menu>
+          {/* Purchase Order Request */}
         </SidebarContent>
 
         <SidebarFooter className="SidebarFooter">

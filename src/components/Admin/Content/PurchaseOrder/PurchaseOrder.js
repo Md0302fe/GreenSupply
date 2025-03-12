@@ -16,6 +16,7 @@ import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 
 import { useSelector } from "react-redux";
 import { useQueries, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +40,8 @@ const HarvestRequestPage = () => {
   const [fuel_types, setFuel_Types] = useState({});
   const user = useSelector((state) => state.user);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const navigate = useNavigate();
+
 
   // Tính tổng giá
   const totalPrice = () => {
@@ -270,6 +273,26 @@ const handleChange = (e) => {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Form chính (80%) */}
         <div className="w-full md:w-4/5 bg-gray-100 p-6">
+            <button
+              onClick={() => navigate(-1)} // Quay lại trang trước đó
+              className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12H3m0 0l6-6m-6 6l6 6"
+                />
+              </svg>
+              Quay lại
+            </button>
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
               🚀 Đơn Thu Nhiên Liệu
