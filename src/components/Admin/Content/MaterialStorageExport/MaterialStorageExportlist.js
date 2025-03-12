@@ -214,7 +214,7 @@ const MaterialStorageExportList = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (date) => new Date(date).toLocaleDateString(),
+      render: (date) => new Date(date).toLocaleString(),
     },
     {
       title: "Hành động",
