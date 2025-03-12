@@ -474,7 +474,7 @@ const ProductionRequestList = () => {
     <div className="production-request-list">
       <div className="flex justify-between items-center mb-4">
         <h5 className="text-2xl font-bold text-gray-800">
-          Quản lý Đơn Xuất Kho
+          Danh sách yêu cầu sản xuất
         </h5>
       </div>
 
