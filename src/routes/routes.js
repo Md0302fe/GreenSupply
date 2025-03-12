@@ -6,6 +6,7 @@ import App from "../App";
 import HomePage from "../pages/HomePage/HomePage";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import ManageUser from "../components/Admin/Content/User/AdminUser";
+
 import ManageBlockedUser from "../components/Admin/Content/User/BlockedUser";
 
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
@@ -48,6 +49,9 @@ import MaterialStorageExport from "../components/Admin/Content/MaterialStorageEx
 import MaterialStorageExportList from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportlist";
 import BatchHistory from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportHistory"
 
+// Import Page Feature 
+import FeatureUsers from "../components/Admin/Content/User/FeatureUser";
+
 const Router = () => {
   return (
     <>
@@ -61,74 +65,72 @@ const Router = () => {
           <Route path="contact" element={<ContactPage />} />
           <Route path="introduction" element={<IntroductionPage />} />
         </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/google-register" element={<GoogleRegister />} />
-        {/* payment routes */}
-        <Route path="/payment" element={<PaymentPage />} />
 
-        {/* admin-page  : LayoutAdmin*/}
+          {/* Authentications - OA Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/google-register" element={<GoogleRegister />} />
+
+          {/* payment routes */}
+          <Route path="/payment" element={<PaymentPage />} />
+
+        {/* Admin-Page  : Admi-Layout*/}
         <Route path="/system/admin" element={<Admin />}>
-        <Route index element={<Dashboard />} />
+          {/* DashBoard Admin  */}
+          <Route index element={<Dashboard />} />
+
+          {/* User Management  */}
+          <Route path="feature_users" element={<FeatureUsers />} />
           <Route path="manage-users" element={<ManageUser />} />
           <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
-          
-        </Route>
 
-        <Route path="/system/admin" element={<Admin />}>
-        {/* Ware house */}
+          {/* WareHouse Management */}
           <Route path="manage-warehouse" element={<Dashboard1 />} />
           <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
           <Route path="View-Order-Success" element={<OrderPage />} />
           <Route path="warehouse-receipt" element={<OrderViewPage />} />
-          {/* Purchase Order Routes */}
+          
+          {/* Purchase Order Management */}
           <Route path="C_purchase-order" element={<PurchaseOrder />} />
           <Route path="R_purchase-orders" element={<PurchaseOrders />} />
-          {/* Raw Material Batch */}
+
+          {/* Raw Material Batch Management */}
           <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>
           <Route path="raw-material-batch-list" element={<RawmaterialBatchList/>}/>
-          {/* Material Storage Export */}
-          <Route path="material-storage-export" element={<MaterialStorageExport/>} />
+
+           {/* Material Storage Export Management */}
+           <Route path="material-storage-export" element={<MaterialStorageExport/>} />
           <Route path="material-storage-export-list" element={<MaterialStorageExportList/>} />
           <Route path="batch-history" element={<BatchHistory/>} />
 
-        </Route>
-
-        {/* Quản lý loại nhiên liệu */}
-        <Route path="/system/admin" element={<Admin />}>
+          {/* Material type Management*/}
           <Route path="manage-fuel" element={<Dashboard1 />} />
           <Route path="fuel-list" element={<FuelList />} />
-        </Route>
-        {/* Quản lý sản xuất */}
-        <Route path="/system/admin" element={<Admin />}>
+
+          {/* Production Process Management */}
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
         </Route>
 
-        
-        {/* Routes cho quản lý đơn hàng */}
-      
+          {/* Profile Management */}
+          <Route path="/profile" element={<ProfilePage />} />
 
-        {/* Profile routes */}
-        <Route path="/profile" element={<ProfilePage />} />
+          {/* Product Management */}
+          <Route path="/product" element={<ProductPage />} />
+          <Route path="/product-detail/:id" element={<ProductDetailPage />} />
 
-        {/* Product routes */}
-        <Route path="/product" element={<ProductPage />} />
-        <Route path="/product-detail/:id" element={<ProductDetailPage />} />
+          {/* Address Management */}
+          <Route path="/Address" element={<AddressPage />} />
+          <Route path="/Address-Create" element={<AddressCreate />} />
+          <Route path="/Address-Update/:id" element={<AddressUpdate />} />
 
-        {/* Address routes */}
-        <Route path="/Address" element={<AddressPage />} />
-        <Route path="/Address-Create" element={<AddressCreate />} />
-        <Route path="/Address-Update/:id" element={<AddressUpdate />} />
+          {/* Supplier Management */}
+          <Route path="/supplier/*" element={<SupplierDashboard />} />
 
-        {/* Supplier Page*/}
-        <Route path="/supplier/*" element={<SupplierDashboard />} />
+          {/* Customer Management */}
+          <Route path="/customer/*" element={<CustomerDashboard />} />
 
-        {/* Customer Page*/}
-        <Route path="/customer/*" element={<CustomerDashboard />} />
-
-        
       </Routes>
 
       <ToastContainer
