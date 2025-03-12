@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom"; // Ensure react-router-dom is installed
 import { FaUser } from "react-icons/fa"; // Import biểu tượng từ react-icons
 
-import mng_user from "../../../../assets/Feature_user/mng_user.jpg";
-import mng_account from "../../../../assets/Feature_user/mng_account.jpg";
+import mng_user from "../../assets/Feature_user/mng_user.jpg";
+import mng_account from "../../assets/Feature_user/mng_account.jpg";
 
 const UserComponent = () => {
   return (
@@ -44,13 +44,12 @@ const UserComponent = () => {
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
             {/* Nội dung văn bản */}
             <div className="relative flex flex-col justify-center items-center h-full">
-              <h6 className="text-lg font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
                 Quản lý người dùng
               </h6>
-              <p className="text-sm text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
                 Quản lý thông tin người dùng
               </p>
-              Xem chi tiết
             </div>
           </Link>
         </div>
@@ -61,31 +60,30 @@ const UserComponent = () => {
           style={{ height: "200px", width: "300px" }}
         >
           {/* Thẻ div cho ảnh nền */}
-          <div
-            className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
-            style={{
-              backgroundImage: `url(${mng_account})`,
-              filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
-            }}
-          ></div>
-          {/* Lớp phủ */}
-          <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
-          {/* Nội dung văn bản */}
-          <div className="relative flex flex-col justify-center items-center h-full p-4">
-            {/* Thêm padding cho nội dung */}
-            <h6 className="text-lg font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-              Quản lý tài khoản
-            </h6>
-            <p className="text-sm text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-              Quản lý thông tin tài khoản
-            </p>
-            <Link
-              to={"/system/admin/manage-blocked-users"}
-              className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
-            >
-              Xem chi tiết
-            </Link>
-          </div>
+          <Link
+            to={"/system/admin/manage-blocked-users"}
+            className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
+          >
+            <div
+              className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
+              style={{
+                backgroundImage: `url(${mng_account})`,
+                filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
+              }}
+            ></div>
+            {/* Lớp phủ */}
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
+            {/* Nội dung văn bản */}
+            <div className="relative flex flex-col justify-center items-center h-full p-4">
+              {/* Thêm padding cho nội dung */}
+              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+                Quản lý tài khoản
+              </h6>
+              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+                Quản lý thông tin tài khoản
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

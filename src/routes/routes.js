@@ -50,7 +50,12 @@ import MaterialStorageExportList from "../components/Admin/Content/MaterialStora
 import BatchHistory from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportHistory"
 
 // Import Page Feature 
-import FeatureUsers from "../components/Admin/Content/User/FeatureUser";
+import FeatureMaterial from "../components/FeatureComponent/FeatureMaterial";
+import FeatureOrdersSuppier from "../components/FeatureComponent/FeatureOrdersSuppier";
+import FeatureProductProcess from "../components/FeatureComponent/FeatureProductProcess";
+import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
+import FeatureUser from "../components/FeatureComponent/FeatureUser";
+import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
 
 const Router = () => {
   return (
@@ -80,35 +85,39 @@ const Router = () => {
           <Route index element={<Dashboard />} />
 
           {/* User Management  */}
-          <Route path="feature_users" element={<FeatureUsers />} />
+          <Route path="feature_users" element={<FeatureUser />} />
           <Route path="manage-users" element={<ManageUser />} />
           <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
 
           {/* WareHouse Management */}
-          <Route path="manage-warehouse" element={<Dashboard1 />} />
-          <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
-          <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
-          <Route path="View-Order-Success" element={<OrderPage />} />
-          <Route path="warehouse-receipt" element={<OrderViewPage />} />
-          
-          {/* Purchase Order Management */}
-          <Route path="C_purchase-order" element={<PurchaseOrder />} />
-          <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+          <Route path="feature_warehouse" element={<FeatureWarehouse />} />
 
+          <Route path="manage-warehouse" element={<Dashboard1 />} />
+          <Route path="warehouse-receipt" element={<OrderViewPage />} />
           {/* Raw Material Batch Management */}
           <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>
           <Route path="raw-material-batch-list" element={<RawmaterialBatchList/>}/>
-
-           {/* Material Storage Export Management */}
-           <Route path="material-storage-export" element={<MaterialStorageExport/>} />
+          {/* Material Storage Export Management */}
+          <Route path="material-storage-export" element={<MaterialStorageExport/>} />
           <Route path="material-storage-export-list" element={<MaterialStorageExportList/>} />
           <Route path="batch-history" element={<BatchHistory/>} />
 
+          <Route path="feature_request_suppplier" element={<FeatureOrdersSuppier />} />
+          <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
+          <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
+          <Route path="View-Order-Success" element={<OrderPage />} />
+          
+          {/* Purchase Order Management */}
+          <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />
+          <Route path="C_purchase-order" element={<PurchaseOrder />} />
+          <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+
           {/* Material type Management*/}
-          <Route path="manage-fuel" element={<Dashboard1 />} />
+          <Route path="feature_material_category" element={<FeatureMaterial />} />
           <Route path="fuel-list" element={<FuelList />} />
 
           {/* Production Process Management */}
+          <Route path="feature_production_process" element={<FeatureProductProcess />} />
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
         </Route>

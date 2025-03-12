@@ -5,7 +5,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 // icons libraries
 import { CgBell } from "react-icons/cg";
 import { FaGear } from "react-icons/fa6";
-import { FaWarehouse } from "react-icons/fa";
 import { FaUserGear } from "react-icons/fa6";
 import { FaClipboard } from "react-icons/fa6";
 import { FaHockeyPuck } from "react-icons/fa";
@@ -13,7 +12,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
 import { MdDashboardCustomize } from "react-icons/md";
-
+import { FaLemon } from "react-icons/fa6";
 
 import Sidebar from "./Sidebar";
 
@@ -37,19 +36,19 @@ const Admin = (props) => {
       icon: <FaClipboard className="text-2xl" />,
       text: "Đơn thu nguyên liệu",
       label: "purchased_orders",
-      href: "R_purchase-orders",
+      href: "feature_purchase_orders",
     },
     {
       icon: <FaShoppingCart className="text-2xl" />,
       text: "Q.lý đơn hàng",
       label: "management_orders",
-      href: "manage-fuel-orders",
+      href: "feature_request_suppplier",
     },
     {
       icon: <FaHockeyPuck className="text-2xl" />,
       text: "Q.lý kho",
       label: "management_warehouse",
-      href: "manage-warehouse",
+      href: "feature_warehouse",
     },
     {
       icon: <MdDashboardCustomize className="text-2xl" />,
@@ -58,17 +57,17 @@ const Admin = (props) => {
       href: "/system/admin",
     },
     {
-      icon: <FaWarehouse className="text-2xl" />,
+      icon: <FaLemon className="text-2xl" />,
       text: "Q.lý nguyên liệu",
       label: "management_materials",
-      href: "fuel-list",
+      href: "feature_material_category",
     },
 
     {
       icon: <FaGear className="text-2xl" />,
       text: "Q.lý sản xuất",
       label: "management_processing",
-      href: "production-request-list",
+      href: "feature_production_process",
     },
     { icon: <CgBell className="text-2xl" />, text: "Thông báo" },
   ];
@@ -78,7 +77,9 @@ const Admin = (props) => {
       <div
         key={index}
         className={`flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 group ${
-          toggleIcons === label ? "bg-gray-100" : "bg-black hover:bg-gray-100"
+          toggleIcons === label
+            ? "bg-gray-100  text-blue-500"
+            : "bg-black hover:bg-gray-100"
         }`}
         onClick={() => handleTogge(label, href)} // Cập nhật trạng thái khi nhấp
       >
@@ -115,15 +116,12 @@ const Admin = (props) => {
           </div>
           <div className="flex items-center w-full justify-center gap-[30px]">
             {renderNavigations()}
-            <div
-              className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-all duration-200"
-              onClick={() => navigate("/home")}
-            >
-              <AiOutlineHome className="text-2xl" />
-              <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-                Home
-              </span>
-            </div>
+          </div>
+          <div
+            className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-all duration-200"
+            onClick={() => navigate("/home")}
+          >
+            <AiOutlineHome className="text-2xl" />
           </div>
         </div>
 
