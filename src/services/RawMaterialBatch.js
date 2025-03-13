@@ -37,7 +37,7 @@ export const generateBatchId = (prefix = "XMTH") => {
 
   const batchNumber = Math.floor(Math.random() * 1000).toString().padStart(3, "0");
 
-  return `${prefix}${year}${month}${day}-${batchNumber}`;
+  return `${prefix}${day}${month}${year}-${batchNumber}`;
 };
 
 export const createRawMaterialBatch = async (dataResquest) => {

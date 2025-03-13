@@ -32,7 +32,7 @@ const UserComponent = () => {
         >
           {/* Thẻ div cho ảnh nền */}
           <Link
-            to={"/system/admin/manage-users"}
+            to={"/system/admin/feature_material_category"}
             className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
           >
             <div
@@ -63,7 +63,7 @@ const UserComponent = () => {
         >
           {/* Thẻ div cho ảnh nền */}
           <Link
-            to={"/system/admin/manage-blocked-users"}
+            to={"/system/admin/fuel-list"}
             className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
           >
             <div

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, message,Descriptions, Tag, Input, Select } from "antd";
+import { Table, Button, message, Descriptions, Tag, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent"; // ✅ dùng Drawer thay vì Modal
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
+
+import { convertDateStringV1 } from "../../../../ultils";
+
 const { Option } = Select;
 
 const statusColors = {
@@ -83,26 +86,20 @@ const MaterialStorageExportList = () => {
   useEffect(() => {
     const debounceFn = _.debounce(() => {
       setDebouncedSearch(searchText);
-    }, 500); 
-  
+    }, 500);
+
     debounceFn();
-    return () => debounceFn.cancel(); 
+    return () => debounceFn.cancel();
   }, [searchText]);
-  
 
   useEffect(() => {
     fetchExports();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, typeFilter, sortOrder]);
 
   const columns = [
     {
-      title: "Người Tạo đơn",
-      key: "created_by",
-      render: (_, record) => record?.user_id?.full_name || "Không rõ",
-    },
-    {
-      title: "Tên Xuất Kho",
+      title: "Đơn Xuất Kho",
       dataIndex: "export_name",
       key: "export_name",
     },
@@ -112,16 +109,11 @@ const MaterialStorageExportList = () => {
       key: "type_export",
     },
     {
-      title: "Đơn sản xuất",
-      key: "created_by",
-      render: (_, record) => record?.production_request_id?.request_name || "Không rõ",
-    },
-    {
       title: "Lô nguyên liệu",
       key: "created_by",
-      render: (_, record) => record?.batch_id?.batch_name || "Không rõ",
+      render: (_, record) => record?.batch_id?.batch_id || "Không rõ",
     },
-    
+
     {
       title: "Trạng Thái",
       dataIndex: "status",
@@ -149,12 +141,10 @@ const MaterialStorageExportList = () => {
   });
   const { isPending, isSuccess, data } = mutationAccept;
   const handleAccept = () => {
-    mutationAccept.mutate(
-      {
-        access_token: userRedux?.access_token,
-        storage_export_id: selectedExport._id,
-      },
-    );
+    mutationAccept.mutate({
+      access_token: userRedux?.access_token,
+      storage_export_id: selectedExport._id,
+    });
   };
 
   useEffect(() => {
@@ -168,7 +158,7 @@ const MaterialStorageExportList = () => {
       }
       fetchExports();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, data]);
 
   // Reject Request
@@ -176,7 +166,7 @@ const MaterialStorageExportList = () => {
     const response = await MaterialServices.handleRejectMaterialExport(data);
     return response;
   });
-  
+
   const {
     isPending: isPendingDelete,
     isSuccess: isSuccessDelete,
@@ -184,12 +174,10 @@ const MaterialStorageExportList = () => {
   } = mutationReject;
 
   const handleReject = () => {
-    mutationReject.mutate(
-      {
-        access_token: userRedux?.access_token,
-        storage_export_id: selectedExport._id,
-      },
-    );
+    mutationReject.mutate({
+      access_token: userRedux?.access_token,
+      storage_export_id: selectedExport._id,
+    });
   };
 
   useEffect(() => {
@@ -203,7 +191,7 @@ const MaterialStorageExportList = () => {
       }
       fetchExports();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessDelete, dataDelete]);
 
   return (
@@ -253,7 +241,7 @@ const MaterialStorageExportList = () => {
       </Loading>
 
       {/* ✅ Drawer hiển thị chi tiết */}
-        <DrawerComponent
+      <DrawerComponent
         title="Chi tiết Đơn Xuất Kho"
         isOpen={isDrawerOpen}
         onClose={() => {
@@ -261,18 +249,22 @@ const MaterialStorageExportList = () => {
           setSelectedExport(null);
         }}
         placement="right"
-        width="30%"
+        width="40%"
       >
         {selectedExport ? (
           <Descriptions bordered column={1}>
             <Descriptions.Item label="Người tạo đơn">
               {selectedExport?.user_id?.full_name || "Không rõ"}
             </Descriptions.Item>
-            <Descriptions.Item label="Đơn sản xuất">
-              {selectedExport?.production_request_id?.request_name || "Không có"}
+            <Descriptions.Item label="Yêu cầu sản xuất">
+              {selectedExport?.production_request_id?.request_name ||
+                "Không có"}
             </Descriptions.Item>
-            <Descriptions.Item label="Lô nguyên liệu">
+            <Descriptions.Item label="Tên lô">
               {selectedExport?.batch_id?.batch_name || "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Mã lô ">
+              {selectedExport?.batch_id?.batch_id || "Không có"}
             </Descriptions.Item>
             <Descriptions.Item label="Tên Xuất Kho">
               {selectedExport?.export_name}
@@ -285,12 +277,35 @@ const MaterialStorageExportList = () => {
                 {selectedExport.status}
               </Tag>
             </Descriptions.Item>
+            <Descriptions.Item label="Ngày tạo đơn">
+              <Tag >
+                {convertDateStringV1(selectedExport.createdAt)}
+              </Tag>
+            </Descriptions.Item>
             <Descriptions.Item label="Ghi chú">
               {selectedExport?.note || "Không có ghi chú"}
             </Descriptions.Item>
           </Descriptions>
         ) : (
           <p className="text-center">Đang tải dữ liệu...</p>
+        )}
+        {selectedExport?.status === "Chờ duyệt" && (
+          <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-3">
+            <button
+              type="button"
+              onClick={handleReject} // Chỉ đóng form, không cập nhật
+              className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
+            >
+              Hủy yêu cầu
+            </button>
+
+            <button
+              onClick={handleAccept}
+              className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+            >
+              ✅Duyệt đơn
+            </button>
+          </div>
         )}
       </DrawerComponent>
     </div>

@@ -286,7 +286,7 @@ const RawMaterialBatchList = () => {
                 {/* Tên đơn */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tên Đơn
+                    Tên Yêu Cầu 
                   </label>
                   <input
                     type="text"
@@ -294,6 +294,21 @@ const RawMaterialBatchList = () => {
                     maxLength="50"
                     placeholder="Tên đơn thu nhiên liệu..."
                     value={stateDetailsBatch.batch_id.batch_name || ""}
+                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                </div>
+
+                {/* Tên Lô */}
+                <div>
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    Tên Yêu Cầu 
+                  </label>
+                  <input
+                    type="text"
+                    name="request_name"
+                    maxLength="50"
+                    placeholder="Tên đơn thu nhiên liệu..."
+                    value={stateDetailsBatch.export_name || ""}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -333,7 +348,7 @@ const RawMaterialBatchList = () => {
                   />
                 </div>
 
-                {/* Giá trên mỗi kg */}
+            
 
 
                 {/* Mức độ ưu tiên */}
@@ -394,17 +409,6 @@ const RawMaterialBatchList = () => {
                     value={stateDetailsBatch?.note}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
-                </div>
-
-                {/* Tổng giá */}
-                <div className="font-semibold text-lg text-gray-800">
-                  Tổng giá:{" "}
-                  <span className="text-red-500 font-bold">
-                    {(
-                      stateDetailsBatch?.quantity * stateDetailsBatch?.price
-                    ).toLocaleString("vi-VN")}{" "}
-                    VNĐ
-                  </span>
                 </div>
               </div>
             </div>

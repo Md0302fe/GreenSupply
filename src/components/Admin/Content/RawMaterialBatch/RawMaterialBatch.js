@@ -27,7 +27,7 @@ const RawMaterialBatch = () => {
       .toString()
       .padStart(3, "0");
 
-    return `${prefix}${year}${month}${day}-${batchNumber}`;
+    return `${prefix}${day}${month}${year}-${batchNumber}`;
   };
   console.log("fuel_managements => ", fuel_managements);
   const [formData, setFormData] = useState({
