@@ -65,8 +65,8 @@ const RawMaterialBatchList = () => {
     ? data?.requests?.map((batch) => ({
         ...batch,
         key: batch._id,
-        batch_id: batch.material_export_id.batch_id.batch_id,
-        batch_name: batch.material_export_id.batch_id.batch_name,
+        batch_id: batch.material_export_id?.batch_id?.batch_id,
+        batch_name: batch.material_export_id?.batch_id?.batch_name,
         type_export: batch.material_export_id.type_export,
         status: batch.material_export_id.status,
       }))
@@ -293,7 +293,7 @@ const RawMaterialBatchList = () => {
                     name="request_name"
                     maxLength="50"
                     placeholder="Tên đơn thu nhiên liệu..."
-                    value={stateDetailsBatch.batch_id.batch_name || ""}
+                    value={stateDetailsBatch?.batch_id.batch_name || ""}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>

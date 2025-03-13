@@ -27,6 +27,12 @@ const Admin = (props) => {
 
   const navigationsData = [
     {
+      icon: <MdDashboardCustomize className="text-2xl" />,
+      label: "dashboard",
+      text: "Dashboard",
+      href: "/system/admin",
+    },
+    {
       icon: <FaUserGear Gear className="text-2xl" />,
       label: "users",
       text: "Người dùng",
@@ -49,12 +55,6 @@ const Admin = (props) => {
       text: "Q.lý kho",
       label: "management_warehouse",
       href: "feature_warehouse",
-    },
-    {
-      icon: <MdDashboardCustomize className="text-2xl" />,
-      label: "dashboard",
-      text: "Dashboard",
-      href: "/system/admin",
     },
     {
       icon: <FaLemon className="text-2xl" />,

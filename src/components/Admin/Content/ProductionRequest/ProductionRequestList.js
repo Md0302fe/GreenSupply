@@ -400,10 +400,7 @@ const ProductionRequestList = () => {
       key: "status",
       filters: [
         { text: "Chờ duyệt", value: "Chờ duyệt" },
-        { text: "Đang xử lý", value: "Đang xử lý" },
-        { text: "Từ chối", value: "Từ chối" },
-        { text: "Đã huỷ", value: "Đã huỷ" },
-        { text: "Đã Hoàn Thành", value: "Đã Hoàn Thành" },
+        { text: "Đã duyệt", value: "Đã duyệt" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
