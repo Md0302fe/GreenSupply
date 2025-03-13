@@ -42,7 +42,6 @@ const HarvestRequestPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const navigate = useNavigate();
 
-
   // Tính tổng giá
   const totalPrice = () => {
     const q = Number(formData.quantity) || 0;
@@ -51,28 +50,27 @@ const HarvestRequestPage = () => {
   };
 
   // Xử lý onchange <-> input
-const handleChange = (e) => {
-  const { name, value } = e?.target;
+  const handleChange = (e) => {
+    const { name, value } = e?.target;
 
-  if (name === "start_received") {
-    if (value <= currentDate) {
-      toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
-      return;
+    if (name === "start_received") {
+      if (value <= currentDate) {
+        toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
+        return;
+      }
+    } else if (name === "end_received") {
+      if (value < formData.start_received) {
+        toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
+        return;
+      }
+    } else if (name === "due_date") {
+      if (value < formData.end_received) {
+        toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
+        return;
+      }
     }
-  } else if (name === "end_received") {
-    if (value < formData.start_received) {
-      toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
-      return;
-    }
-  } else if (name === "due_date") {
-    if (value > formData.end_received) {
-      toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
-      return;
-    }
-  }
-  setFormData((prev) => ({ ...prev, [name]: value }));
-};
-
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   // Tuy nhiên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
@@ -113,7 +111,8 @@ const handleChange = (e) => {
       {
         condition: !formData.quantity || formData.quantity.trim() === "",
         message: "Tổng sl nhiên liệu cần thu không được để trống!",
-      },{
+      },
+      {
         condition: !formData.price || formData.price.trim() === "",
         message: "Giá nhiên liệu không được để trống!",
       },
@@ -140,7 +139,7 @@ const handleChange = (e) => {
       },
       {
         condition:
-          new Date(formData.end_received) > new Date(formData.due_date),
+        new Date(formData.due_date) < new Date(formData.end_received),
         message: "Hạn chót hoàn thành đơn phải sau ngày kết thúc nhận đơn!",
       },
       {
@@ -226,7 +225,6 @@ const handleChange = (e) => {
     setFuelImage(null);
   };
 
-
   // Notification when created success
   useEffect(() => {
     if (isSuccess) {
@@ -273,26 +271,26 @@ const handleChange = (e) => {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Form chính (80%) */}
         <div className="w-full md:w-4/5 bg-gray-100 p-6">
-            <button
-              onClick={() => navigate(-1)} // Quay lại trang trước đó
-              className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+          <button
+            onClick={() => navigate(-1)} // Quay lại trang trước đó
+            className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12H3m0 0l6-6m-6 6l6 6"
-                />
-              </svg>
-              Quay lại
-            </button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </button>
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
               🚀 Đơn Thu Nhiên Liệu
@@ -331,7 +329,7 @@ const handleChange = (e) => {
                   {fuel_types && fuel_types.length > 0 ? (
                     fuel_types.map((fuel) => (
                       <option key={fuel._id} value={fuel._id}>
-                        {fuel.type_name}
+                        {fuel.fuel_type_id.type_name}
                       </option>
                     ))
                   ) : (

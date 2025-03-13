@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, message, Descriptions, Tag, Input, Select, Popover, Space } from "antd";
+import {
+  Table,
+  Button,
+  message,
+  Descriptions,
+  Tag,
+  Input,
+  Select,
+  Popover,
+  Space,
+} from "antd";
 import { SearchOutlined, FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -10,6 +20,9 @@ import { toast } from "react-toastify";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent"; // ✅ dùng Drawer thay vì Modal
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
+
+import { convertDateStringV1 } from "../../../../ultils";
+
 const { Option } = Select;
 
 const statusColors = {
@@ -117,9 +130,15 @@ const MaterialStorageExportList = () => {
     // },
     {
       title: (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <span>Tên Xuất Kho</span>
-            <Popover
+          <Popover
             content={
               <div style={{ padding: 10 }}>
                 <Input
@@ -132,7 +151,10 @@ const MaterialStorageExportList = () => {
                   <Button type="primary" onClick={() => fetchExports()}>
                     Tìm
                   </Button>
-                  <Button onClick={() => setSearchText("")} style={{ marginLeft: 8 }}>
+                  <Button
+                    onClick={() => setSearchText("")}
+                    style={{ marginLeft: 8 }}
+                  >
                     Đặt lại
                   </Button>
                   <Button
@@ -171,12 +193,18 @@ const MaterialStorageExportList = () => {
     {
       title: "Lô nguyên liệu",
       key: "created_by",
-      render: (_, record) => record?.batch_id?.batch_name || "Không rõ",
+      render: (_, record) => record?.batch_id?.batch_id || "Không rõ",
     },
 
     {
       title: (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <span>Trạng Thái</span>
           <Popover
             content={
@@ -229,6 +257,7 @@ const MaterialStorageExportList = () => {
   ];
 
   // Accept Request
+  // Accept Request
   const mutationAccept = useMutationHooks(async (data) => {
     const response = await MaterialServices.handleAcceptMaterialExport(data);
     return response;
@@ -240,6 +269,20 @@ const MaterialStorageExportList = () => {
       storage_export_id: selectedExport._id,
     });
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (data?.success) {
+        toast.success("Xác nhận đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xác nhận đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, data]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -281,6 +324,39 @@ const MaterialStorageExportList = () => {
       .finally(() => setLoading(false));
   };
 
+  // Reject Request
+  const mutationReject = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleRejectMaterialExport(data);
+    return response;
+  });
+
+  const {
+    isPending: isPendingDelete,
+    isSuccess: isSuccessDelete,
+    data: dataDelete,
+  } = mutationReject;
+
+  const handleReject = () => {
+    mutationReject.mutate({
+      access_token: userRedux?.access_token,
+      storage_export_id: selectedExport._id,
+    });
+  };
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      if (dataDelete?.success) {
+        toast.success("Xóa đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xóa đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessDelete, dataDelete]);
+
   return (
     <div className="material-storage-export-list">
       <div className="flex justify-between items-center mb-4">
@@ -290,7 +366,6 @@ const MaterialStorageExportList = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 mb-6">
-
         {/* <Select
           onChange={handleStatusChange}
           value={statusFilter}
@@ -330,19 +405,22 @@ const MaterialStorageExportList = () => {
           setSelectedExport(null);
         }}
         placement="right"
-        width="30%"
+        width="40%"
       >
         {selectedExport ? (
           <Descriptions bordered column={1}>
             <Descriptions.Item label="Người tạo đơn">
               {selectedExport?.user_id?.full_name || "Không rõ"}
             </Descriptions.Item>
-            <Descriptions.Item label="Đơn sản xuất">
+            <Descriptions.Item label="Yêu cầu sản xuất">
               {selectedExport?.production_request_id?.request_name ||
                 "Không có"}
             </Descriptions.Item>
-            <Descriptions.Item label="Lô nguyên liệu">
+            <Descriptions.Item label="Tên lô">
               {selectedExport?.batch_id?.batch_name || "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Mã lô ">
+              {selectedExport?.batch_id?.batch_id || "Không có"}
             </Descriptions.Item>
             <Descriptions.Item label="Tên Xuất Kho">
               {selectedExport?.export_name}
@@ -355,15 +433,36 @@ const MaterialStorageExportList = () => {
                 {selectedExport.status}
               </Tag>
             </Descriptions.Item>
+            <Descriptions.Item label="Ngày tạo đơn">
+              <Tag>{convertDateStringV1(selectedExport.createdAt)}</Tag>
+            </Descriptions.Item>
             <Descriptions.Item label="Ghi chú">
               {selectedExport?.note || "Không có ghi chú"}
             </Descriptions.Item>
             <Descriptions.Item label="Ngày tạo">
-            {selectedExport?.createdAt }
-              </Descriptions.Item>
+              {selectedExport?.createdAt}
+            </Descriptions.Item>
           </Descriptions>
         ) : (
           <p className="text-center">Đang tải dữ liệu...</p>
+        )}
+        {selectedExport?.status === "Chờ duyệt" && (
+          <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-3">
+            <button
+              type="button"
+              onClick={handleReject} // Chỉ đóng form, không cập nhật
+              className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
+            >
+              Hủy yêu cầu
+            </button>
+
+            <button
+              onClick={handleAccept}
+              className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+            >
+              ✅Duyệt đơn
+            </button>
+          </div>
         )}
       </DrawerComponent>
     </div>

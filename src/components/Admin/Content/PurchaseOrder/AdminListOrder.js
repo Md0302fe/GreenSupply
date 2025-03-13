@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { convertDateStringV1 } from "../../../../ultils";
 
-
 import TableOrder from "./TableOrder";
 import Loading from "../../../LoadingComponent/Loading";
 import ModalComponent from "../../../ModalComponent/ModalComponent";
@@ -24,6 +23,8 @@ import Highlighter from "react-highlight-words";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
+import { getBase64 } from "../../../../ultils";
 
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 const UserComponent = () => {
@@ -126,7 +127,7 @@ const UserComponent = () => {
   });
 
   const { isSuccess: AcceptSuccess, data: dataAccept } =
-  mutationAcceptPurchaseOrder;
+    mutationAcceptPurchaseOrder;
 
   useEffect(() => {
     if (AcceptSuccess) {
@@ -366,10 +367,9 @@ const UserComponent = () => {
       if (value < purchaseDetails.start_received) {
         toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
         return;
-
       }
     } else if (name === "due_date") {
-      if (value > purchaseDetails.end_received) {
+      if (value < purchaseDetails.end_received) {
         toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
         return;
       }
@@ -445,14 +445,34 @@ const UserComponent = () => {
   const renderAction = (text, record) => {
     return (
       <div
-        className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%]"
+        className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%] min-w-[125px]"
         onClick={() => handleDetailsProduct(record)}
       >
         <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          ✅ Duyệt đơn
+          ✅ Chi tiết
         </span>
       </div>
     );
+  };
+
+  const handleChangeFuelImage = async (info) => {
+    // C2: getBase64
+    if (!info.fileList.length) {
+      setPurchaseDetails((prev) => ({
+        ...prev,
+        fuel_image: purchaseDetails.fuel_image,
+      }));
+      return;
+    }
+
+    const file = info.fileList[0];
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPurchaseDetails((prev) => ({
+      ...prev,
+      fuel_image: file.preview,
+    }));
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -590,17 +610,21 @@ const UserComponent = () => {
       title: "Mặt hàng",
       dataIndex: "fuel_image",
       key: "fuel_image",
-      render: (fuel_image) => (
+      render: (fuel_image) =>
         fuel_image ? (
           <img
             src={fuel_image} // Base64 hoặc URL hình ảnh
             alt="Fuel"
-            style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "5px" }}
+            style={{
+              width: "60px",
+              height: "60px",
+              objectFit: "cover",
+              borderRadius: "5px",
+            }}
           />
         ) : (
           <span style={{ color: "red" }}>Không có ảnh</span> // Hiển thị nếu không có ảnh
-        )
-      ),
+        ),
     },
     {
       title: "Tên đơn hàng",
@@ -616,7 +640,7 @@ const UserComponent = () => {
       key: "quantity_remain",
       sorter: (a, b) => a?.quantity_remain - b?.quantity_remain,
     },
-    
+
     {
       title: "Tổng thu (Kg)",
       dataIndex: "quantity",
@@ -633,7 +657,7 @@ const UserComponent = () => {
         return true;
       },
       sorter: (a, b) => a.quantity - b.quantity, // Sắp xếp từ nhỏ đến lớn
-      render: (quantity) => `${quantity} Kg` ,
+      render: (quantity) => `${quantity} Kg`,
     },
     {
       title: "Ngày tạo đơn",
@@ -666,7 +690,7 @@ const UserComponent = () => {
       render: (status) => (
         <Tag
           color={statusColors[status] || "default"}
-          style={{ textAlign: "center", fontSize: "15px" , padding : "5px"}}
+          style={{ textAlign: "center", fontSize: "15px", padding: "5px" }}
         >
           {status}
         </Tag>
@@ -763,7 +787,7 @@ const UserComponent = () => {
                     {fuel_types && fuel_types.length > 0 ? (
                       fuel_types.map((fuel) => (
                         <option key={fuel._id} value={fuel._id}>
-                          {fuel.type_name}
+                          {fuel.fuel_type_id.type_name}
                         </option>
                       ))
                     ) : (
@@ -787,7 +811,7 @@ const UserComponent = () => {
                       accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .eps"
                       maxCount={1}
                       beforeUpload={() => false}
-                      onChange={() => {}}
+                      onChange={handleChangeFuelImage}
                       className="!w-full"
                     >
                       <button className="bg-gray-200 p-2 rounded hover:bg-gray-300">
@@ -819,7 +843,7 @@ const UserComponent = () => {
                     min="1"
                     placeholder="Nhập số lượng..."
                     value={purchaseDetails.quantity}
-                    onChange={() => {}}
+                    onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
