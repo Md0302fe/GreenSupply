@@ -56,6 +56,9 @@ import FeatureProductProcess from "../components/FeatureComponent/FeatureProduct
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
+import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
+import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
+import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 
 const Router = () => {
   return (
@@ -120,6 +123,11 @@ const Router = () => {
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
+
+            {/* Danh sách quy trình sản xuất */}
+          <Route path="production-processing-list" element={<ProductionProcessingList />} />
+          <Route path="production-processing" element={<ProductionRequestFinishList />} />
+          <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
         </Route>
 
           {/* Profile Management */}
