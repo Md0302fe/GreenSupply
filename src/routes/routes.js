@@ -48,7 +48,7 @@ import RawMaterialBatch from "../components/Admin/Content/RawMaterialBatch/RawMa
 import MaterialStorageExport from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExport";
 import MaterialStorageExportList from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportlist";
 import BatchHistory from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportHistory"
-
+import OrdersComponent from "../components/Admin/Content/ProductOrder/OrderProductList";
 // Import Page Feature 
 import FeatureMaterial from "../components/FeatureComponent/FeatureMaterial";
 import FeatureOrdersSuppier from "../components/FeatureComponent/FeatureOrdersSuppier";
@@ -56,6 +56,7 @@ import FeatureProductProcess from "../components/FeatureComponent/FeatureProduct
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
+import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
 
 const Router = () => {
   return (
@@ -106,6 +107,10 @@ const Router = () => {
           <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
           <Route path="View-Order-Success" element={<OrderPage />} />
+
+           {/* Product Order Management */}
+          <Route path="feature_product_orders" element={<FeatureProductOrders />} />
+          <Route path="manage-product-orders" element={<OrdersComponent/>} />
           
           {/* Purchase Order Management */}
           <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />

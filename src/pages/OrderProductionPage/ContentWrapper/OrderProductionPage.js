@@ -188,7 +188,7 @@ const OrderProductionPage = () => {
                 {addresses.length > 0 ? (
                   addresses.map((address) => (
                     <option key={address._id} value={address._id}>
-                      {`${address.full_name} - ${address.company_name} - ${address.phone} - ${address.address}`}
+                      {`${address.full_name} - ${address.phone} - ${address.address}`}
                     </option>
                   ))
                 ) : (

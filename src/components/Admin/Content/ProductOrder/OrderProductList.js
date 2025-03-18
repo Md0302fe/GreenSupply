@@ -3,8 +3,8 @@ import { Button, Form, Input, Modal, Table, Tag, Space, message, Select } from "
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as OrderProductionService from "../../../services/OrderProductionService";
-import * as FuelEntryServices from "../../../services/FuelEntryServices";
+import * as ProductOrderAdminService from "../../../services/ProductOrderAdminService";
+
 import { converDateString } from "../../../ultils";
 import Loading from "../../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
@@ -37,7 +37,7 @@ const OrdersComponent = () => {
   const fetchOrders = async () => {
     const access_token = user?.access_token;
     const user_id = user?.id;
-    return await OrderProductionService.getAllOrders(access_token, { user_id });
+    return await ProductOrderAdminService.getAllOrders(access_token, { user_id });
   };
 
   const { data: orders, isLoading } = useQuery({
@@ -53,7 +53,7 @@ const OrdersComponent = () => {
   const handleEdit = async (record) => {
     setRowSelected(record._id);
     try {
-        const res = await OrderProductionService.getAllOrdersDetail(record._id);
+        const res = await ProductOrderAdminService.getAllOrdersDetail(record._id);
         console.log("Order details response:", res);
 
         if (res) {
@@ -92,7 +92,7 @@ const OrdersComponent = () => {
 
 
   const mutationUpdate = useMutation({
-    mutationFn: ({ id, data }) => OrderProductionService.updateOrderAddress(id, data),
+    mutationFn: ({ id, data }) => ProductOrderAdminService.updateOrderAddress(id, data),
     onSuccess: () => {
       message.success("Cập nhật thành công!");
       queryClient.invalidateQueries("orders");
@@ -127,7 +127,7 @@ const OrdersComponent = () => {
 
   const handleViewDetail = async (record) => {
     try {
-      const res = await OrderProductionService.getAllOrdersDetail(record._id);
+      const res = await ProductOrderAdminService.getAllOrdersDetail(record._id);
       if (res) {
         const orderDetail = {
           ...res.res,

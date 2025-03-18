@@ -69,6 +69,14 @@ const Admin = (props) => {
       label: "management_processing",
       href: "feature_production_process",
     },
+
+    {
+      icon: <FaShoppingCart className="text-2xl" />,
+      text: "Q.lý đơn đặt hàng",
+      label: "manaement_product_orders",
+      href: "feature_product_orders",
+    },
+
     { icon: <CgBell className="text-2xl" />, text: "Thông báo" },
   ];
 
