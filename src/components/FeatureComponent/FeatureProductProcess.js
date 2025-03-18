@@ -86,6 +86,68 @@ const UserComponent = () => {
             </div>
           </Link>
         </div>
+        {/* Card for Quản lý tài khoản */}
+        <div
+          className="relative rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform overflow-hidden" // Thêm overflow-hidden
+          style={{ height: "200px", width: "300px" }}
+        >
+          {/* Thẻ div cho ảnh nền */}
+          <Link
+            to={"/system/admin/production-processing"}
+            className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
+          >
+            <div
+              className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
+              style={{
+                backgroundImage: `url(${mng_created_production_processing})`,
+                filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
+              }}
+            ></div>
+            {/* Lớp phủ */}
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
+            {/* Nội dung văn bản */}
+            <div className="relative flex flex-col justify-center items-center h-full p-4">
+              {/* Thêm padding cho nội dung */}
+              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+                Danh sách chờ sản xuất
+              </h6>
+              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+                Quản lý danh sách các đơn chờ sản xuất
+              </p>
+            </div>
+          </Link>
+        </div>
+        {/* Card for Quản lý quy trình đã tạo */}
+        <div
+          className="relative rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform overflow-hidden" // Thêm overflow-hidden
+          style={{ height: "200px", width: "300px" }}
+        >
+          {/* Thẻ div cho ảnh nền */}
+          <Link
+            to={"/system/admin/production-processing-list"}
+            className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
+          >
+            <div
+              className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
+              style={{
+                backgroundImage: `url(${mng_created_production_processing})`,
+                filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
+              }}
+            ></div>
+            {/* Lớp phủ */}
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
+            {/* Nội dung văn bản */}
+            <div className="relative flex flex-col justify-center items-center h-full p-4">
+              {/* Thêm padding cho nội dung */}
+              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+                Danh sách quy trình đã tạo
+              </h6>
+              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
+                Quản lý danh sách các quy trình đã tạo
+              </p>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
