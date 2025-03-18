@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Input, InputNumber, Select, message } from "antd";
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useSelector } from "react-redux";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -16,6 +18,7 @@ const RawMaterialBatch = () => {
   const user = useSelector((state) => state.user);
   const [requiredMaterial, setRequiredMaterial] = useState(0);
   const [isFuelSelected, setIsFuelSelected] = useState(false);
+  const navigate = useNavigate();
 
   const generateBatchId = (prefix = "XMTH") => {
     const today = new Date();
@@ -104,7 +107,7 @@ const RawMaterialBatch = () => {
           toast.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
       } catch (error) {
-        message.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
+        toast.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
       } finally {
         setLoading(false);
       }
@@ -114,7 +117,11 @@ const RawMaterialBatch = () => {
   }, []);
 
   const handleKeyDown = (event) => {
-    if (/[^0-9]/.test(event.key) && event.key !== 'Backspace' && event.key !== 'Tab') {
+    if (
+      /[^0-9]/.test(event.key) &&
+      event.key !== "Backspace" &&
+      event.key !== "Tab"
+    ) {
       event.preventDefault();
     }
   };
@@ -127,7 +134,7 @@ const RawMaterialBatch = () => {
     }
 
     if (value === 0 || /e|E|[^0-9]/.test(value)) {
-      message.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
+      toast.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
       form.setFieldsValue({ quantity: null });
       return;
     }
@@ -145,7 +152,7 @@ const RawMaterialBatch = () => {
         const availableFuel = selectedFuel.quantity;
         if (required > availableFuel) {
           const maxProduction = Math.floor(availableFuel * 0.9);
-          message.warning(
+          toast.warning(
             `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
           );
           form.setFieldsValue({
@@ -185,13 +192,17 @@ const RawMaterialBatch = () => {
       );
 
       if (response.success) {
-        message.success("Tạo lô nguyên liệu thành công!");
+        toast.success("Tạo lô nguyên liệu thành công!");
         form.resetFields();
+        // 👉 Chuyển hướng sau khi tạo thành công
+        navigate("/system/admin/raw-material-batch-list", {
+          state: { createdSuccess: true },
+        });
       } else {
-        message.error("Tạo lô thất bại!");
+        toast.error("Tạo lô thất bại!");
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi tạo lô!");
+      toast.error("Có lỗi xảy ra khi tạo lô!");
     } finally {
       setLoading(false);
     }
@@ -264,14 +275,14 @@ const RawMaterialBatch = () => {
 
           {/* Chọn loại nhiên liệu */}
           <Form.Item
-            label="Loại nhiên liệu"
+            label="Loại nguyên liệu"
             name="fuel_type_id"
             rules={[
-              { required: true, message: "Vui lòng chọn loại nhiên liệu!" },
+              { required: true, message: "Vui lòng chọn loại nguyên liệu!" },
             ]}
           >
             <Select
-              placeholder="Chọn loại nhiên liệu"
+              placeholder="Chọn loại nguyên liệu"
               className="rounded border-gray-300"
               onChange={handleFuelTypeChange}
             >
@@ -369,6 +380,20 @@ const RawMaterialBatch = () => {
           </Form.Item>
         </Form>
       </div>
+
+      {/* ToastContainer */}
+      <ToastContainer
+        hideProgressBar={false}
+        position="top-right"
+        newestOnTop={false}
+        pauseOnFocusLoss
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+        rtl={false}
+        draggable
+      />
     </div>
   );
 };
