@@ -33,7 +33,7 @@ const UserComponent = () => {
         >
           {/* Thẻ div cho ảnh nền */}
           <Link
-            to={"/system/admin/feature_purchase_orders"}
+            to={"/system/admin/manage-Supplier-orders"}
             className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
           >
             <div

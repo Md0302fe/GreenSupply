@@ -180,6 +180,7 @@ const FuelOrderStatus = () => {
           <Button
             type="default"
             onClick={() => confirmCreateFuelStorageReceipt(record)}
+            disabled={record.status === "Đang xử lý"}
           >
             Tạo Đơn Nhập Kho
           </Button>

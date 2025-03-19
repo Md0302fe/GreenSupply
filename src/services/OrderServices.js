@@ -69,8 +69,6 @@ export const getDetailProvideOrders = async (id, access_token) => {
 export const handleAcceptOrders = async (id,) => {
   // thông qua id , và access_token chỉ cho phép get dữ liệu của only user này
   try {
-  
-
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL}/orders/fuel-requests/${id}/accept`
     );
