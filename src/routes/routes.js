@@ -56,6 +56,7 @@ import FeatureProductProcess from "../components/FeatureComponent/FeatureProduct
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
+import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
 
 const Router = () => {
   return (
@@ -111,6 +112,7 @@ const Router = () => {
           <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />
           <Route path="C_purchase-order" element={<PurchaseOrder />} />
           <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+          <Route path="manage-Supplier-orders" element={<DashboardSupplierOrder />} />
 
           {/* Material type Management*/}
           <Route path="feature_material_category" element={<FeatureMaterial />} />
