@@ -60,7 +60,7 @@ import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/Dashbo
 import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
-
+import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
 const Router = () => {
   return (
     <>
@@ -120,6 +120,8 @@ const Router = () => {
           {/* Material type Management*/}
           <Route path="feature_material_category" element={<FeatureMaterial />} />
           <Route path="fuel-list" element={<FuelList />} />
+          <Route path="manage-fuel" element={<DashboardFuel />} />
+
 
           {/* Production Process Management */}
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
