@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
+import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 import mng_mango from "../../assets/Feature_materials_category/mng_mango.png";
 import mng_addnew_mango from "../../assets/Feature_materials_category/mng_addnew_mango.jpg";
 import mng_mango_list from "../../assets/Feature_materials_category/mng_mango_list.jpg";
@@ -16,8 +18,14 @@ const UserComponent = () => {
         </h5>
       </div>
 
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 w-full justify-items-center">
+      {/* Feature Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
+        <Card
+          link="/system/admin/manage-fuel"
+          title="Dashboard"
+          description="Thông tin Nguyên Liệu"
+          image={mng_dashboard_Purchasedorders}
+        />
         <Card
           link="/system/admin/feature_material_category"
           title="Tạo nguyên liệu mới"
