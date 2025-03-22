@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./User.scss";
 
 import { Button, Form, Input, Select, Space, Upload } from "antd";
+import { FaUser } from "react-icons/fa"; // Import biểu tượng từ react-icons
 
 import * as UserServices from "../../../../services/UserServices";
 
@@ -21,6 +22,7 @@ import Loading from "../../../LoadingComponent/Loading";
 import ModalComponent from "../../../ModalComponent/ModalComponent";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
+import { useNavigate } from "react-router-dom";
 
 const UserComponent = () => {
   // gọi vào store redux get ra user
@@ -30,6 +32,7 @@ const UserComponent = () => {
   const [isOpenDelete, setIsOpenDelete] = useState(false);
 
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   //  Search Props
   const [searchText, setSearchText] = useState("");
@@ -460,7 +463,35 @@ const UserComponent = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý người dùng</h5>
+        <button
+          onClick={() => navigate(-1)} // Quay lại trang trước đó
+          className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
+        <div className="flex items-center text-xl font-semibold text-gray-800 mb-4">
+          <FaUser className="text-2xl text-blue-500 mr-2" />{" "}
+          {/* Biểu tượng người dùng */}
+          <h5 className="relative">
+            Danh sách người dùng
+            <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>{" "}
+            {/* Hiệu ứng gạch dưới */}
+          </h5>
+        </div>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>

@@ -1,12 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, message, Descriptions, Tag, Input, Select } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import axios from "axios";
+import {
+  Table,
+  Button,
+  message,
+  Descriptions,
+  Tag,
+  Input,
+  Select,
+  Popover,
+  Space,
+} from "antd";
+import { SearchOutlined, FilterOutlined } from "@ant-design/icons";
+import axios from "axios";  
 import { useSelector } from "react-redux";
 import _ from "lodash";
-
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import Loading from "../../../LoadingComponent/Loading";
-import DrawerComponent from "../../../DrawerComponent/DrawerComponent"; // ✅ dùng Drawer thay vì Modal
+import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import * as MaterialServices from "../../../../services/MaterialStorageExportService";
+import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
+import { useLocation } from "react-router-dom";
+import { convertDateStringV1 } from "../../../../ultils";
 
 const { Option } = Select;
 
@@ -17,15 +33,17 @@ const statusColors = {
 };
 
 const MaterialStorageExportList = () => {
+  const location = useLocation();
   const [exports, setExports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedExport, setSelectedExport] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-
+  const [statusFilter, setStatusFilter] = useState("");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [showSearchInput, setShowSearchInput] = useState(false); // Quản lý việc hiển thị thanh tìm kiếm nhỏ
+  const [showStatusFilter, setShowStatusFilter] = useState(false); // Quản lý việc hiển thị lọc trạng thái
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -38,8 +56,8 @@ const MaterialStorageExportList = () => {
         {
           headers: { Authorization: `Bearer ${token}` },
           params: {
-            search: searchText,
-            type_export: typeFilter,
+            search: debouncedSearch,
+            status: statusFilter,
             sortOrder: sortOrder,
           },
         }
@@ -56,50 +74,118 @@ const MaterialStorageExportList = () => {
     setLoading(false);
   };
 
-  const showExportDetails = async (id) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/material-storage-export/getRawMaterialBatchById/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  useEffect(() => {
+    if (location.state?.createdSuccess) {
+      toast.success("Tạo đơn xuất kho thành công!");
 
-      if (response.data.success) {
-        setSelectedExport(response.data.export);
-        setIsDrawerOpen(true); // ✅ mở drawer
-      } else {
-        message.error("Không tìm thấy đơn xuất kho!");
-      }
-    } catch (error) {
-      message.error("Lỗi khi lấy chi tiết đơn xuất kho!");
+      window.history.replaceState({}, document.title);
     }
-    setLoading(false);
-  };
+  }, [location.state]);
 
   useEffect(() => {
     const debounceFn = _.debounce(() => {
       setDebouncedSearch(searchText);
-    }, 500); 
-  
+    }, 500);
+
     debounceFn();
-    return () => debounceFn.cancel(); 
+    return () => debounceFn.cancel();
   }, [searchText]);
-  
 
   useEffect(() => {
     fetchExports();
-  }, [debouncedSearch, typeFilter, sortOrder]);
+  }, [debouncedSearch, statusFilter, sortOrder]);
 
   const columns = [
+    // {
+    //   title: (
+    //     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    //       <span>Người Tạo đơn</span>
+    //       <Popover
+    //         content={
+    //           <div style={{ padding: 10 }}>
+    //             <Input
+    //               placeholder="Tìm kiếm theo tên người tạo..."
+    //               value={searchText}
+    //               onChange={(e) => setSearchText(e.target.value)}
+    //               style={{ width: 250 }}
+    //             />
+    //             <div style={{ marginTop: 10 }}>
+    //               <Button type="primary" onClick={() => fetchExports()}>
+    //                 Tìm
+    //               </Button>
+    //               <Button onClick={() => setSearchText("")} style={{ marginLeft: 8 }}>
+    //                 Đặt lại
+    //               </Button>
+    //               <Button
+    //                 type="link"
+    //                 onClick={() => setShowSearchInput(false)}
+    //                 style={{ marginLeft: 8 }}
+    //               >
+    //                 Đóng
+    //               </Button>
+    //             </div>
+    //           </div>
+    //         }
+    //         title="Tìm kiếm"
+    //         trigger="click"
+    //         visible={showSearchInput}
+    //         onVisibleChange={() => setShowSearchInput(!showSearchInput)}
+    //       >
+    //         <Button type="link" icon={<SearchOutlined />} />
+    //       </Popover>
+    //     </div>
+    //   ),
+    //   key: "created_by",
+    //   render: (_, record) => record?.user_id?.full_name || "Không rõ",
+    // },
     {
-      title: "Người Tạo đơn",
-      key: "created_by",
-      render: (_, record) => record?.user_id?.full_name || "Không rõ",
-    },
-    {
-      title: "Tên Xuất Kho",
+      title: (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span>Tên Xuất Kho</span>
+          <Popover
+            content={
+              <div style={{ padding: 10 }}>
+                <Input
+                  placeholder="Tìm kiếm theo tên xuất kho..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  style={{ width: 250 }}
+                />
+                <div style={{ marginTop: 10 }}>
+                  <Button type="primary" onClick={() => fetchExports()}>
+                    Tìm
+                  </Button>
+                  <Button
+                    onClick={() => setSearchText("")}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Đặt lại
+                  </Button>
+                  <Button
+                    type="link"
+                    onClick={() => setShowSearchInput(false)}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Đóng
+                  </Button>
+                </div>
+              </div>
+            }
+            title="Tìm kiếm"
+            trigger="click"
+            visible={showSearchInput}
+            onVisibleChange={() => setShowSearchInput(!showSearchInput)}
+          >
+            <Button type="link" icon={<SearchOutlined />} />
+          </Popover>
+        </div>
+      ),
       dataIndex: "export_name",
       key: "export_name",
     },
@@ -111,21 +197,62 @@ const MaterialStorageExportList = () => {
     {
       title: "Đơn sản xuất",
       key: "created_by",
-      render: (_, record) => record?.production_request_id?.request_name || "Không rõ",
+      render: (_, record) =>
+        record?.production_request_id?.request_name || "Không rõ",
     },
     {
       title: "Lô nguyên liệu",
       key: "created_by",
-      render: (_, record) => record?.batch_id?.batch_name || "Không rõ",
+      render: (_, record) => record?.batch_id?.batch_id || "Không rõ",
     },
-    
+
     {
-      title: "Trạng Thái",
+      title: (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span>Trạng Thái</span>
+          <Popover
+            content={
+              <div style={{ padding: 10 }}>
+                <Select
+                  value={statusFilter}
+                  onChange={(value) => setStatusFilter(value)}
+                  style={{ width: 200 }}
+                >
+                  <Option value="">Tất cả</Option>
+                  <Option value="Chờ duyệt">Chờ duyệt</Option>
+                  <Option value="Hoàn thành">Hoàn thành</Option>
+                </Select>
+              </div>
+            }
+            title="Lọc theo trạng thái"
+            trigger="click"
+            visible={showStatusFilter}
+            onVisibleChange={() => setShowStatusFilter(!showStatusFilter)}
+          >
+            <Button type="link" icon={<FilterOutlined />} />
+          </Popover>
+        </div>
+      ),
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={statusColors[status] || "default"}>{status}</Tag>
+        <Tag color={status === "Chờ duyệt" ? "gold" : "green"}>
+          {status || "Không rõ"}
+        </Tag>
       ),
+    },
+    {
+      title: "Ngày Tạo",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      render: (date) => new Date(date).toLocaleString(),
     },
     {
       title: "Hành động",
@@ -139,6 +266,126 @@ const MaterialStorageExportList = () => {
     },
   ];
 
+  // Accept Request
+  const mutationAccept = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleAcceptMaterialExport(data);
+    return response;
+  });
+  const { isPending, isSuccess, data } = mutationAccept;
+
+  const handleAccept = async () => {
+    try {
+      await mutationAccept.mutateAsync({
+        access_token: userRedux?.access_token,
+        storage_export_id: selectedExport._id,
+      });
+
+      const batchId = selectedExport?.batch_id?._id;
+
+      if (batchId) {
+        await RawMaterialBatches.updateRawMaterialBatchStatus(
+          batchId,
+          "Đã xuất kho",
+          userRedux?.access_token
+        );
+      }
+
+      toast.success("Duyệt đơn thành công");
+      setIsDrawerOpen(false);
+      fetchExports();
+    } catch (error) {
+      console.error("Lỗi khi duyệt đơn:", error);
+      toast.error("Lỗi khi duyệt đơn hoặc cập nhật trạng thái!");
+    }
+  };
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     if (data?.success) {
+  //       toast.success("Xác nhận đơn thành công");
+  //       setIsDrawerOpen(false);
+  //     } else {
+  //       toast.error("Xác nhận đơn thất bại");
+  //       setIsDrawerOpen(false);
+  //     }
+  //     fetchExports();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isSuccess, data]);
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     if (data?.success) {
+  //       toast.success("Xác nhận đơn thành công");
+  //       setIsDrawerOpen(false);
+  //     } else {
+  //       toast.error("Xác nhận đơn thất bại");
+  //       setIsDrawerOpen(false);
+  //     }
+  //     fetchExports();
+  //   }
+  // }, [isSuccess, data]);
+
+  const handleSortChange = (value) => {
+    setSortOrder(value);
+  };
+
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+  };
+
+  const showExportDetails = (id) => {
+    setLoading(true);
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/material-storage-export/getRawMaterialBatchById/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((response) => {
+        if (response.data.success) {
+          setSelectedExport(response.data.export);
+          setIsDrawerOpen(true); // ✅ mở drawer
+        } else {
+          message.error("Không tìm thấy đơn xuất kho!");
+        }
+      })
+      .catch(() => message.error("Lỗi khi lấy chi tiết đơn xuất kho!"))
+      .finally(() => setLoading(false));
+  };
+
+  // Reject Request
+  const mutationReject = useMutationHooks(async (data) => {
+    const response = await MaterialServices.handleRejectMaterialExport(data);
+    return response;
+  });
+
+  const {
+    isPending: isPendingDelete,
+    isSuccess: isSuccessDelete,
+    data: dataDelete,
+  } = mutationReject;
+
+  const handleReject = () => {
+    mutationReject.mutate({
+      access_token: userRedux?.access_token,
+      storage_export_id: selectedExport._id,
+    });
+  };
+
+  useEffect(() => {
+    if (isSuccessDelete) {
+      if (dataDelete?.success) {
+        toast.success("Xóa đơn thành công");
+        setIsDrawerOpen(false);
+      } else {
+        toast.error("Xóa đơn thất bại");
+        setIsDrawerOpen(false);
+      }
+      fetchExports();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessDelete, dataDelete]);
+
   return (
     <div className="material-storage-export-list">
       <div className="flex justify-between items-center mb-4">
@@ -148,32 +395,25 @@ const MaterialStorageExportList = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 mb-6">
-        <Input
-          placeholder="Tìm kiếm theo tên xuất kho..."
-          prefix={<SearchOutlined />}
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ width: 250 }}
-        />
-
-        <Select
-          onChange={(value) => setTypeFilter(value)}
-          value={typeFilter}
-          placeholder="Lọc theo loại xuất kho"
+        {/* <Select
+          onChange={handleStatusChange}
+          value={statusFilter}
+          placeholder="Lọc theo trạng thái"
           style={{ width: 200 }}
         >
           <Option value="">Tất cả</Option>
-          <Option value="Đơn sản xuất">Đơn sản xuất</Option>
-        </Select>
+          <Option value="Chờ duyệt">Chờ duyệt</Option>
+          <Option value="Hoàn thành">Hoàn thành</Option>
+        </Select> */}
 
-        <Select
-          onChange={(value) => setSortOrder(value)}
+        {/* <Select
+          onChange={handleSortChange}
           value={sortOrder}
           style={{ width: 200 }}
         >
           <Option value="desc">Mới nhất</Option>
           <Option value="asc">Cũ nhất</Option>
-        </Select>
+        </Select> */}
       </div>
 
       <Loading isPending={loading}>
@@ -194,53 +434,80 @@ const MaterialStorageExportList = () => {
           setSelectedExport(null);
         }}
         placement="right"
-        width="30%"
+        width="40%"
       >
         {selectedExport ? (
-          <div className="p-6 space-y-4">
-            <h2 className="text-lg font-bold text-black border-b pb-2">
-              Thông tin chi tiết
-            </h2>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-              <p className="font-bold text-black">Người tạo đơn:</p>
-              <p className="text-black">
-                {selectedExport?.user_id?.full_name || "Không rõ"}
-              </p>
-              <p className="font-bold text-black">Đơn sản xuất:</p>
-              <p className="text-black">
-                {selectedExport?.production_request_id?.request_name ||
-                  "Không có"}
-              </p>
-              <p className="font-bold text-black">Lô nguyên liệu:</p>
-              <p className="text-black">
-                {selectedExport?.batch_id?.batch_name || "Không có"}
-              </p>
-              <p className="font-bold text-black">Tên Xuất Kho:</p>
-              <p className="text-black">{selectedExport.export_name}</p>
-
-              <p className="font-bold text-black">Loại Xuất Kho:</p>
-              <p className="text-black">{selectedExport.type_export}</p>
-
-              <p className="font-bold text-black">Trạng Thái:</p>
-              <Tag
-                color={statusColors[selectedExport.status]}
-                className="px-2 py-1 text-sm font-semibold"
-              >
+          <Descriptions bordered column={1}>
+            <Descriptions.Item label="Người tạo đơn">
+              {selectedExport?.user_id?.full_name || "Không rõ"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Yêu cầu sản xuất">
+              {selectedExport?.production_request_id?.request_name ||
+                "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Tên lô">
+              {selectedExport?.batch_id?.batch_name || "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Mã lô ">
+              {selectedExport?.batch_id?.batch_id || "Không có"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Tên Xuất Kho">
+              {selectedExport?.export_name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Loại Xuất Kho">
+              {selectedExport?.type_export}
+            </Descriptions.Item>
+            <Descriptions.Item label="Trạng Thái">
+              <Tag color={statusColors[selectedExport.status]}>
                 {selectedExport.status}
               </Tag>
-
-              <p className="font-bold text-black">Ghi chú:</p>
-              <p className="text-black">
-                {selectedExport.note || "Không có ghi chú"}
-              </p>
-            </div>
-          </div>
+            </Descriptions.Item>
+            <Descriptions.Item label="Ngày tạo đơn">
+              <Tag>{convertDateStringV1(selectedExport.createdAt)}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="Ghi chú">
+              {selectedExport?.note || "Không có ghi chú"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Ngày tạo">
+              {selectedExport?.createdAt}
+            </Descriptions.Item>
+          </Descriptions>
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">Đang tải dữ liệu...</p>
+          <p className="text-center">Đang tải dữ liệu...</p>
+        )}
+        {selectedExport?.status === "Chờ duyệt" && (
+          <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-3">
+            <button
+              type="button"
+              onClick={handleReject}
+              className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
+            >
+              Hủy yêu cầu
+            </button>
+
+            <button
+              onClick={handleAccept}
+              className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+            >
+              Duyệt đơn
+            </button>
           </div>
         )}
       </DrawerComponent>
+      
+      {/* ToastContainer */}
+      <ToastContainer
+        hideProgressBar={false}
+        position="top-right"
+        newestOnTop={false}
+        pauseOnFocusLoss
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+        rtl={false}
+        draggable
+      />
     </div>
   );
 };

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Input, InputNumber, Select, message } from "antd";
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useSelector } from "react-redux";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -14,6 +16,9 @@ const RawMaterialBatch = () => {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState([]);
   const user = useSelector((state) => state.user);
+  const [requiredMaterial, setRequiredMaterial] = useState(0);
+  const [isFuelSelected, setIsFuelSelected] = useState(false);
+  const navigate = useNavigate();
 
   const generateBatchId = (prefix = "XMTH") => {
     const today = new Date();
@@ -25,7 +30,7 @@ const RawMaterialBatch = () => {
       .toString()
       .padStart(3, "0");
 
-    return `${prefix}${year}${month}${day}-${batchNumber}`;
+    return `${prefix}${day}${month}${year}-${batchNumber}`;
   };
   console.log("fuel_managements => ", fuel_managements);
   const [formData, setFormData] = useState({
@@ -36,6 +41,7 @@ const RawMaterialBatch = () => {
     status: "Đang chuẩn bị",
     quantity: 0,
     storage_id: "",
+    note: "",
     is_automatic: false,
     is_deleted: false,
   });
@@ -55,10 +61,13 @@ const RawMaterialBatch = () => {
     if (name === "production_request_id") {
       const selectedRequest = processing.find((item) => item._id === value);
       if (selectedRequest) {
+        console.log("selectedRequest:", selectedRequest);
+        console.log("selectedRequest.material:", selectedRequest.material);
+
         setFormData((prev) => ({
           ...prev,
           production_request_id: value,
-          fuel_type_id: selectedRequest.material?.fuel_type_id, // Lấy thông tin đầy đủ của fuel_type_id
+          fuel_type_id: selectedRequest.material?._id,
           storage_id: selectedRequest.material?.storage_id?.name_storage || "",
         }));
       }
@@ -79,6 +88,7 @@ const RawMaterialBatch = () => {
           data
         );
         const storageRes = await RawMaterialBatchServices.getAllStorages(data);
+        console.log("Dữ liệu API trả về:", processingRes);
         const getAllManagements =
           await RawMaterialBatchServices.getAllFuelManagements();
         if (processingRes.success) {
@@ -97,15 +107,70 @@ const RawMaterialBatch = () => {
           toast.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
       } catch (error) {
-        message.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
+        toast.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleKeyDown = (event) => {
+    if (
+      /[^0-9]/.test(event.key) &&
+      event.key !== "Backspace" &&
+      event.key !== "Tab"
+    ) {
+      event.preventDefault();
+    }
+  };
+
+  const handleEstimatedProductionChange = (value) => {
+    if (value === null || value === undefined || value === "") {
+      form.setFieldsValue({ quantity: null }); // Không đặt về 0
+      setRequiredMaterial(0);
+      return;
+    }
+
+    if (value === 0 || /e|E|[^0-9]/.test(value)) {
+      toast.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
+      form.setFieldsValue({ quantity: null });
+      return;
+    }
+
+    const required = Math.ceil(value / 0.9);
+    setRequiredMaterial(required);
+
+    const selectedFuelId = form.getFieldValue("storage_id");
+
+    if (selectedFuelId) {
+      const selectedFuel = fuel_managements.find(
+        (fuel) => fuel._id === selectedFuelId
+      );
+      if (selectedFuel) {
+        const availableFuel = selectedFuel.quantity;
+        if (required > availableFuel) {
+          const maxProduction = Math.floor(availableFuel * 0.9);
+          toast.warning(
+            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
+          );
+          form.setFieldsValue({
+            quantity: maxProduction,
+          });
+          setRequiredMaterial(Math.ceil(maxProduction / 0.9));
+          return;
+        }
+      }
+    }
+
+    form.setFieldsValue({ quantity: value });
+  };
+
+  const handleFuelTypeChange = (value) => {
+    form.setFieldsValue({ fuel_type_id: value });
+    setIsFuelSelected(true); // Khi chọn loại nhiên liệu, mở khóa ô nhập sản lượng mong muốn
+  };
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -116,6 +181,8 @@ const RawMaterialBatch = () => {
           ...formData,
           production_request_id: formData.production_request_id, // production_request_id là ObjectId
           storage_id: formData.storage_id, // storage_id là ObjectId
+          quantity: requiredMaterial,
+          note: formData.note,
         },
       };
       console.log("dataRequest => ", dataRequest);
@@ -125,13 +192,17 @@ const RawMaterialBatch = () => {
       );
 
       if (response.success) {
-        message.success("Tạo lô nguyên liệu thành công!");
+        toast.success("Tạo lô nguyên liệu thành công!");
         form.resetFields();
+        // 👉 Chuyển hướng sau khi tạo thành công
+        navigate("/system/admin/raw-material-batch-list", {
+          state: { createdSuccess: true },
+        });
       } else {
-        message.error("Tạo lô thất bại!");
+        toast.error("Tạo lô thất bại!");
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi tạo lô!");
+      toast.error("Có lỗi xảy ra khi tạo lô!");
     } finally {
       setLoading(false);
     }
@@ -140,18 +211,25 @@ const RawMaterialBatch = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">
+        <h2 className="text-2xl font-bold text-center mb-5 text-black">
           Tạo Lô Nguyên Liệu Bổ Sung
         </h2>
 
-        {loading && (
+        {/* {loading && (
           <div className="text-center text-blue-600 font-medium">
             Đang tải dữ liệu...
           </div>
-        )}
+        )} */}
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <div>{formData?.batch_id}</div>
+          {/* Mã lô */}
+          <div className="mb-4">
+            <span className="text-xl font-bold text-gray-800">Mã Lô: </span>
+            <span className="text-xl font-semibold text-[#A31D1D]">
+              {formData?.batch_id}
+            </span>
+          </div>
+
           {/* Nhập tên lô */}
           <Form.Item
             label="Tên lô"
@@ -197,31 +275,16 @@ const RawMaterialBatch = () => {
 
           {/* Chọn loại nhiên liệu */}
           <Form.Item
-            label="Loại nhiên liệu"
+            label="Loại nguyên liệu"
             name="fuel_type_id"
-            className="flex-1"
+            rules={[
+              { required: true, message: "Vui lòng chọn loại nguyên liệu!" },
+            ]}
           >
             <Select
-              placeholder="Chọn Loại nhiên liệu"
+              placeholder="Chọn loại nguyên liệu"
               className="rounded border-gray-300"
-              onChange={(value) => {
-                const selectedFuel = fuel_managements?.find(
-                  (fuel) => fuel._id === value
-                );
-                if (selectedFuel) {
-                  console.log("selectedFuel._id => ", selectedFuel._id)
-                  setFormData((prev) => ({
-                    ...prev,
-                    fuel_type_id: selectedFuel._id, 
-                    fuel_quantity: selectedFuel.quantity,
-                  }));
-                } else {
-                  setFormData((prev) => ({
-                    ...prev,
-                    fuel_type_id: value,
-                  }));
-                }
-              }}
+              onChange={handleFuelTypeChange}
             >
               {fuel_managements
                 ?.filter((fuel) => fuel.quantity > 0)
@@ -235,17 +298,33 @@ const RawMaterialBatch = () => {
 
           {/* Nhập số lượng */}
           <Form.Item
-            label="Số lượng (Kg)"
+            label="Sản lượng mong muốn (Kg)"
             name="quantity"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập sản lượng mong muốn!" },
+            ]}
           >
             <InputNumber
-              min={1}
-              className="w-full"
-              placeholder="Nhập số lượng"
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, quantity: value }))
-              }
+              min={null}
+              className="w-full rounded border-gray-300"
+              placeholder="Nhập sản lượng mong muốn"
+              onChange={handleEstimatedProductionChange}
+              onKeyDown={handleKeyDown}
+              onBlur={() => {
+                const currentValue = form.getFieldValue("quantity");
+                if (!currentValue) {
+                  form.setFieldsValue({ quantity: null }); // Không thay đổi giá trị thành 0
+                }
+              }}
+              disabled={!isFuelSelected}
+            />
+          </Form.Item>
+
+          <Form.Item label="Số lượng nguyên liệu cần thiết ước tính (Kg)">
+            <InputNumber
+              disabled
+              className="w-full rounded border-gray-300 bg-gray-50"
+              value={requiredMaterial}
             />
           </Form.Item>
 
@@ -278,9 +357,19 @@ const RawMaterialBatch = () => {
             </Select>
           </Form.Item>
 
-          {/* Ghi chú */}
+          {/* Nhập ghi chú */}
           <Form.Item label="Ghi chú" name="note">
-            <Input.TextArea rows={4} placeholder="Nhập ghi chú (nếu có)" />
+            <Input.TextArea
+              rows={4}
+              placeholder="Nhập ghi chú (nếu có)"
+              value={formData.note}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  note: e.target.value,
+                }))
+              }
+            />
           </Form.Item>
 
           {/* Nút xác nhận */}
@@ -291,6 +380,20 @@ const RawMaterialBatch = () => {
           </Form.Item>
         </Form>
       </div>
+
+      {/* ToastContainer */}
+      <ToastContainer
+        hideProgressBar={false}
+        position="top-right"
+        newestOnTop={false}
+        pauseOnFocusLoss
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+        rtl={false}
+        draggable
+      />
     </div>
   );
 };

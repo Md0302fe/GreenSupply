@@ -25,6 +25,8 @@ import {
   handleCompleteOrders,
 } from "../../../../services/OrderServices";
 import { FaEye } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
+
 
 const FuelRequestsManagement = () => {
   const [rowSelected, setRowSelected] = useState("");
@@ -84,6 +86,11 @@ const FuelRequestsManagement = () => {
     
   }, [reload]);
 
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const defaultStatusFilter = queryParams.get("status") || "";
+
   const handleApproveOrder = async () => {
     try {
       const response = await handleAcceptOrders(stateDetailsUser ._id);
@@ -136,10 +143,6 @@ const FuelRequestsManagement = () => {
     setIsDrawerOpen(true);
   };
 
-  
-
- 
-
   // Handle each time rowSelected was call
   useEffect(() => {
     if (rowSelected) {
@@ -176,14 +179,6 @@ const FuelRequestsManagement = () => {
     queryFn: fetchGetAllOrder,
   });
   const { isLoading, data: orders } = queryOrder;
-
- 
-
- 
-
- 
-
- 
 
   // DATA FROM USERS LIST
   const tableData =
@@ -359,7 +354,9 @@ const FuelRequestsManagement = () => {
           value: "Hoàn thành",
         },
       ],
+
       onFilter: (value, record) => record.status.includes(value),
+      filteredValue: defaultStatusFilter ? [defaultStatusFilter] : null,
       render: (status) => {
         let color = "";
         switch (status) {
@@ -372,8 +369,11 @@ const FuelRequestsManagement = () => {
           case "Đã Hủy":
             color = "red";
             break;
-          case "Hoàn thành":
-            color = "blue"; // Thêm màu cho trạng thái "Đã hoàn thành"
+          case "Hoàn Thành":
+            color = "green"; // Thêm màu cho trạng thái "Đã hoàn thành"
+            break;
+          case "Đang xử lý":
+            color = "blue";
             break;
           default:
             color = "default";

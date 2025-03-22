@@ -26,6 +26,7 @@ import {
   handleCompleteProvideOrders,
 } from "../../../../services/OrderServices";
 import { FaEye } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
 const FuelProvideManagement = () => {
   // gọi vào store redux get ra user
@@ -44,6 +45,10 @@ const FuelProvideManagement = () => {
 
   // State để lưu trạng thái đơn hàng
   const [orderStatus, setOrderStatus] = useState("");
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const defaultStatusFilter = queryParams.get("status") || "";
 
   //  State Details quản lý products khi có req edit
   const [stateDetailsUser, setStateDetailsUser] = useState({
@@ -447,6 +452,7 @@ const FuelProvideManagement = () => {
         },
       ],
       onFilter: (value, record) => record.status.includes(value),
+      filteredValue: defaultStatusFilter ? [defaultStatusFilter] : null,
       render: (status) => {
 
         let color = "";

@@ -112,7 +112,7 @@ const UserComponent = () => {
             {/* Nội dung văn bản */}
             <div className="relative flex flex-col justify-center items-center h-full">
               <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-                Lô nguyên liệu
+                Nguyên liệu thô
               </h6>
               <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
                 Quản lý thông tin các lô nguyên liệu thô
