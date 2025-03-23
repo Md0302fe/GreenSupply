@@ -261,6 +261,7 @@ const RawMaterialBatchList = () => {
           isLoading={isLoading}
           data={tableData}
           setRowSelected={setRowSelected}
+          pagination={{ pageSize: 6 }}
           onRow={(record, rowIndex) => {
             return {
               onClick: (event) => {

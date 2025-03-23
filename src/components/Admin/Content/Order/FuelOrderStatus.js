@@ -243,7 +243,7 @@ const FuelOrderStatus = () => {
         dataSource={tableData}
         loading={loading}
         rowKey="_id"
-        pagination={{ pageSize: 8 }}
+        pagination={{ pageSize: 6 }}
       />
 
       {/* Drawer chỉ để xem chi tiết */}

@@ -61,6 +61,7 @@ import ProductionProcessing from "../pages/ProductionProcessing/ProductionProces
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
+import DashboardProductionProcess from "../components/Admin/Content/Dashboard/DashboardProductionProcess";
 const Router = () => {
   return (
     <>
@@ -127,11 +128,13 @@ const Router = () => {
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
+         
 
             {/* Danh sách quy trình sản xuất */}
           <Route path="production-processing-list" element={<ProductionProcessingList />} />
           <Route path="production-processing" element={<ProductionRequestFinishList />} />
           <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
+          <Route path="dashboard-production-request" element={<DashboardProductionProcess />} />
         </Route>
 
           {/* Profile Management */}

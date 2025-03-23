@@ -165,7 +165,7 @@ const DashboardFuel = () => {
       🔁 <span className="text-blue-600 font-bold text-lg">{past7days.length}</span> lượt nhập/xuất nguyên liệu gần đây
     </div>
     <div className="flex items-center gap-2">
-      🥇 Nguyên Liệu Nhiều nhất:{" "}
+    🥭 Nguyên Liệu Nhiều nhất:{" "}
       <span className="font-bold text-yellow-600">
         {maxFuel.type} ({maxFuel.value} Kg)
       </span>
