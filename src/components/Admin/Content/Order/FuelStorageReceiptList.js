@@ -723,7 +723,7 @@ const FuelStorageReceiptList = () => {
         dataSource={receipts}
         loading={loading}
         rowKey="_id"
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 6 }}
       />
 
            {/* Drawer Chi tiết */}

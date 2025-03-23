@@ -106,3 +106,15 @@ export const updateRawMaterialBatchStatus = async (id, status, access_token) => 
   );
   return res?.data;
 };
+
+export const getTotalRawMaterialBatches = async () => {
+  try {
+    const res = await axiosJWT.get(
+      `${process.env.REACT_APP_API_URL}/raw-material-batch/getTotalRawMaterialBatches`
+    );
+    return res?.data?.data || {}; 
+  } catch (error) {
+    console.error("Lỗi khi gọi API lấy tổng số lô nguyên liệu:", error);
+    throw new Error("Không thể lấy dữ liệu tổng số lô nguyên liệu");
+  }
+};

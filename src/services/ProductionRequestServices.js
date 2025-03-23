@@ -78,3 +78,15 @@ export const changeStatus = async ({ id, token }) => {
   );
   return res.data; // { success: true/false, ...}
 };
+
+export const getProductionChartData = async ({ access_token }) => {
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/product-request/getProductionChartData`,
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res.data;
+};
