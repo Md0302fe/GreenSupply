@@ -101,7 +101,7 @@ const Admin = (props) => {
       <div className="admin-sidebar min-h-screen">
         <Sidebar collapsed={collapsed}></Sidebar>
       </div>
-      <div className="admin-content w-full">
+      <div className="admin-content w-full overflow-x-hidden">
         {/* New Nav */}
         <div className="flex items-center bg-gray-400 px-6 py-2 rounded-b-[50px] space-x-4">
           <div className="flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-gray-200  hover:text-black p-2 transition-all duration-200 group rounded-[50%]">
