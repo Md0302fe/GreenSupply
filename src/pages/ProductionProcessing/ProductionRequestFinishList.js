@@ -247,7 +247,7 @@ const ProductionRequestList = () => {
       </div>
 
       <Loading isPending={isLoading}>
-        <Table columns={columns} dataSource={tableData} />
+        <Table columns={columns} dataSource={tableData} pagination={{ pageSize: 4 }} />
       </Loading>
 
       <DrawerComponent

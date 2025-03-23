@@ -56,7 +56,7 @@ const TableUser = (props) => {
         }}
         columns={columns}
         dataSource={dataSource}
-        pagination={{ pageSize: 8 }}
+        pagination={{ pageSize: 6 }}
         {...rest}
       />
     </Loading>

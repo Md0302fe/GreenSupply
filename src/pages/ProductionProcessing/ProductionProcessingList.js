@@ -19,6 +19,8 @@ import moment from "moment";
 import { getAllProductionProcessing, approveProductionProcessing, updateProductionRequest } from "../../services/ProductionProcessingServices";
 import Loading from "../../components/LoadingComponent/Loading";
 import dayjs from "dayjs";
+import { useLocation } from "react-router-dom";
+
 
 const { TextArea } = Input;
 
@@ -62,6 +64,20 @@ const ProductionProcessingList = () => {
     setSelectedProcess(record);
     setIsDrawerOpen(true);
   };
+
+  const location = useLocation();
+
+useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+  const statusFromURL = queryParams.get("status");
+
+  if (statusFromURL) {
+    setFilters((prev) => ({
+      ...prev,
+      status: statusFromURL,
+    }));
+  }
+}, [location.search]);
 
   // Mở Modal cập nhật
   const handleOpenEditDrawer = () => {
@@ -199,7 +215,7 @@ const ProductionProcessingList = () => {
         <Table
           columns={columns}
           dataSource={data?.map((item) => ({ ...item, key: item._id })) || []}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 6 }}
         />
       </Loading>
 

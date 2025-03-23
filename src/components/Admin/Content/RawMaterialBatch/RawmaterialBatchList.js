@@ -429,7 +429,7 @@ const RawMaterialBatchList = () => {
       </div>
 
       <Loading isPending={loading}>
-        <Table columns={columns} dataSource={tableData} />
+        <Table columns={columns} dataSource={tableData}  pagination={{ pageSize: 6 }} />
       </Loading>
 
       <DrawerComponent
