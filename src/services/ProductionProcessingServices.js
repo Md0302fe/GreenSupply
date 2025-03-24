@@ -69,3 +69,31 @@ export const approveProductionProcessing = async ({ id, token }) => {
   );
   return res.data; // { success: true/false, ...}
 };
+
+
+export const getDetailsProcessByID = async (process_id, access_token ) => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_API_URL}/production-processing/details/${process_id}`,
+    {}, // Body cần có (ngay cả khi rỗng)
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res.data; // { success: true/false, ...}
+};
+
+export const getProcessStageDetails = async (process_id, access_token ) => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_API_URL}/production-processing/detailsStage/${process_id}`,
+    {}, // Body cần có (ngay cả khi rỗng)
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res.data; // { success: true/false, ...}
+};
+
