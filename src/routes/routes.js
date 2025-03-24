@@ -61,6 +61,10 @@ import ProductionProcessing from "../pages/ProductionProcessing/ProductionProces
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
+
+import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
+import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
+
 import DashboardProductionProcess from "../components/Admin/Content/Dashboard/DashboardProductionProcess";
 const Router = () => {
   return (
@@ -134,6 +138,9 @@ const Router = () => {
           <Route path="production-processing-list" element={<ProductionProcessingList />} />
           <Route path="production-processing" element={<ProductionRequestFinishList />} />
           <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
+          {/* ROUTES QUY TRÌNH ĐANG THỰC THI */}
+          <Route path="processing-system" element={<ProcessingManagement />} />
+          <Route path="process_details/:process_id" element={<ProcessingDetails />} />
           <Route path="dashboard-production-request" element={<DashboardProductionProcess />} />
         </Route>
 
