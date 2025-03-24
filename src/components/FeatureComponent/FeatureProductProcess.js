@@ -9,6 +9,7 @@ import processing_list from "../../assets/Feature_product_process/processing_lis
 import gear_loading from "../../assets/Feture_production_processing/gearLoading.jpg";
 
 import "./ProductProcess.css";
+import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 
 const UserComponent = () => {
   return (
@@ -24,6 +25,12 @@ const UserComponent = () => {
 
       {/* Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
+      <Card
+          link="/system/admin/dashboard-production-request"
+          title="Dashboard"
+          description="Thông tin toàn bộ đơn quy trình"
+          image={mng_dashboard_Purchasedorders}
+        />
         <Card
           link="/system/admin/production-request"
           title="Tạo yêu cầu sản xuất"

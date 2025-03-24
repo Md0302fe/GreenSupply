@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  Table,
-  Input,
-  Space,
-  Tag,
-  Button,
-} from "antd";
+import { Table, Input, Space, Tag, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -75,7 +69,11 @@ const ProductionRequestList = () => {
   }
 
   const tableData = Array.isArray(data)
-    ? data.map((req) => ({ ...req, key: req._id }))
+    ? data
+        .filter(
+          (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
+        )
+        .map((req) => ({ ...req, key: req._id }))
     : [];
 
   // Search
@@ -210,7 +208,7 @@ const ProductionRequestList = () => {
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: "Chờ duyệt", value: "Chờ duyệt" },
+        { text: "Đang sản xuất", value: "Đang sản xuất" },
         { text: "Đã duyệt", value: "Đã duyệt" },
       ],
       onFilter: (value, record) => record.status === value,
@@ -244,12 +242,12 @@ const ProductionRequestList = () => {
     <div className="production-request-list">
       <div className="flex justify-between items-center mb-4">
         <h5 className="text-2xl font-bold text-gray-800">
-          Danh sách chờ tạo quy trình
+          Danh Sách Yêu Cầu Chờ Tạo Quy Trình
         </h5>
       </div>
 
       <Loading isPending={isLoading}>
-        <Table columns={columns} dataSource={tableData} />
+        <Table columns={columns} dataSource={tableData} pagination={{ pageSize: 4 }} />
       </Loading>
 
       <DrawerComponent
@@ -337,15 +335,17 @@ const ProductionRequestList = () => {
               </div>
             </div>
 
-            <div className="flex justify-center gap-4 mt-6">
-              <Button
-                type="primary"
-                className="px-6 py-2 text-lg"
-                onClick={() => navigate(`create/${selectedRequest._id}`)}
-              >
-                Tạo quy trình
-              </Button>
-            </div>
+            {selectedRequest.status === "Đã duyệt" && (
+              <div className="flex justify-center gap-4 mt-6">
+                <Button
+                  type="primary"
+                  className="px-6 py-2 text-lg"
+                  onClick={() => navigate(`create/${selectedRequest._id}`)}
+                >
+                  Tạo quy trình
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </DrawerComponent>
