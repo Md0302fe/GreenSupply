@@ -8,13 +8,14 @@ const ProcessingComponent = ({ data }) => {
     const navigate = useNavigate();
 
   const colorOfBox = [
-    { stage: 0, color: "#82CEFA" },
-    { stage: 1, color: "#87CEFA" }, // Light Sky Blue
-    { stage: 2, color: "#90EE90" }, // Light Green
-    { stage: 3, color: "#FFD700" }, // Gold (giữ nguyên)
-    { stage: 4, color: "#FFA07A" }, // Light Salmon
-    { stage: 5, color: "#DDA0DD" }, // Plum
-    { stage: 6, color: "#FFB6C1" }, // Light Pink
+    { stage: 1, color: "#FFFBEA" },  
+    { stage: 2, color: "#FFF3C4" },  
+    { stage: 3, color: "#FCE588" }, 
+    { stage: 4, color: "#FADB5F" },  
+    { stage: 5, color: "#F7C948" },  
+    { stage: 6, color: "#F0B429" },  
+    { stage: 7, color: "#DE911D" },  
+    { stage: 7, color: "#B2EBF2" }, 
   ];
 
   // Lấy màu tương ứng với current_stage
@@ -37,7 +38,7 @@ const ProcessingComponent = ({ data }) => {
       {/* Box Title & ID */}
       <div className="mb-4">
         <div
-          className="text-white text-lg font-bold text-center rounded p-2"
+          className="text-black text-lg font-bold text-center rounded p-2"
           style={{ backgroundColor: currentColor }}
         >
           🔖 {data.production_name}
@@ -56,7 +57,7 @@ const ProcessingComponent = ({ data }) => {
         </div>
 
         <div className="bg-white shadow-sm border border-gray-200 rounded p-1 max-w-[200px]">
-          <p className="text-gray-500 text-xs">📅 End Time</p>
+          <p className="text-gray-500 text-xs">📅 ETA End Time</p>
           <p className="font-medium text-gray-800 text-sm">
             {convertDateStringV1(data.end_time)}
           </p>
