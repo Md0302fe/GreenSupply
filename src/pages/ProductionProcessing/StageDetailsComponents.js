@@ -1,5 +1,6 @@
 import React from "react";
 import { converDateString } from "../../ultils";
+import "./process.css";
 
 const StageComponent = ({
   stage,
@@ -26,7 +27,8 @@ const StageComponent = ({
     <>
       <div
         className={`
-          w-full max-w-[1000px] rounded-lg shadow-md transition-all duration-300 ease-in-out overflow-hidden flex flex-col
+          ${stage?.status === "Đang thực thi" ? "bg-animated" : ""}
+          w-full max-w-[1000px] rounded-lg shadow-md transition-all duration-300 ease-in-out overflow-hidden flex flex-col relative z-10
           ${getBackgroundColor(stage?.status)}
           ${isOpen ? "p-6 max-h-[500px]" : "px-4 max-h-[50px]"}
         `}
@@ -80,7 +82,6 @@ const StageComponent = ({
                   <p className="text-gray-500 text-xs mb-2">📅 End Time</p>
                   <p className="font-medium text-gray-800 text-sm">
                     {converDateString(stage?.end_time)}
-                    
                   </p>
                 </div>
                 <div className="info-box">
