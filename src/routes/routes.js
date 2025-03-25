@@ -62,6 +62,7 @@ import ProductionRequestFinishList from "../pages/ProductionProcessing/Productio
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
 import DashboardProductionProcess from "../components/Admin/Content/Dashboard/DashboardProductionProcess";
+import DashboardSupplyRequest from "../components/Admin/Content/Dashboard/DashboardSupplierRequest";
 const Router = () => {
   return (
     <>
@@ -116,6 +117,7 @@ const Router = () => {
           <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />
           <Route path="C_purchase-order" element={<PurchaseOrder />} />
           <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+          <Route path="manage-Supplier-request" element={<DashboardSupplyRequest />} />
           <Route path="manage-Supplier-orders" element={<DashboardSupplierOrder />} />
 
           {/* Material type Management*/}

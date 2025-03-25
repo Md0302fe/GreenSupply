@@ -23,9 +23,9 @@ const UserComponent = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
         {/* Dashboard */}
         <Card
-          link="/system/admin/manage-Supplier-orders"
+          link="/system/admin/manage-Supplier-request"
           title="Dashboard"
-          description="Thông tin toàn bộ khâu"
+          description="Thông tin toàn bộ yêu cầu nhập nguyên liệu"
           image={mng_dashboard_Purchasedorders}
         />
 
