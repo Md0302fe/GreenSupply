@@ -68,6 +68,13 @@ const UserComponent = () => {
           image={processing_list}
           is1={true}
         />
+        <Card
+          link="/system/admin/process-histories"
+          title="Lịch Sử Quy Trình"
+          description="Quản lý danh sách quy trình đã hoàn thành"
+          image={processing_list}
+          is1={true}
+        />
       </div>
     </div>
   );
@@ -83,14 +90,14 @@ const Card = ({ link, title, description, image, is1 = false }) => (
 
       {is1 ? (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-        <div className="animate-spin">
-          <img
-            src={gear_loading} // Thay thế bằng đường dẫn đến hình ảnh bánh răng của bạn
-            alt="Gear Animation"
-            className="w-24 h-24" // Kích thước của bánh răng
-          />
+          <div className="animate-spin">
+            <img
+              src={gear_loading} // Thay thế bằng đường dẫn đến hình ảnh bánh răng của bạn
+              alt="Gear Animation"
+              className="w-24 h-24" // Kích thước của bánh răng
+            />
+          </div>
         </div>
-      </div>
       ) : (
         <div
           className="absolute top-0 left-0 right-0 bottom-0 bg-contain bg-no-repeat bg-center rounded-xl"

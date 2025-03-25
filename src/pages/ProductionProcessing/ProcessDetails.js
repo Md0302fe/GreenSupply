@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 import Loading from "../../components/LoadingComponent/Loading";
 import StageDetailsComponents from "./StageDetailsComponents";
-
 import * as ProductionsProcessServices from "../../services/ProductionProcessingServices";
 
 import {
@@ -32,7 +31,7 @@ const ProcessDetails = () => {
   const [stage5, setStage5] = useState();
   const [stage6, setStage6] = useState();
   const [stage7, setStage7] = useState();
-  const [stage8, setStage8] = useState();
+
 
   // Fetch process details từ API
   const fetchBothDetails = async () => {
@@ -60,7 +59,7 @@ const ProcessDetails = () => {
       setStage5(dataStage?.data[4] || []);
       setStage6(dataStage?.data[5] || []);
       setStage7(dataStage?.data[6] || []);
-      setStage8(dataStage?.data[7] || []);
+
     }
   }, [dataStage]);
 

@@ -59,7 +59,7 @@ export const deleteProductionRequest = async ({ id, token }) => {
       },
     }
   );
-  return res.data; // { success: true/false, ...}
+  return res.data; 
 };
 
 export const approveProductionProcessing = async ({ id, token }) => {
@@ -79,7 +79,7 @@ export const approveProductionProcessing = async ({ id, token }) => {
       },
     }
   );
-  return res.data; // { success: true/false, ...}
+  return res.data; 
 };
 
 export const getDetailsProcessByID = async (process_id, access_token) => {
@@ -92,7 +92,7 @@ export const getDetailsProcessByID = async (process_id, access_token) => {
       },
     }
   );
-  return res.data; // { success: true/false, ...}
+  return res.data; 
 };
 
 export const getProcessStageDetails = async (process_id, access_token) => {
@@ -105,18 +105,33 @@ export const getProcessStageDetails = async (process_id, access_token) => {
       },
     }
   );
-  return res.data; // { success: true/false, ...}
+  return res.data; 
 };
 
 // Handle finish and next stept for process
 export const handleFinishStage = async (dataRequest) => {
   const res = await axios.post(
-    `${process.env.REACT_APP_API_URL}/production-processing/finishStage`,{dataRequest}, // Body cần có (ngay cả khi rỗng)
+    `${process.env.REACT_APP_API_URL}/production-processing/finishStage`,
+    { dataRequest }, // Body cần có (ngay cả khi rỗng)
     {
       headers: {
         Authorization: `Bearer ${dataRequest.access_token}`,
       },
     }
   );
-  return res.data; // { success: true/false, ...}
+  return res.data; 
+};
+
+// Handle finish and next stept for process
+export const getHistoriesProcess = async (dataRequest) => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_API_URL}/production-processing/history_process`,
+    {}, // Body cần có (ngay cả khi rỗng)
+    {
+      headers: {
+        Authorization: `Bearer ${dataRequest.access_token}`,
+      },
+    }
+  );
+  return res.data; 
 };
