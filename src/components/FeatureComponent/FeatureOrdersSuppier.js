@@ -5,6 +5,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import mng_request_orders from "../../assets/Feature_order_suppliers/mng_request_orders.jpg";
 import mng_supply_orders from "../../assets/Feature_order_suppliers/mng_supply_orders.jpg";
 import mng_receipt_orders from "../../assets/Feature_order_suppliers/mng_receipt_orders.jpg";
+import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 
 const UserComponent = () => {
   return (
@@ -20,6 +21,13 @@ const UserComponent = () => {
 
       {/* Feature Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
+           {/* Dashboard */}
+           <Card
+          link="/system/admin/manage-Supplier-orders"
+          title="Dashboard"
+          description="Thông tin toàn yêu cầu supplier"
+          image={mng_dashboard_Purchasedorders}
+        />
         <Card
           link="/system/admin/manage-fuel-orders"
           title="D.sách yêu cầu thu nguyên liệu"
