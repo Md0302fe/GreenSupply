@@ -306,11 +306,7 @@ const UserComponent = () => {
     clearFilters();
     setSearchText("");
   };
-
-  const handleDeleteAccount = (accountID) => {};
-
-  const handleBlockAccount = (accountId) => {};
-
+  
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({

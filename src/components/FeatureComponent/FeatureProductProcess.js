@@ -2,11 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaGear } from "react-icons/fa6";
 
-import mng_created_production_processing from "../../assets/Feture_production_processing/mng_created_production_processing.jpg";
 import mng_production_list from "../../assets/Feture_production_processing/mng_production_list.jpg";
 import request_list from "../../assets/Feature_product_process/request_list.jpg";
 import waiting_list from "../../assets/Feature_product_process/waiting_list.jpg";
 import processing_list from "../../assets/Feature_product_process/processing_list.jpg";
+import gear_loading from "../../assets/Feture_production_processing/gearLoading.jpg";
+
+import "./ProductProcess.css";
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 
 const UserComponent = () => {
@@ -53,25 +55,58 @@ const UserComponent = () => {
           description="Quản lý danh sách các quy trình đã tạo"
           image={processing_list}
         />
+        <Card
+          link="/system/admin/production-processing-list"
+          title="Danh sách quy trình đã tạo"
+          description="Quản lý danh sách các quy trình đã tạo"
+          image={processing_list}
+        />
+        <Card
+          link="/system/admin/processing-system"
+          title="Quy trình"
+          description="Quản lý danh sách quy trình đang thực thi"
+          image={processing_list}
+          is1={true}
+        />
+        <Card
+          link="/system/admin/process-histories"
+          title="Lịch Sử Quy Trình"
+          description="Quản lý danh sách quy trình đã hoàn thành"
+          image={processing_list}
+          is1={true}
+        />
       </div>
     </div>
   );
 };
 
-const Card = ({ link, title, description, image }) => (
+const Card = ({ link, title, description, image, is1 = false }) => (
   <div className="relative w-full max-w-xs h-[240px] cursor-pointer rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-transform duration-300 overflow-hidden">
     <Link
       to={link}
       className="w-full h-full flex flex-col justify-center items-center text-white text-sm font-bold transition-all duration-300"
     >
       {/* Background */}
-      <div
-        className="absolute top-0 left-0 right-0 bottom-0 bg-contain bg-no-repeat bg-center rounded-xl"
-        style={{
-          backgroundImage: `url(${image})`,
-          filter: "blur(2px)",
-        }}
-      ></div>
+
+      {is1 ? (
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+          <div className="animate-spin">
+            <img
+              src={gear_loading} // Thay thế bằng đường dẫn đến hình ảnh bánh răng của bạn
+              alt="Gear Animation"
+              className="w-24 h-24" // Kích thước của bánh răng
+            />
+          </div>
+        </div>
+      ) : (
+        <div
+          className="absolute top-0 left-0 right-0 bottom-0 bg-contain bg-no-repeat bg-center rounded-xl"
+          style={{
+            backgroundImage: `url(${image})`,
+            filter: "blur(2px)",
+          }}
+        ></div>
+      )}
 
       {/* Overlay */}
       <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-xl"></div>
