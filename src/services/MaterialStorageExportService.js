@@ -103,3 +103,41 @@ export const handleRejectMaterialExport = async (data) => {
 
   return res?.data;
 };
+
+// Dashboard
+export const getTotalMaterialStorageExports = async () => {
+  try {
+    const res = await axiosJWT.get(
+      `${process.env.REACT_APP_API_URL}/material-storage-export/getTotalMaterialStorageExports`
+    );
+    return res?.data?.data || {}; 
+  } catch (error) {
+    console.error("Lỗi khi gọi API lấy tổng số đơn xuất kho:", error);
+    throw new Error("Không thể lấy dữ liệu tổng số đơn xuất kho");
+  }
+};
+
+export const getStockImportByDate = async () => {
+  try {
+    const res = await axiosJWT.get(
+      `${process.env.REACT_APP_API_URL}/material-storage-export/getStockExportByDate`
+    );
+    return res?.data?.data || [];
+  } catch (error) {
+    console.error("Lỗi khi gọi API lấy số lượng nhập kho:", error);
+    throw new Error("Không thể lấy dữ liệu nhập kho");
+  }
+};
+
+export const getStockExportCompletedByDate = async () => {
+  try {
+    const res = await axiosJWT.get(
+      `${process.env.REACT_APP_API_URL}/material-storage-export/getStockExportCompletedByDate`
+    );
+    return res?.data?.data || [];
+  } catch (error) {
+    console.error("Lỗi khi gọi API lấy đơn xuất kho hoàn thành:", error);
+    throw new Error("Không thể lấy dữ liệu đơn xuất kho đã hoàn thành");
+  }
+};
+

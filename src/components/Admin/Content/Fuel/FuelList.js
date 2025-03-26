@@ -299,7 +299,7 @@ const FuelList = () => {
   ];
   return (
     <div className="fuel-list">
-      <h2>Danh sách Loại Nhiên Liệu</h2>
+      <h2>Danh Sách Loại Nguyên Liệu</h2>
 
       <Button
         type="primary"

@@ -1,0 +1,31 @@
+
+@keyframes bg-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .bg-animated {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .bg-animated::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url('../../assets/Feture_production_processing/gearLoading.jpg'); /* dùng ảnh nền xoay */
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: bg-spin 6s linear infinite;
+    opacity: 0.1; /* điều chỉnh độ mờ nếu muốn */
+    z-index: 0;
+  }
+  

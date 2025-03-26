@@ -7,7 +7,6 @@ import {
   Tag,
   Button,
   Modal,
-  message,
   Form,
   Descriptions,
   InputNumber,
@@ -17,16 +16,17 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import { useLocation } from "react-router-dom";
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
-  "Đã duyệt": "green",
-  "Đang xử lý": "blue",
-  "Hoàn thành": "purple",
-  "Đã xóa": "red",
+  "Chờ xuất kho": "blue",
+  "Đã xuất kho": "green",
+  "Hủy bỏ": "red",
 };
 
 const RawMaterialBatchList = () => {
@@ -53,6 +53,8 @@ const RawMaterialBatchList = () => {
   const [loading, setLoading] = useState(false);
   const searchInput = useRef(null);
 
+  const location = useLocation();
+
   // Fetch danh sách lô nguyên liệu
   const fetchData = async () => {
     setLoading(true);
@@ -68,7 +70,7 @@ const RawMaterialBatchList = () => {
         set_fuel_managements(getAllManagements.requests);
       }
     } catch (error) {
-      message.error("Lỗi khi tải danh sách lô nguyên liệu!");
+      toast.error("Lỗi khi tải danh sách lô nguyên liệu!");
     } finally {
       setLoading(false);
     }
@@ -87,7 +89,7 @@ const RawMaterialBatchList = () => {
         setStorages([]); // Nếu không có dữ liệu, gán storages là mảng trống
       }
     } catch (error) {
-      message.error("Lỗi khi tải danh sách kho lưu trữ!");
+      toast.error("Lỗi khi tải danh sách kho lưu trữ!");
       setStorages([]); // Nếu có lỗi, gán mảng trống
     }
   };
@@ -101,6 +103,15 @@ const RawMaterialBatchList = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.createdSuccess) {
+      toast.success("Tạo lô nguyên liệu thành công!");
+  
+      // 👉 Xoá flag để tránh toast lặp nếu user refresh lại trang
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
@@ -258,9 +269,7 @@ const RawMaterialBatchList = () => {
 
   const handleEdit = (record) => {
     if (record.status !== "Đang chuẩn bị") {
-      message.error(
-        "Lô hàng này không thể chỉnh sửa vì không ở trạng thái 'Đang chuẩn bị'"
-      );
+      toast.error("Chỉ được chỉnh sửa lô ở trạng thái 'Đang chuẩn bị'");
       return;
     }
 
@@ -341,11 +350,8 @@ const RawMaterialBatchList = () => {
   };
 
   const handleChangeStorage = (value) => {
-    setStorageId(value); 
+    setStorageId(value);
   };
-  
-
-  console.log("storageId: ", storageId);
 
   const handleKeyDown = (event) => {
     if (
@@ -365,7 +371,7 @@ const RawMaterialBatchList = () => {
     }
 
     if (value === 0 || /e|E|[^0-9]/.test(value)) {
-      message.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
+      toast.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
       form.setFieldsValue({ quantity: null });
       return;
     }
@@ -383,8 +389,8 @@ const RawMaterialBatchList = () => {
         const availableFuel = selectedFuel.quantity;
         if (required > availableFuel) {
           const maxProduction = Math.floor(availableFuel * 0.9);
-          message.warning(
-            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
+          toast.warning(
+            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có...`
           );
           form.setFieldsValue({
             quantity: maxProduction,
@@ -423,7 +429,7 @@ const RawMaterialBatchList = () => {
       </div>
 
       <Loading isPending={loading}>
-        <Table columns={columns} dataSource={tableData} />
+        <Table columns={columns} dataSource={tableData}  pagination={{ pageSize: 6 }} />
       </Loading>
 
       <DrawerComponent
@@ -627,7 +633,7 @@ const RawMaterialBatchList = () => {
 
             {/* Nút chỉnh sửa */}
             <div className="flex justify-center mt-4">
-              {!isEditMode && (
+              {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" && (
                 <Button
                   type="primary"
                   onClick={() => handleEdit(selectedBatch)}
@@ -640,6 +646,20 @@ const RawMaterialBatchList = () => {
           </>
         )}
       </DrawerComponent>
+
+      {/* ToastContainer */}
+      <ToastContainer
+        hideProgressBar={false}
+        position="top-right"
+        newestOnTop={false}
+        pauseOnFocusLoss
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+        rtl={false}
+        draggable
+      />
     </div>
   );
 };

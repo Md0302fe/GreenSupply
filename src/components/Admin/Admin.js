@@ -82,17 +82,19 @@ const Admin = (props) => {
   ];
 
   const renderNavigations = () => {
-    return navigationsData.map(({ icon, label, href }, index) => (
+    return navigationsData.map(({ icon, label, href, text }, index) => (
       <div
         key={index}
-        className={`flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 group ${
-          toggleIcons === label
+        className={`relative group flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 group ${toggleIcons === label
             ? "bg-gray-100  text-blue-500"
             : "bg-black hover:bg-gray-100"
-        }`}
+          }`}
         onClick={() => handleTogge(label, href)} // Cập nhật trạng thái khi nhấp
       >
         <button className="flex justify-center items-center">{icon}</button>
+        <span className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition-all duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10">
+          {text}
+        </span>
       </div>
     ));
   };
@@ -108,7 +110,7 @@ const Admin = (props) => {
       <div className="admin-sidebar min-h-screen">
         <Sidebar collapsed={collapsed}></Sidebar>
       </div>
-      <div className="admin-content w-full">
+      <div className="admin-content w-full overflow-x-hidden">
         {/* New Nav */}
         <div className="flex items-center bg-gray-400 px-6 py-2 rounded-b-[50px] space-x-4">
           <div className="flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-gray-200  hover:text-black p-2 transition-all duration-200 group rounded-[50%]">

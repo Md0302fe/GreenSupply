@@ -24,6 +24,8 @@ import Highlighter from "react-highlight-words";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+import { useLocation } from "react-router-dom";
+
 import { getBase64 } from "../../../../ultils";
 
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
@@ -41,6 +43,10 @@ const UserComponent = () => {
   const [fuel_types, setFuel_Types] = useState({});
 
   const user = useSelector((state) => state.user);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const filterStatus = queryParams.get("status"); // Ví dụ: "Chờ duyệt"
+
 
   //  Search Props
   const [searchText, setSearchText] = useState("");
@@ -432,14 +438,26 @@ const UserComponent = () => {
   };
 
   // Kiểm tra nếu `data_purchase?.data` là một mảng hợp lệ
+  // const tableData = Array.isArray(data_purchase?.data)
+  //   ? data_purchase.data.map((purchaseOrder) => ({
+  //       ...purchaseOrder,
+  //       key: purchaseOrder._id || "",
+  //       // start_received: convertDateStringV1(purchaseOrder.start_received),
+  //       // end_received: convertDateStringV1(purchaseOrder.end_received),
+  //     }))
+  //   : [];
+
   const tableData = Array.isArray(data_purchase?.data)
-    ? data_purchase.data.map((purchaseOrder) => ({
+  ? data_purchase.data
+      .filter((item) => {
+        if (!filterStatus) return true;
+        return item.status === filterStatus;
+      })
+      .map((purchaseOrder) => ({
         ...purchaseOrder,
         key: purchaseOrder._id || "",
-        // start_received: convertDateStringV1(purchaseOrder.start_received),
-        // end_received: convertDateStringV1(purchaseOrder.end_received),
       }))
-    : [];
+  : [];
 
   // Actions
   const renderAction = (text, record) => {

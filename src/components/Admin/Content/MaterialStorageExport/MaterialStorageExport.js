@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, Input, Select, DatePicker, Button, message } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
+import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { createMaterialStorageExport } from "../../../../services/MaterialStorageExportService";
 import * as UserServices from "../../../../services/UserServices";
+import { toast } from "react-toastify";
 
 const MaterialStorageExport = () => {
   const [form] = Form.useForm();
@@ -14,6 +17,8 @@ const MaterialStorageExport = () => {
   const [loadingProduction, setLoadingProduction] = useState(false);
   const [loadingBatch, setLoadingBatch] = useState(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,7 +28,7 @@ const MaterialStorageExport = () => {
         const formattedToken = token.replace(/^"(.*)"$/, "$1");
 
         if (!token) {
-          message.error("Bạn chưa đăng nhập.");
+          toast.error("Bạn chưa đăng nhập.");
           return;
         }
 
@@ -31,7 +36,7 @@ const MaterialStorageExport = () => {
         const userId = decodedToken?.id;
 
         if (!userId) {
-          message.error("Không tìm thấy ID người dùng.");
+          toast.error("Không tìm thấy ID người dùng.");
           return;
         }
 
@@ -48,11 +53,11 @@ const MaterialStorageExport = () => {
         if (response.data && response.data.status === "OK") {
           setUser(response.data.data);
         } else {
-          message.error("Không thể lấy thông tin người dùng.");
+          toast.error("Không thể lấy thông tin người dùng.");
         }
       } catch (error) {
         console.error("Lỗi khi lấy user:", error);
-        message.error("Lỗi khi lấy thông tin người dùng từ server.");
+        toast.error("Lỗi khi lấy thông tin người dùng từ server.");
       }
     };
 
@@ -86,7 +91,7 @@ const MaterialStorageExport = () => {
         //   batchRes.data.batches || batchRes.data.requests || []
         // );
       } catch (error) {
-        message.error("Lỗi khi tải dữ liệu từ server.");
+        toast.error("Lỗi khi tải dữ liệu từ server.");
       } finally {
         setLoadingProduction(false);
         setLoadingBatch(false);
@@ -96,26 +101,74 @@ const MaterialStorageExport = () => {
     fetchData();
   }, []);
 
+  // const handleProductionRequestChange = (value) => {
+  //   const batch = rawMaterialBatches.find(
+  //     (b) => b.production_request_id === value
+  //   );
+  //   if (batch) {
+  //     setSelectedBatch(batch);
+  //     form.setFieldsValue({ batch_id: batch._id }); // dùng _id để submit
+  //   } else {
+  //     setSelectedBatch(null);
+  //     form.setFieldsValue({ batch_id: null });
+  //   }
+  // };
+
+  const handleBatchChange = (value) => {
+    const selectedBatch = rawMaterialBatches.find((b) => b._id === value);
+
+    if (selectedBatch?.production_request_id) {
+      form.setFieldsValue({
+        production_request_id: selectedBatch.production_request_id,
+      });
+    } else {
+      form.setFieldsValue({ production_request_id: null });
+    }
+  };
+
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
 
       if (!user || !user._id) {
-        message.error("Không tìm thấy thông tin người dùng.");
+        toast.error("Không tìm thấy thông tin người dùng.");
         return;
       }
+
+      const access_token = localStorage
+        .getItem("access_token")
+        ?.replace(/^"(.*)"$/, "$1");
 
       const dataRequest = {
         ...values,
         user_id: user._id,
       };
 
-      const response = await createMaterialStorageExport(dataRequest);
-      message.success("Tạo đơn xuất kho thành công!");
+      // Gọi API tạo đơn xuất kho
+      await createMaterialStorageExport(dataRequest);
+
+      // Gọi API cập nhật trạng thái lô nguyên liệu thành "Chờ xuất kho"
+      await RawMaterialBatches.updateRawMaterialBatchStatus(
+        values.batch_id,
+        "Chờ xuất kho",
+        access_token
+      );
+
       form.resetFields();
+
+      // Reload danh sách lô nguyên liệu
+      const updatedBatches =
+        await RawMaterialBatches.getAllRawMaterialBatches();
+      const filteredBatches = updatedBatches.filter(
+        (batch) => batch.status === "Đang chuẩn bị"
+      );
+      setRawMaterialBatches(filteredBatches);
+
+      navigate("/system/admin/material-storage-export-list", {
+        state: { createdSuccess: true },
+      });
     } catch (error) {
-      console.error("Lỗi khi tạo đơn xuất kho:", error);
-      message.error(error.response?.data?.message || "Lỗi không xác định!");
+      toast.error(error.response?.data?.message || "Lỗi không xác định!");
     } finally {
       setLoading(false);
     }
@@ -137,21 +190,6 @@ const MaterialStorageExport = () => {
         )}
 
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          {/* Chọn Đơn sản xuất */}
-          <Form.Item
-            label="Chọn Đơn sản xuất"
-            name="production_request_id"
-            rules={[{ required: true, message: "Vui lòng chọn đơn sản xuất" }]}
-          >
-            <Select placeholder="Chọn đơn sản xuất" loading={loadingProduction}>
-              {productionRequests.map((request) => (
-                <Select.Option key={request._id} value={request._id}>
-                  {request.request_name} - {request.status}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-
           {/* Chọn Lô nguyên liệu */}
           <Form.Item
             label="Chọn Lô nguyên liệu"
@@ -160,10 +198,33 @@ const MaterialStorageExport = () => {
               { required: true, message: "Vui lòng chọn lô nguyên liệu" },
             ]}
           >
-            <Select placeholder="Chọn lô nguyên liệu" loading={loadingBatch}>
+            <Select
+              placeholder="Chọn lô nguyên liệu"
+              loading={loadingBatch}
+              onChange={handleBatchChange}
+            >
               {rawMaterialBatches.map((batch) => (
                 <Select.Option key={batch._id} value={batch._id}>
                   {batch.batch_name} - {batch.quantity} Kg ({batch.status})
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* Chọn Đơn sản xuất */}
+          <Form.Item
+            label="Chọn Đơn sản xuất"
+            name="production_request_id"
+            rules={[{ required: true, message: "Vui lòng chọn đơn sản xuất" }]}
+          >
+            <Select
+              placeholder="Chọn đơn sản xuất"
+              loading={loadingProduction}
+              disabled
+            >
+              {productionRequests.map((request) => (
+                <Select.Option key={request._id} value={request._id}>
+                  {request.request_name} - {request.status}
                 </Select.Option>
               ))}
             </Select>
@@ -180,7 +241,7 @@ const MaterialStorageExport = () => {
 
           {/* Loại đơn xuất kho */}
           <Form.Item
-            label="Loại đơn xuất kho"
+            label="Loại đơn"
             name="type_export"
             initialValue="Đơn sản xuất"
           >

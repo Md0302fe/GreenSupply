@@ -1,127 +1,87 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Ensure react-router-dom is installed
-import { FaUser } from "react-icons/fa"; // Import biểu tượng từ react-icons
+import { Link } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
 
 import mng_request_orders from "../../assets/Feature_order_suppliers/mng_request_orders.jpg";
 import mng_supply_orders from "../../assets/Feature_order_suppliers/mng_supply_orders.jpg";
 import mng_receipt_orders from "../../assets/Feature_order_suppliers/mng_receipt_orders.jpg";
-
-import { FaShoppingCart } from "react-icons/fa";
-
+import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 
 const UserComponent = () => {
   return (
-    <div className="flex flex-col space-y-6 p-6">
+    <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
-      <div className="flex items-center text-2xl font-semibold text-gray-800 mb-4">
-        <FaShoppingCart className="text-3xl text-blue-500 mr-2" />{" "}
-        {/* Biểu tượng người dùng */}
+      <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
+        <FaShoppingCart className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
           Quản Lý Yêu Cầu Supplier
-          <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>{" "}
-          {/* Hiệu ứng gạch dưới */}
+          <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
 
       {/* Feature Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {/* Danh sách yêu cầu thu nguyên liệu */}
-        <div
-          className="relative cursor-pointer rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform overflow-hidden" // Thêm overflow-hidden
-          style={{ height: "200px", width: "300px" }}
-        >
-          {/* Thẻ div cho ảnh nền */}
-          <Link
-            to={"/system/admin/manage-fuel-orders"}
-            className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
-          >
-            <div
-              className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
-              style={{
-                backgroundImage: `url(${mng_request_orders})`,
-                filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
-              }}
-            ></div>
-            {/* Lớp phủ */}
-            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
-            {/* Nội dung văn bản */}
-            <div className="relative flex flex-col justify-center items-center h-full">
-              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-                D.sách yêu cầu thu nguyên liệu
-              </h6>
-              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-                Quản lý danh sách các yêu cầu thu nguyên liệu
-              </p>
-            </div>
-          </Link>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
+           {/* Dashboard */}
+           <Card
+          link="/system/admin/manage-Supplier-orders"
+          title="Dashboard"
+          description="Thông tin toàn yêu cầu supplier"
+          image={mng_dashboard_Purchasedorders}
+        />
+        <Card
+          link="/system/admin/manage-fuel-orders"
+          title="D.sách yêu cầu thu nguyên liệu"
+          description="Quản lý danh sách các yêu cầu thu nguyên liệu"
+          image={mng_request_orders}
+        />
 
-        {/* Danh sách yêu cầu cung cấp nguyên liệu */}
-        <div
-          className="relative rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform overflow-hidden" // Thêm overflow-hidden
-          style={{ height: "200px", width: "300px" }}
-        >
-          {/* Thẻ div cho ảnh nền */}
-          <Link
-            to={"/system/admin/manage-provide-orders"}
-            className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
-          >
-            <div
-              className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
-              style={{
-                backgroundImage: `url(${mng_supply_orders})`,
-                filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
-              }}
-            ></div>
-            {/* Lớp phủ */}
-            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
-            {/* Nội dung văn bản */}
-            <div className="relative flex flex-col justify-center items-center h-full p-4">
-              {/* Thêm padding cho nội dung */}
-              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-              D.sách yêu cầu cung cấp nguyên liệu
-              </h6>
-              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-              Quản lý danh sách các yêu cầu cung cấp nguyên liệu
-              </p>
-            </div>
-          </Link>
-        </div>
+        <Card
+          link="/system/admin/manage-provide-orders"
+          title="D.sách yêu cầu cung cấp nguyên liệu"
+          description="Quản lý danh sách các yêu cầu cung cấp nguyên liệu"
+          image={mng_supply_orders}
+        />
 
-        {/* Tạo yêu cầu nhập kho */}
-        <div
-          className="relative rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 transform overflow-hidden" // Thêm overflow-hidden
-          style={{ height: "200px", width: "300px" }}
-        >
-          {/* Thẻ div cho ảnh nền */}
-          <Link
-            to={"/system/admin/View-Order-Success"}
-            className="mt-4 text-white hover:text-yellow-300 text-sm font-bold transition-all duration-300"
-          >
-            <div
-              className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center rounded-lg"
-              style={{
-                backgroundImage: `url(${mng_receipt_orders})`,
-                filter: "blur(2px)", // Chỉ áp dụng mờ cho ảnh nền
-              }}
-            ></div>
-            {/* Lớp phủ */}
-            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-lg transition-all duration-300"></div>
-            {/* Nội dung văn bản */}
-            <div className="relative flex flex-col justify-center items-center h-full p-4">
-              {/* Thêm padding cho nội dung */}
-              <h6 className="text-lg text-center font-semibold text-white shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-               Tạo yêu cầu nhập kho
-              </h6>
-              <p className="text-sm text-center text-white mt-1 shadow-md transition-all duration-300 hover:border-b-2 hover:border-yellow-300">
-               Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho 
-              </p>
-            </div>
-          </Link>
-        </div>
+        <Card
+          link="/system/admin/View-Order-Success"
+          title="Tạo yêu cầu nhập kho"
+          description="Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+          image={mng_receipt_orders}
+        />
       </div>
     </div>
   );
 };
+
+const Card = ({ link, title, description, image }) => (
+  <div className="relative w-full max-w-xs h-[240px] cursor-pointer rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-transform duration-300 overflow-hidden">
+    <Link
+      to={link}
+      className="w-full h-full flex flex-col justify-center items-center text-white text-sm font-bold transition-all duration-300"
+    >
+      {/* Background image */}
+      <div
+        className="absolute top-0 left-0 right-0 bottom-0 bg-contain bg-no-repeat bg-center rounded-xl"
+        style={{
+          backgroundImage: `url(${image})`,
+          filter: "blur(2px)",
+        }}
+      ></div>
+
+      {/* Overlay */}
+      <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-60 rounded-xl"></div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col justify-center items-center h-full text-center px-4">
+        <h6 className="text-lg font-semibold hover:border-b-2 hover:border-yellow-300">
+          {title}
+        </h6>
+        <p className="text-sm text-white mt-1 hover:border-b-2 hover:border-yellow-300">
+          {description}
+        </p>
+      </div>
+    </Link>
+  </div>
+);
 
 export default UserComponent;

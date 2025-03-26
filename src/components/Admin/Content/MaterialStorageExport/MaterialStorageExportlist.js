@@ -11,16 +11,17 @@ import {
   Space,
 } from "antd";
 import { SearchOutlined, FilterOutlined } from "@ant-design/icons";
-import axios from "axios";
+import axios from "axios";  
 import { useSelector } from "react-redux";
 import _ from "lodash";
-
-import { useMutationHooks } from "../../../../hooks/useMutationHook";
+import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
+import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import Loading from "../../../LoadingComponent/Loading";
-import DrawerComponent from "../../../DrawerComponent/DrawerComponent"; // ✅ dùng Drawer thay vì Modal
+import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
-
+import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
+import { useLocation } from "react-router-dom";
 import { convertDateStringV1 } from "../../../../ultils";
 
 const { Option } = Select;
@@ -32,6 +33,7 @@ const statusColors = {
 };
 
 const MaterialStorageExportList = () => {
+  const location = useLocation();
   const [exports, setExports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedExport, setSelectedExport] = useState(null);
@@ -71,6 +73,14 @@ const MaterialStorageExportList = () => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (location.state?.createdSuccess) {
+      toast.success("Tạo đơn xuất kho thành công!");
+
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const debounceFn = _.debounce(() => {
@@ -257,45 +267,64 @@ const MaterialStorageExportList = () => {
   ];
 
   // Accept Request
-  // Accept Request
   const mutationAccept = useMutationHooks(async (data) => {
     const response = await MaterialServices.handleAcceptMaterialExport(data);
     return response;
   });
   const { isPending, isSuccess, data } = mutationAccept;
-  const handleAccept = () => {
-    mutationAccept.mutate({
-      access_token: userRedux?.access_token,
-      storage_export_id: selectedExport._id,
-    });
+
+  const handleAccept = async () => {
+    try {
+      await mutationAccept.mutateAsync({
+        access_token: userRedux?.access_token,
+        storage_export_id: selectedExport._id,
+      });
+
+      const batchId = selectedExport?.batch_id?._id;
+
+      if (batchId) {
+        await RawMaterialBatches.updateRawMaterialBatchStatus(
+          batchId,
+          "Đã xuất kho",
+          userRedux?.access_token
+        );
+      }
+
+      toast.success("Duyệt đơn thành công");
+      setIsDrawerOpen(false);
+      fetchExports();
+    } catch (error) {
+      console.error("Lỗi khi duyệt đơn:", error);
+      toast.error("Lỗi khi duyệt đơn hoặc cập nhật trạng thái!");
+    }
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      if (data?.success) {
-        toast.success("Xác nhận đơn thành công");
-        setIsDrawerOpen(false);
-      } else {
-        toast.error("Xác nhận đơn thất bại");
-        setIsDrawerOpen(false);
-      }
-      fetchExports();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, data]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     if (data?.success) {
+  //       toast.success("Xác nhận đơn thành công");
+  //       setIsDrawerOpen(false);
+  //     } else {
+  //       toast.error("Xác nhận đơn thất bại");
+  //       setIsDrawerOpen(false);
+  //     }
+  //     fetchExports();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isSuccess, data]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      if (data?.success) {
-        toast.success("Xác nhận đơn thành công");
-        setIsDrawerOpen(false);
-      } else {
-        toast.error("Xác nhận đơn thất bại");
-        setIsDrawerOpen(false);
-      }
-      fetchExports();
-    }
-  }, [isSuccess, data]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     if (data?.success) {
+  //       toast.success("Xác nhận đơn thành công");
+  //       setIsDrawerOpen(false);
+  //     } else {
+  //       toast.error("Xác nhận đơn thất bại");
+  //       setIsDrawerOpen(false);
+  //     }
+  //     fetchExports();
+  //   }
+  // }, [isSuccess, data]);
 
   const handleSortChange = (value) => {
     setSortOrder(value);
@@ -392,7 +421,7 @@ const MaterialStorageExportList = () => {
           columns={columns}
           dataSource={exports}
           rowKey="_id"
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 6 }}
         />
       </Loading>
 
@@ -450,7 +479,7 @@ const MaterialStorageExportList = () => {
           <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-3">
             <button
               type="button"
-              onClick={handleReject} // Chỉ đóng form, không cập nhật
+              onClick={handleReject}
               className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
             >
               Hủy yêu cầu
@@ -458,13 +487,27 @@ const MaterialStorageExportList = () => {
 
             <button
               onClick={handleAccept}
-              className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+              className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
             >
-              ✅Duyệt đơn
+              Duyệt đơn
             </button>
           </div>
         )}
       </DrawerComponent>
+      
+      {/* ToastContainer */}
+      <ToastContainer
+        hideProgressBar={false}
+        position="top-right"
+        newestOnTop={false}
+        pauseOnFocusLoss
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        theme="light"
+        rtl={false}
+        draggable
+      />
     </div>
   );
 };

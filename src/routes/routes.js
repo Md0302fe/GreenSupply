@@ -56,8 +56,22 @@ import FeatureProductProcess from "../components/FeatureComponent/FeatureProduct
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
+<<<<<<< HEAD
 import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
+=======
+import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
+import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
+import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
+import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
+import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess";
+import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
+>>>>>>> 36c8c04110560804518292239233b25b14ee0ede
 
+import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
+import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
+
+import DashboardProductionProcess from "../components/Admin/Content/Dashboard/DashboardProductionProcess";
+import DashboardSupplyRequest from "../components/Admin/Content/Dashboard/DashboardSupplierRequest";
 const Router = () => {
   return (
     <>
@@ -116,15 +130,30 @@ const Router = () => {
           <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />
           <Route path="C_purchase-order" element={<PurchaseOrder />} />
           <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+          <Route path="manage-Supplier-request" element={<DashboardSupplyRequest />} />
+          <Route path="manage-Supplier-orders" element={<DashboardSupplierOrder />} />
 
           {/* Material type Management*/}
           <Route path="feature_material_category" element={<FeatureMaterial />} />
           <Route path="fuel-list" element={<FuelList />} />
+          <Route path="manage-fuel" element={<DashboardFuel />} />
+
 
           {/* Production Process Management */}
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
+         
+
+            {/* Danh sách quy trình sản xuất */}
+          <Route path="production-processing-list" element={<ProductionProcessingList />} />
+          <Route path="production-processing" element={<ProductionRequestFinishList />} />
+          <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
+          <Route path="process-histories" element={<ProductionHistories />} />
+          {/* ROUTES QUY TRÌNH ĐANG THỰC THI */}
+          <Route path="processing-system" element={<ProcessingManagement />} />
+          <Route path="process_details/:process_id" element={<ProcessingDetails />} />
+          <Route path="dashboard-production-request" element={<DashboardProductionProcess />} />
         </Route>
 
           {/* Profile Management */}
