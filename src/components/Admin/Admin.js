@@ -13,6 +13,7 @@ import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
 import { MdDashboardCustomize } from "react-icons/md";
 import { FaLemon } from "react-icons/fa6";
+import { FaFileInvoice  } from "react-icons/fa6";
 
 import Sidebar from "./Sidebar";
 
@@ -71,7 +72,7 @@ const Admin = (props) => {
     },
 
     {
-      icon: <FaShoppingCart className="text-2xl" />,
+      icon: <FaFileInvoice   className="text-2xl" />,
       text: "Q.lý đơn đặt hàng",
       label: "manaement_product_orders",
       href: "feature_product_orders",

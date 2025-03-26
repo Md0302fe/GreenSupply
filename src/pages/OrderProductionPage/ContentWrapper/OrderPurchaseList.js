@@ -53,40 +53,40 @@ const OrdersComponent = () => {
   const handleEdit = async (record) => {
     setRowSelected(record._id);
     try {
-        const res = await OrderProductionService.getAllOrdersDetail(record._id);
-        console.log("Order details response:", res);
+      const res = await OrderProductionService.getAllOrdersDetail(record._id);
+      console.log("Order details response:", res);
 
-        if (res) {
-            const orderDetail = res.res;
-            console.log("Order Detail:", orderDetail);
+      if (res) {
+        const orderDetail = res.res;
+        console.log("Order Detail:", orderDetail);
 
-            // Gọi API lấy danh sách địa chỉ
-            let userAddressesList = [];
-            let selectedAddress = null;
+        // Gọi API lấy danh sách địa chỉ
+        let userAddressesList = [];
+        let selectedAddress = null;
 
-            if (orderDetail.user_id) {
-                const addressRes = await getUserAddresses(orderDetail.user_id);
-                console.log("User addresses:", addressRes);
+        if (orderDetail.user_id) {
+          const addressRes = await getUserAddresses(orderDetail.user_id);
+          console.log("User addresses:", addressRes);
 
-                userAddressesList = addressRes.addresses;
-                selectedAddress = userAddressesList.find(addr => addr._id === orderDetail.shippingAddressId);
-            }
-
-            console.log("Selected Address:", selectedAddress);
-
-            // Cập nhật danh sách địa chỉ vào state
-            setUserAddresses(userAddressesList);
-
-            setIsDrawerOpen(true);
-            formUpdate.setFieldsValue({
-                shippingAddressId: selectedAddress ? selectedAddress._id : null,
-                note: orderDetail.note || "",
-            });
+          userAddressesList = addressRes.addresses;
+          selectedAddress = userAddressesList.find(addr => addr._id === orderDetail.shippingAddressId);
         }
+
+        console.log("Selected Address:", selectedAddress);
+
+        // Cập nhật danh sách địa chỉ vào state
+        setUserAddresses(userAddressesList);
+
+        setIsDrawerOpen(true);
+        formUpdate.setFieldsValue({
+          shippingAddressId: selectedAddress ? selectedAddress._id : null,
+          note: orderDetail.note || "",
+        });
+      }
     } catch (error) {
-        console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+      console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
     }
-};
+  };
 
 
 
@@ -263,14 +263,15 @@ const OrdersComponent = () => {
       key: "status",
       filters: [
         { text: "Chờ xác nhận", value: "Chờ xác nhận" },
-        { text: "Đang giao", value: "Đang giao" },
-        { text: "Đã hoàn thành", value: "Đã hoàn thành" },
+        { text: "Đang xử lý", value: "Đang xử lý" },
+        { text: "Đang vận chuyển", value: "Đang vận chuyển" },
+        { text: "Đã giao hàng", value: "Đã giao hàng" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (status) => {
         let color = "orange";
-        if (status === "Đang giao") color = "blue";
-        if (status === "Đã hoàn thành") color = "green";
+        if (status === "Đang vận chuyển") color = "blue";
+        if (status === "Đã giao hàng") color = "green";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -292,6 +293,8 @@ const OrdersComponent = () => {
       key: "actions",
       render: (_, record) => {
         const isPending = record.status === "Chờ duyệt";
+        const canUpdate = record.status === "Chờ xác nhận";
+        
         return (
           <Space>
             <Button
@@ -301,16 +304,20 @@ const OrdersComponent = () => {
             />
             <Button
               type="primary"
+              disabled={!canUpdate}
               loading={mutationUpdate.isPending && rowSelected === record._id}
-              onClick={() => handleEdit(record)}
+              onClick={() => canUpdate && handleEdit(record)}
+              style={{
+                backgroundColor: !canUpdate ? "rgba(0, 136, 255, 0.5)" : undefined,
+                borderColor: !canUpdate ? "rgba(0, 136, 255, 0.5)" : undefined,
+              }}
             >
               {mutationUpdate.isPending && rowSelected === record._id ? "Đang cập nhật..." : "Cập nhật"}
             </Button>
-
           </Space>
         );
       },
-    },
+    }
   ];
 
   return (
