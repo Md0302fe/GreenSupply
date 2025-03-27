@@ -29,3 +29,26 @@ export const getAllOrders = async (filters = {}) => {
   }
 };
 
+
+export const getAllOrdersDetail = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/order-detail/${id}`);
+    return response.data; 
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+    throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
+  }
+};
+
+
+
+
+export const updateOrderAddress = async (orderId, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/updateOrderProduction/${orderId}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật địa chỉ đơn hàng:", error);
+    throw new Error(error.response?.data?.message || "Có lỗi xảy ra!");
+  }
+};

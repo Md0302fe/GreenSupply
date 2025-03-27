@@ -48,7 +48,7 @@ import RawMaterialBatch from "../components/Admin/Content/RawMaterialBatch/RawMa
 import MaterialStorageExport from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExport";
 import MaterialStorageExportList from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportlist";
 import BatchHistory from "../components/Admin/Content/MaterialStorageExport/MaterialStorageExportHistory"
-
+import OrdersComponent from "../components/Admin/Content/ProductOrder/OrderProductList";
 // Import Page Feature 
 import FeatureMaterial from "../components/FeatureComponent/FeatureMaterial";
 import FeatureOrdersSuppier from "../components/FeatureComponent/FeatureOrdersSuppier";
@@ -56,12 +56,16 @@ import FeatureProductProcess from "../components/FeatureComponent/FeatureProduct
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
+<<<<<<< HEAD
+import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
+=======
 import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
 import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
+>>>>>>> 36c8c04110560804518292239233b25b14ee0ede
 
 import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
 import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
@@ -117,6 +121,10 @@ const Router = () => {
           <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
           <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
           <Route path="View-Order-Success" element={<OrderPage />} />
+
+           {/* Product Order Management */}
+          <Route path="feature_product_orders" element={<FeatureProductOrders />} />
+          <Route path="manage-product-orders" element={<OrdersComponent/>} />
           
           {/* Purchase Order Management */}
           <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />

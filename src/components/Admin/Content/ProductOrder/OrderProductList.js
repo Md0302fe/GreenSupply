@@ -3,19 +3,19 @@ import { Button, Form, Input, Modal, Table, Tag, Space, message, Select } from "
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as OrderProductionService from "../../../services/OrderProductionService";
-import * as FuelEntryServices from "../../../services/FuelEntryServices";
-import { converDateString } from "../../../ultils";
-import Loading from "../../../components/LoadingComponent/Loading";
-import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
+import * as ProductOrderAdminServices from "../../../../services/ProductOrderAdminServices";
+import axios from "axios";
+import { converDateString } from "../../../../ultils";
+import Loading from "../../../../components/LoadingComponent/Loading";
+import DrawerComponent from "../../../../components/DrawerComponent/DrawerComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { useRef } from "react";
 import { EyeOutlined } from "@ant-design/icons";
-import { Card, List, Divider, Col, Row } from "antd";
-import { getUserAddresses } from "../../../services/UserService"; // Import API lấy địa chỉ
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Card, List, Divider, Col, Row, Dropdown, Menu } from "antd";
+import { getUserAddresses } from "../../../../services/UserService"; 
+import { updateOrderProcessing, updateOrderShipping, updateOrderDelivered } from "../../../../services/ProductOrderAdminServices";
+
 const OrdersComponent = () => {
   const [rowSelected, setRowSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -32,28 +32,29 @@ const OrdersComponent = () => {
   const [addresses, setAddresses] = useState([]); // Danh sách địa chỉ
   const userRedux = useSelector((state) => state.user);
   const [userAddresses, setUserAddresses] = useState([]);
+  const [setOrders] = useState([]); // Quản lý danh sách đơn hàng
+  const [orderStatus, setOrderStatus] = useState(""); // Khởi tạo trạng thái đơn hàng
 
 
   const fetchOrders = async () => {
     const access_token = user?.access_token;
     const user_id = user?.id;
-    return await OrderProductionService.getAllOrders(access_token, { user_id });
+    return await ProductOrderAdminServices.getAllOrders(access_token, { user_id });
   };
 
-  const { data: orders, isLoading } = useQuery({
+  const queryOrders = useQuery({
     queryKey: ["orders", user?.id],
     queryFn: fetchOrders,
   });
-
-
-
-
+  
+  const { isLoading, data: orders } = queryOrders;
+  
 
 
   const handleEdit = async (record) => {
     setRowSelected(record._id);
     try {
-      const res = await OrderProductionService.getAllOrdersDetail(record._id);
+      const res = await ProductOrderAdminServices.getAllOrdersDetail(record._id);
       console.log("Order details response:", res);
 
       if (res) {
@@ -88,28 +89,57 @@ const OrdersComponent = () => {
     }
   };
 
-
-
-
-  const mutationUpdate = useMutation({
-    mutationFn: ({ id, data }) => OrderProductionService.updateOrderAddress(id, data),
-    onSuccess: () => {
-      message.success("Cập nhật thành công!");
-      queryClient.invalidateQueries("orders");
-      // handleCancelUpdate();
-    },
-    onError: () => {
-      message.error("Cập nhật thất bại!");
-    },
-  });
-
-
-  const onFinishUpdate = (values) => {
-    console.log("✅ onFinishUpdate được gọi!");
-    console.log("Update values:", values);
-    console.log("Row selected ID:", rowSelected);
-    mutationUpdate.mutate({ id: rowSelected, data: values });
+  const handleUpdateProcessing = async () => {
+    try {
+      const response = await ProductOrderAdminServices.updateOrderProcessing(detailData._id);
+      if (response) {
+        setOrderStatus('Đang xử lý');
+        message.success("Cập nhật trạng thái thành 'Đang xử lý' thành công!");
+        queryOrders.refetch();
+      } else {
+        message.error("Cập nhật trạng thái thất bại!");
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi cập nhật trạng thái!");
+    }
   };
+  
+  const handleUpdateShipping = async () => {
+    try {
+      const response = await ProductOrderAdminServices.updateOrderShipping(detailData._id);
+      if (response) {
+        setOrderStatus('Đang vận chuyển');
+        message.success("Cập nhật trạng thái thành 'Đang vận chuyển' thành công!");
+        queryOrders.refetch();
+      } else {
+        message.error("Cập nhật trạng thái thất bại!");
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi cập nhật trạng thái!");
+    }
+  };
+  
+  const handleUpdateDelivered = async () => {
+    try {
+      const response = await ProductOrderAdminServices.updateOrderDelivered(detailData._id);
+      if (response) {
+        setOrderStatus('Đã giao hàng');
+        message.success("Cập nhật trạng thái thành 'Đã giao hàng' thành công!");
+        queryOrders.refetch();
+      } else {
+        message.error("Cập nhật trạng thái thất bại!");
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi cập nhật trạng thái!");
+    }
+  };
+  
+
+
+
+
+
+
 
   // Handle Confirm Delete Request
   //   const handleConfirmDelete = () => {
@@ -118,16 +148,9 @@ const OrdersComponent = () => {
 
 
 
-  // Handle Cancel Edit Drawer
-  const handleCancelUpdate = () => {
-    formUpdate.resetFields();
-    setIsDrawerOpen(false);
-  };
-
-
   const handleViewDetail = async (record) => {
     try {
-      const res = await OrderProductionService.getAllOrdersDetail(record._id);
+      const res = await ProductOrderAdminServices.getAllOrdersDetail(record._id);
       if (res) {
         const orderDetail = {
           ...res.res,
@@ -257,24 +280,24 @@ const OrdersComponent = () => {
         return <Tag color={color}>{status}</Tag>;
       },
     },
-    {
-      title: "Trạng Thái Đơn",
-      dataIndex: "status",
-      key: "status",
-      filters: [
-        { text: "Chờ xác nhận", value: "Chờ xác nhận" },
-        { text: "Đang xử lý", value: "Đang xử lý" },
-        { text: "Đang vận chuyển", value: "Đang vận chuyển" },
-        { text: "Đã giao hàng", value: "Đã giao hàng" },
-      ],
-      onFilter: (value, record) => record.status === value,
-      render: (status) => {
-        let color = "orange";
-        if (status === "Đang vận chuyển") color = "blue";
-        if (status === "Đã giao hàng") color = "green";
-        return <Tag color={color}>{status}</Tag>;
-      },
-    },
+     {
+              title: "Trạng Thái Đơn",
+              dataIndex: "status",
+              key: "status",
+              filters: [
+                { text: "Chờ xác nhận", value: "Chờ xác nhận" },
+                { text: "Đang xử lý", value: "Đang xử lý" },
+                { text: "Đang vận chuyển", value: "Đang vận chuyển" },
+                { text: "Đã giao hàng", value: "Đã giao hàng" },
+              ],
+              onFilter: (value, record) => record.status === value,
+              render: (status) => {
+                let color = "orange";
+                if (status === "Đang vận chuyển") color = "blue";
+                if (status === "Đã giao hàng") color = "green";
+                return <Tag color={color}>{status}</Tag>;
+              },
+            },
     {
       title: "Ghi Chú",
       dataIndex: "note",
@@ -293,8 +316,6 @@ const OrdersComponent = () => {
       key: "actions",
       render: (_, record) => {
         const isPending = record.status === "Chờ duyệt";
-        const canUpdate = record.status === "Chờ xác nhận";
-        
         return (
           <Space>
             <Button
@@ -302,22 +323,12 @@ const OrdersComponent = () => {
               icon={<EyeOutlined />}
               onClick={() => handleViewDetail(record)}
             />
-            <Button
-              type="primary"
-              disabled={!canUpdate}
-              loading={mutationUpdate.isPending && rowSelected === record._id}
-              onClick={() => canUpdate && handleEdit(record)}
-              style={{
-                backgroundColor: !canUpdate ? "rgba(0, 136, 255, 0.5)" : undefined,
-                borderColor: !canUpdate ? "rgba(0, 136, 255, 0.5)" : undefined,
-              }}
-            >
-              {mutationUpdate.isPending && rowSelected === record._id ? "Đang cập nhật..." : "Cập nhật"}
-            </Button>
+
+
           </Space>
         );
       },
-    }
+    },
   ];
 
   return (
@@ -327,70 +338,49 @@ const OrdersComponent = () => {
         <Table columns={columns} dataSource={orders} loading={isLoading} rowKey={(record) => record._id} pagination={{ pageSize: 5 }} />
       </div>
 
-      {/* Drawer for Editing */}
-      <DrawerComponent title="Cập Nhật Địa Chỉ & Ghi Chú" isOpen={isDrawerOpen} placement="right" width="40%">
-        <Loading isPending={mutationUpdate.isPending}>
-          <Form
-            name="update-form"
-            form={formUpdate}
-            onFinish={onFinishUpdate}
-            layout="vertical"
-          >
-            {/* Dropdown chọn địa chỉ giao hàng */}
-            <Form.Item
-              label="Địa Chỉ Giao Hàng"
-              name="shippingAddressId"
-              rules={[{ required: true, message: "Vui lòng chọn địa chỉ!" }]}
-            >
-              <Select placeholder="Chọn địa chỉ">
-                {userAddresses?.map((addr) => (
-                  <Select.Option key={addr._id} value={addr._id}>
-                    {addr.full_name} - {addr.address} - {addr.phone}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
 
-
-            {/* Ô nhập ghi chú */}
-            <Form.Item label="Ghi Chú" name="note">
-              <Input.TextArea rows={3} />
-            </Form.Item>
-
-            {/* Nút Submit trong Form */}
-            <Form.Item>
-              <Space style={{ width: "100%", display: "flex", gap: 10 }}>
-                <Button
-                  onClick={() => setIsDrawerOpen(false)}
-
-                >
-                  Đóng
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={mutationUpdate.isPending}
-
-                >
-                  {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
-                </Button>
-              </Space>
-            </Form.Item>
-
-          </Form>
-        </Loading>
-      </DrawerComponent>
 
       {/* Modal chi tiết */}
       <Modal
         title=" Chi Tiết Đơn Hàng"
         open={isDetailModalOpen}
         onCancel={() => setIsDetailModalOpen(false)}
-        footer={[
-          <Button key="close" type="primary" onClick={() => setIsDetailModalOpen(false)}>
-            Đóng
-          </Button>,
-        ]}
+        footer={
+          detailData
+            ? [
+                detailData.status !== "Đang xử lý" && (
+                  <Button
+                    key="processing"
+                    type="primary"
+                    style={{ backgroundColor: "#fa8c16", borderColor: "#fa8c16", marginRight: 8 }}
+                    onClick={() => handleUpdateProcessing("Đang xử lý")}
+                  >
+                    Đang xử lý
+                  </Button>
+                ),
+                detailData.status !== "Đang vận chuyển" && (
+                  <Button
+                    key="shipping"
+                    type="primary"
+                    style={{ backgroundColor: "#1890ff", borderColor: "#1890ff", marginRight: 8 }}
+                    onClick={() => handleUpdateShipping("Đang vận chuyển")}
+                  >
+                    Đang vận chuyển
+                  </Button>
+                ),
+                detailData.status !== "Đã giao hàng" && (
+                  <Button
+                    key="delivered"
+                    type="primary"
+                    style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+                    onClick={() => handleUpdateDelivered("Đã giao hàng")}
+                  >
+                    Đã giao hàng
+                  </Button>
+                ),
+              ].filter(Boolean)
+            : null
+        }
       >
         {detailData ? (
           <Card bordered={false} style={{ textAlign: "left" }}>
