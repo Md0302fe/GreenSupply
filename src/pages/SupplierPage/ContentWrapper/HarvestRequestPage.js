@@ -36,7 +36,7 @@ const HarvestRequestPage = () => {
 
     // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
     if (name === "fuel_name") {
-      if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9]+$/.test(value)) {
+      if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9\u0100-\u017F]+$/.test(value)) {
         newErrors.fuel_name = "Tên mặt hàng chỉ chứa chữ, số và khoảng trắng!";
       } else {
         delete newErrors.fuel_name;
@@ -44,7 +44,7 @@ const HarvestRequestPage = () => {
       setFormData((prev) => ({ ...prev, [name]: value }));
       setErrors(newErrors);
       return;
-    }
+    }    
     if (name === "fuel_type") {
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
@@ -82,7 +82,7 @@ const HarvestRequestPage = () => {
       }));
       setFuelTypeList(transformedFuels || []); // Cập nhật danh sách fuel type
     } catch (error) {
-      console.error("Lỗi khi lấy danh sách loại nhiên liệu:", error);
+      console.error("Lỗi khi lấy danh sách loại nguyên liệu:", error);
     }
   };
   
@@ -184,19 +184,14 @@ const HarvestRequestPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* fuel_name */}
           <div>
-            <label className="block mb-1 font-semibold">Tên mặt hàng</label>
+            <label className="block mb-1 font-semibold">Tên yêu cầu</label>
             <input
               type="text"
               name="fuel_name"
               maxLength="50"
-              placeholder="Tên mặt hàng..."
+              placeholder="Tên yêu cầu..."
               value={formData.fuel_name}
               onChange={handleChange}
-              onKeyDown={(e) => {
-                if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9]*$/.test(e.key)) {
-                  e.preventDefault();
-                }
-              }}
               className="border p-2 rounded w-full mb-2"
             />
             {errors.fuel_name && (
@@ -206,14 +201,14 @@ const HarvestRequestPage = () => {
 
           {/* fuel_type */}
           <div>
-            <label className="block mb-1 font-semibold">Loại nhiên liệu</label>
+            <label className="block mb-1 font-semibold">Loại nguyên liệu</label>
             <select
               name="fuel_type"
               value={formData.fuel_type}
               onChange={handleChange}
               className="border p-2 rounded w-full mb-2"
             >
-              <option value="">Chọn loại nhiên liệu</option>
+              <option value="">Chọn loại nguyên liệu</option>
               {fuelTypeList.map((fuel) => (
                 <option key={fuel._id} value={fuel._id}>
                   {fuel.type_name}
