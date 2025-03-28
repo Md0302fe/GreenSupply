@@ -56,16 +56,13 @@ import FeatureProductProcess from "../components/FeatureComponent/FeatureProduct
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
-<<<<<<< HEAD
 import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
-=======
 import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
 import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
->>>>>>> 36c8c04110560804518292239233b25b14ee0ede
 
 import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
 import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
