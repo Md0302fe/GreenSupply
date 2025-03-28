@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Table,
   Input,
@@ -12,6 +12,8 @@ import {
   Form,
   Tag
 } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 import { CheckCircleOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -43,6 +45,97 @@ const ProductionProcessingList = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div
+          style={{
+            padding: 8,
+            backgroundColor: "#f9f9f9",
+            borderRadius: 4,
+            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+            width: 220,
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Input
+            ref={searchInput}
+            placeholder="Tìm kiếm"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{
+              marginBottom: 8,
+              display: "block",
+              borderRadius: 4,
+            }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 70 }}
+            >
+              Tìm
+            </Button>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{ width: 70 }}
+            >
+              Đặt lại
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => clearFilters && confirm()}
+              style={{ padding: 0 }}
+            >
+              Đóng
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text ? text.toString() : ""}
+          />
+        ) : (
+          text
+        ),
+    });
   // Fetch data từ API
   const fetchProductionProcessing = async () => {
     const access_token = user?.access_token;
@@ -161,11 +254,13 @@ useEffect(() => {
       title: "Mã quy trình",
       dataIndex: "_id",
       key: "_id",
+      ...getColumnSearchProps("_id"),
     },
     {
       title: "Tên quy trình",
       dataIndex: "production_name",
       key: "production_name",
+      ...getColumnSearchProps("production_name"),
     },
     {
       title: "Bắt đầu",
