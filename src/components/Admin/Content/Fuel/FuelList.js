@@ -275,8 +275,8 @@ const FuelList = () => {
       dataIndex: "is_deleted",
       key: "is_deleted",
       filters: [
-        { text: "deleted", value: true },
-        { text: "active", value: false },
+        { text: "Đã xóa", value: true },
+        { text: "Chưa xóa", value: false },
       ],
       onFilter: (value, record) => record.is_deleted === value,
       render: (is_deleted) => (

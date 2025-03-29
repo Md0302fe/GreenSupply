@@ -547,6 +547,7 @@ const ProfilePage = () => {
                               <InPut
                                 type="email"
                                 value={email}
+                                disabled
                                 onChange={(e) =>
                                   handleChangeEmail(e.target.value)
                                 }
