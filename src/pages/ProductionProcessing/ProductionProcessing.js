@@ -130,7 +130,7 @@ const ProductionProcessForm = () => {
         </Button>
       </div>
       <h2 className="text-2xl font-semibold mb-4 text-center">
-        Tạo Quy Trình Sản Xuất
+        Tạo Kế Hoạch Sản Xuất
       </h2>
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
