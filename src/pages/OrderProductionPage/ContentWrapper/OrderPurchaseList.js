@@ -1,82 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Form, Input, Modal, Table, Tag, Space, message, Select } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as OrderProductionService from "../../../services/OrderProductionService";
-import * as FuelEntryServices from "../../../services/FuelEntryServices";
 import { converDateString } from "../../../ultils";
 import Loading from "../../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
-import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import { useRef } from "react";
-import { EyeOutlined } from "@ant-design/icons";
-import { Card, List, Divider, Col, Row } from "antd";
-import { getUserAddresses } from "../../../services/UserService"; // Import API lấy địa chỉ
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { getUserAddresses } from "../../../services/UserService";
+import { Card, List, Col, Row } from "antd";
+
 const OrdersComponent = () => {
   const [rowSelected, setRowSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isOpenDelete, setIsOpenDelete] = useState(false);
-  const [quantityRemain, setQuantityRemain] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [detailData, setDetailData] = useState(null);
   const [formUpdate] = Form.useForm();
   const queryClient = useQueryClient();
   const user = useSelector((state) => state.user);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [detailData, setDetailData] = useState(null);
-  const [addresses, setAddresses] = useState([]); // Danh sách địa chỉ
-  const userRedux = useSelector((state) => state.user);
   const [userAddresses, setUserAddresses] = useState([]);
-
 
   const fetchOrders = async () => {
     const access_token = user?.access_token;
     const user_id = user?.id;
-    return await OrderProductionService.getAllOrders(access_token, { user_id });
+    if (!user_id || !access_token) {
+      throw new Error("Không có thông tin user hoặc token!");
+    }
+    const allOrders = await OrderProductionService.getAllOrders(access_token);
+    console.log("All orders from API:", allOrders);
+    console.log("First order sample:", allOrders[0]);
+    console.log("Current user ID:", user_id);
+    console.log("All user IDs in orders:", allOrders.map(order => order.user_id?._id));
+    if (!Array.isArray(allOrders)) {
+      console.error("API did not return an array:", allOrders);
+      return [];
+    }
+    const filteredOrders = allOrders.filter((order) => order.user_id?._id === user_id);
+    console.log("Filtered orders:", filteredOrders);
+    return filteredOrders;
   };
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["orders", user?.id],
     queryFn: fetchOrders,
+    enabled: !!user?.id && !!user?.access_token,
   });
-
-
-
-
-
 
   const handleEdit = async (record) => {
     setRowSelected(record._id);
     try {
       const res = await OrderProductionService.getAllOrdersDetail(record._id);
-      console.log("Order details response:", res);
-
       if (res) {
         const orderDetail = res.res;
-        console.log("Order Detail:", orderDetail);
-
-        // Gọi API lấy danh sách địa chỉ
         let userAddressesList = [];
         let selectedAddress = null;
 
         if (orderDetail.user_id) {
           const addressRes = await getUserAddresses(orderDetail.user_id);
-          console.log("User addresses:", addressRes);
-
           userAddressesList = addressRes.addresses;
-          selectedAddress = userAddressesList.find(addr => addr._id === orderDetail.shippingAddressId);
+          selectedAddress = userAddressesList.find((addr) => addr._id === orderDetail.shippingAddressId);
         }
 
-        console.log("Selected Address:", selectedAddress);
-
-        // Cập nhật danh sách địa chỉ vào state
         setUserAddresses(userAddressesList);
-
         setIsDrawerOpen(true);
         formUpdate.setFieldsValue({
           shippingAddressId: selectedAddress ? selectedAddress._id : null,
@@ -88,42 +77,25 @@ const OrdersComponent = () => {
     }
   };
 
-
-
-
   const mutationUpdate = useMutation({
     mutationFn: ({ id, data }) => OrderProductionService.updateOrderAddress(id, data),
     onSuccess: () => {
       message.success("Cập nhật thành công!");
       queryClient.invalidateQueries("orders");
-      // handleCancelUpdate();
     },
     onError: () => {
       message.error("Cập nhật thất bại!");
     },
   });
 
-
   const onFinishUpdate = (values) => {
-    console.log("✅ onFinishUpdate được gọi!");
-    console.log("Update values:", values);
-    console.log("Row selected ID:", rowSelected);
     mutationUpdate.mutate({ id: rowSelected, data: values });
   };
 
-  // Handle Confirm Delete Request
-  //   const handleConfirmDelete = () => {
-  //     mutationDelete.mutate(rowSelected);
-  //   };
-
-
-
-  // Handle Cancel Edit Drawer
   const handleCancelUpdate = () => {
     formUpdate.resetFields();
     setIsDrawerOpen(false);
   };
-
 
   const handleViewDetail = async (record) => {
     try {
@@ -131,14 +103,12 @@ const OrdersComponent = () => {
       if (res) {
         const orderDetail = {
           ...res.res,
-          total_price: res.res.price * res.res.quantity, // Tính tổng tiền
+          total_price: res.res.price * res.res.quantity,
         };
 
-        // Gọi API lấy thông tin địa chỉ
         if (orderDetail.shippingAddressId) {
           const addressRes = await getUserAddresses(orderDetail.user_id);
-          const selectedAddress = addressRes.addresses.find(addr => addr._id === orderDetail.shippingAddressId);
-
+          const selectedAddress = addressRes.addresses.find((addr) => addr._id === orderDetail.shippingAddressId);
           if (selectedAddress) {
             orderDetail.shippingAddress = selectedAddress;
           }
@@ -152,8 +122,6 @@ const OrdersComponent = () => {
     }
   };
 
-
-  // Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -165,7 +133,6 @@ const OrdersComponent = () => {
     setSearchText("");
   };
 
-  // Search and filter
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -199,10 +166,14 @@ const OrdersComponent = () => {
     filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />,
     onFilter: (value, record) =>
       record[dataIndex].some((item) => item.name.toLowerCase().includes(value.toLowerCase())),
-
     render: (text) =>
       searchedColumn === dataIndex ? (
-        <Highlighter highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }} searchWords={[searchText]} autoEscape textToHighlight={text ? text.toString() : ""} />
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
       ) : (
         text
       ),
@@ -213,29 +184,21 @@ const OrdersComponent = () => {
       title: "Tên Sản Phẩm",
       dataIndex: "items",
       key: "items",
-      ...getColumnSearchProps("items"), // 🔍 Thêm tìm kiếm
-      sorter: (a, b) => {
-        const nameA = a.items.map((item) => item.name).join(", ").toLowerCase();
-        const nameB = b.items.map((item) => item.name).join(", ").toLowerCase();
-        return nameA.localeCompare(nameB);
-      },
+      ...getColumnSearchProps("items"),
+      sorter: (a, b) =>
+        a.items
+          .map((item) => item.name)
+          .join(", ")
+          .localeCompare(b.items.map((item) => item.name).join(", ")),
       render: (items) => items.map((item) => item.name).join(", "),
     },
-
-
     {
       title: "Số Lượng (Kg)",
       dataIndex: "items",
       key: "quantity",
-      render: (items) => (
-        <div>
-          {items.map((item, index) => (
-            <div key={index}>{item.quantity}</div>
-          ))}
-        </div>
-      ),
+      render: (items) =>
+        items.map((item, index) => <div key={index}>{item.quantity}</div>),
     },
-
     {
       title: "Tổng Tiền (VNĐ)",
       dataIndex: "totalAmount",
@@ -281,7 +244,6 @@ const OrdersComponent = () => {
       key: "note",
       render: (note) => note || "Không có ghi chú",
     },
-
     {
       title: "Ngày Dự Kiến Giao",
       dataIndex: "expectedDeliveryDate",
@@ -292,16 +254,10 @@ const OrdersComponent = () => {
       title: "Hành Động",
       key: "actions",
       render: (_, record) => {
-        const isPending = record.status === "Chờ duyệt";
         const canUpdate = record.status === "Chờ xác nhận";
-        
         return (
           <Space>
-            <Button
-              type="default"
-              icon={<EyeOutlined />}
-              onClick={() => handleViewDetail(record)}
-            />
+            <Button type="default" icon={<EyeOutlined />} onClick={() => handleViewDetail(record)} />
             <Button
               type="primary"
               disabled={!canUpdate}
@@ -317,26 +273,25 @@ const OrdersComponent = () => {
           </Space>
         );
       },
-    }
+    },
   ];
 
   return (
     <div className="Wrapper-Admin-Orders">
       <div className="Main-Content">
         <h5 className="content-title">Danh sách đơn hàng</h5>
-        <Table columns={columns} dataSource={orders} loading={isLoading} rowKey={(record) => record._id} pagination={{ pageSize: 5 }} />
+        <Table
+          columns={columns}
+          dataSource={orders}
+          loading={isLoading}
+          rowKey={(record) => record._id}
+          pagination={{ pageSize: 5 }}
+        />
       </div>
 
-      {/* Drawer for Editing */}
       <DrawerComponent title="Cập Nhật Địa Chỉ & Ghi Chú" isOpen={isDrawerOpen} placement="right" width="40%">
         <Loading isPending={mutationUpdate.isPending}>
-          <Form
-            name="update-form"
-            form={formUpdate}
-            onFinish={onFinishUpdate}
-            layout="vertical"
-          >
-            {/* Dropdown chọn địa chỉ giao hàng */}
+          <Form name="update-form" form={formUpdate} onFinish={onFinishUpdate} layout="vertical">
             <Form.Item
               label="Địa Chỉ Giao Hàng"
               name="shippingAddressId"
@@ -350,40 +305,23 @@ const OrdersComponent = () => {
                 ))}
               </Select>
             </Form.Item>
-
-
-            {/* Ô nhập ghi chú */}
             <Form.Item label="Ghi Chú" name="note">
               <Input.TextArea rows={3} />
             </Form.Item>
-
-            {/* Nút Submit trong Form */}
             <Form.Item>
               <Space style={{ width: "100%", display: "flex", gap: 10 }}>
-                <Button
-                  onClick={() => setIsDrawerOpen(false)}
-
-                >
-                  Đóng
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={mutationUpdate.isPending}
-
-                >
+                <Button onClick={() => setIsDrawerOpen(false)}>Đóng</Button>
+                <Button type="primary" htmlType="submit" loading={mutationUpdate.isPending}>
                   {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
                 </Button>
               </Space>
             </Form.Item>
-
           </Form>
         </Loading>
       </DrawerComponent>
 
-      {/* Modal chi tiết */}
       <Modal
-        title=" Chi Tiết Đơn Hàng"
+        title="Chi Tiết Đơn Hàng"
         open={isDetailModalOpen}
         onCancel={() => setIsDetailModalOpen(false)}
         footer={[
@@ -395,12 +333,11 @@ const OrdersComponent = () => {
         {detailData ? (
           <Card bordered={false} style={{ textAlign: "left" }}>
             <Row gutter={[16, 16]}>
-              {/* Mã đơn hàng */}
               <Col span={24}>
-                <p><strong>Mã Đơn Hàng:</strong> {detailData.orderCode}</p>
+                <p>
+                  <strong>Mã Đơn Hàng:</strong> {detailData.orderCode}
+                </p>
               </Col>
-
-              {/* Sản Phẩm */}
               <Col span={24}>
                 <strong>Sản Phẩm:</strong>
               </Col>
@@ -409,50 +346,76 @@ const OrdersComponent = () => {
                   dataSource={detailData.items}
                   renderItem={(item) => (
                     <List.Item>
-                      <strong>{item.name} - {item.quantity} Kg - {item.price.toLocaleString("vi-VN")} VND/KG</strong>
+                      <strong>
+                        {item.name} - {item.quantity} Kg - {item.price.toLocaleString("vi-VN")} VND/KG
+                      </strong>
                     </List.Item>
                   )}
                 />
               </Col>
-
-
-              {/* Thông Tin Thanh Toán */}
               <Col span={24}>
                 <strong>Thông Tin Thanh Toán:</strong>
               </Col>
               <Col span={18}>
-                <p><strong> Tổng Tiền Hàng:</strong> {detailData.totalAmount.toLocaleString("vi-VN")} VND</p>
-                <p><strong> Giảm Giá:</strong> {detailData.discount.toLocaleString("vi-VN")} VND</p>
-                <p><strong> Phí Vận Chuyển:</strong> {detailData.shippingFee.toLocaleString("vi-VN")} VND</p>
-                <p><strong> Thuế VAT:</strong> {detailData.taxAmount.toLocaleString("vi-VN")} VND</p>
-                <p><strong> Phương Thức Thanh Toán:</strong> {detailData.paymentMethod}</p>
-                <p><strong> Tổng Tiền Thanh Toán:</strong> {detailData.grandTotal.toLocaleString("vi-VN")} VND</p>
+                <p>
+                  <strong>Tổng Tiền Hàng:</strong> {detailData.totalAmount.toLocaleString("vi-VN")} VND
+                </p>
+                <p>
+                  <strong>Giảm Giá:</strong> {detailData.discount.toLocaleString("vi-VN")} VND
+                </p>
+                <p>
+                  <strong>Phí Vận Chuyển:</strong> {detailData.shippingFee.toLocaleString("vi-VN")} VND
+                </p>
+                <p>
+                  <strong>Thuế VAT:</strong> {detailData.taxAmount.toLocaleString("vi-VN")} VND
+                </p>
+                <p>
+                  <strong>Phương Thức Thanh Toán:</strong> {detailData.paymentMethod}
+                </p>
+                <p>
+                  <strong>Tổng Tiền Thanh Toán:</strong> {detailData.grandTotal.toLocaleString("vi-VN")} VND
+                </p>
               </Col>
-
-              {/* Thông Tin Vận Chuyển */}
               <Col span={24}>
                 <strong>Thông Tin Vận Chuyển:</strong>
               </Col>
               <Col span={18}>
-                <p><strong> Trạng Thái Đơn Hàng:</strong> {detailData.status}</p>
-                <p><strong> Trạng Thái Thanh Toán:</strong> {detailData.paymentStatus}</p>
-                <p><strong> Ngày Tạo Đơn:</strong> {converDateString(detailData.createdAt)}</p>
-                <p><strong> Ngày Cập Nhật:</strong> {converDateString(detailData.updatedAt)}</p>
-                <p><strong> Ngày Dự Kiến Giao:</strong> {detailData.expectedDeliveryDate ? converDateString(detailData.expectedDeliveryDate) : "Chưa xác định"}</p>
-                <p><strong> Ngày Giao Hàng:</strong> {detailData.deliveryDate ? converDateString(detailData.deliveryDate) : "Chưa giao"}</p>
+                <p>
+                  <strong>Trạng Thái Đơn Hàng:</strong> {detailData.status}
+                </p>
+                <p>
+                  <strong>Trạng Thái Thanh Toán:</strong> {detailData.paymentStatus}
+                </p>
+                <p>
+                  <strong>Ngày Tạo Đơn:</strong> {converDateString(detailData.createdAt)}
+                </p>
+                <p>
+                  <strong>Ngày Cập Nhật:</strong> {converDateString(detailData.updatedAt)}
+                </p>
+                <p>
+                  <strong>Ngày Dự Kiến Giao:</strong>{" "}
+                  {detailData.expectedDeliveryDate ? converDateString(detailData.expectedDeliveryDate) : "Chưa xác định"}
+                </p>
+                <p>
+                  <strong>Ngày Giao Hàng:</strong>{" "}
+                  {detailData.deliveryDate ? converDateString(detailData.deliveryDate) : "Chưa giao"}
+                </p>
                 {detailData.shippingAddress ? (
                   <>
-                    <p><strong>Họ và Tên:</strong> {detailData.shippingAddress.full_name}</p>
-                    <p><strong>Địa Chỉ:</strong> {detailData.shippingAddress.address}</p>
-                    <p><strong>Số Điện Thoại:</strong> {detailData.shippingAddress.phone}</p>
+                    <p>
+                      <strong>Họ và Tên:</strong> {detailData.shippingAddress.full_name}
+                    </p>
+                    <p>
+                      <strong>Địa Chỉ:</strong> {detailData.shippingAddress.address}
+                    </p>
+                    <p>
+                      <strong>Số Điện Thoại:</strong> {detailData.shippingAddress.phone}
+                    </p>
                   </>
                 ) : (
                   <p>Không có thông tin địa chỉ</p>
                 )}
-
               </Col>
-
-              {/* Ghi Chú */}
               <Col span={24}>
                 <strong>Ghi Chú:</strong>
               </Col>
@@ -465,7 +428,6 @@ const OrdersComponent = () => {
           <Loading isPending={true} />
         )}
       </Modal>
-
     </div>
   );
 };
