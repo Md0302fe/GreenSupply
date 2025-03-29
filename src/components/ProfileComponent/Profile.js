@@ -723,7 +723,7 @@ const ProfilePage = () => {
         </div>
       )}
       {otpPopupVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
             <div onClick={handleCloseOtpPopup} className="absolute top-4 right-4 cursor-pointer">
               <img src="/image/icon/close.png" alt="" className="w-4" />

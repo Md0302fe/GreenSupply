@@ -24,6 +24,7 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { useNavigate } from "react-router-dom";
 
+import defaultBackground from "../../../../assets/def_avt.jpg";
 const UserComponent = () => {
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
@@ -617,7 +618,7 @@ const UserComponent = () => {
             <Form.Item label="Review Avatar" name="avatar">
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <img
-                  src={stateDetailsUser?.avatar}
+                  src={stateDetailsUser?.avatar ? stateDetailsUser?.avatar : defaultBackground}
                   alt="Avatar User"
                   style={{
                     width: "100px",
