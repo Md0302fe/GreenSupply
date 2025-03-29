@@ -37,8 +37,8 @@ const UserComponent = () => {
         />
         <Card
           link="/system/admin/raw-material-batch-list"
-          title="Nguyên liệu thô"
-          description="Quản lý thông tin các lô nguyên liệu thô"
+          title="Lô nguyên liệu thô"
+          description="Quản lý thông tin các lô nguyên liệu thô , cần cho khâu sản xuất"
           image={mng_raw_materials}
         />
         <Card

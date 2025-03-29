@@ -213,7 +213,7 @@ const FuelList = () => {
         text
       ),
   });
-
+  console.log("fuels => ", fuels);
   // Handle export to Excel
   const handleExportFileExcel = () => {
     if (!fuels.length) {
@@ -262,9 +262,16 @@ const FuelList = () => {
       title: "Mô Tả",
       dataIndex: "description",
       key: "description",
+      width: "40%", // Thiết lập chiều rộng 300px
     },
     {
-      title: "Trạng Thái Xóa",
+      title: "Số Lượng Trong Kho",
+      dataIndex: "quantity",
+      key: "quantity",
+      sorter: (a, b) => a.quantity - (b.quantity),
+    },
+    {
+      title: "Trạng Thái",
       dataIndex: "is_deleted",
       key: "is_deleted",
       filters: [
