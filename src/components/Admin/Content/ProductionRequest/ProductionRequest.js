@@ -158,7 +158,7 @@ const ProductionRequest = () => {
           >
             <Input
               placeholder="Nhập tên yêu cầu"
-              maxLength={50}
+              maxLength={100}
               className="rounded border-gray-300"
             />
           </Form.Item>
@@ -183,7 +183,7 @@ const ProductionRequest = () => {
             </Form.Item>
 
             <Form.Item
-              label="Sản lượng mong muốn (kg)"
+              label="Sản lượng thành phẩm mong muốn (kg)"
               name="product_quantity"
               rules={[
                 { required: true, message: "Vui lòng nhập sản lượng mong muốn" },

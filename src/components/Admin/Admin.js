@@ -43,7 +43,7 @@ const Admin = (props) => {
       icon: <FaClipboard className="text-2xl" />,
       text: "Đơn thu nguyên liệu",
       label: "purchased_orders",
-      href: "feature_purchase_orders",
+      href: "/system/admin/feature_purchase_orders",
     },
     {
       icon: <FaShoppingCart className="text-2xl" />,
