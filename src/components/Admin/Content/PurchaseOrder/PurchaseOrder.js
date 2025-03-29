@@ -139,7 +139,7 @@ const HarvestRequestPage = () => {
       },
       {
         condition:
-        new Date(formData.due_date) < new Date(formData.end_received),
+          new Date(formData.due_date) < new Date(formData.end_received),
         message: "Hạn chót hoàn thành đơn phải sau ngày kết thúc nhận đơn!",
       },
       {
@@ -273,7 +273,7 @@ const HarvestRequestPage = () => {
         <div className="w-full md:w-4/5 bg-gray-100 p-6">
           <button
             onClick={() => navigate(-1)} // Quay lại trang trước đó
-            className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            className="flex mb-4 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -292,20 +292,20 @@ const HarvestRequestPage = () => {
             Quay lại
           </button>
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-              🚀 Đơn Thu Nhiên Liệu
+            <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
+              🛒 Đơn Yêu Cầu Cung Cấp
             </h2>
             <div className="space-y-4">
               {/* Tên đơn */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Tên Đơn
+                  Tên đơn
                 </label>
                 <input
                   type="text"
                   name="request_name"
                   maxLength="50"
-                  placeholder="Tên đơn thu nhiên liệu..."
+                  placeholder="Tên đơn yêu cầu cung cấp..."
                   value={formData.request_name}
                   onChange={handleChange}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
@@ -505,14 +505,14 @@ const HarvestRequestPage = () => {
                   onClick={() => handleSubmit()} // Gọi hàm trực tiếp, không truyền reference
                   className="bg-yellow-400 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
                 >
-                  📨 Gửi Yêu Cầu
+                  Gửi Yêu Cầu
                 </button>
                 <button
                   type="button" // Tránh việc form bị submit khi nhấn nút làm mới
                   onClick={() => setNewForm()} // Reset dữ liệu khi nhấn
                   className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
                 >
-                  🔄 Làm mới
+                  Làm mới
                 </button>
               </div>
             </div>

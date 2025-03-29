@@ -209,7 +209,7 @@ useEffect(() => {
 
   return (
     <div className="production-processing-list">
-      <h5 className="text-2xl font-bold text-gray-800">Danh sách quy trình sản xuất</h5>
+      <h5 className="text-2xl font-bold text-gray-800">Danh sách kế hoạch sản xuất</h5>
 
       <Loading isPending={isLoading}>
         <Table
