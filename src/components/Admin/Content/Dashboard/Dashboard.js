@@ -376,7 +376,7 @@ const DashboardComponent = () => {
                 <h3 className="text-sm mb-2 font-semibold">
                   Số lượng lô thành phẩm
                 </h3>
-                <h1 className="text-lg mb-2 font-bold">1,390</h1>
+                <h1 className="text-lg mb-2 font-bold">11</h1>
                 <p className="text-xs text-stone-500">
                   Từ 1 tháng 1 - 25 tháng 3
                 </p>

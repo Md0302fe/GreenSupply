@@ -388,13 +388,13 @@ const MaterialStorageExportList = () => {
 
   return (
     <div className="material-storage-export-list">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-2">
         <h5 className="text-2xl font-bold text-gray-800">
           Quản lý Đơn Xuất Kho
         </h5>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 mb-2">
         {/* <Select
           onChange={handleStatusChange}
           value={statusFilter}
