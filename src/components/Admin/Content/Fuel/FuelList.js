@@ -222,18 +222,27 @@ const FuelList = () => {
     }
 
     const excel = new Excel();
+    const exportColumns = [
+      { title: "Tên Loại Nhiên Liệu", dataIndex: "type_name" },
+      { title: "Mô Tả", dataIndex: "description" },
+      { title: "Trạng Thái", dataIndex: "is_deleted" },
+      { title: "Số Lượng", dataIndex: "quantity" },
+    ];
+
+    const exportData = fuels.map((fuel) => ({
+      type_name: fuel.type_name,
+      description: fuel.description,
+      is_deleted: fuel.is_deleted ? "Đã xóa" : "Chưa xóa",
+      quantity: fuel.quantity,
+    }));
+
     excel
       .addSheet("Danh sách Loại Nhiên Liệu")
-      .addColumns(columns.filter((col) => col.dataIndex !== "action")) // Exclude the "Action" column
-      .addDataSource(
-        fuels.map((fuel) => ({
-          typeName: fuel.type_name,
-          description: fuel.description,
-          isDeleted: fuel.is_deleted ? "Đã xóa" : "Chưa xóa",
-        }))
-      )
+      .addColumns(exportColumns)
+      .addDataSource(exportData)
       .saveAs("DanhSachLoaiNhienLieu.xlsx");
   };
+
   const openUpdateDrawer = (fuel) => {
     setEditingFuel(fuel);
     setUpdateData({
