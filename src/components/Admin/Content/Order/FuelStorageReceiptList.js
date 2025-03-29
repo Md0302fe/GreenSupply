@@ -513,6 +513,17 @@ const FuelStorageReceiptList = () => {
     fetchReceipts();
   }, [debouncedSearch, statusFilterVal, sortOrder]);
 
+  const excelColumns = [
+    { title: "Người Quản Lý", dataIndex: "manager" },
+    { title: "Loại Đơn Hàng", dataIndex: "receiptType" },
+    { title: "Kho", dataIndex: "storage" },
+    { title: "Trạng Thái", dataIndex: "status" },
+    { title: "Ngày Nhập Kho", dataIndex: "createdAt" },
+    { title: "Ngày Cập Nhật", dataIndex: "updatedAt" },
+    { title: "Số lượng", dataIndex: "quantity" },
+    { title: "Ghi chú", dataIndex: "note" },
+  ];
+
   const handleExportFileExcel = () => {
     if (!receipts.length) {
       message.warning("Không có dữ liệu để xuất!");
@@ -521,28 +532,28 @@ const FuelStorageReceiptList = () => {
 
     const excel = new Excel();
     excel
-      .addSheet("Danh sách Đơn Nhập Kho")
-      .addColumns(columns.filter((col) => col.dataIndex !== "action"))
-      .addDataSource(
-        receipts.map((receipt) => ({
-          manager: receipt.manager_id?.full_name || "Không có dữ liệu",
-          storage: receipt.storage_id?.name_storage || "Không có dữ liệu",
-          receiptType: receipt.receipt_supply_id ? "Cung cấp" : "Thu hàng",
-          quantity:
-            receipt.receipt_request_id?.quantity ||
-            receipt.receipt_supply_id?.quantity ||
-            "Không có dữ liệu",
-          status: receipt.status,
-          createdAt: converDateString(receipt.createdAt),
-          updatedAt: converDateString(receipt.updatedAt),
-          note:
-            receipt.receipt_request_id?.note ||
-            receipt.receipt_supply_id?.note ||
-            "Không có ghi chú",
-        })),
-        { str2Percent: true }
-      )
-      .saveAs("DanhSachDonNhapKho.xlsx");
+  .addSheet("Danh sách Đơn Nhập Kho")
+  .addColumns(excelColumns)
+  .addDataSource(
+    receipts.map((receipt) => ({
+      manager: receipt.manager_id?.full_name || "Không có dữ liệu",
+      storage: receipt.storage_id?.name_storage || "Không có dữ liệu",
+      receiptType: receipt.receipt_supply_id ? "Cung cấp" : "Thu hàng",
+      quantity:
+        receipt.receipt_request_id?.quantity ||
+        receipt.receipt_supply_id?.quantity ||
+        "Không có dữ liệu",
+      status: receipt.status,
+      createdAt: converDateString(receipt.createdAt),
+      updatedAt: converDateString(receipt.updatedAt),
+      note:
+        receipt.receipt_request_id?.note ||
+        receipt.receipt_supply_id?.note ||
+        "Không có ghi chú",
+    })),
+    { str2Percent: true }
+  )
+  .saveAs("DanhSachDonNhapKho.xlsx");
   };
 
   const columns = [
