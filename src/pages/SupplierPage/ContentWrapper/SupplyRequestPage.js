@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getAllFuelEntry } from "../../../services/FuelEntryServices";
 import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestService";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { message } from 'antd';
 import { useSearchParams } from "react-router-dom";
 const SupplyRequestPage = () => {
   const { id } = useParams();
@@ -114,46 +114,46 @@ const SupplyRequestPage = () => {
 
   const handleSubmit = async () => {
     if (!selectedOrder) {
-      toast.error("Vui lòng chọn đơn hàng!");
+      message.error('Vui lòng chọn đơn hàng!');
       return;
     }
-    console.log(formData.quantity)
     if (!formData.quantity) {
-      toast.error("Vui lòng nhập đầy đủ thông tin!");
+      message.error('Vui lòng nhập đầy đủ thông tin!');
       return;
     }
-
+  
     if (!validateQuantity()) {
-      toast.error("Vui lòng kiểm tra lại số lượng!");
+      message.error('Vui lòng kiểm tra lại số lượng!');
       return;
     }
-
+  
     const quantity = Number(formData.quantity);
-
+  
     const supplyOrder = {
       supplier_id: userRedux.id,
       request_id: selectedOrder._id,
       fuel_name: selectedOrder.request_name,
       quantity: quantity,
-      quality: "Tốt",
+      quality: 'Tốt',
       price: selectedOrder.price,
-      start_received: "",
-      end_received: "",
+      start_received: '',
+      end_received: '',
       total_price: totalPrice(),
       note: formData.note,
     };
-
+  
     try {
       await createFuelSupplyRequest(supplyOrder);
-      toast.success("Tạo đơn cung cấp thành công!");
+      message.success('Tạo đơn cung cấp thành công!');
       setSelectedOrder(null);
       fetchOrders();
-      setFormData({ quantity: "", quality: "", note: "" });
+      setFormData({ quantity: '', quality: '', note: '' });
     } catch (error) {
-      console.error("Lỗi khi tạo đơn cung cấp:", error);
-      toast.error("Tạo đơn thất bại!");
+      console.error('Lỗi khi tạo đơn cung cấp:', error);
+      message.error('Tạo đơn thất bại!');
     }
   };
+  
   return (
     <div>
       <div className="p-6 bg-white shadow-md rounded">
@@ -178,7 +178,7 @@ const SupplyRequestPage = () => {
         {selectedOrder && (
           <>
             <div className="mb-4">
-              <label className="block font-semibold">Tên nhiên liệu:</label>
+              <label className="block font-semibold">Tên nguyên liệu:</label>
               <p className="border p-2 rounded bg-gray-100">{selectedOrder.request_name}</p>
             </div>
 
