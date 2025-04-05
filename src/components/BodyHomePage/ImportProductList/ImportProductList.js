@@ -103,7 +103,7 @@ const ProductItem = ({ product }) => {
           {product.request_name}
         </h3>
         <p className="text-xs sm:text-sm text-gray-700">
-          Số lượng: <span className="font-bold">{product.quantity}</span>
+          Số lượng: <span className="font-bold">{product.quantity_remain}</span>
         </p>
         <p className="text-xs sm:text-sm text-gray-700">
           Giá mỗi đơn vị:{" "}

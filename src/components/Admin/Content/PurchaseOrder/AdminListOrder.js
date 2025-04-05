@@ -380,7 +380,7 @@ const UserComponent = () => {
         return;
       }
     }
-    // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
+    // Kiểm tra Tên yêu cầu (Không chứa ký tự đặc biệt)
     if ((name === "quantity" || name === "price") && value === "0") {
       return;
     }
