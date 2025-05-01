@@ -61,81 +61,81 @@ const ProductionProcessingList = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+          backgroundColor: "#f9f9f9",
+          borderRadius: 4,
+          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+          width: 220,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder="Tìm kiếm"
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
-            padding: 8,
-            backgroundColor: "#f9f9f9",
+            marginBottom: 8,
+            display: "block",
             borderRadius: 4,
-            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-            width: 220,
           }}
-          onKeyDown={(e) => e.stopPropagation()}
-        >
-          <Input
-            ref={searchInput}
-            placeholder="Tìm kiếm"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            style={{
-              marginBottom: 8,
-              display: "block",
-              borderRadius: 4,
-            }}
-          />
-          <Space>
-            <Button
-              type="primary"
-              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{ width: 70 }}
-            >
-              Tìm
-            </Button>
-            <Button
-              onClick={() => clearFilters && handleReset(clearFilters)}
-              size="small"
-              style={{ width: 70 }}
-            >
-              Đặt lại
-            </Button>
-            <Button
-              type="link"
-              size="small"
-              onClick={() => clearFilters && confirm()}
-              style={{ padding: 0 }}
-            >
-              Đóng
-            </Button>
-          </Space>
-        </div>
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 70 }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 70 }}
+          >
+            Đặt lại
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => clearFilters && confirm()}
+            style={{ padding: 0 }}
+          >
+            Đóng
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
       ),
-      filterIcon: (filtered) => (
-        <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-      ),
-      onFilter: (value, record) =>
-        record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
-      render: (text) =>
-        searchedColumn === dataIndex ? (
-          <Highlighter
-            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-            searchWords={[searchText]}
-            autoEscape
-            textToHighlight={text ? text.toString() : ""}
-          />
-        ) : (
-          text
-        ),
-    });
+  });
   // Fetch data từ API
   const fetchProductionProcessing = async () => {
     const access_token = user?.access_token;
@@ -160,17 +160,29 @@ const ProductionProcessingList = () => {
 
   const location = useLocation();
 
-useEffect(() => {
-  const queryParams = new URLSearchParams(location.search);
-  const statusFromURL = queryParams.get("status");
-
-  if (statusFromURL) {
-    setFilters((prev) => ({
-      ...prev,
-      status: statusFromURL,
+  const statusFilters = React.useMemo(() => {
+    const statuses = new Set();
+    data?.forEach((item) => {
+      if (item.status) statuses.add(item.status);
+    });
+    return Array.from(statuses).map(status => ({
+      text: status,
+      value: status
     }));
-  }
-}, [location.search]);
+  }, [data]);
+
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const statusFromURL = queryParams.get("status");
+
+    if (statusFromURL) {
+      setFilters((prev) => ({
+        ...prev,
+        status: statusFromURL,
+      }));
+    }
+  }, [location.search]);
 
   // Mở Modal cập nhật
   const handleOpenEditDrawer = () => {
@@ -280,12 +292,17 @@ useEffect(() => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      filters: statusFilters,
+      onFilter: (value, record) => record.status === value,
       render: (status) => {
-        let color = "default"; // Màu mặc định
-        if (status === "Chờ duyệt") color = "gold"; // Vàng
-        if (status === "Đang sản xuất") color = "green"; // Xanh lá
-        if (status === "Hoàn thành") color = "blue"; // Tím
-    
+        let color = "default";
+        if (status === "Chờ duyệt") color = "gold";
+        else if (status === "Đang xử lý") color = "cyan";
+        else if (status === "Từ chối") color = "red";
+        else if (status === "Đã huỷ") color = "volcano";
+        else if (status === "Đang sản xuất") color = "blue";
+        else if (status === "Hoàn thành") color = "green";
+
         return <Tag color={color} style={{ fontWeight: 600 }}>{status}</Tag>;
       },
     },
