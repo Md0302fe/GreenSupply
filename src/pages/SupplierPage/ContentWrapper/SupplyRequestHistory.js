@@ -88,7 +88,6 @@ const FuelSupplyRequestComponent = () => {
     mutationDelete.mutate(rowSelected);
   };
 
-  // Handle Update Submission
   const onFinishUpdate = (values) => {
     mutationUpdate.mutate({ id: rowSelected, data: values });
   };
@@ -110,6 +109,7 @@ const FuelSupplyRequestComponent = () => {
           fuel_name: record.fuel_name,
           quantity: record.quantity,
           note: record.note || "",
+          price: record.price,
         });
         console.log(res);
         // Save `quantity_remain` in state for validation later
@@ -155,7 +155,7 @@ const FuelSupplyRequestComponent = () => {
       formUpdate.setFieldsValue({ total_price: totalPrice });
     } else {
       formUpdate.setFieldsValue({ total_price: "" });
-      message.error("Giá và số lượng phải là số hợp lệ và lớn hơn 0!");
+      // message.error("Giá và số lượng phải là số hợp lệ và lớn hơn 0!");
     }
   };
 
@@ -502,6 +502,12 @@ const FuelSupplyRequestComponent = () => {
             >
               <Input
                 type="number"
+                min={10}
+                onKeyDown={(e) => {
+                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 onChange={(e) => {
                   const quantity = e.target.value;
                   formUpdate.setFieldsValue({ quantity });
@@ -510,7 +516,7 @@ const FuelSupplyRequestComponent = () => {
               />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label="Giá mỗi đơn vị (VNĐ/Kg)"
               name="price"
               rules={[
@@ -528,6 +534,10 @@ const FuelSupplyRequestComponent = () => {
                   updateTotalPrice(formUpdate.getFieldValue("quantity"), price);
                 }}
               />
+            </Form.Item> */}
+
+            <Form.Item label="Giá mỗi đơn vị (VNĐ/Kg)" name="price">
+              <Input disabled />
             </Form.Item>
 
             <Form.Item label="Ghi Chú" name="note">
@@ -592,7 +602,7 @@ const FuelSupplyRequestComponent = () => {
                 </label>
                 <input
                   type="text"
-                  value={detailData.request_name}
+                  value={detailData.fuel_name}
                   readOnly
                   className="border p-2 rounded w-full"
                 />

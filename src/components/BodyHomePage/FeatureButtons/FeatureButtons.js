@@ -12,7 +12,7 @@ const FeatureButtons = () => {
       id: 1,
       icon: Icon1,
       text: "QUẢN LÝ ĐƠN",
-      // path: "/supplier/orders",
+      path: "/supplier/harvest-request-management",
     },
     {
       id: 2,
