@@ -55,29 +55,22 @@ const SideBar = () => {
             <ul className="w-full">
               <li className="w-full">
                 <Button
-                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-11 flex gap-3"
-                  onClick={() => handleClick("/supplier/harvest-request-management")}
+                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !items-center !w-full text-[13px] !font-[500] !pl-4 flex gap-2 min-h-[40px]"
+                  onClick={() =>
+                    handleClick("/supplier/harvest-request-management")
+                  }
                 >
-                  <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  Đơn Thu Hàng
+                  <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
+                  <span className="truncate ml-[8px]">Đơn Thu Nguyên Liệu</span>
                 </Button>
               </li>
               <li className="w-full">
                 <Button
-                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-11 flex gap-3"
-                  onClick={() => handleClick("/supplier/order-management")}
-                >
-                  <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  Đơn Nhập Hàng
-                </Button>
-              </li>
-              <li className="w-full">
-                <Button
-                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-11 flex gap-3"
+                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !items-center !w-full text-[13px] !font-[500] !pl-4 flex gap-2 min-h-[40px]"
                   onClick={() => navigate("/supplier/supply-request-history")}
                 >
-                  <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  Đơn Cung Cấp Hàng
+                  <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
+                  <span className="truncate ml-[8px]">Đơn Cung Cấp Nguyên Liệu</span>
                 </Button>
               </li>
             </ul>
@@ -103,42 +96,44 @@ const SideBar = () => {
           </Button>
         </li>
         <li>
-  <Button
-    onClick={() => isOpenSubMenu(2)}
-    className="w-full !capitalize flex items-center gap-2 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1] text-left"
-  >
-    <RiBillLine className="text-[24px] shrink-0" />
-    <span className="whitespace-nowrap">Lịch sử đơn hàng</span>
-    <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
-      <FaAngleDown
-        className={`transition-all ${subMenuIndex === 2 ? "rotate-180" : ""}`}
-      />
-    </span>
-  </Button>
+          <Button
+            onClick={() => isOpenSubMenu(2)}
+            className="w-full !capitalize flex items-center gap-2 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1] text-left"
+          >
+            <RiBillLine className="text-[24px] shrink-0" />
+            <span className="whitespace-nowrap">Lịch sử đơn hàng</span>
+            <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
+              <FaAngleDown
+                className={`transition-all ${
+                  subMenuIndex === 2 ? "rotate-180" : ""
+                }`}
+              />
+            </span>
+          </Button>
 
-  <Collapse isOpened={subMenuIndex === 2}>
-    <ul className="w-full">
-      <li className="w-full">
-        <Button
-          className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
-          onClick={() => handleClick("/supplier/history-request-order")}
-        >
-          <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-          Đơn yêu cầu thu nguyên liệu
-        </Button>
-      </li>
-      <li className="w-full">
-        <Button
-          className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
-          onClick={() => handleClick("/supplier/history-provide-order")}
-        >
-          <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-          Đơn cung cấp nguyên liệu
-        </Button>
-      </li>
-    </ul>
-  </Collapse>
-</li>
+          <Collapse isOpened={subMenuIndex === 2}>
+            <ul className="w-full">
+              <li className="w-full">
+                <Button
+                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
+                  onClick={() => handleClick("/supplier/history-request-order")}
+                >
+                  <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
+                  Đơn yêu cầu thu nguyên liệu
+                </Button>
+              </li>
+              <li className="w-full">
+                <Button
+                  className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
+                  onClick={() => handleClick("/supplier/history-provide-order")}
+                >
+                  <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
+                  Đơn cung cấp nguyên liệu
+                </Button>
+              </li>
+            </ul>
+          </Collapse>
+        </li>
         <li>
           <Button
             onClick={() => navigate("/supplier/tracking-shipment")}
