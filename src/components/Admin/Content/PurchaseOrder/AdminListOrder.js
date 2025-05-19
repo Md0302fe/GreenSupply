@@ -13,10 +13,7 @@ import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { getBase64 } from "../../../../ultils";
 import { convertDateStringV1 } from "../../../../ultils";
-
-import { AiOutlineEdit } from "react-icons/ai";
 
 import TableOrder from "./TableOrder";
 import Loading from "../../../LoadingComponent/Loading";
@@ -26,6 +23,10 @@ import Highlighter from "react-highlight-words";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
+import { useLocation } from "react-router-dom";
+
+import { getBase64 } from "../../../../ultils";
 
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 const UserComponent = () => {
@@ -42,6 +43,10 @@ const UserComponent = () => {
   const [fuel_types, setFuel_Types] = useState({});
 
   const user = useSelector((state) => state.user);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const filterStatus = queryParams.get("status"); // Ví dụ: "Chờ duyệt"
+
 
   //  Search Props
   const [searchText, setSearchText] = useState("");
@@ -128,7 +133,7 @@ const UserComponent = () => {
   });
 
   const { isSuccess: AcceptSuccess, data: dataAccept } =
-  mutationAcceptPurchaseOrder;
+    mutationAcceptPurchaseOrder;
 
   useEffect(() => {
     if (AcceptSuccess) {
@@ -361,18 +366,21 @@ const UserComponent = () => {
     const { name, value } = e.target;
     if (name === "start_received") {
       if (value <= currentDate) {
-        toast.error("Ngày bắt đầu nhận đơn không thể lớn hơn ngày kết thúc!");
+        toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
+        return;
       }
     } else if (name === "end_received") {
       if (value < purchaseDetails.start_received) {
-        toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu nhận đơn !");
+        toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
+        return;
       }
     } else if (name === "due_date") {
-      if (value > purchaseDetails.end_received) {
-        toast.error("Hạn chót nhận đơn trên phái lớn hơn ngày kết thúc!");
+      if (value < purchaseDetails.end_received) {
+        toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
+        return;
       }
     }
-    // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
+    // Kiểm tra Tên yêu cầu (Không chứa ký tự đặc biệt)
     if ((name === "quantity" || name === "price") && value === "0") {
       return;
     }
@@ -430,27 +438,59 @@ const UserComponent = () => {
   };
 
   // Kiểm tra nếu `data_purchase?.data` là một mảng hợp lệ
+  // const tableData = Array.isArray(data_purchase?.data)
+  //   ? data_purchase.data.map((purchaseOrder) => ({
+  //       ...purchaseOrder,
+  //       key: purchaseOrder._id || "",
+  //       // start_received: convertDateStringV1(purchaseOrder.start_received),
+  //       // end_received: convertDateStringV1(purchaseOrder.end_received),
+  //     }))
+  //   : [];
+
   const tableData = Array.isArray(data_purchase?.data)
-    ? data_purchase.data.map((purchaseOrder) => ({
+  ? data_purchase.data
+      .filter((item) => {
+        if (!filterStatus) return true;
+        return item.status === filterStatus;
+      })
+      .map((purchaseOrder) => ({
         ...purchaseOrder,
         key: purchaseOrder._id || "",
-        // start_received: convertDateStringV1(purchaseOrder.start_received),
-        // end_received: convertDateStringV1(purchaseOrder.end_received),
       }))
-    : [];
+  : [];
 
   // Actions
   const renderAction = (text, record) => {
     return (
       <div
-        className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%]"
+        className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%] min-w-[125px]"
         onClick={() => handleDetailsProduct(record)}
       >
         <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          ✅ Duyệt đơn
+          ✅ Chi tiết
         </span>
       </div>
     );
+  };
+
+  const handleChangeFuelImage = async (info) => {
+    // C2: getBase64
+    if (!info.fileList.length) {
+      setPurchaseDetails((prev) => ({
+        ...prev,
+        fuel_image: purchaseDetails.fuel_image,
+      }));
+      return;
+    }
+
+    const file = info.fileList[0];
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPurchaseDetails((prev) => ({
+      ...prev,
+      fuel_image: file.preview,
+    }));
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -588,17 +628,21 @@ const UserComponent = () => {
       title: "Mặt hàng",
       dataIndex: "fuel_image",
       key: "fuel_image",
-      render: (fuel_image) => (
+      render: (fuel_image) =>
         fuel_image ? (
           <img
             src={fuel_image} // Base64 hoặc URL hình ảnh
             alt="Fuel"
-            style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "5px" }}
+            style={{
+              width: "60px",
+              height: "60px",
+              objectFit: "cover",
+              borderRadius: "5px",
+            }}
           />
         ) : (
           <span style={{ color: "red" }}>Không có ảnh</span> // Hiển thị nếu không có ảnh
-        )
-      ),
+        ),
     },
     {
       title: "Tên đơn hàng",
@@ -614,7 +658,7 @@ const UserComponent = () => {
       key: "quantity_remain",
       sorter: (a, b) => a?.quantity_remain - b?.quantity_remain,
     },
-    
+
     {
       title: "Tổng thu (Kg)",
       dataIndex: "quantity",
@@ -631,7 +675,7 @@ const UserComponent = () => {
         return true;
       },
       sorter: (a, b) => a.quantity - b.quantity, // Sắp xếp từ nhỏ đến lớn
-      render: (quantity) => `${quantity} Kg` ,
+      render: (quantity) => `${quantity} Kg`,
     },
     {
       title: "Ngày tạo đơn",
@@ -664,7 +708,7 @@ const UserComponent = () => {
       render: (status) => (
         <Tag
           color={statusColors[status] || "default"}
-          style={{ textAlign: "center", fontSize: "15px" , padding : "5px"}}
+          style={{ textAlign: "center", fontSize: "15px", padding: "5px" }}
         >
           {status}
         </Tag>
@@ -761,7 +805,7 @@ const UserComponent = () => {
                     {fuel_types && fuel_types.length > 0 ? (
                       fuel_types.map((fuel) => (
                         <option key={fuel._id} value={fuel._id}>
-                          {fuel.type_name}
+                          {fuel.fuel_type_id.type_name}
                         </option>
                       ))
                     ) : (
@@ -785,7 +829,7 @@ const UserComponent = () => {
                       accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .eps"
                       maxCount={1}
                       beforeUpload={() => false}
-                      onChange={() => {}}
+                      onChange={handleChangeFuelImage}
                       className="!w-full"
                     >
                       <button className="bg-gray-200 p-2 rounded hover:bg-gray-300">
@@ -817,7 +861,7 @@ const UserComponent = () => {
                     min="1"
                     placeholder="Nhập số lượng..."
                     value={purchaseDetails.quantity}
-                    onChange={() => {}}
+                    onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>

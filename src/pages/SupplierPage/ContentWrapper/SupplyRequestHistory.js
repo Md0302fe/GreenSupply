@@ -573,6 +573,124 @@ const FuelSupplyRequestComponent = () => {
             </Form.Item>
           </Form>
         </Loading>
+      </DrawerComponent> */}
+
+      <DrawerComponent
+        title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
+        isOpen={isDrawerOpen}
+        placement="right"
+        width="30%"
+        onClose={handleCancelUpdate}
+      >
+        <Loading isPending={mutationUpdate.isPending}>
+          <Form
+            name="update-form"
+            form={formUpdate}
+            onFinish={onFinishUpdate}
+            layout="vertical"
+          >
+            <Form.Item label="Tên Nguyên Liệu" name="fuel_name">
+              <Input value={selectedRequest.fuel_name} disabled />
+            </Form.Item>
+
+            <Form.Item>
+              {quantityRemain !== null && (
+                <div style={{ fontSize: "14px", color: "gray" }}>
+                  <strong>Số lượng còn lại: {quantityRemain} KG</strong>
+                </div>
+              )}
+            </Form.Item>
+
+            <Form.Item
+              name="quantity"
+              label="Số lượng muốn cung cấp"
+              rules={[
+                { required: true, message: "Vui lòng nhập số lượng!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value) {
+                      return Promise.resolve();
+                    }
+                    if (value > quantityRemain) {
+                      return Promise.reject(
+                        new Error(
+                          `Số lượng không được vượt quá ${quantityRemain}!`
+                        )
+                      );
+                    }
+                    if (value % 10 !== 0) {
+                      return Promise.reject(
+                        new Error("Số lượng phải chia hết cho 10!")
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <Input
+                type="number"
+                onChange={(e) => {
+                  const quantity = e.target.value;
+                  formUpdate.setFieldsValue({ quantity });
+                  updateTotalPrice(quantity, formUpdate.getFieldValue("price"));
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Giá mỗi đơn vị (VNĐ/Kg)"
+              name="price"
+              rules={[
+                { required: true, message: "Vui lòng nhập giá mỗi đơn vị!" },
+              ]}
+            >
+              <Input
+                type="number"
+                defaultValue={selectedRequest.price || 0}
+                min="0"
+                required
+                onChange={(e) => {
+                  const price = e.target.value;
+                  formUpdate.setFieldsValue({ price });
+                  updateTotalPrice(formUpdate.getFieldValue("quantity"), price);
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item label="Ghi Chú" name="note">
+              <Input.TextArea rows={3} placeholder="Ghi chú thêm nếu có" />
+            </Form.Item>
+
+            <div
+              style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
+            >
+              <span>Tổng Giá: </span>
+              {
+                // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
+                formUpdate.getFieldValue("quantity") &&
+                formUpdate.getFieldValue("price")
+                  ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
+                    (
+                      Number(formUpdate.getFieldValue("quantity")) *
+                      Number(formUpdate.getFieldValue("price"))
+                    ).toLocaleString("vi-VN")
+                  : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
+              }
+            </div>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={mutationUpdate.isPending}
+                style={{ width: "100%" }}
+              >
+                {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Loading>
       </DrawerComponent>
 
       {/* Modal Confirm Delete */}

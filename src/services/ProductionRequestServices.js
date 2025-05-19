@@ -28,6 +28,19 @@ export const getAll = async (data) => {
   return res?.data;
 };
 
+export const getAllProcessing = async (data) => {
+  const { access_token} = data;
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/product-request/getAllProcessing`,{},
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
+
 export const updateProductionRequest = async ({ id, token, dataUpdate }) => {
   // Giả sử BE có endpoint put /production-request/:id
   const res = await axios.put(
@@ -53,6 +66,7 @@ export const deleteProductionRequest = async ({ id, token }) => {
   );
   return res.data; // { success: true/false, ...}
 };
+
 export const changeStatus = async ({ id, token }) => {
   const res = await axios.put(
       `${process.env.REACT_APP_API_URL}/product-request/change-status/${id}`,
@@ -63,4 +77,16 @@ export const changeStatus = async ({ id, token }) => {
       }
   );
   return res.data; // { success: true/false, ...}
+};
+
+export const getProductionChartData = async ({ access_token }) => {
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/product-request/getProductionChartData`,
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res.data;
 };

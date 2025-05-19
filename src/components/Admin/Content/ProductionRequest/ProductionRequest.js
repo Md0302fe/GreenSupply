@@ -40,12 +40,17 @@ const ProductionRequest = () => {
 
   // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn nhiên liệu
   const handleEstimatedProductionChange = (value) => {
+    const selectedFuelId = form.getFieldValue("material");
+    if (!selectedFuelId) {
+      message.warning("Vui lòng chọn loại nhiên liệu trước khi nhập sản lượng mong muốn.");
+      form.setFieldsValue({ product_quantity: 1, material_quantity: 1 }); // Reset sản lượng và nguyên liệu
+      return;
+    }
     if (!value || value < 1) {
-      form.setFieldsValue({ material_quantity: 0 });
+      form.setFieldsValue({ material_quantity: 1 });
       return;
     }
     const required = Math.ceil(value / 0.9);
-    const selectedFuelId = form.getFieldValue("material");
     if (selectedFuelId) {
       const selectedFuel = fuelTypes.find((f) => f._id === selectedFuelId);
       if (selectedFuel) {
@@ -85,6 +90,7 @@ const ProductionRequest = () => {
     // Chuyển đổi ngày sang ISO string nếu có
     const formattedValues = {
       ...values,
+      request_name: values.request_name.toUpperCase(),
       production_date: values.production_date
         ? values.production_date.toISOString()
         : null,
@@ -152,7 +158,7 @@ const ProductionRequest = () => {
           >
             <Input
               placeholder="Nhập tên yêu cầu"
-              maxLength={50}
+              maxLength={100}
               className="rounded border-gray-300"
             />
           </Form.Item>
@@ -177,7 +183,7 @@ const ProductionRequest = () => {
             </Form.Item>
 
             <Form.Item
-              label="Sản lượng mong muốn (kg)"
+              label="Sản lượng thành phẩm mong muốn (kg)"
               name="product_quantity"
               rules={[
                 { required: true, message: "Vui lòng nhập sản lượng mong muốn" },
