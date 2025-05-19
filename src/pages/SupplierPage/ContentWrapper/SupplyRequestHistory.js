@@ -302,7 +302,7 @@ const FuelSupplyRequestComponent = () => {
       render: (_, record) => {
         const isPending = record.status === "Chờ duyệt";
         return (
-          <Space size="middle">
+          <Space size={8}>
             {/* Sửa */}
             <Button
               icon={<AiFillEdit />}
