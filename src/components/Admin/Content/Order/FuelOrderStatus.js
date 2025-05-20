@@ -13,7 +13,9 @@ import axios from "axios";
 import { DownloadOutlined } from "@ant-design/icons";
 import { Excel } from "antd-table-saveas-excel";
 import { converDateString } from "../../../../ultils";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const FuelOrderStatus = () => {
   const [orders, setOrders] = useState([]);
@@ -23,7 +25,7 @@ const FuelOrderStatus = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const userRedux = useSelector((state) => state.user);
-
+  const navigate = useNavigate();
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -66,46 +68,88 @@ const FuelOrderStatus = () => {
       onOk: () => createFuelStorageReceipt(order),
     });
   };
-
-  const createFuelStorageReceipt = async (order) => {
-    try {
-      const token = localStorage.getItem("access_token");
-      if (!token) {
-        message.error("Bạn chưa đăng nhập!");
-        return;
-      }
-
-      if (!order?._id || !order.receipt_type) {
-        message.error("Dữ liệu đơn hàng không hợp lệ!");
-        return;
-      }
-
-      const payload =
-        order.receipt_type === "supply"
-          ? { receipt_supply_id: order._id }
-          : { receipt_request_id: order._id };
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/fuel-storage/create`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${userRedux.access_token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.data.success) {
-        message.success("Tạo đơn nhập kho thành công!");
-        fetchOrders();
-      } else {
-        message.error(`Thất bại: ${response.data.message}`);
-      }
-    } catch (error) {
-      message.error("Lỗi khi tạo đơn nhập kho!");
+  
+const createFuelStorageReceipt = async (orderToCreate) => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      message.error("Bạn chưa đăng nhập!");
+      return;
     }
-  };
+
+    if (!orderToCreate?._id || !orderToCreate.receipt_type) {
+      message.error("Dữ liệu đơn hàng không hợp lệ!");
+      return;
+    }
+
+    const payload =
+      orderToCreate.receipt_type === "supply"
+        ? { receipt_supply_id: orderToCreate._id }
+        : { receipt_request_id: orderToCreate._id };
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/fuel-storage/create`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${userRedux.access_token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data.success) {
+      message.success("Tạo đơn nhập kho thành công!");
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order._id !== orderToCreate._id)
+      );
+    } else {
+      message.error(`Thất bại: ${response.data.message}`);
+    }
+  } catch (error) {
+    message.error("Lỗi khi tạo đơn nhập kho!");
+  }
+};
+
+  // const createFuelStorageReceipt = async (order) => {
+  //   try {
+  //     const token = localStorage.getItem("access_token");
+  //     if (!token) {
+  //       message.error("Bạn chưa đăng nhập!");
+  //       return;
+  //     }
+
+  //     if (!order?._id || !order.receipt_type) {
+  //       message.error("Dữ liệu đơn hàng không hợp lệ!");
+  //       return;
+  //     }
+
+  //     const payload =
+  //       order.receipt_type === "supply"
+  //         ? { receipt_supply_id: order._id }
+  //         : { receipt_request_id: order._id };
+
+  //     const response = await axios.post(
+  //       `${process.env.REACT_APP_API_URL}/fuel-storage/create`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${userRedux.access_token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.data.success) {
+  //       message.success("Tạo đơn nhập kho thành công!");
+  //       fetchOrders();
+  //     } else {
+  //       message.error(`Thất bại: ${response.data.message}`);
+  //     }
+  //   } catch (error) {
+  //     message.error("Lỗi khi tạo đơn nhập kho!");
+  //   }
+  // };
 
   const tableData = orders?.map((order) => ({
     ...order,
@@ -166,17 +210,19 @@ const FuelOrderStatus = () => {
     {
       title: "Hành động",
       key: "action",
+      align: "center",
       render: (_, record) => (
         <Space>
-          <span
-            className="text-blue-600 cursor-pointer underline"
+          <Button
+            type="link"
             onClick={() => {
               setSelectedOrder(record);
               setIsDrawerOpen(true);
             }}
           >
-           Xem Chi Tiết
-          </span>
+            <HiOutlineDocumentSearch style={{ fontSize: "24px" }} />
+          </Button>
+
           <Button
             type="default"
             onClick={() => confirmCreateFuelStorageReceipt(record)}
@@ -201,42 +247,66 @@ const FuelOrderStatus = () => {
   return (
     <div className="fuel-order-status">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-bold text-gray-800">
+      <div className="flex items-center mb-4 gap-4">
+        <button
+          onClick={() => navigate(-1)}
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
+        <h5 className="text-4xl font-bold text-gray-800 flex-grow text-center">
           Quản lý Đơn Hàng Chờ Nhập Kho
         </h5>
       </div>
 
       {/* Filter + Export */}
-      <div className="flex flex-wrap gap-4 mb-6 items-center">
-        <Button
-          type={filterType === "all" ? "primary" : "default"}
-          onClick={() => setFilterType("all")}
-        >
-          Tất cả đơn
-        </Button>
-        <Button
-          type={filterType === "fuelRequests" ? "primary" : "default"}
-          onClick={() => setFilterType("fuelRequests")}
-        >
-          Đơn thu hàng
-        </Button>
-        <Button
-          type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
-          onClick={() => setFilterType("fuelSupplyOrders")}
-        >
-          Đơn cung cấp
-        </Button>
+      <div className="flex justify-between items-center mb-2">
+        {/* Nhóm 3 nút bên trái */}
+        <div className="flex gap-4">
+          <Button
+            type={filterType === "all" ? "primary" : "default"}
+            onClick={() => setFilterType("all")}
+          >
+            Tất cả đơn
+          </Button>
+          <Button
+            type={filterType === "fuelRequests" ? "primary" : "default"}
+            onClick={() => setFilterType("fuelRequests")}
+          >
+            Đơn thu hàng
+          </Button>
+          <Button
+            type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
+            onClick={() => setFilterType("fuelSupplyOrders")}
+          >
+            Đơn cung cấp
+          </Button>
+        </div>
+
+        {/* Nút Xuất Excel bên phải */}
         <Button
           icon={<DownloadOutlined />}
           type="primary"
-          className="bg-black text-white"
+          className="bg-blue text-white"
           onClick={handleExportFileExcel}
         >
           Xuất Excel
         </Button>
       </div>
-
       {/* Table */}
       <Table
         columns={columns}
@@ -275,7 +345,9 @@ const FuelOrderStatus = () => {
               {selectedOrder.total_price}
             </Descriptions.Item>
             <Descriptions.Item label="Loại Đơn Hàng">
-              {selectedOrder.receipt_type === "supply" ? "Cung cấp" : "Thu hàng"}
+              {selectedOrder.receipt_type === "supply"
+                ? "Cung cấp"
+                : "Thu hàng"}
             </Descriptions.Item>
             <Descriptions.Item label="Trạng Thái">
               {selectedOrder.status}
