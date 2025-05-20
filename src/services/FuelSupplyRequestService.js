@@ -16,18 +16,19 @@ export const createFuelSupplyRequest = async (supplyRequest) => {
   }
 };
 
-export const getAllFuelSupplyRequest = async (access_token, filters = {}) => {
+export const getAllFuelSupplyRequest = async (access_token) => {
   try {
-    const queryParams = new URLSearchParams(filters).toString(); // Convert filters to query params
-    const response = await axios.get(`${API_URL}/getAllFuelSupplyRequest?${queryParams}`, {
+    const response = await axios.get(`${API_URL}/getAllFuelSupplyRequest`, {
       headers: { Authorization: `Bearer ${access_token}` },
     });
-    return response.data.requests; // Ensure it returns only filtered requests
+
+    return response.data.requests;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách yêu cầu:", error);
     throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
   }
 };
+
 
 export const updateFuelSupplyRequest = async (id, updatedData) => {
   try {
@@ -51,5 +52,17 @@ export const deleteFuelRequest = async (id) => {
   } catch (error) {
     console.error("Lỗi khi hủy yêu cầu:", error);
     throw new Error(error.response?.data?.message || "Có lỗi xảy ra!");
+  }
+};
+
+export const getFuelSupplyRequestById = async (access_token, id) => {
+  try {
+    const response = await axios.get(`${API_URL}/getFuelSupplyRequestById/${id}`, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    return response.data.request; 
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết yêu cầu:", error);
+    throw new Error("Không thể lấy dữ liệu yêu cầu cung cấp, vui lòng thử lại!");
   }
 };

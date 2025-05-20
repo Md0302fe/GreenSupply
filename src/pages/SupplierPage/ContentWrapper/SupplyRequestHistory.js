@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Modal, Table, Tag, Space, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as FuelSupplyRequestService from "../../../services/FuelSupplyRequestService";
@@ -8,9 +7,13 @@ import * as FuelEntryServices from "../../../services/FuelEntryServices";
 import { converDateString } from "../../../ultils";
 import Loading from "../../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
+import { IoDocumentText } from "react-icons/io5";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { useRef } from "react";
+import { AiFillEdit } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
+import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 
 const FuelSupplyRequestComponent = () => {
   const [rowSelected, setRowSelected] = useState(null);
@@ -23,14 +26,19 @@ const FuelSupplyRequestComponent = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const userRedux = useSelector((state) => state.user);
 
   const fetchGetAllRequests = async () => {
     const access_token = user?.access_token;
     const user_id = user?.id;
 
-    return await FuelSupplyRequestService.getAllFuelSupplyRequest(access_token, { user_id });
+    return await FuelSupplyRequestService.getAllFuelSupplyRequest(
+      access_token,
+      { user_id }
+    );
   };
 
   const { data: fuelRequests, isLoading } = useQuery({
@@ -38,7 +46,9 @@ const FuelSupplyRequestComponent = () => {
     queryFn: fetchGetAllRequests,
   });
 
-  const selectedRequest = fuelRequests?.find((request) => request._id === rowSelected) || {
+  const selectedRequest = fuelRequests?.find(
+    (request) => request._id === rowSelected
+  ) || {
     fuel_name: "",
     quantity: 0,
     note: "",
@@ -48,7 +58,8 @@ const FuelSupplyRequestComponent = () => {
   };
 
   const mutationUpdate = useMutation({
-    mutationFn: ({ id, data }) => FuelSupplyRequestService.updateFuelSupplyRequest(id, data),
+    mutationFn: ({ id, data }) =>
+      FuelSupplyRequestService.updateFuelSupplyRequest(id, data),
     onSuccess: () => {
       message.success("Cập nhật thành công!");
       queryClient.invalidateQueries("fuelRequests");
@@ -77,7 +88,6 @@ const FuelSupplyRequestComponent = () => {
     mutationDelete.mutate(rowSelected);
   };
 
-  // Handle Update Submission
   const onFinishUpdate = (values) => {
     mutationUpdate.mutate({ id: rowSelected, data: values });
   };
@@ -99,8 +109,9 @@ const FuelSupplyRequestComponent = () => {
           fuel_name: record.fuel_name,
           quantity: record.quantity,
           note: record.note || "",
+          price: record.price,
         });
-        console.log(res)
+        console.log(res);
         // Save `quantity_remain` in state for validation later
         setQuantityRemain(res.res.quantity_remain);
       }
@@ -111,16 +122,40 @@ const FuelSupplyRequestComponent = () => {
 
   const handleViewDetail = async (record) => {
     try {
-      const res = await FuelEntryServices.getFuelEntryDetail(record.request_id);
+      console.log("Calling API to get details for request ID:", record._id);
+      const res = await FuelSupplyRequestService.getFuelSupplyRequestById(
+        user?.access_token,
+        record._id
+      );
+      console.log("Response from API:", res);
       if (res) {
         setDetailData({
-          ...res.res,
-          total_price: res.res.price * res.res.quantity, // Calculate total price
+          ...res,
+          total_price: res.price * res.quantity,
         });
-        setIsDetailModalOpen(true);
+        setIsDetailDrawerOpen(true);
       }
     } catch (error) {
       console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+    }
+  };
+
+  const getStatusClasses = (status) => {
+    if (status === "Chờ duyệt") return "bg-yellow-100 text-yellow-800";
+    if (status === "Đã duyệt") return "bg-green-100 text-green-800";
+    if (status === "Đã hủy") return "bg-red-100 text-red-800";
+    return "bg-gray-100 text-gray-800";
+  };
+
+  // Hàm cập nhật tổng giá
+  const updateTotalPrice = (quantity, price) => {
+    // Kiểm tra nếu số lượng và giá hợp lệ
+    if (!isNaN(quantity) && !isNaN(price) && quantity > 0 && price > 0) {
+      const totalPrice = quantity * price;
+      formUpdate.setFieldsValue({ total_price: totalPrice });
+    } else {
+      formUpdate.setFieldsValue({ total_price: "" });
+      // message.error("Giá và số lượng phải là số hợp lệ và lớn hơn 0!");
     }
   };
 
@@ -138,13 +173,21 @@ const FuelSupplyRequestComponent = () => {
 
   // Search and filter
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Tìm kiếm ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
@@ -192,29 +235,40 @@ const FuelSupplyRequestComponent = () => {
   // Table Columns
   const columns = [
     {
-      title: "Tên Nhiên Liệu",
+      title: "Tên nguyên liệu",
       dataIndex: "fuel_name",
       key: "fuel_name",
-      ...getColumnSearchProps("fuel_name"), // 🔍 Enable search
+      ...getColumnSearchProps("fuel_name"),
       sorter: (a, b) => a.fuel_name.localeCompare(b.fuel_name),
     },
     {
-      title: "Số Lượng",
+      title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
       dataIndex: "quantity",
       key: "quantity",
-      sorter: (a, b) => a.quantity - b.quantity, // 🔽 Sorting
+      className: "text-center",
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
-      title: "Tổng Giá (VNĐ)",
+      title: <div style={{ textAlign: "center" }}>Giá mỗi đơn vị (VNĐ/Kg)</div>,
+      dataIndex: "price",
+      key: "price",
+      className: "text-center",
+      sorter: (a, b) => a.price - b.price,
+      render: (price) => price || "Không có giá mỗi kg",
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
       dataIndex: "total_price",
       key: "total_price",
+      className: "text-center",
       sorter: (a, b) => a.total_price - b.total_price, // Enable sorting
       render: (_, record) => record.total_price, // Calculate dynamically
     },
     {
-      title: "Trạng Thái",
+      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
       dataIndex: "status",
       key: "status",
+      className: "text-center",
       filters: [
         { text: "Đã duyệt", value: "Đã duyệt" },
         { text: "Chờ duyệt", value: "Chờ duyệt" },
@@ -228,48 +282,51 @@ const FuelSupplyRequestComponent = () => {
         return <Tag color={color}>{status}</Tag>;
       },
     },
+    // {
+    //   title: "Ghi Chú",
+    //   dataIndex: "note",
+    //   key: "note",
+    //   render: (note) => note || "Không có ghi chú",
+    // },
+    // {
+    //   title: "Cập Nhật",
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    //   sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt), // 🔽 Sorting by date
+    //   render: (updatedAt) => converDateString(updatedAt),
+    // },
     {
-      title: "Ghi Chú",
-      dataIndex: "note",
-      key: "note",
-      render: (note) => note || "Không có ghi chú",
-    },
-    {
-      title: "Cập Nhật",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt), // 🔽 Sorting by date
-      render: (updatedAt) => converDateString(updatedAt),
-    },
-    {
-      title: "Hành Động",
+      title: <div style={{ textAlign: "center" }}>Hành động</div>,
       key: "actions",
+      className: "text-center",
       render: (_, record) => {
         const isPending = record.status === "Chờ duyệt";
         return (
-          <Space>
+          <Space size={8}>
+            {/* Sửa */}
+            <Button
+              icon={<AiFillEdit />}
+              onClick={() => handleEdit(record)}
+              disabled={!isPending}
+              size="middle"
+            />
+            {/* Xóa */}
+            <Button
+              icon={<MdDelete />}
+              onClick={() => {
+                setRowSelected(record._id);
+                setIsOpenDelete(true);
+              }}
+              disabled={!isPending}
+              size="middle"
+            />
+            {/* Xem Chi Tiết */}
             <Button
               type="default"
-              onClick={() => handleViewDetail(record)} // Gọi hàm xem chi tiết
-            >
-              Xem Chi Tiết
-            </Button>
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
-              disabled={!isPending || mutationUpdate.isPending}
-            >
-              {mutationUpdate.isPending && rowSelected === record._id ? "Đang cập nhật..." : "Sửa"}
-            </Button>
-            <Button
-              type="danger"
-              icon={<DeleteOutlined />}
-              onClick={() => { setRowSelected(record._id); setIsOpenDelete(true); }}
-              disabled={!isPending || mutationDelete.isPending}
-            >
-              {mutationDelete.isPending && rowSelected === record._id ? "Đang xóa..." : "Xóa"}
-            </Button>
+              icon={<IoDocumentText />}
+              onClick={() => handleViewDetail(record)}
+              size="middle"
+            />
           </Space>
         );
       },
@@ -278,19 +335,51 @@ const FuelSupplyRequestComponent = () => {
 
   return (
     <div className="Wrapper-Admin-FuelRequest">
+      <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
+        <div className="info">
+          <h1 className="text-3xl font-bold mb-3 text-black">
+            Quản Lý Đơn Cung Cấp Nguyên Liệu
+          </h1>
+          <div className="max-w-[44rem]">
+            <p className="w-full text-[16px] text-gray-700">
+              Đây là trang quản lý các đơn cung cấp nguyên liệu mà{" "}
+              <span className="font-semibold text-[#006838]">
+                {userRedux?.full_name || "nhà cung cấp"}
+              </span>{" "}
+              đã tạo và gửi đến hệ thống. Bạn có thể theo dõi trạng thái, xem
+              chi tiết hoặc thực hiện các thao tác cần thiết với các đơn hàng
+              này.
+            </p>
+          </div>
+        </div>
+        <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
+      </div>
+
       <div className="Main-Content">
         <h5 className="content-title"> </h5>
-        <Table columns={columns} dataSource={fuelRequests} loading={isLoading} rowKey={(record) => record._id} pagination={{ pageSize: 5 }} />
+        <Table
+          columns={columns}
+          dataSource={fuelRequests}
+          loading={isLoading}
+          rowKey={(record) => record._id}
+          pagination={{ pageSize: 5 }}
+        />
       </div>
 
       {/* Drawer for Editing */}
-      <DrawerComponent title="Chi Tiết Yêu Cầu" isOpen={isDrawerOpen} onClose={handleCancelUpdate} placement="right" width="40%">
+      {/* <DrawerComponent
+        title="Chi Tiết Yêu Cầu"
+        isOpen={isDrawerOpen}
+        onClose={handleCancelUpdate}
+        placement="right"
+        width="30%"
+      >
         <Loading isPending={mutationUpdate.isPending}>
           <Form
             name="update-form"
             form={formUpdate}
             onFinish={onFinishUpdate}
-            layout="vertical"  // 🔹 Ensures proper alignment
+            layout="vertical" // 🔹 Ensures proper alignment
           >
             <Form.Item label="Tên Nhiên Liệu" name="fuel_name">
               <Input value={selectedRequest.fuel_name} disabled />
@@ -298,7 +387,9 @@ const FuelSupplyRequestComponent = () => {
 
             <Form.Item label="Số Lượng">
               {quantityRemain !== null && (
-                <div style={{ marginBottom: 5, fontSize: "14px", color: "gray" }}>
+                <div
+                  style={{ marginBottom: 5, fontSize: "14px", color: "gray" }}
+                >
                   Số lượng còn lại: <strong>{quantityRemain}</strong>
                 </div>
               )}
@@ -312,21 +403,30 @@ const FuelSupplyRequestComponent = () => {
                         return Promise.resolve();
                       }
                       if (value > quantityRemain) {
-                        return Promise.reject(new Error(`Số lượng không được vượt quá ${quantityRemain}!`));
+                        return Promise.reject(
+                          new Error(
+                            `Số lượng không được vượt quá ${quantityRemain}!`
+                          )
+                        );
                       }
                       if (value % 10 !== 0) {
-                        return Promise.reject(new Error("Số lượng phải chia hết cho 10!"));
+                        return Promise.reject(
+                          new Error("Số lượng phải chia hết cho 10!")
+                        );
                       }
                       return Promise.resolve();
                     },
                   }),
                 ]}
               >
-                <Input type="number" onKeyDown={(e) => {
-                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
-                    e.preventDefault();
-                  }
-                }}/>
+                <Input
+                  type="number"
+                  onKeyDown={(e) => {
+                    if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
               </Form.Item>
             </Form.Item>
             <Form.Item label="Ghi Chú" name="note">
@@ -334,7 +434,258 @@ const FuelSupplyRequestComponent = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" loading={mutationUpdate.isPending} style={{ width: "100%" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={mutationUpdate.isPending}
+                style={{ width: "100%" }}
+              >
+                {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Loading>
+      </DrawerComponent> */}
+
+      <DrawerComponent
+        title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
+        isOpen={isDrawerOpen}
+        placement="right"
+        width="30%"
+        onClose={handleCancelUpdate}
+      >
+        <Loading isPending={mutationUpdate.isPending}>
+          <Form
+            name="update-form"
+            form={formUpdate}
+            onFinish={onFinishUpdate}
+            layout="vertical"
+          >
+            <Form.Item label="Tên Nguyên Liệu" name="fuel_name">
+              <Input value={selectedRequest.fuel_name} disabled />
+            </Form.Item>
+
+            <Form.Item>
+              {quantityRemain !== null && (
+                <div style={{ fontSize: "14px", color: "gray" }}>
+                  <strong>Số lượng còn lại: {quantityRemain} KG</strong>
+                </div>
+              )}
+            </Form.Item>
+
+            <Form.Item
+              name="quantity"
+              label="Số lượng muốn cung cấp"
+              rules={[
+                { required: true, message: "Vui lòng nhập số lượng!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value) {
+                      return Promise.resolve();
+                    }
+                    if (value > quantityRemain) {
+                      return Promise.reject(
+                        new Error(
+                          `Số lượng không được vượt quá ${quantityRemain}!`
+                        )
+                      );
+                    }
+                    if (value % 10 !== 0) {
+                      return Promise.reject(
+                        new Error("Số lượng phải chia hết cho 10!")
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <Input
+                type="number"
+                min={10}
+                onKeyDown={(e) => {
+                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  const quantity = e.target.value;
+                  formUpdate.setFieldsValue({ quantity });
+                  updateTotalPrice(quantity, formUpdate.getFieldValue("price"));
+                }}
+              />
+            </Form.Item>
+
+            {/* <Form.Item
+              label="Giá mỗi đơn vị (VNĐ/Kg)"
+              name="price"
+              rules={[
+                { required: true, message: "Vui lòng nhập giá mỗi đơn vị!" },
+              ]}
+            >
+              <Input
+                type="number"
+                defaultValue={selectedRequest.price || 0}
+                min="0"
+                required
+                onChange={(e) => {
+                  const price = e.target.value;
+                  formUpdate.setFieldsValue({ price });
+                  updateTotalPrice(formUpdate.getFieldValue("quantity"), price);
+                }}
+              />
+            </Form.Item> */}
+
+            <Form.Item label="Giá mỗi đơn vị (VNĐ/Kg)" name="price">
+              <Input disabled />
+            </Form.Item>
+
+            <Form.Item label="Ghi Chú" name="note">
+              <Input.TextArea rows={3} placeholder="Ghi chú thêm nếu có" />
+            </Form.Item>
+
+            <div
+              style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
+            >
+              <span>Tổng Giá: </span>
+              {
+                // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
+                formUpdate.getFieldValue("quantity") &&
+                formUpdate.getFieldValue("price")
+                  ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
+                    (
+                      Number(formUpdate.getFieldValue("quantity")) *
+                      Number(formUpdate.getFieldValue("price"))
+                    ).toLocaleString("vi-VN")
+                  : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
+              }
+            </div>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={mutationUpdate.isPending}
+                style={{ width: "100%" }}
+              >
+                {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Loading>
+      </DrawerComponent> */}
+
+      <DrawerComponent
+        title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
+        isOpen={isDrawerOpen}
+        placement="right"
+        width="30%"
+        onClose={handleCancelUpdate}
+      >
+        <Loading isPending={mutationUpdate.isPending}>
+          <Form
+            name="update-form"
+            form={formUpdate}
+            onFinish={onFinishUpdate}
+            layout="vertical"
+          >
+            <Form.Item label="Tên Nguyên Liệu" name="fuel_name">
+              <Input value={selectedRequest.fuel_name} disabled />
+            </Form.Item>
+
+            <Form.Item>
+              {quantityRemain !== null && (
+                <div style={{ fontSize: "14px", color: "gray" }}>
+                  <strong>Số lượng còn lại: {quantityRemain} KG</strong>
+                </div>
+              )}
+            </Form.Item>
+
+            <Form.Item
+              name="quantity"
+              label="Số lượng muốn cung cấp"
+              rules={[
+                { required: true, message: "Vui lòng nhập số lượng!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value) {
+                      return Promise.resolve();
+                    }
+                    if (value > quantityRemain) {
+                      return Promise.reject(
+                        new Error(
+                          `Số lượng không được vượt quá ${quantityRemain}!`
+                        )
+                      );
+                    }
+                    if (value % 10 !== 0) {
+                      return Promise.reject(
+                        new Error("Số lượng phải chia hết cho 10!")
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <Input
+                type="number"
+                onChange={(e) => {
+                  const quantity = e.target.value;
+                  formUpdate.setFieldsValue({ quantity });
+                  updateTotalPrice(quantity, formUpdate.getFieldValue("price"));
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Giá mỗi đơn vị (VNĐ/Kg)"
+              name="price"
+              rules={[
+                { required: true, message: "Vui lòng nhập giá mỗi đơn vị!" },
+              ]}
+            >
+              <Input
+                type="number"
+                defaultValue={selectedRequest.price || 0}
+                min="0"
+                required
+                onChange={(e) => {
+                  const price = e.target.value;
+                  formUpdate.setFieldsValue({ price });
+                  updateTotalPrice(formUpdate.getFieldValue("quantity"), price);
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item label="Ghi Chú" name="note">
+              <Input.TextArea rows={3} placeholder="Ghi chú thêm nếu có" />
+            </Form.Item>
+
+            <div
+              style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
+            >
+              <span>Tổng Giá: </span>
+              {
+                // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
+                formUpdate.getFieldValue("quantity") &&
+                formUpdate.getFieldValue("price")
+                  ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
+                    (
+                      Number(formUpdate.getFieldValue("quantity")) *
+                      Number(formUpdate.getFieldValue("price"))
+                    ).toLocaleString("vi-VN")
+                  : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
+              }
+            </div>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={mutationUpdate.isPending}
+                style={{ width: "100%" }}
+              >
                 {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
               </Button>
             </Form.Item>
@@ -342,38 +693,121 @@ const FuelSupplyRequestComponent = () => {
         </Loading>
       </DrawerComponent>
 
-
       {/* Modal Confirm Delete */}
-      <Modal title="Xóa Yêu Cầu" open={isOpenDelete} onCancel={() => setIsOpenDelete(false)} onOk={handleConfirmDelete} confirmLoading={mutationDelete.isPending}>
+      <Modal
+        title="Xóa Yêu Cầu"
+        open={isOpenDelete}
+        onCancel={() => setIsOpenDelete(false)}
+        onOk={handleConfirmDelete}
+        confirmLoading={mutationDelete.isPending}
+      >
         <p>Bạn có chắc muốn xóa yêu cầu này?</p>
       </Modal>
 
-      {/* Modal chi tiết */}
-      <Modal
+      <DrawerComponent
         title="Chi Tiết Đơn Cung Cấp"
-        open={isDetailModalOpen}
-        onCancel={() => setIsDetailModalOpen(false)}
-        footer={[
-          <Button key="close" onClick={() => setIsDetailModalOpen(false)}>
-            Đóng
-          </Button>,
-        ]}
+        isOpen={isDetailDrawerOpen}
+        placement="right"
+        width="30%" // Điều chỉnh chiều rộng Drawer nếu cần
+        onClose={() => setIsDetailDrawerOpen(false)}
       >
         {detailData ? (
-          <div>
-            <p><strong>Tên Nhiên Liệu:</strong> {detailData.request_name}</p>
-            <p><strong>Ghi Chú:</strong> {detailData.note || "Không có ghi chú"}</p>
-            <p><strong>Trạng Thái:</strong> {detailData.status}</p>
-            <p><strong>Giá Mỗi KG:</strong> {detailData.price} VND</p>
-            <p><strong>Số Lượng:</strong> {detailData.quantity} KG</p>
-            <p><strong>Tổng Giá:</strong> {detailData.total_price} VND</p>
-            <p><strong>Ngày Cập Nhật:</strong> {converDateString(detailData.updatedAt)}</p>
+          <div className="w-full p-6 bg-white rounded-md shadow">
+            <div className="grid grid-cols-1 gap-4 mb-4">
+              <div>
+                <label className="block mb-1 font-semibold">
+                  Tên Nguyên Liệu
+                </label>
+                <input
+                  type="text"
+                  value={detailData.fuel_name}
+                  readOnly
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-semibold">
+                  Giá mỗi đơn vị (VNĐ/Kg)
+                </label>
+                <input
+                  type="text"
+                  value={detailData.price.toLocaleString("vi-VN")}
+                  readOnly
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-semibold">
+                  Số Lượng (Kg)
+                </label>
+                <input
+                  type="text"
+                  value={detailData.quantity}
+                  readOnly
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-semibold">Tổng Giá</label>
+                <input
+                  type="text"
+                  value={detailData.total_price.toLocaleString("vi-VN")}
+                  readOnly
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-semibold">
+                  Ngày Cập Nhật
+                </label>
+                <input
+                  type="text"
+                  value={converDateString(detailData.updatedAt)}
+                  readOnly
+                  className="border p-2 rounded w-full"
+                />
+              </div>
+
+              <div className="">
+                <label className="block mb-1 font-semibold">Ghi Chú</label>
+                <textarea
+                  value={detailData.note || "Không có ghi chú"}
+                  readOnly
+                  className="w-full h-auto border p-2 rounded"
+                />
+              </div>
+
+              {/* Trạng thái */}
+              <div className="flex items-center gap-2">
+                <label className="block font-semibold">Trạng Thái: </label>
+                <span
+                  className={`ml-2 px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap ${getStatusClasses(
+                    detailData.status
+                  )}`}
+                >
+                  {detailData.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Nút đóng */}
+            <div className="flex justify-start">
+              <Button
+                onClick={() => setIsDetailDrawerOpen(false)}
+                className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Đóng
+              </Button>
+            </div>
           </div>
         ) : (
-          <Loading isPending={true} />
+          <p>Không có dữ liệu.</p>
         )}
-      </Modal>
-
+      </DrawerComponent>
     </div>
   );
 };

@@ -21,6 +21,21 @@ module.exports = {
         "right-bottom": "8px 8px 2px rgba(0, 0, 0, 0.2)",
         "top-left": "-8px -8px 2px rgba(0, 0, 0, 0.2)",
       },
+      animation: {
+        "fade-in-down": "fadeInDown 0.4s ease-out both",
+      },
+      keyframes: {
+        fadeInDown: {
+          "0%": {
+            opacity: 0,
+            transform: "translateY(-10px)",
+          },
+          "100%": {
+            opacity: 1,
+            transform: "translateY(0)",
+          },
+        },
+      },
     },
   },
   plugins: [],

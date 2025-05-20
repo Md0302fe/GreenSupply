@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { createHarvestRequest } from "../../../services/HarvestRequestService";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { message } from "antd";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -34,17 +35,17 @@ const HarvestRequestPage = () => {
     const { name, value } = e.target;
     let newErrors = { ...errors };
 
-    // Kiểm tra tên mặt hàng (Không chứa ký tự đặc biệt)
+    // Kiểm tra Tên yêu cầu(Không chứa ký tự đặc biệt)
     if (name === "fuel_name") {
       if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9\u0100-\u017F]+$/.test(value)) {
-        newErrors.fuel_name = "Tên mặt hàng chỉ chứa chữ, số và khoảng trắng!";
+        newErrors.fuel_name = "Tên yêu cầu chỉ chứa chữ, số và khoảng trắng!";
       } else {
         delete newErrors.fuel_name;
       }
       setFormData((prev) => ({ ...prev, [name]: value }));
       setErrors(newErrors);
       return;
-    }    
+    }
     if (name === "fuel_type") {
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
@@ -67,9 +68,12 @@ const HarvestRequestPage = () => {
 
   const fetchListFuelType = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/fuel/getAll`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const transformedFuels = response.data.requests.map((item) => ({
         _id: item._id,
         type_name: item.fuel_type_id?.type_name || "Không có dữ liệu",
@@ -85,7 +89,7 @@ const HarvestRequestPage = () => {
       console.error("Lỗi khi lấy danh sách loại nguyên liệu:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchListFuelType();
   }, []);
@@ -109,7 +113,7 @@ const HarvestRequestPage = () => {
 
     // Kiểm tra dữ liệu trước khi gửi
     if (!formData.fuel_name.trim())
-      newErrors.fuel_name = "Tên mặt hàng không được để trống!";
+      newErrors.fuel_name = "Tên yêu cầu không được để trống!";
     if (!formData.quantity.trim())
       newErrors.quantity = "Số lượng không được để trống!";
     if (!formData.price.trim()) newErrors.price = "Giá không được để trống!";
@@ -134,7 +138,7 @@ const HarvestRequestPage = () => {
 
     try {
       await createHarvestRequest(fuelRequest);
-      toast.success("Tạo yêu cầu thu hàng thành công!");
+      message.success("Tạo yêu cầu thu hàng thành công!");
 
       setFormData({
         fuel_name: "",
@@ -147,20 +151,24 @@ const HarvestRequestPage = () => {
       setErrors({});
     } catch (error) {
       console.error("Lỗi khi tạo yêu cầu:", error);
-      toast.error("Tạo yêu cầu thất bại! Vui lòng thử lại.");
+      message.error("Tạo yêu cầu thất bại! Vui lòng thử lại.");
     }
   };
 
   return (
     <div className="px-2">
-      {/* Giới thiệu */}
+      {/* Giới thiệu
       <div className="w-full border border-gray-200 flex flex-col md:flex-row items-center gap-10 md:gap-16 lg:gap-20 mb-5 justify-between rounded-md p-6 bg-white shadow">
         <div className="info md:text-left max-w-xl">
           <h3 className="text-2xl md:text-3xl font-bold mb-3 text-black">
-            Chào mừng bạn đến với <span className="text-[#006838]">Green Supply</span>🌿
+            Chào mừng bạn đến với{" "}
+            <span className="text-[#006838]">Green Supply</span>🌿
           </h3>
           <p className="text-gray-700">
-            Hãy bắt đầu bằng cách <span className="font-bold"> tạo yêu cầu thu hàng </span> cho chúng tôi. Sau khi gửi yêu cầu, bạn có thể theo dõi trạng thái xử lý và nhận phản hồi nhanh chóng từ hệ thống của chúng tôi.
+            Hãy bắt đầu bằng cách{" "}
+            <span className="font-bold"> tạo yêu cầu thu hàng </span> cho chúng
+            tôi. Sau khi gửi yêu cầu, bạn có thể theo dõi trạng thái xử lý và
+            nhận phản hồi nhanh chóng từ hệ thống của chúng tôi.
           </p>
           <p className="text-gray-700 mt-3">
             Chúng tôi mong muốn xây dựng một mối quan hệ hợp tác bền vững và
@@ -172,7 +180,7 @@ const HarvestRequestPage = () => {
           className="w-[180px] md:w-[220px] lg:w-[250px] object-contain"
           alt="Shop Illustration"
         />
-      </div>
+      </div> */}
 
       {/* Form Tạo Yêu Cầu Thu Hàng */}
       <div className="w-full border border-gray-200 p-6 rounded-md bg-white shadow">
