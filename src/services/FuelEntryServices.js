@@ -1,11 +1,13 @@
 import axios from "axios";
 export const axiosJWT = axios.create();
 
-export const getAllFuelEntry = async () => {
-  const res = await axiosJWT.get(
-    `${process.env.REACT_APP_API_URL}/fuel/fuel-list`,
-  );
+export const getAllFuelEntry = async (params = {}) => {
+  const query = new URLSearchParams(params).toString();
+  const url = `${process.env.REACT_APP_API_URL}/fuel/fuel-list${
+    query ? `?${query}` : ""
+  }`;
 
+  const res = await axiosJWT.get(url);
   return res?.data;
 };
 
@@ -15,12 +17,9 @@ export const getFuelEntryDetail = async (id) => {
     const res = await axios.get(
       `${process.env.REACT_APP_API_URL}/fuel/fuel-detail/${id}`
     );
-    console.log("details provide", res)
+    console.log("details provide", res.data);
     return res?.data;
   } catch (error) {
     console.log("Error :", error);
   }
 };
-
-
-
