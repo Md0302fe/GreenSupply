@@ -235,14 +235,40 @@ const createFuelStorageReceipt = async (orderToCreate) => {
     },
   ];
 
-  const handleExportFileExcel = () => {
-    const excel = new Excel();
-    excel
-      .addSheet("Danh sách đơn hàng")
-      .addColumns(columns.filter((col) => col.dataIndex !== "action"))
-      .addDataSource(tableData, { str2Percent: true })
-      .saveAs("DanhSachDonHangChoNhapKho.xlsx");
-  };
+ const excelColumns = [
+  { title: "Khách Hàng", dataIndex: "customerName" },
+  { title: "Loại Nhiên Liệu", dataIndex: "fuel_name" },
+  { title: "Giá Tiền", dataIndex: "price" },
+  { title: "Số Lượng", dataIndex: "quantity" },
+  { title: "Tổng Giá", dataIndex: "total_price" },
+  { title: "Trạng Thái", dataIndex: "status" },
+  { title: "Loại Đơn Hàng", dataIndex: "receiptType" },
+];
+
+const handleExportFileExcel = () => {
+  if (!orders.length) {
+    message.warning("Không có dữ liệu để xuất!");
+    return;
+  }
+
+  const excel = new Excel();
+  excel
+    .addSheet("Danh sách đơn hàng")
+    .addColumns(excelColumns)
+    .addDataSource(
+      orders.map((order) => ({
+        customerName: order.supplier_id?.full_name || "Không có dữ liệu",
+        fuel_name: order.fuel_name || "Không có dữ liệu",
+        price: order.price || "Không có dữ liệu",
+        quantity: order.quantity || "Không có dữ liệu",
+        total_price: order.total_price || "Không có dữ liệu",
+        status: order.status || "Không có dữ liệu",
+        receiptType: order.receipt_type === "supply" ? "Cung cấp" : "Thu hàng",
+      })),
+      { str2Percent: true }
+    )
+    .saveAs("DanhSachDonHangChoNhapKho.xlsx");
+};
 
   return (
     <div className="fuel-order-status">
