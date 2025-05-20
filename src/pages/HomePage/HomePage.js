@@ -29,7 +29,7 @@ const HomePage = () => {
       <MangoDescription />
       <AboutSupplyChain />
       <VisionOverview />
-      <StoreProduct />
+      {/* <StoreProduct /> */}
       <InfoKnowledge />
     </div>
   );

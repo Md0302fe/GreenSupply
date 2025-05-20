@@ -157,7 +157,7 @@ const HarvestRequestPage = () => {
 
   return (
     <div className="px-2">
-      {/* Giới thiệu */}
+      {/* Giới thiệu
       <div className="w-full border border-gray-200 flex flex-col md:flex-row items-center gap-10 md:gap-16 lg:gap-20 mb-5 justify-between rounded-md p-6 bg-white shadow">
         <div className="info md:text-left max-w-xl">
           <h3 className="text-2xl md:text-3xl font-bold mb-3 text-black">
@@ -180,7 +180,7 @@ const HarvestRequestPage = () => {
           className="w-[180px] md:w-[220px] lg:w-[250px] object-contain"
           alt="Shop Illustration"
         />
-      </div>
+      </div> */}
 
       {/* Form Tạo Yêu Cầu Thu Hàng */}
       <div className="w-full border border-gray-200 p-6 rounded-md bg-white shadow">
