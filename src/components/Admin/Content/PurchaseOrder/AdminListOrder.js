@@ -678,7 +678,7 @@ const UserComponent = () => {
       render: (quantity) => `${quantity} Kg`,
     },
     {
-      title: "Ngày tạo đơn",
+      title: "Ngày bắt đầu nhận đơn",
       dataIndex: "start_received",
       key: "start_received",
       sorter: (a, b) => new Date(a.start_received) - new Date(b.start_received),

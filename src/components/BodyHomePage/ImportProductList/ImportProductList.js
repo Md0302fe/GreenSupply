@@ -17,6 +17,7 @@ const ImportProductList = () => {
         (order) => order.status === "Đang xử lý" && !order.is_deleted
       );
       setProductList(filteredOrders);
+      console.log(productList)
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đơn hàng:", error);
     }
@@ -58,7 +59,7 @@ const ImportProductList = () => {
       </h2>
 
       {productList.length > 0 ? (
-        productList.length >= 4 ? (
+        productList.length >= 0 ? (
           <Slider {...sliderSettings}>
             {productList.map((product) => (
               <div key={product._id} className="p-2">
