@@ -21,6 +21,7 @@ import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { useLocation } from "react-router-dom";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
@@ -107,7 +108,7 @@ const RawMaterialBatchList = () => {
   useEffect(() => {
     if (location.state?.createdSuccess) {
       toast.success("Tạo lô nguyên liệu thành công!");
-  
+
       // 👉 Xoá flag để tránh toast lặp nếu user refresh lại trang
       window.history.replaceState({}, document.title);
     }
@@ -196,63 +197,80 @@ const RawMaterialBatchList = () => {
         text
       ),
   });
+const columns = [
+  {
+    title: <div style={{ textAlign: "center" }}>Mã lô</div>,
+    dataIndex: "batch_id",
+    key: "batch_id",
+    align: "center",
+    ...getColumnSearchProps("batch_id"),
+  },
+  {
+    title: <div style={{ textAlign: "center" }}>Tên lô</div>,
+    dataIndex: "batch_name",
+    key: "batch_name",
+    align: "center",
+    ...getColumnSearchProps("batch_name"),
+    sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
+  },
+  {
+    title: <div style={{ textAlign: "center" }}>Loại nguyên liệu</div>,
+    dataIndex: "fuel_name",
+    key: "fuel_name",
+    align: "center",
+    render: (text) => <div style={{ }}>{text}</div>,
+  },
+  {
+    title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
+    dataIndex: "quantity",
+    key: "quantity",
+    align: "center",
+    sorter: (a, b) => a.quantity - b.quantity,
+    render: (val) => <div style={{ textAlign: "center" }}>{val} Kg</div>,
+  },
+  {
+    title: <div style={{ textAlign: "center" }}>Kho lưu trữ</div>,
+    dataIndex: "name_storage",
+    key: "name_storage",
+    align: "center",
+    render: (_, record) => (
+      <div style={{ textAlign: "center" }}>
+        {record?.fuel_type_id?.storage_id?.name_storage || "Không có"}
+      </div>
+    ),
+  },
+  {
+    title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+    dataIndex: "status",
+    key: "status",
+    align: "center",
+    filters: Object.keys(statusColors).map((status) => ({
+      text: status,
+      value: status,
+    })),
+    onFilter: (value, record) => record.status === value,
+    render: (stt) => (
+      <div style={{ textAlign: "center" }}>
+        <Tag color={statusColors[stt] || "default"}>{stt}</Tag>
+      </div>
+    ),
+  },
+  {
+  title: <div style={{ textAlign: "center" }}>Hành động</div>,
+  key: "action",
+  align: "center",
+  render: (record) => (
+    <div style={{ textAlign: "center" }}>
+      <Button
+        type="link"
+        icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
+        onClick={() => handleViewDetail(record)}
+      />
+    </div>
+  ),
+},
+];
 
-  const columns = [
-    {
-      title: "Mã lô",
-      dataIndex: "batch_id",
-      key: "batch_id",
-      ...getColumnSearchProps("batch_id"),
-    },
-    {
-      title: "Tên lô",
-      dataIndex: "batch_name",
-      key: "batch_name",
-      ...getColumnSearchProps("batch_name"),
-      sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
-    },
-    {
-      title: "Loại nguyên liệu",
-      dataIndex: "fuel_name",
-      key: "fuel_name",
-    },
-    {
-      title: "Số lượng (Kg)",
-      dataIndex: "quantity",
-      key: "quantity",
-      sorter: (a, b) => a.quantity - b.quantity,
-      render: (val) => `${val} Kg`,
-    },
-    {
-      title: "Kho lưu trữ",
-      dataIndex: "name_storage",
-      key: "name_storage",
-      render: (_, record) =>
-        record?.fuel_type_id?.storage_id?.name_storage || "Không có",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      filters: Object.keys(statusColors).map((status) => ({
-        text: status,
-        value: status,
-      })),
-      onFilter: (value, record) => record.status === value,
-      render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
-    },
-    {
-      title: "Hành động",
-      key: "action",
-      render: (record) => (
-        <Space>
-          <Button type="link" onClick={() => handleViewDetail(record)}>
-            Xem chi tiết
-          </Button>
-        </Space>
-      ),
-    },
-  ];
 
   const handleViewDetail = (record) => {
     setSelectedBatch(record);
@@ -406,32 +424,65 @@ const RawMaterialBatchList = () => {
 
   return (
     <div className="raw-material-batch-list">
-      <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-bold text-gray-800">
+      <div className="flex items-center justify-between mb-4 relative">
+        {/* Nút Quay lại */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-0 flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
+
+        {/* Tiêu đề căn giữa */}
+        <h5 className="text-4xl font-bold text-gray-800 text-center flex-1">
           Quản lý Lô Nguyên Liệu
         </h5>
-        <div className="flex gap-4">
+        {/* Nút tạo ở bên phải */}
+        <div
+          className="absolute right-0 flex gap-2 mt-2"
+          style={{ top: "65%", transform: "translateY(20%)" }}
+        >
           <Button
             type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-6"
+            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
             onClick={() => navigate("/system/admin/raw-material-batch")}
           >
             Tạo lô bổ sung
           </Button>
           <Button
             type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-3 rounded-md flex items-center gap-2 px-4"
+            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
             onClick={() => navigate("/system/admin/material-storage-export")}
           >
             Tạo đơn xuất kho
           </Button>
         </div>
       </div>
-
       <Loading isPending={loading}>
-        <Table columns={columns} dataSource={tableData}  pagination={{ pageSize: 6 }} />
+        <div className="mt-10">
+          {" "}
+          {/* 👈 thêm margin top ở đây */}
+          <Table
+            columns={columns}
+            dataSource={tableData}
+            pagination={{ pageSize: 6 }}
+          />
+        </div>
       </Loading>
-
       <DrawerComponent
         title={
           isEditMode ? "Cập nhật Lô Nguyên Liệu" : "Chi tiết Lô Nguyên Liệu"
