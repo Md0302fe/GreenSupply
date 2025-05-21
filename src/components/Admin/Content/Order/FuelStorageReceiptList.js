@@ -38,6 +38,9 @@ const FuelStorageReceiptList = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [showStatusFilter, setShowStatusFilter] = useState(false);
+  const [receiptTypeFilter, setReceiptTypeFilter] = useState("");
+  const [originalReceipts, setOriginalReceipts] = useState([]);
+  const [showTypeFilter, setShowTypeFilter] = useState(false);
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -58,7 +61,9 @@ const FuelStorageReceiptList = () => {
         }
       );
       if (response.data.success) {
-        setReceipts(response.data.data);
+        const rawData = response.data.data; // 👉 khai báo biến đúng chỗ
+        setOriginalReceipts(rawData);
+        applyFilters(rawData);
       } else {
         message.error("Lỗi khi lấy danh sách đơn nhập kho!");
       }
@@ -67,6 +72,37 @@ const FuelStorageReceiptList = () => {
     }
     setLoading(false);
   };
+
+  const applyFilters = (data) => {
+    let filtered = [...data];
+
+    // Lọc theo loại đơn hàng
+    if (receiptTypeFilter === "supply") {
+      filtered = filtered.filter((item) => item.receipt_supply_id);
+    } else if (receiptTypeFilter === "request") {
+      filtered = filtered.filter((item) => item.receipt_request_id);
+    }
+
+    // Lọc theo trạng thái (đã có)
+    if (statusFilterVal) {
+      filtered = filtered.filter((item) => item.status === statusFilterVal);
+    }
+
+    // Lọc theo người quản lý (đã có)
+    if (debouncedSearch) {
+      filtered = filtered.filter((item) =>
+        item.manager_id?.full_name
+          ?.toLowerCase()
+          .includes(debouncedSearch.toLowerCase())
+      );
+    }
+
+    setReceipts(filtered);
+  };
+
+  useEffect(() => {
+    applyFilters(originalReceipts);
+  }, [receiptTypeFilter, statusFilterVal, debouncedSearch]);
 
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
@@ -164,104 +200,193 @@ const FuelStorageReceiptList = () => {
     {
       title: (
         <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          style={{ position: "relative", textAlign: "center", width: "100%" }}
         >
           <span>Người Quản Lý</span>
-          <Popover
-            content={
-              <div style={{ padding: 10 }}>
-                <Input
-                  placeholder="Tìm kiếm theo tên người quản lý..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  style={{ width: 250 }}
-                />
-                <div style={{ marginTop: 10 }}>
-                  <Button type="primary" onClick={() => fetchReceipts()}>
-                    Tìm
-                  </Button>
-                  <Button
-                    onClick={() => setSearchText("")}
-                    style={{ marginLeft: 8 }}
-                  >
-                    Đặt lại
-                  </Button>
-                  <Button
-                    type="link"
-                    onClick={() => setShowSearchInput(false)}
-                    style={{ marginLeft: 8 }}
-                  >
-                    Đóng
-                  </Button>
-                </div>
-              </div>
-            }
-            title="Tìm kiếm"
-            trigger="click"
-            visible={showSearchInput}
-            onVisibleChange={() => setShowSearchInput(!showSearchInput)}
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
           >
-            <Button type="link" icon={<SearchOutlined />} />
-          </Popover>
+            <Popover
+              content={
+                <div style={{ padding: 10 }}>
+                  <Input
+                    placeholder="Tìm kiếm theo tên người quản lý..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    style={{ width: 250 }}
+                  />
+                  <div style={{ marginTop: 10 }}>
+                    <Button type="primary" onClick={() => fetchReceipts()}>
+                      Tìm
+                    </Button>
+                    <Button
+                      onClick={() => setSearchText("")}
+                      style={{ marginLeft: 8 }}
+                    >
+                      Đặt lại
+                    </Button>
+                    <Button
+                      type="link"
+                      onClick={() => setShowSearchInput(false)}
+                      style={{ marginLeft: 8 }}
+                    >
+                      Đóng
+                    </Button>
+                  </div>
+                </div>
+              }
+              title="Tìm kiếm"
+              trigger="click"
+              visible={showSearchInput}
+              onVisibleChange={() => setShowSearchInput(!showSearchInput)}
+            >
+              <Button
+                type="link"
+                icon={<SearchOutlined />}
+                style={{ padding: 0, height: "auto", lineHeight: 1 }}
+              />
+            </Popover>
+          </div>
         </div>
       ),
-      key: "manager_id",
-      render: (_, record) => record?.manager_id?.full_name || "Không rõ",
-    },
-    {
-      title: "Loại Đơn Hàng",
-      key: "receipt_type",
-      render: (_, record) =>
-        record.receipt_supply_id ? (
-          <Tag color="blue">Cung cấp</Tag>
-        ) : (
-          <Tag color="green">Thu hàng</Tag>
-        ),
-    },
-    {
-      title: "Kho",
-      dataIndex: ["storage_id", "name_storage"],
       align: "center",
-      key: "storage_id",
+      key: "manager_id",
+      render: (_, record) => (
+        <div style={{ textAlign: "center" }}>
+          {record?.manager_id?.full_name || "Không rõ"}
+        </div>
+      ),
     },
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center", width: "100%" }}>Loại Đơn Hàng</div>
+    //   ),
+    //   key: "receipt_type",
+    //   align: "center",
+    //   render: (_, record) => (
+    //     <div style={{ textAlign: "center" }}>
+    //       {record.receipt_supply_id ? (
+    //         <Tag color="blue">Cung cấp</Tag>
+    //       ) : (
+    //         <Tag color="green">Thu hàng</Tag>
+    //       )}
+    //     </div>
+    //   ),
+    // },
     {
       title: (
         <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          style={{ position: "relative", textAlign: "center", width: "100%" }}
         >
-          <span>Trạng Thái</span>
-          <Popover
-            content={
-              <div style={{ padding: 10 }}>
-                <Select
-                  value={statusFilterVal}
-                  onChange={(val) => setStatusFilterVal(val)}
-                  style={{ width: 200 }}
-                >
-                  <Option value="">Tất cả trạng thái</Option>
-                  <Option value="Chờ duyệt">Chờ duyệt</Option>
-                  <Option value="Đã duyệt">Đã duyệt</Option>
-                  <Option value="Đã huỷ">Đã huỷ</Option>
-                </Select>
-              </div>
-            }
-            title="Lọc theo trạng thái"
-            trigger="click"
-            visible={showStatusFilter}
-            onVisibleChange={() => setShowStatusFilter(!showStatusFilter)}
+          <span>Loại Đơn Hàng</span>
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
           >
-            <Button type="link" icon={<FilterOutlined />} />
-          </Popover>
+            <Popover
+              content={
+                <div style={{ padding: 10 }}>
+                  <Select
+                    value={receiptTypeFilter}
+                    onChange={(val) => setReceiptTypeFilter(val)}
+                    style={{ width: 200 }}
+                  >
+                    <Option value="">Tất cả</Option>
+                    <Option value="supply">Cung cấp</Option>
+                    <Option value="request">Thu hàng</Option>
+                  </Select>
+                </div>
+              }
+              title="Lọc theo loại đơn hàng"
+              trigger="click"
+              visible={showTypeFilter}
+              onVisibleChange={() => setShowTypeFilter(!showTypeFilter)}
+            >
+              <Button
+                type="link"
+                icon={<FilterOutlined />}
+                style={{ padding: 0, height: "auto", lineHeight: 1 }}
+              />
+            </Popover>
+          </div>
         </div>
       ),
+      key: "receipt_type",
+      align: "center",
+      render: (_, record) => (
+        <div style={{ textAlign: "center" }}>
+          {record.receipt_supply_id ? (
+            <Tag color="blue">Cung cấp</Tag>
+          ) : (
+            <Tag color="green">Thu hàng</Tag>
+          )}
+        </div>
+      ),
+    },
+
+    {
+      title: <div style={{ textAlign: "center", width: "100%" }}>Kho</div>,
+      dataIndex: ["storage_id", "name_storage"],
+      key: "storage_id",
+      align: "center",
+      render: (text) => (
+        <div style={{ textAlign: "center" }}>{text || "Không có dữ liệu"}</div>
+      ),
+    },
+
+    {
+      title: (
+        <div
+          style={{ position: "relative", textAlign: "center", width: "100%" }}
+        >
+          <span>Trạng Thái</span>
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
+          >
+            <Popover
+              content={
+                <div style={{ padding: 10 }}>
+                  <Select
+                    value={statusFilterVal}
+                    onChange={(val) => setStatusFilterVal(val)}
+                    style={{ width: 200 }}
+                  >
+                    <Option value="">Tất cả trạng thái</Option>
+                    <Option value="Chờ duyệt">Chờ duyệt</Option>
+                    <Option value="Đã duyệt">Đã duyệt</Option>
+                    <Option value="Đã huỷ">Đã huỷ</Option>
+                  </Select>
+                </div>
+              }
+              title="Lọc theo trạng thái"
+              trigger="click"
+              visible={showStatusFilter}
+              onVisibleChange={() => setShowStatusFilter(!showStatusFilter)}
+            >
+              <Button
+                type="link"
+                icon={<FilterOutlined />}
+                style={{ padding: 0, height: "auto", lineHeight: 1 }}
+              />
+            </Popover>
+          </div>
+        </div>
+      ),
+
       dataIndex: "status",
       align: "center",
       key: "status",
@@ -272,22 +397,42 @@ const FuelStorageReceiptList = () => {
             : status === "Đã duyệt"
             ? "green"
             : "red";
-        return <Tag color={color}>{status}</Tag>;
+        return (
+          <div style={{ textAlign: "center" }}>
+            <Tag color={color}>{status}</Tag>
+          </div>
+        );
       },
     },
     {
-      title: "Ngày Nhập Kho",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Ngày Nhập Kho</div>
+      ),
       dataIndex: "createdAt",
       key: "createdAt",
+      align: "center",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (date) => (date ? converDateString(date) : "Không có dữ liệu"),
+      render: (date) => (
+        <div style={{ textAlign: "center" }}>
+          {date ? converDateString(date) : "Không có dữ liệu"}
+        </div>
+      ),
     },
+
     {
-      title: "Ngày Cập Nhật",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Ngày Cập Nhật</div>
+      ),
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (date) => (date ? converDateString(date) : "Không có dữ liệu"),
+      align: "center",
+      render: (date) => (
+        <div style={{ textAlign: "center" }}>
+          {date ? converDateString(date) : "Không có dữ liệu"}
+        </div>
+      ),
     },
+
     {
       title: "Hành động",
       key: "action",
@@ -319,27 +464,27 @@ const FuelStorageReceiptList = () => {
     <div className="fuel-storage-receipt-list">
       {/* Tiêu đề */}
       <div className="flex justify-between items-center mb-4">
-         {/* Nút Quay lại */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex mb-4 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 mr-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+        {/* Nút Quay lại */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex mb-4 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12H3m0 0l6-6m-6 6l6 6"
-          />
-        </svg>
-        Quay lại
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
         <h5 className="text-4xl font-bold text-gray-800 text-center flex-1 mr-6 ">
           Quản lý Đơn Nhập Kho
         </h5>
