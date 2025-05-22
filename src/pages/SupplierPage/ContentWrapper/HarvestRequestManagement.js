@@ -283,7 +283,7 @@ const HarvestRequestManagement = () => {
 
   return (
     <div className="Wrapper-Admin-HarvestRequest">
-      <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
+      {/* <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
         <div className="info">
           <h1 className="flex items-center text-3xl font-bold mb-3 text-[#006838]">
             Quản Lý Yêu Cầu Thu Nguyên Liệu <MdAttachMoney />
@@ -300,7 +300,7 @@ const HarvestRequestManagement = () => {
           </div>
         </div>
         <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
-      </div>
+      </div> */}
 
       <Table
         columns={columns}

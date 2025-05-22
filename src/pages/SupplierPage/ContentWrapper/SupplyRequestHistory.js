@@ -335,7 +335,7 @@ const FuelSupplyRequestComponent = () => {
 
   return (
     <div className="Wrapper-Admin-FuelRequest">
-      <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
+      {/* <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
         <div className="info">
           <h1 className="text-3xl font-bold mb-3 text-black">
             Quản Lý Đơn Cung Cấp Nguyên Liệu
@@ -353,7 +353,7 @@ const FuelSupplyRequestComponent = () => {
           </div>
         </div>
         <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
-      </div>
+      </div> */}
 
       <div className="Main-Content">
         <h5 className="content-title"> </h5>
@@ -573,7 +573,7 @@ const FuelSupplyRequestComponent = () => {
             </Form.Item>
           </Form>
         </Loading>
-      </DrawerComponent> */}
+      </DrawerComponent>
 
       <DrawerComponent
         title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
