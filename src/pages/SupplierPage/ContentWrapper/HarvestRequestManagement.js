@@ -1,25 +1,22 @@
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import { Input, Button, Table, Tag, Space, message } from "antd";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  getAllHarvestRequests,
-  updateHarvestRequest,
-  cancelHarvestRequest,
-} from "../../../services/HarvestRequestService";
+import * as HarverstRequestService from "../../../services/HarvestRequestService";
 // import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
 import { useRef } from "react";
 import { SearchOutlined } from "@ant-design/icons";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import Highlighter from "react-highlight-words";
 import { IoDocumentText } from "react-icons/io5";
 
-
 // Định nghĩa hàm quản lý yêu cầu thu hoạch
 const HarvestRequestManagement = () => {
+  const user = useSelector((state) => state.user);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
@@ -41,9 +38,20 @@ const HarvestRequestManagement = () => {
   const userRedux = useSelector((state) => state.user);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
+  const getAllHarvestRequests = async () => {
+      const access_token = user?.access_token;
+      const user_id = user?.id;
+  
+      const res = await HarverstRequestService.getAllHarvestRequests(
+        access_token, 
+        user_id
+      );
+      return res;
+    };
+
   const { data: requests, isLoading } = useQuery({
     queryKey: ["harvestRequests"],
-    queryFn: getAllHarvestRequests,
+    queryFn: () => getAllHarvestRequests(), 
   });
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -139,8 +147,6 @@ const HarvestRequestManagement = () => {
     setIsDrawerOpen(true);
   };
 
-
-
   // Handle input change for form fields
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -159,7 +165,7 @@ const HarvestRequestManagement = () => {
     };
 
     try {
-      await updateHarvestRequest(selectedRequest._id, updatedData);
+      await HarverstRequestService.updateHarvestRequest(selectedRequest._id, updatedData);
       message.success("Cập nhật yêu cầu thành công!");
       queryClient.invalidateQueries("harvestRequests");
       setIsDrawerOpen(false);
@@ -184,7 +190,7 @@ const HarvestRequestManagement = () => {
 
     try {
       // Call the cancel API
-      await cancelHarvestRequest(cancelRequestId);
+      await HarverstRequestService.cancelHarvestRequest(cancelRequestId);
       message.success("Yêu cầu đã được hủy thành công!");
       queryClient.invalidateQueries("harvestRequests");
     } catch (error) {
@@ -258,13 +264,13 @@ const HarvestRequestManagement = () => {
             size="middle"
           />
           <Button
-            icon={<MdDelete />}
+            icon={<MdDelete style={{ color: "red" }} />}
             onClick={() => handleCancelClick(record._id, record.status)}
             disabled={record.status !== "Chờ duyệt"}
             size="middle"
           />
           <Button
-            icon={<IoDocumentText />}
+            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
             onClick={() => handleViewDetail(record)}
             size="middle"
           />
@@ -298,7 +304,7 @@ const HarvestRequestManagement = () => {
         </div>
         <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
       </div> */}
-      <div className ="text-center font-bold text-2xl mb-5">
+      <div className="text-center font-bold text-2xl mb-5">
         ĐƠN YÊU CẦU THU NGUYÊN LIỆU
       </div>
 
