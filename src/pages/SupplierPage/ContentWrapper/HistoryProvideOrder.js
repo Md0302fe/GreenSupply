@@ -1,12 +1,18 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { HiOutlineDocumentSearch } from "react-icons/hi";
+import React, { useState,useRef} from "react";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
-import { getAllProvideOrders } from "../../../services/HistoryProvideOrderService";
+import * as FuelSupplyRequestService from "../../../services/HistoryProvideOrderService";
+import { SearchOutlined } from "@ant-design/icons";
+import { IoDocumentText } from "react-icons/io5";
+import { Button, Input, Table, Tag, Space } from "antd";
+import { useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
+import Highlighter from "react-highlight-words";
 
 const HistoryProvideOrder = () => {
-    const [requests, setRequests] = useState([]);
+
+    const user = useSelector((state) => state.user);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const searchInput = useRef(null);
 
     // State của view detail
     const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
@@ -14,65 +20,24 @@ const HistoryProvideOrder = () => {
 
     // Các state cho chức năng Search
     const [search, setSearch] = useState("");
-    const [debouncedSearch, setDebouncedSearch] = useState(search);
+      // Các state cho chức năng Search
+      const [searchText, setSearchText] = useState("");
+      const [searchedColumn, setSearchedColumn] = useState("");
 
-    // Debounce tìm kiếm (300ms)
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedSearch(search);
-        }, 300);
+    const fetchGetAllRequests = async () => {
+      const access_token = user?.access_token;
+      const user_id = user?.id;
 
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [search]);
-
-    function removeDiacritics(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-
-    // Lọc chỉ lấy các yêu cầu có trạng thái "Hoàn Thành"
-    const completedRequests = useMemo(() => {
-        return requests.filter((req) => req.status === "Nhập kho thành công");
-    }, [requests]);
-
-    const filteredRequests = useMemo(() => {
-        const normalizedSearch = removeDiacritics(debouncedSearch.toLowerCase());
-
-        return completedRequests.filter((req) => {
-            const fuelName = removeDiacritics(req.fuel_name.toLowerCase());
-            const quantity = removeDiacritics(req.quantity.toString().toLowerCase());
-            const price = removeDiacritics(req.price.toString().toLowerCase());
-            const totalPrice = removeDiacritics(req.total_price.toString().toLowerCase());
-            const note = removeDiacritics(req.note.toLowerCase());
-
-            return (
-                fuelName.includes(normalizedSearch) ||
-                quantity.includes(normalizedSearch) ||
-                price.includes(normalizedSearch) ||
-                totalPrice.includes(normalizedSearch) ||
-                note.includes(normalizedSearch)
-            );
-        });
-    }, [completedRequests, debouncedSearch]);
-
-    // Gọi API lấy danh sách
-    useEffect(() => {
-        const fetchRequests = async () => {
-            try {
-                const data = await getAllProvideOrders();
-                console.log("Dữ liệu từ API:", data);
-                setRequests(data);
-            } catch (error) {
-                console.error("Lỗi khi gọi API:", error);
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchRequests();
-    }, []);
+      return await FuelSupplyRequestService.getProvideOrderHistories(
+        access_token,
+        { user_id }
+      );
+    };
+    
+    const { data, isLoading } = useQuery({
+      queryKey: ["fuelRequests", user?.id],
+      queryFn: fetchGetAllRequests,
+    });
 
     const handleViewDetail = (request) => {
         setViewDetailRequest(request);
@@ -82,84 +47,198 @@ const HistoryProvideOrder = () => {
     const getStatusClasses = (status) => {
         if (status === "Hoàn thành") return "bg-green-100 text-green-800";
         return "bg-gray-100 text-gray-800";
-      };
+    };
 
+      const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText("");
+      };
+    
+      const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+      };
+    
+      const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({
+          setSelectedKeys,
+          selectedKeys,
+          confirm,
+          clearFilters,
+          close,
+        }) => (
+          <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            <Input
+              ref={searchInput}
+              placeholder={`Tìm kiếm ${dataIndex}`}
+              value={selectedKeys[0]}
+              onChange={(e) =>
+                setSelectedKeys(e.target.value ? [e.target.value] : [])
+              }
+              onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              style={{ marginBottom: 8, display: "block" }}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Tìm
+              </Button>
+              <Button
+                onClick={() => clearFilters && handleReset(clearFilters)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Đặt lại
+              </Button>
+              <Button type="link" size="small" onClick={() => close()}>
+                Đóng
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: (filtered) => (
+          <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+        ),
+        onFilter: (value, record) =>
+          record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        render: (text) =>
+          searchedColumn === dataIndex ? (
+            <Highlighter
+              highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+              searchWords={[searchText]}
+              autoEscape
+              textToHighlight={text ? text.toString() : ""}
+            />
+          ) : (
+            text
+          ),
+      });
+
+
+      const columns = [
+          {
+            title: "Tên nguyên liệu",
+            dataIndex: "fuel_name",
+            key: "fuel_name",
+            ...getColumnSearchProps("fuel_name"),
+            sorter: (a, b) => a.fuel_name.localeCompare(b.fuel_name),
+          },
+          {
+            title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
+            dataIndex: "quantity",
+            key: "quantity",
+            className: "text-center",
+            sorter: (a, b) => a.quantity - b.quantity,
+          },
+          {
+            title: <div style={{ textAlign: "center" }}>Giá mỗi đơn vị (VNĐ/Kg)</div>,
+            dataIndex: "price",
+            key: "price",
+            className: "text-center",
+            sorter: (a, b) => a.price - b.price,
+            render: (price) => price || "Không có giá mỗi kg",
+          },
+          {
+            title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
+            dataIndex: "total_price",
+            key: "total_price",
+            className: "text-center",
+            sorter: (a, b) => a.total_price - b.total_price, // Enable sorting
+            render: (_, record) => record.total_price, // Calculate dynamically
+          },
+          {
+            title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+            dataIndex: "status",
+            key: "status",
+            className: "text-center",
+            filters: [
+              { text: "Đã duyệt", value: "Đã duyệt" },
+              { text: "Chờ duyệt", value: "Chờ duyệt" },
+              { text: "Đã hủy", value: "Đã hủy" },
+            ],
+            onFilter: (value, record) => record.status === value,
+            render: (status) => {
+              let color = "orange"; // Default for "Chờ duyệt"
+              if (status === "Đã duyệt") color = "green";
+              if (status === "Đã hủy") color = "red";
+              return <Tag color={color}>{status}</Tag>;
+            },
+          },
+          // {
+          //   title: "Ghi Chú",
+          //   dataIndex: "note",
+          //   key: "note",
+          //   render: (note) => note || "Không có ghi chú",
+          // },
+          // {
+          //   title: "Cập Nhật",
+          //   dataIndex: "updatedAt",
+          //   key: "updatedAt",
+          //   sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt), // 🔽 Sorting by date
+          //   render: (updatedAt) => converDateString(updatedAt),
+          // },
+          {
+            title: <div style={{ textAlign: "center" }}>Hành động</div>,
+            key: "actions",
+            className: "text-center",
+            render: (_, record) => {
+              const isPending = record.status === "Chờ duyệt";
+              return (
+                <Space size={8}>
+                  {/* Sửa */}
+                  {/* <Button
+                    icon={<AiFillEdit />}
+                    onClick={() => handleEdit(record)}
+                    disabled={!isPending}
+                    size="middle"
+                  /> */}
+                  {/* Xóa */}
+                  {/* <Button
+                    icon={<MdDelete />}
+                    onClick={() => {
+                      setRowSelected(record._id);
+                      setIsOpenDelete(true);
+                    }}
+                    disabled={!isPending}
+                    size="middle"
+                  /> */}
+                  {/* Xem Chi Tiết */}
+                  <Button
+                    type="default"
+                    icon={<IoDocumentText />}
+                    onClick={() => handleViewDetail(record)}
+                    size="middle"
+                  />
+                </Space>
+              );
+            },
+          },
+        ];
     return (
         <div className="px-2">
-            <div className="flex justify-between items-center pl-5 mb-4">
-                {/* Search */}
-                <div className="flex items-center border-[1px] border-gray-600 rounded-md overflow-hidden max-w-lg px-3 py-2 mt-4">
-                    <i className="fa fa-search text-gray-500"></i>
-                    <input
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        className="w-full px-2 outline-none text-gray-600 placeholder-gray-500 bg-transparent"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
+            <div className ="text-center font-bold text-2xl mb-5">
+              Lịch Sử Đơn Cung Cấp Nguyên Liệu
             </div>
 
-            {loading ? (
+            <hr />
+            {isLoading ? (
                 <p className="text-center text-gray-500">Đang tải dữ liệu...</p>
-            ) : error ? (
-                <p className="text-center text-red-500">{error}</p>
             ) : (
-                <div className="relative overflow-x-auto max-w-full shadow-md sm:rounded-lg bg-white">
-                    <table className="w-full table-fixed text-sm text-left text-gray-500">
-                        <thead className="text-xs text-gray-900 uppercase bg-gray-100 whitespace-nowrap">
-                            <tr>
-                                <th className="px-8 py-3 text-center">Tên Mặt Hàng</th>
-                                <th className="px-8 py-3 text-center">Số lượng (Kg)</th>
-                                <th className="px-8 py-3 text-center">Giá mỗi đơn vị</th>
-                                <th className="px-8 py-3 text-center">Tổng giá</th>
-                                <th className="px-8 py-3 text-center">Trạng thái</th>
-                                <th className="px-8 py-3 text-center">Ghi chú</th>
-                                <th className="px-8 py-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredRequests.length > 0 ? (
-                                filteredRequests.map((req) => (
-                                    <tr key={req._id} className="border-b whitespace-nowrap">
-                                        <td className="px-6 py-4 text-center font-bold">{req.fuel_name}</td>
-                                        <td className="px-6 py-4 text-center">{req.quantity}</td>
-                                        <td className="px-6 py-4 text-center">
-                                            {req.price.toLocaleString("vi-VN")} đ
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            {req.total_price.toLocaleString("vi-VN")} đ
-                                        </td>
-                                        <td className="px-6 py-4 text-center whitespace-nowrap">
-                                            <span className="px-2 py-1 rounded text-xs font-medium inline-block w-24 text-center bg-green-100 text-green-800">
-                                                {/* {req.status} */}
-                                                Hoàn thành
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis" title={req.note}>
-                                            {req.note}
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <button
-                                                className="flex items-center text-blue-600 hover:underline p-1 rounded border border-blue-600 transition duration-200"
-                                                onClick={() => handleViewDetail(req)}
-                                            >
-                                                <HiOutlineDocumentSearch className="mr-1" />
-                                                <span className="text-sm">Chi tiết</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="8" className="px-6 py-4 text-center text-gray-500">
-                                        Không có yêu cầu thu hàng nào
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+              <div className="Main-Content">
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  loading={isLoading}
+                  rowKey={(record) => record._id}
+                  pagination={{ pageSize: 6 }}
+                />
+              </div>
             )}
 
             {/* Drawer View Detail */}

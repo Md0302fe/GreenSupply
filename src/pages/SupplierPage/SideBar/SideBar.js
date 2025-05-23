@@ -41,7 +41,7 @@ const SideBar = () => {
             className="w-full !capitalize flex items-center gap-3 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1]"
           >
             <RiBillLine className="text-[24px] shrink-0" />
-            <span className="whitespace-nowrap">Quản lý đơn hàng</span>
+            <span className="whitespace-nowrap">Đơn Hàng Đã Tạo</span>
             <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
                 className={`transition-all ${
@@ -67,7 +67,7 @@ const SideBar = () => {
               <li className="w-full">
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !items-center !w-full text-[13px] !font-[500] !pl-4 flex gap-2 min-h-[40px]"
-                  onClick={() => navigate("/supplier/supply-request-history")}
+                  onClick={() => navigate("/supplier/provide-request-management")}
                 >
                   <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
                   <span className="truncate ml-[8px]">Đơn Cung Cấp Nguyên Liệu</span>
@@ -88,7 +88,7 @@ const SideBar = () => {
         </li>
         <li>
           <Button
-            onClick={() => navigate("/supplier/supply-request")}
+            onClick={() => navigate("/supplier/provide-request")}
             className="w-full !capitalize !justify-start flex gap-3 text-[12px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <MdOutlineBorderColor className="text-[20px]" />
@@ -101,7 +101,7 @@ const SideBar = () => {
             className="w-full !capitalize flex items-center gap-2 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1] text-left"
           >
             <RiBillLine className="text-[24px] shrink-0" />
-            <span className="whitespace-nowrap">Lịch sử đơn hàng</span>
+            <span className="whitespace-nowrap">Lịch sử đơn </span>
             <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
                 className={`transition-all ${
@@ -119,7 +119,7 @@ const SideBar = () => {
                   onClick={() => handleClick("/supplier/history-request-order")}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  Đơn yêu cầu thu nguyên liệu
+                  L.s Đơn yêu cầu thu nguyên liệu
                 </Button>
               </li>
               <li className="w-full">
@@ -128,7 +128,7 @@ const SideBar = () => {
                   onClick={() => handleClick("/supplier/history-provide-order")}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  Đơn cung cấp nguyên liệu
+                  L.s Đơn cung cấp nguyên liệu
                 </Button>
               </li>
             </ul>

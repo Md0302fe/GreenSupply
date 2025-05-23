@@ -270,7 +270,7 @@ const HarvestRequestPage = () => {
       {/* Bố cục chính: Flex ngang trên desktop, dọc trên mobile */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Form chính (80%) */}
-        <div className="w-full md:w-4/5 bg-gray-100 p-6">
+        <div className="w-full md:w-full bg-gray-100 p-6">
           <button
             onClick={() => navigate(-1)} // Quay lại trang trước đó
             className="flex mb-4 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
@@ -520,7 +520,7 @@ const HarvestRequestPage = () => {
         </div>
 
         {/* Box "Giới thiệu" (20%) */}
-        <div className="w-full md:w-[15%] border border-gray-200 flex flex-col items-center justify-center text-center rounded-md px-6 bg-white shadow py-4">
+        {/* <div className="w-full md:w-[15%] border border-gray-200 flex flex-col items-center justify-center text-center rounded-md px-6 bg-white shadow py-4">
           <div className="info max-w-xs">
             <h3 className="text-xl md:text-lg font-bold text-black">
               Tạo Đơn{" "}
@@ -535,7 +535,7 @@ const HarvestRequestPage = () => {
             className="w-[140px] md:w-[120px] lg:w-[140px] object-contain mt-3"
             alt="Shop Illustration"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
