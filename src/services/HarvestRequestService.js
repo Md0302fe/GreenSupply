@@ -17,15 +17,27 @@ export const createHarvestRequest = async (harvestRequest) => {
 };
 
 // Havest request order list
-export const getAllHarvestRequests = async () => {
+export const getAllHarvestRequests = async (access_token , user_id) => {
   try {
-    const response = await axios.get(`${API_URL}/harvest-request/getAllHarvestRequests`);
+    const response = await axios.get(
+      `${API_URL}/harvest-request/getAllHarvestRequests`,
+      {
+        params: {
+          user_id: user_id,
+        },
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data.requests;
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách yêu cầu:", error);
+    console.error("Lỗi khi lấy danh sách yêu cầu:", error.response?.data || error.message);
     throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
   }
 };
+
 
 export const updateHarvestRequest = async (id, updatedData) => {
   try {

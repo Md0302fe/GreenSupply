@@ -6,7 +6,7 @@ export const createFuelSupplyRequest = async (supplyRequest) => {
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/fuel-supply-request/createFuelSupplyRequest`,
-      supplyRequest,
+      supplyRequest
       // { headers: { "Content-Type": "application/json" } }
     );
     return response.data;
@@ -16,10 +16,16 @@ export const createFuelSupplyRequest = async (supplyRequest) => {
   }
 };
 
-export const getAllFuelSupplyRequest = async (access_token) => {
+export const getAllFuelSupplyRequest = async (access_token, user_id) => {
   try {
     const response = await axios.get(`${API_URL}/getAllFuelSupplyRequest`, {
-      headers: { Authorization: `Bearer ${access_token}` },
+      params: {
+        user_id: user_id,
+      },
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
     });
 
     return response.data.requests;
@@ -28,7 +34,6 @@ export const getAllFuelSupplyRequest = async (access_token) => {
     throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
   }
 };
-
 
 export const updateFuelSupplyRequest = async (id, updatedData) => {
   try {
@@ -47,7 +52,9 @@ export const updateFuelSupplyRequest = async (id, updatedData) => {
 
 export const deleteFuelRequest = async (id) => {
   try {
-    const response = await axios.put(`${API_URL}/deleteFuelSupplyRequest/${id}`);
+    const response = await axios.put(
+      `${API_URL}/deleteFuelSupplyRequest/${id}`
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi hủy yêu cầu:", error);
@@ -57,12 +64,17 @@ export const deleteFuelRequest = async (id) => {
 
 export const getFuelSupplyRequestById = async (access_token, id) => {
   try {
-    const response = await axios.get(`${API_URL}/getFuelSupplyRequestById/${id}`, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
-    return response.data.request; 
+    const response = await axios.get(
+      `${API_URL}/getFuelSupplyRequestById/${id}`,
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
+    return response.data.request;
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết yêu cầu:", error);
-    throw new Error("Không thể lấy dữ liệu yêu cầu cung cấp, vui lòng thử lại!");
+    throw new Error(
+      "Không thể lấy dữ liệu yêu cầu cung cấp, vui lòng thử lại!"
+    );
   }
 };
