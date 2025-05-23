@@ -55,7 +55,7 @@ const ImportProductList = () => {
     ],
   };
   const handleCreateOrder = () => {
-    navigate(`/supplier/supply-request`);
+    navigate(`/supplier/provide-request`);
   };
   return (
     <div className="max-w-[1400px] mx-auto p-6 bg-[#F4F4F4] border border-gray-800 shadow-inner mb-10 mt-[6rem]">
@@ -130,7 +130,7 @@ const ProductItem = ({ product }) => {
   }, [product.end_received]);
 
   const handleCreateOrderDetail = () => {
-    navigate(`/supplier/supply-request/${product._id}`);
+    navigate(`/supplier/provide-request/${product._id}`);
   };
 
   return (

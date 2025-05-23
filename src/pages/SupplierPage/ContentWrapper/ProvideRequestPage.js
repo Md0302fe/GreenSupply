@@ -7,8 +7,9 @@ import {
 import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestService";
 import { useSelector } from "react-redux";
 import { message } from "antd";
-import { useSearchParams } from "react-router-dom";
-const SupplyRequestPage = () => {
+
+
+const ProvideRequestPage = () => {
   const { id } = useParams();
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
@@ -22,14 +23,12 @@ const SupplyRequestPage = () => {
   const [noteError, setNoteError] = useState(""); // Lưu lỗi ghi chú
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(null);
   const fetchOrders = async (page = 1) => {
     try {
       const response = await getAllFuelEntry({ page, limit: 6 });
-      const filteredOrders = response.data.filter(
-        (order) => order.status === "Đang xử lý" && !order.is_deleted
-      );
-
-      setAdminOrders(filteredOrders);
+      console.log(response);
+      setAdminOrders(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
       setCurrentPage(page);
 
@@ -63,6 +62,20 @@ const SupplyRequestPage = () => {
       console.error("Lỗi khi lấy đơn hàng theo id:", error);
     }
   };
+  const getTimeRemaining = (endTime) => {
+    const total = Date.parse(endTime) - Date.now();
+    const seconds = Math.floor((total / 1000) % 60);
+    const minutes = Math.floor((total / 1000 / 60) % 60);
+    const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(total / (1000 * 60 * 60 * 24));
+    return {
+      total,
+      days,
+      hours,
+      minutes,
+      seconds,
+    };
+  };
 
   useEffect(() => {
     if (id) {
@@ -71,39 +84,30 @@ const SupplyRequestPage = () => {
     fetchOrders(currentPage);
   }, [currentPage]);
 
-  const handleSelectOrder = (orderId) => {
-    if (!orderId) {
-      // Nếu chọn "Chọn đơn hàng", đặt selectedOrder thành null
-      setSelectedOrder(null);
-      setFormData({ quantity: "", quality: "", note: "" });
-      setError("");
-      return;
-    }
+  // useEffect tính time
+  useEffect(() => {
+    if (!selectedOrder?.end_received) return;
 
+    const interval = setInterval(() => {
+      const remaining = getTimeRemaining(selectedOrder.end_received);
+      setTimeLeft(remaining);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedOrder]);
+
+  const handleSelectOrder = (orderId) => {
     const foundOrder = adminOrders.find((order) => order._id === orderId);
     setSelectedOrder(foundOrder);
-    setError("");
-
-    // Nếu đơn còn dưới 50kg, đặt giá trị cố định
-    if (foundOrder.quantity_remain <= 50) {
-      setFormData({
-        quantity: foundOrder.quantity_remain,
-        quality: "",
-        note: "",
-      });
-    } else {
-      setFormData({ quantity: "", quality: "", note: "" });
-    }
+    setFormData({
+      quantity: foundOrder.quantity_remain,
+      quality: "",
+      note: "",
+    });
   };
 
   const totalPrice = () => {
-    return (Number(formData.quantity) || 0) * (selectedOrder?.price || 0);
-  };
-
-  // Xử lý khi người dùng nhập số lượng
-  const handleQuantityChange = (e) => {
-    setError(""); // Xóa lỗi khi người dùng nhập
-    setFormData({ ...formData, quantity: e.target.value });
+    return (selectedOrder?.quantity_remain || 0) * (selectedOrder?.price || 0);
   };
 
   const handleNoteChange = (e) => {
@@ -114,62 +118,19 @@ const SupplyRequestPage = () => {
     }
   };
 
-  // Validate khi người dùng rời khỏi ô input hoặc nhấn gửi
-  const validateQuantity = () => {
-    if (!selectedOrder) return;
-    const quantity = Number(formData.quantity);
-
-    if (isNaN(quantity) || quantity <= 0) {
-      setError("Số lượng không hợp lệ.");
-      return false;
-    }
-
-    if (
-      selectedOrder.quantity <= 50 &&
-      quantity !== selectedOrder.quantity_remain
-    ) {
-      setError(`Bạn phải nhập đúng ${selectedOrder.quantity_remain} kg.`);
-      return false;
-    }
-
-    if (quantity > selectedOrder.quantity_remain) {
-      setError(
-        `Số lượng không được vượt quá ${selectedOrder.quantity_remain} kg.`
-      );
-      return false;
-    }
-
-    if (quantity % 10 !== 0) {
-      setError("Số lượng phải chia hết cho 10.");
-      return false;
-    }
-
-    setError(""); // Xóa lỗi nếu hợp lệ
-    return true;
-  };
-
   const handleSubmit = async () => {
     if (!selectedOrder) {
       message.error("Vui lòng chọn đơn hàng!");
       return;
     }
-    if (!formData.quantity) {
-      message.error("Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
 
-    if (!validateQuantity()) {
-      message.error("Vui lòng kiểm tra lại số lượng!");
-      return;
-    }
-
-    const quantity = Number(formData.quantity);
+    const quantity = selectedOrder.quantity_remain;
 
     const supplyOrder = {
       supplier_id: userRedux.id,
       request_id: selectedOrder._id,
       fuel_name: selectedOrder.request_name,
-      quantity: quantity,
+      quantity,
       quality: "Tốt",
       price: selectedOrder.price,
       start_received: "",
@@ -223,6 +184,16 @@ const SupplyRequestPage = () => {
                     {order.price.toLocaleString("vi-VN")} VNĐ
                   </span>
                 </p>
+                <p className="text-sm text-gray-600">
+                  Thời gian còn lại:{" "}
+                  {(() => {
+                    const time = getTimeRemaining(order.end_received);
+                    return time.total > 0
+                      ? `${time.days} ngày ${time.hours} giờ ${time.minutes} phút`
+                      : "Đã hết hạn";
+                  })()}
+                </p>
+
                 <button
                   onClick={() => handleSelectOrder(order._id)}
                   className="mt-3 bg-[#006838] text-white px-4 py-2 rounded hover:bg-[#008c4a] hover:scale-105 transition-transform"
@@ -242,17 +213,32 @@ const SupplyRequestPage = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-center items-center gap-2 mt-4">
+        <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
+          {/* Trang trước */}
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
             className="px-3 py-1 border rounded disabled:opacity-50"
           >
-            Trang trước
+            &lt;
           </button>
-          <span className="font-semibold">
-            Trang {currentPage} / {totalPages}
-          </span>
+
+          {/* Các nút số trang */}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 border rounded ${
+                currentPage === page
+                  ? "bg-green-600 text-white font-semibold"
+                  : "bg-white text-gray-700"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          {/* Trang sau */}
           <button
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
@@ -260,53 +246,113 @@ const SupplyRequestPage = () => {
             disabled={currentPage === totalPages}
             className="px-3 py-1 border rounded disabled:opacity-50"
           >
-            Trang sau
+            &gt;
           </button>
         </div>
 
         {selectedOrder && (
-          <div className="animate-fade-in-down transition-all duration-500">
-            <div className="mb-4">
-              <label className="block font-semibold">Tên nguyên liệu:</label>
-              <p className="border p-2 rounded bg-gray-100">
-                {selectedOrder.request_name}
-              </p>
+          <div className="animate-fade-in-down transition-all duration-500 bg-gray-50 border border-gray-200 rounded-md p-5 mt-6">
+            <h3 className="text-lg font-bold mb-4 text-green-700">
+              Thông tin Đơn Hàng Đã Chọn
+            </h3>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Tên nguyên liệu:
+                </label>
+                <p className="bg-white border border-gray-300 rounded px-3 py-2">
+                  {selectedOrder.request_name}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Số lượng bạn cung cấp:
+                </label>
+                <p className="bg-white border border-gray-300 rounded px-3 py-2">
+                  {selectedOrder.quantity_remain} kg
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Thời gian còn lại:
+                </label>
+                <p className="text-gray-800 font-medium bg-white border border-gray-300 rounded px-3 py-2">
+                  {timeLeft?.total > 0
+                    ? `${timeLeft.days} ngày ${timeLeft.hours} giờ ${timeLeft.minutes} phút ${timeLeft.seconds} giây`
+                    : "Đã hết thời gian nhận đơn"}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Đơn giá:
+                </label>
+                <p className="bg-white border border-gray-300 rounded px-3 py-2">
+                  {selectedOrder.price.toLocaleString("vi-VN")} VNĐ / kg
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">
+                  Tổng giá trị đơn:
+                </label>
+                <p className="bg-white border border-gray-300 rounded px-3 py-2">
+                  {selectedOrder.total_price?.toLocaleString("vi-VN")} VNĐ
+                </p>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-semibold mb-1">
+                  Thời gian nhận hàng:
+                </label>
+                <p className="bg-white border border-gray-300 rounded px-3 py-2">
+                  {new Date(selectedOrder.start_received).toLocaleString(
+                    "vi-VN"
+                  )}{" "}
+                  →{" "}
+                  {new Date(selectedOrder.end_received).toLocaleString("vi-VN")}
+                </p>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-semibold mb-1">
+                  Ghi chú hệ thống:
+                </label>
+                <p className="bg-white border border-gray-300 rounded px-3 py-2 min-h-[44px]">
+                  {selectedOrder.note ? selectedOrder.note : "Không có"}
+                </p>
+              </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block font-semibold">
-                Số lượng bạn cung cấp:
+            {/* Ghi chú của người dùng */}
+            <div className="mt-6">
+              <label className="block text-sm font-semibold mb-1">
+                Ghi chú của bạn:
               </label>
-              <p className="border p-2 rounded bg-gray-100 w-full">
-                {selectedOrder.quantity_remain} kg
-              </p>
-
-              {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-            </div>
-
-            {/* Nhập ghi chú */}
-            <div className="mb-4">
-              <label className="block font-semibold">Ghi chú:</label>
               <textarea
-                type="text"
                 name="note"
                 placeholder="Nhập ghi chú"
                 value={formData.note}
                 onChange={handleNoteChange}
                 rows={4}
-                className="border p-2 rounded w-full resize-none"
+                className="border border-gray-300 rounded px-3 py-2 w-full resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               {noteError && (
                 <p className="text-red-500 text-sm mt-1">{noteError}</p>
               )}
             </div>
 
-            <button
-              onClick={handleSubmit}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Gửi Yêu Cầu
-            </button>
+            <div className="mt-6 text-right">
+              <button
+                onClick={handleSubmit}
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded transition"
+              >
+                Gửi Yêu Cầu
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -314,4 +360,4 @@ const SupplyRequestPage = () => {
   );
 };
 
-export default SupplyRequestPage;
+export default ProvideRequestPage;
