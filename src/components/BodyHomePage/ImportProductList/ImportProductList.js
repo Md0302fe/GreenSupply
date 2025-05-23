@@ -20,6 +20,7 @@ const ImportProductList = () => {
           new Date(order.end_received).getTime() > Date.now()
       );
       setProductList(filteredOrders);
+      console.log(productList)
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đơn hàng:", error);
     }
@@ -54,7 +55,7 @@ const ImportProductList = () => {
     ],
   };
   const handleCreateOrder = () => {
-    navigate(`/supplier/supply-request`);
+    navigate(`/supplier/provide-request`);
   };
   return (
     <div className="max-w-[1400px] mx-auto p-6 bg-[#F4F4F4] border border-gray-800 shadow-inner mb-10 mt-[6rem]">
@@ -71,7 +72,7 @@ const ImportProductList = () => {
       </div>
 
       {productList.length > 0 ? (
-        productList.length >= 4 ? (
+        productList.length >= 0 ? (
           <Slider {...sliderSettings}>
             {productList.map((product) => (
               <div key={product._id} className="p-2">
@@ -129,7 +130,7 @@ const ProductItem = ({ product }) => {
   }, [product.end_received]);
 
   const handleCreateOrderDetail = () => {
-    navigate(`/supplier/supply-request/${product._id}`);
+    navigate(`/supplier/provide-request/${product._id}`);
   };
 
   return (

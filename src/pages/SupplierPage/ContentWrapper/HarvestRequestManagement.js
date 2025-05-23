@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Input, Button, Table, Tag, Space, Modal, message } from "antd";
+import React, { useState,  } from "react";
+import { Input, Button, Table, Tag, Space, message } from "antd";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getAllHarvestRequests,
   updateHarvestRequest,
   cancelHarvestRequest,
 } from "../../../services/HarvestRequestService";
-import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
+// import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
 import { useRef } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { HiOutlineDocumentSearch } from "react-icons/hi";
+
 import Highlighter from "react-highlight-words";
 import { IoDocumentText } from "react-icons/io5";
-import { MdAttachMoney } from "react-icons/md";
+
 
 // Định nghĩa hàm quản lý yêu cầu thu hoạch
 const HarvestRequestManagement = () => {
@@ -139,10 +139,7 @@ const HarvestRequestManagement = () => {
     setIsDrawerOpen(true);
   };
 
-  const handleFuelNameChange = (e) => {
-    const { value } = e.target;
-    setEditForm((prev) => ({ ...prev, fuel_name: value }));
-  };
+
 
   // Handle input change for form fields
   const handleEditChange = (e) => {
@@ -283,7 +280,7 @@ const HarvestRequestManagement = () => {
 
   return (
     <div className="Wrapper-Admin-HarvestRequest">
-      <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
+      {/* <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
         <div className="info">
           <h1 className="flex items-center text-3xl font-bold mb-3 text-[#006838]">
             Quản Lý Yêu Cầu Thu Nguyên Liệu <MdAttachMoney />
@@ -300,14 +297,19 @@ const HarvestRequestManagement = () => {
           </div>
         </div>
         <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
+      </div> */}
+      <div className ="text-center font-bold text-2xl mb-5">
+        ĐƠN YÊU CẦU THU NGUYÊN LIỆU
       </div>
+
+      <hr />
 
       <Table
         columns={columns}
         dataSource={requests}
         loading={isLoading}
         rowKey={(record) => record._id}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 6 }}
       />
 
       {/* Drawer Update Request */}

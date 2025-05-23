@@ -15,7 +15,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 
-const FuelSupplyRequestComponent = () => {
+const ProvideRequestManagement = () => {
   const [rowSelected, setRowSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
@@ -29,7 +29,7 @@ const FuelSupplyRequestComponent = () => {
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
-  const userRedux = useSelector((state) => state.user);
+
 
   const fetchGetAllRequests = async () => {
     const access_token = user?.access_token;
@@ -335,7 +335,7 @@ const FuelSupplyRequestComponent = () => {
 
   return (
     <div className="Wrapper-Admin-FuelRequest">
-      <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
+      {/* <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
         <div className="info">
           <h1 className="text-3xl font-bold mb-3 text-black">
             Quản Lý Đơn Cung Cấp Nguyên Liệu
@@ -353,7 +353,13 @@ const FuelSupplyRequestComponent = () => {
           </div>
         </div>
         <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
+      </div> */}
+
+      <div className ="text-center font-bold text-2xl mb-5">
+        ĐƠN CUNG CẤP NGUYÊN LIỆU
       </div>
+
+      <hr />
 
       <div className="Main-Content">
         <h5 className="content-title"> </h5>
@@ -362,7 +368,7 @@ const FuelSupplyRequestComponent = () => {
           dataSource={fuelRequests}
           loading={isLoading}
           rowKey={(record) => record._id}
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 6 }}
         />
       </div>
 
@@ -573,7 +579,7 @@ const FuelSupplyRequestComponent = () => {
             </Form.Item>
           </Form>
         </Loading>
-      </DrawerComponent> */}
+      </DrawerComponent>
 
       <DrawerComponent
         title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
@@ -812,4 +818,4 @@ const FuelSupplyRequestComponent = () => {
   );
 };
 
-export default FuelSupplyRequestComponent;
+export default ProvideRequestManagement;

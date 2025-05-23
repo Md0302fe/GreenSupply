@@ -7,8 +7,9 @@ import {
 import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestService";
 import { useSelector } from "react-redux";
 import { message } from "antd";
-import { useSearchParams } from "react-router-dom";
-const SupplyRequestPage = () => {
+
+
+const ProvideRequestPage = () => {
   const { id } = useParams();
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
@@ -359,4 +360,4 @@ const SupplyRequestPage = () => {
   );
 };
 
-export default SupplyRequestPage;
+export default ProvideRequestPage;

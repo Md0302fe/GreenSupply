@@ -5,10 +5,10 @@ import SideBar from "../SideBar/SideBar";
 import "../../../styles/css/HeaderSupplier.css";
 import HarvestRequestPage from "../ContentWrapper/HarvestRequestPage";
 import HarvestRequestManagement from "../ContentWrapper/HarvestRequestManagement";
-import HistoryRequestOrder from "../ContentWrapper/HistoryRequestOrder";
+import HistoryHarvestRequestOrder from "../ContentWrapper/HistoryHarvestRequestOrder";
 import HistoryProvideOrder from "../ContentWrapper/HistoryProvideOrder";
-import SupplyRequestPage from "../ContentWrapper/SupplyRequestPage";
-import SupplyRequestHistory from "../ContentWrapper/SupplyRequestHistory";
+import ProvideRequestPage from "../ContentWrapper/ProvideRequestPage";
+import ProvideRequestManagement from "../ContentWrapper/ProvideRequestManagement";
 import { ToastContainer } from "react-toastify";
 
 const SupplierDashboard = () => {
@@ -55,10 +55,10 @@ const SupplierDashboard = () => {
               />
               <Route path="harvest-request" element={<HarvestRequestPage />} />
               <Route path="harvest-request-management" element={<HarvestRequestManagement />} />
-              <Route path="history-request-order" element={<HistoryRequestOrder />} />
+              <Route path="history-request-order" element={<HistoryHarvestRequestOrder />} />
               <Route path="history-provide-order" element={<HistoryProvideOrder />} />
-              <Route path="supply-request/:id?" element={<SupplyRequestPage />} />
-              <Route path="supply-request-history" element={<SupplyRequestHistory />} />
+              <Route path="provide-request/:id?" element={<ProvideRequestPage />} />
+              <Route path="provide-request-management" element={<ProvideRequestManagement />} />
             </Routes>
           </div>
         </div>

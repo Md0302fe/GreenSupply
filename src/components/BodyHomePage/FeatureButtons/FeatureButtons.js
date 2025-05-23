@@ -25,7 +25,7 @@ const FeatureButtons = () => {
       id: 3,
       icon: Icon3,
       text: "CUNG CẤP NGUYÊN LIỆU",
-      path: "/supplier/supply-request",
+      path: "/supplier/provide-request",
     },
   ];
 
