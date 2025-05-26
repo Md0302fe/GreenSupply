@@ -146,6 +146,7 @@ const ProvideRequestManagement = () => {
     if (status === "Chờ duyệt") return "bg-yellow-100 text-yellow-800";
     if (status === "Đã duyệt") return "bg-green-100 text-green-800";
     if (status === "Đã hủy") return "bg-red-100 text-red-800";
+    if (status === "Đang xử lý") return "bg-blue-100 text-blue-800";
     return "bg-gray-100 text-gray-800";
   };
 
@@ -278,10 +279,18 @@ const ProvideRequestManagement = () => {
       ],
       onFilter: (value, record) => record.status === value,
       render: (status) => {
+        let displayStatus = status;
         let color = "orange"; // Default for "Chờ duyệt"
-        if (status === "Đã duyệt") color = "green";
-        if (status === "Đã hủy") color = "red";
-        return <Tag color={color}>{status}</Tag>;
+
+        if (status === "Đã duyệt") {
+          color = "green";
+        } else if (status === "Đã hủy") {
+          color = "red";
+        } else if (status === "Đang xử lý") {
+          displayStatus = "Hoàn thành";
+        }
+
+        return <Tag color={color}>{displayStatus}</Tag>;
       },
     },
     // {

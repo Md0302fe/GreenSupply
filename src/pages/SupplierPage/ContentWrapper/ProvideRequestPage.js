@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   getAllFuelEntry,
@@ -19,6 +19,7 @@ const ProvideRequestPage = () => {
     quality: "",
     note: "",
   });
+  const formRef = useRef(null);
   const [error, setError] = useState(""); // Lưu lỗi nhập liệu
   const [noteError, setNoteError] = useState(""); // Lưu lỗi ghi chú
   const [currentPage, setCurrentPage] = useState(1);
@@ -83,6 +84,12 @@ const ProvideRequestPage = () => {
     }
     fetchOrders(currentPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    if (selectedOrder && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selectedOrder]);
 
   // useEffect tính time
   useEffect(() => {
@@ -251,7 +258,7 @@ const ProvideRequestPage = () => {
         </div>
 
         {selectedOrder && (
-          <div className="animate-fade-in-down transition-all duration-500 bg-gray-50 border border-gray-200 rounded-md p-5 mt-6">
+          <div ref={formRef} className="animate-fade-in-down transition-all duration-500 bg-gray-50 border border-gray-200 rounded-md p-5 mt-6">
             <h3 className="text-lg font-bold mb-4 text-green-700">
               Thông tin Đơn Hàng Đã Chọn
             </h3>
