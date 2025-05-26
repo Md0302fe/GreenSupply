@@ -9,6 +9,7 @@ import Loading from "../../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
 import { IoDocumentText } from "react-icons/io5";
 import { SearchOutlined } from "@ant-design/icons";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 import Highlighter from "react-highlight-words";
 import { useRef } from "react";
 import { AiFillEdit } from "react-icons/ai";
@@ -16,13 +17,13 @@ import { MdDelete } from "react-icons/md";
 import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 
 const ProvideRequestManagement = () => {
+  const user = useSelector((state) => state.user);
   const [rowSelected, setRowSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [quantityRemain, setQuantityRemain] = useState(null);
   const [formUpdate] = Form.useForm();
   const queryClient = useQueryClient();
-  const user = useSelector((state) => state.user);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -30,20 +31,20 @@ const ProvideRequestManagement = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
 
-
   const fetchGetAllRequests = async () => {
     const access_token = user?.access_token;
     const user_id = user?.id;
 
-    return await FuelSupplyRequestService.getAllFuelSupplyRequest(
+    const res = await FuelSupplyRequestService.getAllFuelSupplyRequest(
       access_token,
-      { user_id }
+      user_id
     );
+    return res;
   };
 
   const { data: fuelRequests, isLoading } = useQuery({
-    queryKey: ["fuelRequests", user?.id],
-    queryFn: fetchGetAllRequests,
+    queryKey: ["fuelRequests"],
+    queryFn: () => fetchGetAllRequests(),
   });
 
   const selectedRequest = fuelRequests?.find(
@@ -312,7 +313,7 @@ const ProvideRequestManagement = () => {
             />
             {/* Xóa */}
             <Button
-              icon={<MdDelete />}
+              icon={<MdDelete style={{ color: "red" }} />}
               onClick={() => {
                 setRowSelected(record._id);
                 setIsOpenDelete(true);
@@ -322,8 +323,8 @@ const ProvideRequestManagement = () => {
             />
             {/* Xem Chi Tiết */}
             <Button
+              icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
               type="default"
-              icon={<IoDocumentText />}
               onClick={() => handleViewDetail(record)}
               size="middle"
             />
@@ -355,7 +356,7 @@ const ProvideRequestManagement = () => {
         <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
       </div> */}
 
-      <div className ="text-center font-bold text-2xl mb-5">
+      <div className="text-center font-bold text-2xl mb-5">
         ĐƠN CUNG CẤP NGUYÊN LIỆU
       </div>
 
