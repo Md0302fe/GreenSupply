@@ -15,6 +15,7 @@ import { useRef } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
+import { convertPrice } from "../../../ultils";
 
 const ProvideRequestManagement = () => {
   const user = useSelector((state) => state.user);
@@ -263,7 +264,7 @@ const ProvideRequestManagement = () => {
       key: "total_price",
       className: "text-center",
       sorter: (a, b) => a.total_price - b.total_price, // Enable sorting
-      render: (_, record) => record.total_price, // Calculate dynamically
+      render: (total_price) => convertPrice(total_price),
     },
     {
       title: <div style={{ textAlign: "center" }}>Trạng thái</div>,

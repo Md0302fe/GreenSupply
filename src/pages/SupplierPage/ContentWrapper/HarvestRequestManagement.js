@@ -14,6 +14,8 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 import Highlighter from "react-highlight-words";
 import { IoDocumentText } from "react-icons/io5";
 
+import { convertPrice } from "../../../ultils";
+
 // Định nghĩa hàm quản lý yêu cầu thu hoạch
 const HarvestRequestManagement = () => {
   const user = useSelector((state) => state.user);
@@ -232,6 +234,7 @@ const HarvestRequestManagement = () => {
       key: "total_price",
       className: "text-center",
       sorter: (a, b) => a.total_price - b.total_price,
+      render: (total_price) => convertPrice(total_price),
     },
     {
       title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
