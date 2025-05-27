@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Button, Table } from "antd";
 import { Excel } from "antd-table-saveas-excel";
 import Loading from "../../../LoadingComponent/Loading";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const TableUser = (props) => {
   // get Props List
@@ -42,13 +43,20 @@ const TableUser = (props) => {
 
   return (
     <Loading isPending={isLoading}>
-      <Button
-        type="primary"
-        className="button-exportFile"
-        onClick={handleExportFileExcels}
-      >
-        Xuất File
-      </Button>
+     <div style={{ display: "flex", justifyContent: "flex-end" }}>
+     <Button
+     icon={<DownloadOutlined />}
+     style={{
+     backgroundColor: "#1E90FF",
+     color: "#fff",
+     border: "none",
+  }}
+     className="button-exportFile"
+     onClick={handleExportFileExcels}
+     >
+      Xuất File
+     </Button>
+    </div> 
 
       <Table
         rowSelection={{

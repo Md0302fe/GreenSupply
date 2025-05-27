@@ -5,6 +5,8 @@ import { Button, Form, Input, Select, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 import * as OrderServices from "../../../../services/OrderServices";
+import { Descriptions } from "antd";
+
 
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
@@ -12,6 +14,8 @@ import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { Tag } from "antd";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
@@ -40,6 +44,7 @@ const FuelRequestsManagement = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
+const navigate = useNavigate();
 
   const [stateDetailsUser , setStateDetailsUser ] = useState({
     _id: "",
@@ -199,11 +204,11 @@ const FuelRequestsManagement = () => {
         style={{ justifyContent: "space-around", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-        <button
-  className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md"
->
-  <FaEye size={16} />Chi Tiết
-</button>
+       <Button
+         type="link"
+         icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+         onClick={handleDetailsProduct}
+      />
       </div>
     );
   };
@@ -317,6 +322,7 @@ const FuelRequestsManagement = () => {
       title: "Khách Hàng",
       dataIndex: "customerName",
       key: "customerName",
+       className: "text-center",
       ...getColumnSearchProps("customerName"),
     },
     {
@@ -330,11 +336,13 @@ const FuelRequestsManagement = () => {
       title: "Giá Tiền",
       dataIndex: "price",
       key: "price",
+       className: "text-center",
       ...getColumnSearchProps("price"),
     },
     {
       title: "Trạng Thái",
       dataIndex: "status",
+       className: "text-center",
       key: "status",
       filters: [
         {
@@ -383,6 +391,7 @@ const FuelRequestsManagement = () => {
     },
     {
       title: "Chức năng",
+       className: "text-center",
       dataIndex: "action",
       render: renderAction,
     },
@@ -390,7 +399,44 @@ const FuelRequestsManagement = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý đơn yêu cầu thu nguyên liệu</h5>
+        <div
+  style={{
+    marginBottom: 24,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  }}
+>
+  {/* Nút quay lại */}
+  <Button
+    onClick={() => navigate(-1)}
+    type="primary"
+    className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4 mr-1"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 12H3m0 0l6-6m-6 6l6 6"
+      />
+    </svg>
+    Quay lại
+  </Button>
+
+  <h5 className="text-center font-bold text-2xl mb-0">
+    Quản lý đơn yêu cầu thu nguyên liệu
+  </h5>
+
+  {/* Placeholder để giữ cân layout bên phải */}
+  <div style={{ width: 100 }}></div>
+</div>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -420,90 +466,114 @@ const FuelRequestsManagement = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
-        width="50%"
+        width="35%"
         forceRender
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails}>
-          <Form
-            name="update-form"
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 16,
-            }}
-            style={{
-              maxWidth: 600,
-            }}
-            initialValues={{
-              remember: true,
-            }}
-        
-            autoComplete="on"
-            form={formUpdate}
-          >
-            <Form.Item label="Khách Hàng" name="customerName">
-              <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
-            </Form.Item>
+            <Descriptions
+    bordered
+    column={1}
+    layout="horizontal"
+  >
+    <Descriptions.Item
+      label="Khách Hàng"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.supplier_id?.full_name || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Loại Nhiên Liệu" name="fuel_name">
-              <span>{stateDetailsUser?.fuel_name || ""}</span>
-            </Form.Item>
+    <Descriptions.Item
+      label="Loại Nhiên Liệu"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.fuel_name || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Giá Tiền" name="price">
-              <span>{stateDetailsUser?.price || ""}</span>
-            </Form.Item>
+    <Descriptions.Item
+      label="Giá Tiền"
+      labelStyle={{ width: '35%' }}
+      contentStyle={{ width: '65%' }}
+    >
+      {stateDetailsUser?.price || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Priority" name="priority">
-              <span>{stateDetailsUser?.priority || ""}</span>
-            </Form.Item>
-            <Form.Item label="Số Lượng" name="quantity">
-              <span>{stateDetailsUser?.quantity || ""}</span>
-            </Form.Item>
+    <Descriptions.Item
+      label="Priority"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.priority || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Trạng Thái" name="status">
-        <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
-            </Form.Item>
+    <Descriptions.Item
+      label="Số Lượng"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.quantity || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Tổng Giá" name="total_price">
-              <span>{stateDetailsUser?.total_price || ""}</span>
-            </Form.Item>
+    <Descriptions.Item
+      label="Tổng Giá"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.total_price || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Ghi chú" name="note">
-              <span>{stateDetailsUser?.note || ""}</span>
-            </Form.Item>
+    <Descriptions.Item
+      label="Trạng Thái"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {orderStatus || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item label="Created At" name="createdAt">
-              <span>{stateDetailsUser?.createdAt || ""}</span>
-            </Form.Item>
-            <Form.Item label="Updated At" name="updatedAt">
-              <span>{stateDetailsUser?.updatedAt || ""}</span>
-            </Form.Item>
+    <Descriptions.Item
+      label="Ghi chú"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.note || "Không có"}
+    </Descriptions.Item>
 
-            <Form.Item
-  wrapperCol={{
-    offset: 4, // Giảm offset để đẩy UI qua trái
-    span: 16,
-  }}
->
-  <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
-    {orderStatus === 'Chờ duyệt' && (
-      <>
-        <Button type="primary" onClick={handleApproveOrder}>
-          Duyệt đơn
-        </Button>
+    <Descriptions.Item
+      label="Ngày tạo"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.createdAt || "Không có"}
+    </Descriptions.Item>
 
-        <Button type="default" danger onClick={handleCancelOrder}>
-          Hủy đơn
-        </Button>
-      </>
-    )}
+    <Descriptions.Item
+      label="Cập nhật gần nhất"
+      labelStyle={{ width: '40%' }}
+      contentStyle={{ width: '60%' }}
+    >
+      {stateDetailsUser?.updatedAt || "Không có"}
+    </Descriptions.Item>
+  </Descriptions>
 
-  </div>
-</Form.Item>
-
-          </Form>
+  {orderStatus === "Chờ duyệt" && (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "10px",
+        marginTop: 24,
+      }}
+    >
+      <Button type="primary" onClick={handleApproveOrder}>
+        Duyệt đơn
+      </Button>
+      <Button danger onClick={handleCancelOrder}>
+        Hủy đơn
+      </Button>
+    </div>
+  )}
         </Loading>
       </DrawerComponent>
     </div>

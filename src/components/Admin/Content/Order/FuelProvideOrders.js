@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Order.scss";
 
-import { Button, Form, Input, Space } from "antd";
 import * as UserServices from "../../../../services/UserServices";
 import * as OrderServices from "../../../../services/OrderServices";
 
@@ -11,15 +10,31 @@ import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
+import { useNavigate } from "react-router-dom";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { Tag } from "antd";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 
-import { message } from "antd";
+import {
+  Space,
+  Input,
+  Form,
+  Button,
+  Table,
+  Drawer,
+  Descriptions,
+  Modal,
+  Card,
+  Row,
+  Col,
+  message,
+} from "antd";
+
 import {
   handleAcceptProvideOrders,
   handleCancelProvideOrders,
@@ -34,6 +49,7 @@ const FuelProvideManagement = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.user);
 
@@ -94,7 +110,7 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleAcceptProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
         queryOrder.refetch();
       } else {
@@ -109,7 +125,7 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCancelProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
         queryOrder.refetch();
       } else {
@@ -125,9 +141,8 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCompleteProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được hoàn thành thành công!");
-        
       } else {
         message.error("Hoàn thành đơn thất bại!");
       }
@@ -135,7 +150,6 @@ const FuelProvideManagement = () => {
       message.error("Có lỗi xảy ra khi hoàn thành đơn!");
     }
   };
-
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -165,8 +179,6 @@ const FuelProvideManagement = () => {
     isPending: isPendingUpDate,
     isSuccess: isSuccessUpdate,
   } = mutationUpdate;
-
-
 
   // Handle each time rowSelected was call
   useEffect(() => {
@@ -283,30 +295,30 @@ const FuelProvideManagement = () => {
   // DATA FROM USERS LIST
   const tableData =
     orders?.data?.length &&
-    orders?.data.map((order) => {
-      return {
-        ...order,
-        key: order._id,
-        customerName: order?.supplier_id?.full_name,
-        createdAt: order?.createdAt,
-      };
-    })
-    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    orders?.data
+      .map((order) => {
+        return {
+          ...order,
+          key: order._id,
+          customerName: order?.supplier_id?.full_name,
+          createdAt: order?.createdAt,
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Actions
   const renderAction = () => {
     return (
-      <div
-        className="flex-center-center"
-        style={{ justifyContent: "space-around", cursor: "pointer" }}
-        onClick={handleDetailsProduct}
-      >
-        <button
-          className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md"
-        >
-          <FaEye size={16} />Chi Tiết
-        </button>
-      </div>
+   <div
+      className="flex-center-center"
+      style={{ justifyContent: "center", cursor: "pointer" }}
+      onClick={handleDetailsProduct}
+     >
+      <Button
+      type="link"
+       icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+     />
+   </div>
     );
   };
 
@@ -418,6 +430,8 @@ const FuelProvideManagement = () => {
       title: "Khách Hàng",
       dataIndex: "customerName",
       key: "customerName",
+      align: "center",
+      className: "text-center",
       ...getColumnSearchProps("customerName"),
     },
     {
@@ -431,12 +445,16 @@ const FuelProvideManagement = () => {
       title: "Giá Tiền",
       dataIndex: "price",
       key: "price",
+      align: "center",
+       className: "text-center",
       ...getColumnSearchProps("price"),
     },
     {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
+      align: "center",
+       className: "text-center",
       filters: [
         {
           text: "Chờ duyệt",
@@ -454,7 +472,6 @@ const FuelProvideManagement = () => {
       onFilter: (value, record) => record.status.includes(value),
       filteredValue: defaultStatusFilter ? [defaultStatusFilter] : null,
       render: (status) => {
-
         let color = "";
         switch (status) {
           case "Chờ duyệt":
@@ -479,14 +496,16 @@ const FuelProvideManagement = () => {
     {
       title: "Ngày Tạo",
       dataIndex: "createdAt",
+      align: "center",
+       className: "text-center",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (createdAt) => {
         if (!createdAt) return <span>Không có dữ liệu</span>; // Tránh lỗi khi createdAt là null hoặc undefined
-        
+
         const date = new Date(createdAt);
         if (isNaN(date.getTime())) return <span>Không hợp lệ</span>; // Kiểm tra xem date có hợp lệ không
-        
+
         const vietnamTime = new Intl.DateTimeFormat("vi-VN", {
           year: "numeric",
           month: "2-digit",
@@ -496,12 +515,14 @@ const FuelProvideManagement = () => {
           second: "2-digit",
           timeZone: "Asia/Ho_Chi_Minh",
         }).format(date);
-        
+
         return <span>{vietnamTime}</span>;
       },
-    },    
+    },
     {
       title: "Chức năng",
+      align: "center",
+       className: "text-center",
       dataIndex: "action",
       render: renderAction,
     },
@@ -509,7 +530,43 @@ const FuelProvideManagement = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý đơn cung cấp nguyên liệu</h5>
+        <div
+          style={{
+            marginBottom: 24,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Nút quay lại bên trái */}
+          <Button
+            onClick={() => navigate(-1)}
+            type="primary"
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </Button>
+
+          <h5 className="text-center font-bold text-2xl mb-0">
+            Quản lý đơn cung cấp nguyên liệu
+          </h5>
+          <div style={{ width: 100 }}></div>
+        </div>
+
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -539,79 +596,59 @@ const FuelProvideManagement = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
+        width="35%"
         forceRender
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails || isPendingUpDate}>
-          <Form
-            name="update-form"
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 16,
-            }}
-            style={{
-              maxWidth: 600,
-            }}
-            initialValues={{
-              remember: true,
-            }}
-            autoComplete="on"
-            form={formUpdate}
-          >
-            <Form.Item label="Khách Hàng" name="customerName">
-              <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
-            </Form.Item>
+  <Descriptions
+    bordered
+    column={1}
+    
+    layout="horizontal"
+    title=""
+  >
+    <Descriptions.Item 
+    label="Khách Hàng"
+    labelStyle={{ width: '48%' }}
+    contentStyle={{ width: '52%' }} 
+    >
+      {stateDetailsUser?.supplier_id?.full_name || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Loại Nguyên Liệu">
+      {stateDetailsUser?.fuel_name || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Giá Tiền">
+      {stateDetailsUser?.price || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Chất Lượng">
+      {stateDetailsUser?.quality || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Số Lượng">
+      {stateDetailsUser?.quantity || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Tổng Giá">
+      {stateDetailsUser?.total_price || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Trạng Thái">
+      {orderStatus || "Không có"}
+    </Descriptions.Item>
+    <Descriptions.Item label="Ghi chú">
+      {stateDetailsUser?.note || "Không có"}
+    </Descriptions.Item>
+  </Descriptions>
 
-            <Form.Item label="Loại Nguyên Liệu" name="fuel_name">
-              <span>{stateDetailsUser?.fuel_name || ""}</span>
-            </Form.Item>
-
-            <Form.Item label="Giá Tiền" name="price">
-              <span>{stateDetailsUser?.price || ""}</span>
-            </Form.Item>
-
-            <Form.Item label="Chất Lượng" name="quality">
-              <span>{stateDetailsUser?.quality || ""}</span>
-            </Form.Item>
-            <Form.Item label="Số Lượng" name="quantity">
-              <span>{stateDetailsUser?.quantity || ""}</span>
-            </Form.Item>
-            <Form.Item label="Ghi chú" name="note">
-              <span>{stateDetailsUser?.note || ""}</span>
-            </Form.Item>
-
-            <Form.Item label="Trạng Thái" name="status">
-              <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
-            </Form.Item>
-            <Form.Item label="Tổng Giá" name="total_price">
-              <span>{stateDetailsUser?.total_price || ""}</span>
-            </Form.Item>
-
-            <Form.Item
-              wrapperCol={{
-                offset: 4, // Giảm offset để đẩy UI qua trái
-                span: 16,
-              }}
-            >
-              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
-
-                {orderStatus === 'Chờ duyệt' && (
-                  <>
-                    <Button type="primary" onClick={handleAcceptProvideOrder}>
-                      Duyệt đơn
-                    </Button>
-
-                    <Button type="default" danger onClick={handleCancelProvideOrder}>
-                      Hủy đơn
-                    </Button>
-                  </>
-                )}   
-              </div>
-            </Form.Item>
-          </Form>
-        </Loading>
+  {orderStatus === "Chờ duyệt" && (
+    <div style={{ display: "flex", gap: "10px", marginTop: 24, justifyContent: "center" }}>
+      <Button type="primary" onClick={handleAcceptProvideOrder}>
+        Duyệt đơn
+      </Button>
+      <Button danger onClick={handleCancelProvideOrder}>
+        Hủy đơn
+      </Button>
+    </div>
+  )}
+</Loading>
       </DrawerComponent>
     </div>
   );
