@@ -3,6 +3,10 @@ import { Button, Table } from "antd";
 import { Excel } from "antd-table-saveas-excel";
 import Loading from "../../../LoadingComponent/Loading";
 
+import {
+  DownloadOutlined,
+} from "@ant-design/icons";
+
 const TableUser = (props) => {
   const { selectionType = "checkbox" } = props;
   // get Props List
@@ -49,13 +53,16 @@ const TableUser = (props) => {
   console.log("datasource => ", dataSource);
   return (
     <Loading isPending={isLoading}>
-      <Button
-        type="primary"
-        className="button-exportFile"
-        onClick={handleExportFileExcels}
-      >
-        Xuất file
-      </Button>
+      <div className="flex justify-end mb-1">
+        <Button
+          icon={<DownloadOutlined />}
+          type="primary"
+          className="bg-blue-600 text-white"
+          onClick={handleExportFileExcels}
+        >
+          Xuất Excel
+        </Button>
+      </div>
 
       <Table
         rowSelection={{
