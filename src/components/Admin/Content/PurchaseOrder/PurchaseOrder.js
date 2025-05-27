@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-import Shop from "../../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
-import { toast } from "react-toastify";
-
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Upload } from "antd";
@@ -15,8 +11,10 @@ import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServic
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 
 import { useSelector } from "react-redux";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+
+import { message } from "antd";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -55,17 +53,17 @@ const HarvestRequestPage = () => {
 
     if (name === "start_received") {
       if (value <= currentDate) {
-        toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
+        message.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
         return;
       }
     } else if (name === "end_received") {
       if (value < formData.start_received) {
-        toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
+        message.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
         return;
       }
     } else if (name === "due_date") {
       if (value < formData.end_received) {
-        toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
+        message.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
         return;
       }
     }
@@ -151,7 +149,7 @@ const HarvestRequestPage = () => {
     // Lặp qua danh sách và kiểm tra điều kiện
     const error = validationRules.find((rule) => rule.condition);
     if (error) {
-      toast.warning(error.message);
+      message.warning(error.message);
       return;
     } else {
       const fuelRequest = {
@@ -228,19 +226,21 @@ const HarvestRequestPage = () => {
   // Notification when created success
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data?.PurchaseOrder.status);
+      if (data?.PurchaseOrder?.status) {
+        message.success(data?.PurchaseOrder.status);
+      }
       setTimeout(() => {
         setNewForm();
       }, 1000);
-    } else {
-      toast.error(data?.PurchaseOrder.message);
+    } else if (data?.PurchaseOrder?.message) {
+      message.error(data?.PurchaseOrder.message);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {
-        toast.success("Tạo yêu cầu thu hàng thành công!");
+        message.success("Tạo yêu cầu thu hàng thành công!");
         setFormData({
           request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
           fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
@@ -270,10 +270,10 @@ const HarvestRequestPage = () => {
       {/* Bố cục chính: Flex ngang trên desktop, dọc trên mobile */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Form chính (80%) */}
-        <div className="w-full md:w-full bg-gray-100 p-6">
+        <div className="w-full md:w-full bg-gray-100 p-4">
           <button
             onClick={() => navigate(-1)} // Quay lại trang trước đó
-            className="flex mb-4 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            className="flex mb-1 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +293,7 @@ const HarvestRequestPage = () => {
           </button>
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
-              🛒 Đơn Yêu Cầu Cung Cấp
+              🛒 Đơn Yêu Cầu Cung Cấp Nguyên Liệu
             </h2>
             <div className="space-y-4">
               {/* Tên đơn */}
