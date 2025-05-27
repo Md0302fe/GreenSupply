@@ -14,7 +14,7 @@ const UserComponent = () => {
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaClipboard className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản Lý Yêu Cầu Nhập Nguyên Liệu
+          Quản Lý Nguyên Liệu Cần Nhập
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -25,7 +25,7 @@ const UserComponent = () => {
         <Card
           link="/system/admin/manage-Supplier-request"
           title="Dashboard"
-          description="Thông tin toàn bộ yêu cầu nhập nguyên liệu"
+          description="Thông tin phân tích quản lý nguyên liệu cần nhập"
           image={mng_dashboard_Purchasedorders}
         />
 
@@ -33,7 +33,7 @@ const UserComponent = () => {
         <Card
           link="/system/admin/C_purchase-order"
           title="Tạo yêu cầu"
-          description="Tạo yêu cầu nhập nguyên liệu"
+          description="Tạo yêu cầu nhập nguyên liệu mới"
           image={mng_created_purchased_orders}
         />
 
@@ -41,7 +41,7 @@ const UserComponent = () => {
         <Card
           link="/system/admin/R_purchase-orders"
           title="Quản lý yêu cầu"
-          description="Quản lý thông tin, các yêu cầu đã tạo"
+          description="Quản lý thông tin, các yêu cầu nhập nguyên liệu đã tạo"
           image={mng_purchased_orders}
         />
 
@@ -49,7 +49,7 @@ const UserComponent = () => {
         <Card
           link="/system/admin/feature_purchase_orders"
           title="Hoàn thành"
-          description="Các yêu cầu đã hoàn thành"
+          description="Các yêu cầu nhập nguyên liệu đã hoàn thành"
           image={mng_finish_orders}
         />
       </div>
