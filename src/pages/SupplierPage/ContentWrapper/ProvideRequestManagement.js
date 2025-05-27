@@ -238,7 +238,7 @@ const ProvideRequestManagement = () => {
   // Table Columns
   const columns = [
     {
-      title: "Tên nguyên liệu",
+      title: "Yêu cầu",
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
@@ -250,6 +250,7 @@ const ProvideRequestManagement = () => {
       key: "quantity",
       className: "text-center",
       sorter: (a, b) => a.quantity - b.quantity,
+       render: (quantity) => convertPrice(quantity),
     },
     {
       title: <div style={{ textAlign: "center" }}>Giá mỗi đơn vị (VNĐ/Kg)</div>,
@@ -257,7 +258,7 @@ const ProvideRequestManagement = () => {
       key: "price",
       className: "text-center",
       sorter: (a, b) => a.price - b.price,
-      render: (price) => price || "Không có giá mỗi kg",
+      render: (price) => convertPrice(price) || "Không có giá mỗi kg",
     },
     {
       title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
@@ -468,7 +469,7 @@ const ProvideRequestManagement = () => {
         title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
         isOpen={isDrawerOpen}
         placement="right"
-        width="30%"
+        width="40%"
         onClose={handleCancelUpdate}
       >
         <Loading isPending={mutationUpdate.isPending}>
@@ -478,7 +479,7 @@ const ProvideRequestManagement = () => {
             onFinish={onFinishUpdate}
             layout="vertical"
           >
-            <Form.Item label="Tên Nguyên Liệu" name="fuel_name">
+            <Form.Item label="Tên yêu cầu" name="fuel_name">
               <Input value={selectedRequest.fuel_name} disabled />
             </Form.Item>
 
@@ -596,7 +597,7 @@ const ProvideRequestManagement = () => {
         title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
         isOpen={isDrawerOpen}
         placement="right"
-        width="30%"
+        width="40%"
         onClose={handleCancelUpdate}
       >
         <Loading isPending={mutationUpdate.isPending}>
@@ -606,7 +607,7 @@ const ProvideRequestManagement = () => {
             onFinish={onFinishUpdate}
             layout="vertical"
           >
-            <Form.Item label="Tên Nguyên Liệu" name="fuel_name">
+            <Form.Item label="Tên yêu cầu" name="fuel_name">
               <Input value={selectedRequest.fuel_name} disabled />
             </Form.Item>
 
@@ -733,7 +734,7 @@ const ProvideRequestManagement = () => {
             <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
                 <label className="block mb-1 font-semibold">
-                  Tên Nguyên Liệu
+                  Tên yêu cầu
                 </label>
                 <input
                   type="text"
