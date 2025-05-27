@@ -61,6 +61,7 @@ const FuelProvideManagement = () => {
     quantity: "",
     status: "",
     request_id: "",
+    address: "",
     supplier_id: "",
     total_price: "",
   });
@@ -80,6 +81,7 @@ const FuelProvideManagement = () => {
         quality: res?.data.quality,
         quantity: res?.data.quantity,
         status: res?.data.status,
+        address: res?.data.address.address,
         request_id: res?.data.request_id,
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
@@ -119,23 +121,6 @@ const FuelProvideManagement = () => {
       message.error(`Có lỗi xảy ra khi hủy đơn: ${error.message}`);
     }
   };
-
-  //hoan thanh don
-  const handleCompleteProvideOrder = async () => {
-    try {
-      const response = await handleCompleteProvideOrders(stateDetailsUser._id);
-      if (response) {
-        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
-        message.success("Đơn hàng đã được hoàn thành thành công!");
-        
-      } else {
-        message.error("Hoàn thành đơn thất bại!");
-      }
-    } catch (error) {
-      message.error("Có lỗi xảy ra khi hoàn thành đơn!");
-    }
-  };
-
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -205,24 +190,6 @@ const FuelProvideManagement = () => {
   });
   const { isLoading, data: orders } = queryOrder;
 
-  // Submit Form Update Product
-  const onFinishUpdate = () => {
-    mutationUpdate.mutate(
-      // params 1: Object {chứa thông tin của }
-      {
-        id: rowSelected,
-        token: user?.access_token,
-        dataUpdate: stateDetailsUser,
-      },
-      // callback onSettled : đây là 1 chức năng của useQuery giúp tự động gọi hàm get lại danh sách sản phẩm (cập nhật list mới nhất)
-      {
-        onSettled: () => {
-          queryOrder.refetch();
-        },
-      }
-    );
-  };
-
   // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
   useEffect(() => {
     if (isSuccessUpdate) {
@@ -236,11 +203,6 @@ const FuelProvideManagement = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessUpdate, isErrorUpdate]);
 
-  // CANCEL MODAL - DELETE PRODUCT
-  const handleCancelDelete = () => {
-    setIsOpenDelete(false);
-  };
-
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
     setStateDetailsUser({
@@ -253,31 +215,6 @@ const FuelProvideManagement = () => {
     });
     formUpdate.resetFields();
     setIsDrawerOpen(false);
-  };
-
-  // ONCHANGE FIELDS - UPDATE
-  const handleOnChangeDetails = (value, name) => {
-    setStateDetailsUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // CHANGE AVATAR - UPDATE
-  const handleChangeAvatarDetails = async (info) => {
-    // C2: getBase64
-    try {
-      const file = info?.fileList[0];
-      if (!file?.url && !file?.preview) {
-        file.preview = await getBase64(file?.originFileObj);
-      }
-      setStateDetailsUser((prev) => ({
-        ...prev,
-        avatar: file.preview,
-      }));
-    } catch (error) {
-      console.log("Error", error);
-    }
   };
 
   // DATA FROM USERS LIST
@@ -577,6 +514,9 @@ const FuelProvideManagement = () => {
             </Form.Item>
             <Form.Item label="Số Lượng" name="quantity">
               <span>{stateDetailsUser?.quantity || ""}</span>
+            </Form.Item>
+            <Form.Item label="Địa chỉ" name="address">
+              <span>{stateDetailsUser?.address || ""}</span>
             </Form.Item>
             <Form.Item label="Ghi chú" name="note">
               <span>{stateDetailsUser?.note || ""}</span>
