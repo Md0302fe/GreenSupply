@@ -234,7 +234,7 @@ const ProductionProcessForm = () => {
         placement="right"
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
-        width={500}
+        width={"40%"}
       >
         {selectedBatch ? (
           <Descriptions

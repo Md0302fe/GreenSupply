@@ -490,7 +490,7 @@ const columns = [
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="30%"
+        width="40%"
       >
         {selectedBatch && (
           <>
