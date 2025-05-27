@@ -234,9 +234,9 @@ const MaterialStorageExport = () => {
           <Form.Item
             label="Tên đơn xuất kho"
             name="export_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên xuất kho" }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên đơn xuất kho" }]}
           >
-            <Input placeholder="Nhập tên xuất kho" maxLength={60} />
+            <Input placeholder="Nhập tên đơn xuất kho" maxLength={60} />
           </Form.Item>
 
           {/* Loại đơn xuất kho */}
