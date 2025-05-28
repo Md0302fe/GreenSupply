@@ -191,13 +191,6 @@ const MaterialStorageExportList = () => {
 
   const columns = [
     {
-      title: "Tên Xuất Kho",
-      dataIndex: "export_name",
-      key: "export_name",
-      sorter: (a, b) => a.export_name.localeCompare(b.export_name),
-      ...getColumnSearchProps("export_name", "Tìm kiếm theo tên xuất kho..."),
-    },
-    {
       title: "Loại Xuất Kho",
       dataIndex: "type_export",
       key: "type_export",
@@ -254,13 +247,6 @@ const MaterialStorageExportList = () => {
         }
         return <Tag color={color}>{status}</Tag>;
       },
-    },
-    {
-      title: "Ngày Tạo",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (date) => new Date(date).toLocaleString(),
     },
     {
       title: "Hành động",
