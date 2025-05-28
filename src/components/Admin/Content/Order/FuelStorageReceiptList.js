@@ -116,9 +116,11 @@ useEffect(() => {
 
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
-      title: `Xác nhận ${newStatus === "Đã duyệt" ? "Duyệt Đơn" : "Hủy Đơn"}`,
+      title: `Xác nhận ${
+        newStatus === "Nhập kho thành công" ? "Duyệt Đơn" : "Hủy Đơn"
+      }`,
       content: `Bạn có chắc chắn muốn ${
-        newStatus === "Đã duyệt" ? "duyệt" : "hủy"
+        newStatus === "Nhập kho thành công" ? "duyệt" : "hủy"
       } đơn này không?`,
       okText: "Xác nhận",
       cancelText: "Hủy",
@@ -406,6 +408,8 @@ useEffect(() => {
             ? "gold"
             : status === "Đã duyệt"
             ? "green"
+            : status === "Nhập kho thành công"
+            ? "blue"
             : "red";
         return (
           <div style={{ textAlign: "center" }}>
@@ -586,6 +590,8 @@ useEffect(() => {
                         ? "gold"
                         : selectedReceipt.status === "Đã duyệt"
                         ? "green"
+                        : selectedReceipt.status === "Nhập kho thành công"
+                        ? "blue"
                         : "red"
                     }
                   >
@@ -631,11 +637,15 @@ useEffect(() => {
                 type="primary"
                 className="px-6 py-2 text-lg"
                 onClick={() =>
-                  confirmUpdateStatus(selectedReceipt._id, "Đã duyệt")
+                  confirmUpdateStatus(
+                    selectedReceipt._id,
+                    "Nhập kho thành công"
+                  )
                 }
                 disabled={
                   loading ||
                   selectedReceipt.status === "Đã duyệt" ||
+                  selectedReceipt.status === "Nhập kho thành công" ||
                   selectedReceipt.status === "Đã huỷ"
                 }
               >

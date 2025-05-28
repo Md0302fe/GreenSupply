@@ -119,14 +119,20 @@ const HarvestRequestPage = () => {
     if (!formData.price.trim()) newErrors.price = "Giá không được để trống!";
     if (!formData.address.trim())
       newErrors.address = "Địa chỉ không được để trống!";
-
+    // Không gửi form nếu có lỗi
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return; // Không gửi form nếu có lỗi
+      return;
     }
+    // Thêm tiền tố "Yêu cầu thu hàng"
+    let fuelNameWithPrefix = formData.fuel_name.trim();
+    if (!fuelNameWithPrefix.startsWith("Yêu cầu thu hàng")) {
+      fuelNameWithPrefix = `Yêu cầu thu hàng ${fuelNameWithPrefix}`;
+    }
+
     const fuelRequest = {
       supplier_id: userRedux.id,
-      fuel_name: formData.fuel_name,
+      fuel_name: fuelNameWithPrefix,
       quantity: Number(formData.quantity),
       price: Number(formData.price),
       total_price: totalPrice(),
@@ -135,7 +141,7 @@ const HarvestRequestPage = () => {
       status: "Chờ duyệt",
       fuel_type: formData.fuel_type,
     };
-
+console.log("123", fuelRequest);
     try {
       await createHarvestRequest(fuelRequest);
       message.success("Tạo yêu cầu thu hàng thành công!");
@@ -200,11 +206,26 @@ const HarvestRequestPage = () => {
               placeholder="Tên yêu cầu..."
               value={formData.fuel_name}
               onChange={handleChange}
+              onFocus={() => {
+                // Nếu chưa có tiền tố thì tự thêm
+                if (!formData.fuel_name.startsWith("Yêu cầu thu hàng")) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    fuel_name: "Yêu cầu thu hàng ",
+                  }));
+                }
+              }}
+              onBlur={() => {
+                // Nếu người dùng không nhập gì thêm -> chỉ có prefix
+                if (formData.fuel_name.trim() === "Yêu cầu thu hàng") {
+                  setFormData((prev) => ({
+                    ...prev,
+                    fuel_name: "",
+                  }));
+                }
+              }}
               className="border p-2 rounded w-full mb-2"
             />
-            {errors.fuel_name && (
-              <p className="text-red-500 text-sm">{errors.fuel_name}</p>
-            )}
           </div>
 
           {/* fuel_type */}

@@ -12,7 +12,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import Highlighter from "react-highlight-words";
-import { IoDocumentText } from "react-icons/io5";
 
 import { convertPrice } from "../../../ultils";
 
@@ -37,7 +36,7 @@ const HarvestRequestManagement = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const userRedux = useSelector((state) => state.user);
+
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const getAllHarvestRequests = async () => {
@@ -208,7 +207,7 @@ const HarvestRequestManagement = () => {
 
   const columns = [
     {
-      title: "Tên yêu cầu",
+      title: "Yêu cầu",
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
@@ -220,6 +219,7 @@ const HarvestRequestManagement = () => {
       key: "quantity",
       className: "text-center",
       sorter: (a, b) => a.quantity - b.quantity,
+      render: (quantity) => convertPrice(quantity)
     },
     {
       title: <div style={{ textAlign: "center" }}>Giá mỗi Kg</div>,
@@ -227,6 +227,7 @@ const HarvestRequestManagement = () => {
       key: "price",
       className: "text-center",
       sorter: (a, b) => a.price - b.price,
+      render: (price) => convertPrice(price)
     },
     {
       title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
@@ -242,10 +243,17 @@ const HarvestRequestManagement = () => {
       key: "status",
       className: "text-center",
       render: (status) => {
-        let color = "orange"; // Default for "Chờ duyệt"
+        let color = "orange"; // Mặc định là "Chờ duyệt"
         if (status === "Đã duyệt") color = "green";
-        if (status === "Đã huỷ") color = "red";
-        return <Tag color={color}>{status}</Tag>;
+        if (status === "Hoàn thành" || status === "Đang xử lý") color = "yellow";
+        if (status === "Đã huỷ") color = "red"
+
+        const displayText =
+          status === "Đang xử lý" || status === "Hoàn thành"
+            ? "Hoàn thành"
+            : status;
+
+        return <Tag color={color}>{displayText}</Tag>;
       },
       onFilter: (value, record) => record.status.indexOf(value) === 0,
       filters: [
@@ -326,7 +334,7 @@ const HarvestRequestManagement = () => {
         title="Chỉnh sửa yêu cầu thu nguyên liệu"
         isOpen={isDrawerOpen}
         placement="right"
-        width="30%"
+        width="40%"
         onClose={() => setIsDrawerOpen(false)}
       >
         {selectedRequest ? (
@@ -450,7 +458,7 @@ const HarvestRequestManagement = () => {
         title="Chi tiết yêu cầu thu nguyên liệu"
         isOpen={isViewDrawerOpen}
         placement="right"
-        width="30%"
+        width="40%"
         onClose={() => setIsViewDrawerOpen(false)}
       >
         {viewDetailRequest ? (
@@ -535,8 +543,8 @@ const HarvestRequestManagement = () => {
                 <label className="font-semibold">Trạng thái:</label>
                 <span
                   className={`px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap ${getStatusClasses(
-                    viewDetailRequest.status
-                  )}`}
+                    viewDetailRequest.status 
+                  )}`} 
                 >
                   {viewDetailRequest.status}
                 </span>

@@ -8,6 +8,10 @@ import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import Highlighter from "react-highlight-words";
 
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+
+import * as ultils from "../../../ultils"
+
 const HistoryProvideOrder = () => {
 
     const user = useSelector((state) => state.user);
@@ -45,7 +49,7 @@ const HistoryProvideOrder = () => {
     };
 
     const getStatusClasses = (status) => {
-        if (status === "Hoàn thành") return "bg-green-100 text-green-800";
+        if (status === "Hoàn thành" || status === "Đang xử lý") return "bg-green-100 text-green-800";
         return "bg-gray-100 text-gray-800";
     };
 
@@ -123,7 +127,7 @@ const HistoryProvideOrder = () => {
 
       const columns = [
           {
-            title: "Tên nguyên liệu",
+            title: "Yêu cầu",
             dataIndex: "fuel_name",
             key: "fuel_name",
             ...getColumnSearchProps("fuel_name"),
@@ -135,6 +139,7 @@ const HistoryProvideOrder = () => {
             key: "quantity",
             className: "text-center",
             sorter: (a, b) => a.quantity - b.quantity,
+            render: (quantity) => ultils.convertPrice(quantity)
           },
           {
             title: <div style={{ textAlign: "center" }}>Giá mỗi đơn vị (VNĐ/Kg)</div>,
@@ -142,7 +147,7 @@ const HistoryProvideOrder = () => {
             key: "price",
             className: "text-center",
             sorter: (a, b) => a.price - b.price,
-            render: (price) => price || "Không có giá mỗi kg",
+            render: (price) => ultils.convertPrice(price) || "Không có giá mỗi kg",
           },
           {
             title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
@@ -150,7 +155,7 @@ const HistoryProvideOrder = () => {
             key: "total_price",
             className: "text-center",
             sorter: (a, b) => a.total_price - b.total_price, // Enable sorting
-            render: (_, record) => record.total_price, // Calculate dynamically
+            render: (_, record) => ultils.convertPrice(record.total_price), // Calculate dynamically
           },
           {
             title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
@@ -166,8 +171,15 @@ const HistoryProvideOrder = () => {
             render: (status) => {
               let color = "orange"; // Default for "Chờ duyệt"
               if (status === "Đã duyệt") color = "green";
+              if (status === "Hoàn thành" || status === "Đang xử lý") color = "yellow";
               if (status === "Đã hủy") color = "red";
-              return <Tag color={color}>{status}</Tag>;
+
+              const displayText =
+              status === "Đang xử lý" || status === "Hoàn thành"
+              ? "Hoàn thành"
+              : status;
+
+              return <Tag color={color}>{displayText}</Tag>;
             },
           },
           // {
@@ -211,7 +223,7 @@ const HistoryProvideOrder = () => {
                   {/* Xem Chi Tiết */}
                   <Button
                     type="default"
-                    icon={<IoDocumentText />}
+                    icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }}/>} 
                     onClick={() => handleViewDetail(record)}
                     size="middle"
                   />
@@ -246,6 +258,7 @@ const HistoryProvideOrder = () => {
                 title="Xem chi tiết yêu cầu thu nguyên liệu"
                 isOpen={isViewDrawerOpen}
                 placement="right"
+                width="40%"
                 onClose={() => setIsViewDrawerOpen(false)}
             >
                 {viewDetailRequest ? (

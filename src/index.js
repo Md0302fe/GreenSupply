@@ -20,6 +20,14 @@ import Router from "./routes/routes";
 
 import { PersistGate } from "redux-persist/integration/react";
 
+import { message } from "antd";
+// Config all file
+message.config({
+  top: 60,
+  duration: 2,
+  maxCount: 3,
+});
+
 // Create a client
 const queryClient = new QueryClient();
 

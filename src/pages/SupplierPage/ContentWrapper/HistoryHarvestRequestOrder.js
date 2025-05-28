@@ -9,6 +9,10 @@ import { IoDocumentText } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+
+import * as ultils from "../../../ultils"
+
 const HistoryHarvestRequestOrder = () => {
   const user = useSelector((state) => state.user);
 
@@ -116,7 +120,7 @@ const HistoryHarvestRequestOrder = () => {
 
   const columns = [
     {
-      title: "Tên yêu cầu",
+      title: "Yêu cầu",
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
@@ -128,6 +132,8 @@ const HistoryHarvestRequestOrder = () => {
       key: "quantity",
       className: "text-center",
       sorter: (a, b) => a.quantity - b.quantity,
+      render: (quantity) => ultils.convertPrice(quantity)
+
     },
     {
       title: <div style={{ textAlign: "center" }}>Giá mỗi Kg</div>,
@@ -135,6 +141,7 @@ const HistoryHarvestRequestOrder = () => {
       key: "price",
       className: "text-center",
       sorter: (a, b) => a.price - b.price,
+      render: (price) => ultils.convertPrice(price)
     },
     {
       title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
@@ -142,6 +149,7 @@ const HistoryHarvestRequestOrder = () => {
       key: "total_price",
       className: "text-center",
       sorter: (a, b) => a.total_price - b.total_price,
+      render: (total_price) => ultils.convertPrice(total_price),
     },
     {
       title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
@@ -180,7 +188,7 @@ const HistoryHarvestRequestOrder = () => {
                 size="middle"
             /> */}
           <Button
-            icon={<IoDocumentText />}
+            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }}/>}  
             onClick={() => handleViewDetail(record)}
             size="middle"
           />
@@ -218,7 +226,7 @@ const HistoryHarvestRequestOrder = () => {
             title="Chi tiết yêu cầu thu nguyên liệu"
             isOpen={isViewDrawerOpen}
             placement="right"
-            width="30%"
+            width="40%"
             onClose={() => setIsViewDrawerOpen(false)}
           >
             {viewDetailRequest ? (

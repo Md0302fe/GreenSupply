@@ -77,6 +77,7 @@ const FuelProvideManagement = () => {
     quantity: "",
     status: "",
     request_id: "",
+    address: "",
     supplier_id: "",
     total_price: "",
   });
@@ -96,6 +97,7 @@ const FuelProvideManagement = () => {
         quality: res?.data.quality,
         quantity: res?.data.quantity,
         status: res?.data.status,
+        address: res?.data.address.address,
         request_id: res?.data.request_id,
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
@@ -141,8 +143,9 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCompleteProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
+        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được hoàn thành thành công!");
+        
       } else {
         message.error("Hoàn thành đơn thất bại!");
       }
@@ -150,6 +153,7 @@ const FuelProvideManagement = () => {
       message.error("Có lỗi xảy ra khi hoàn thành đơn!");
     }
   };
+
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -217,24 +221,6 @@ const FuelProvideManagement = () => {
   });
   const { isLoading, data: orders } = queryOrder;
 
-  // Submit Form Update Product
-  const onFinishUpdate = () => {
-    mutationUpdate.mutate(
-      // params 1: Object {chứa thông tin của }
-      {
-        id: rowSelected,
-        token: user?.access_token,
-        dataUpdate: stateDetailsUser,
-      },
-      // callback onSettled : đây là 1 chức năng của useQuery giúp tự động gọi hàm get lại danh sách sản phẩm (cập nhật list mới nhất)
-      {
-        onSettled: () => {
-          queryOrder.refetch();
-        },
-      }
-    );
-  };
-
   // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
   useEffect(() => {
     if (isSuccessUpdate) {
@@ -248,11 +234,6 @@ const FuelProvideManagement = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessUpdate, isErrorUpdate]);
 
-  // CANCEL MODAL - DELETE PRODUCT
-  const handleCancelDelete = () => {
-    setIsOpenDelete(false);
-  };
-
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
     setStateDetailsUser({
@@ -265,31 +246,6 @@ const FuelProvideManagement = () => {
     });
     formUpdate.resetFields();
     setIsDrawerOpen(false);
-  };
-
-  // ONCHANGE FIELDS - UPDATE
-  const handleOnChangeDetails = (value, name) => {
-    setStateDetailsUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // CHANGE AVATAR - UPDATE
-  const handleChangeAvatarDetails = async (info) => {
-    // C2: getBase64
-    try {
-      const file = info?.fileList[0];
-      if (!file?.url && !file?.preview) {
-        file.preview = await getBase64(file?.originFileObj);
-      }
-      setStateDetailsUser((prev) => ({
-        ...prev,
-        avatar: file.preview,
-      }));
-    } catch (error) {
-      console.log("Error", error);
-    }
   };
 
   // DATA FROM USERS LIST
@@ -601,54 +557,75 @@ const FuelProvideManagement = () => {
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails || isPendingUpDate}>
-  <Descriptions
-    bordered
-    column={1}
-    
-    layout="horizontal"
-    title=""
-  >
-    <Descriptions.Item 
-    label="Khách Hàng"
-    labelStyle={{ width: '48%' }}
-    contentStyle={{ width: '52%' }} 
-    >
-      {stateDetailsUser?.supplier_id?.full_name || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Loại Nguyên Liệu">
-      {stateDetailsUser?.fuel_name || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Giá Tiền">
-      {stateDetailsUser?.price || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Chất Lượng">
-      {stateDetailsUser?.quality || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Số Lượng">
-      {stateDetailsUser?.quantity || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Tổng Giá">
-      {stateDetailsUser?.total_price || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Trạng Thái">
-      {orderStatus || "Không có"}
-    </Descriptions.Item>
-    <Descriptions.Item label="Ghi chú">
-      {stateDetailsUser?.note || "Không có"}
-    </Descriptions.Item>
-  </Descriptions>
+          <Form
+            name="update-form"
+            labelCol={{
+              span: 8,
+            }}
+            wrapperCol={{
+              span: 16,
+            }}
+            style={{
+              maxWidth: 600,
+            }}
+            initialValues={{
+              remember: true,
+            }}
+            autoComplete="on"
+            form={formUpdate}
+          >
+            <Form.Item label="Khách Hàng" name="customerName">
+              <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
+            </Form.Item>
 
-  {orderStatus === "Chờ duyệt" && (
-    <div style={{ display: "flex", gap: "10px", marginTop: 24, justifyContent: "center" }}>
-      <Button type="primary" onClick={handleAcceptProvideOrder}>
-        Duyệt đơn
-      </Button>
-      <Button danger onClick={handleCancelProvideOrder}>
-        Hủy đơn
-      </Button>
-    </div>
-  )}
-</Loading>
+            <Form.Item label="Loại Nguyên Liệu" name="fuel_name">
+              <span>{stateDetailsUser?.fuel_name || ""}</span>
+            </Form.Item>
+
+            <Form.Item label="Giá Tiền" name="price">
+              <span>{stateDetailsUser?.price || ""}</span>
+            </Form.Item>
+
+            <Form.Item label="Chất Lượng" name="quality">
+              <span>{stateDetailsUser?.quality || ""}</span>
+            </Form.Item>
+            <Form.Item label="Số Lượng" name="quantity">
+              <span>{stateDetailsUser?.quantity || ""}</span>
+            </Form.Item>
+            <Form.Item label="Ghi chú" name="note">
+              <span>{stateDetailsUser?.note || ""}</span>
+            </Form.Item>
+
+            <Form.Item label="Trạng Thái" name="status">
+              <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
+            </Form.Item>
+            <Form.Item label="Tổng Giá" name="total_price">
+              <span>{stateDetailsUser?.total_price || ""}</span>
+            </Form.Item>
+
+            <Form.Item
+              wrapperCol={{
+                offset: 4, // Giảm offset để đẩy UI qua trái
+                span: 16,
+              }}
+            >
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
+
+                {orderStatus === 'Chờ duyệt' && (
+                  <>
+                    <Button type="primary" onClick={handleAcceptProvideOrder}>
+                      Duyệt đơn
+                    </Button>
+
+                    <Button type="default" danger onClick={handleCancelProvideOrder}>
+                      Hủy đơn
+                    </Button>
+                  </>
+                )}   
+              </div>
+            </Form.Item>
+          </Form>
+        </Loading>
       </DrawerComponent>
     </div>
   );

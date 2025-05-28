@@ -24,9 +24,10 @@ import Highlighter from "react-highlight-words";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getBase64, convertPrice } from "../../../../ultils";
 
-import { getBase64 } from "../../../../ultils";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 const UserComponent = () => {
@@ -47,6 +48,7 @@ const UserComponent = () => {
   const queryParams = new URLSearchParams(location.search);
   const filterStatus = queryParams.get("status"); // Ví dụ: "Chờ duyệt"
 
+  const navigate = useNavigate();
 
   //  Search Props
   const [searchText, setSearchText] = useState("");
@@ -448,16 +450,16 @@ const UserComponent = () => {
   //   : [];
 
   const tableData = Array.isArray(data_purchase?.data)
-  ? data_purchase.data
-      .filter((item) => {
-        if (!filterStatus) return true;
-        return item.status === filterStatus;
-      })
-      .map((purchaseOrder) => ({
-        ...purchaseOrder,
-        key: purchaseOrder._id || "",
-      }))
-  : [];
+    ? data_purchase.data
+        .filter((item) => {
+          if (!filterStatus) return true;
+          return item.status === filterStatus;
+        })
+        .map((purchaseOrder) => ({
+          ...purchaseOrder,
+          key: purchaseOrder._id || "",
+        }))
+    : [];
 
   // Actions
   const renderAction = (text, record) => {
@@ -466,9 +468,10 @@ const UserComponent = () => {
         className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%] min-w-[125px]"
         onClick={() => handleDetailsProduct(record)}
       >
-        <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          ✅ Chi tiết
-        </span>
+        <Button
+          icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
+          size="middle"
+        />
       </div>
     );
   };
@@ -645,7 +648,7 @@ const UserComponent = () => {
         ),
     },
     {
-      title: "Tên đơn hàng",
+      title: <div style={{ textAlign: "center" }}>Yêu cầu</div>,
       dataIndex: "request_name",
       key: "request_name",
       ...(getColumnSearchProps("request_name") || {}),
@@ -653,16 +656,19 @@ const UserComponent = () => {
       align: "right",
     },
     {
-      title: "Tiến độ còn thu",
+      title: <div style={{ textAlign: "center" }}>Tiến độ còn thu</div>,
       dataIndex: "quantity_remain",
+      className: "text-center",
       key: "quantity_remain",
       sorter: (a, b) => a?.quantity_remain - b?.quantity_remain,
+      render: (quantity_remain) => convertPrice(quantity_remain),
     },
 
     {
-      title: "Tổng thu (Kg)",
+      title: <div style={{ textAlign: "center" }}>Tổng thu (Kg)</div>,
       dataIndex: "quantity",
       key: "quantity",
+      className: "text-center",
       filters: [
         { text: "Trên 200kg", value: "above200" },
         { text: "Dưới 500kg", value: "under500" },
@@ -675,27 +681,30 @@ const UserComponent = () => {
         return true;
       },
       sorter: (a, b) => a.quantity - b.quantity, // Sắp xếp từ nhỏ đến lớn
-      render: (quantity) => `${quantity} Kg`,
+      render: (quantity) => `${convertPrice(quantity)} Kg`,
     },
     {
-      title: "Ngày bắt đầu nhận đơn",
+      title: <div style={{ textAlign: "center" }}>Ngày bắt đầu nhận đơn</div>,
       dataIndex: "start_received",
+      className: "text-center",
       key: "start_received",
       sorter: (a, b) => new Date(a.start_received) - new Date(b.start_received),
       render: (date) => convertDateStringV1(date), // Hiển thị ngày đã format
     },
 
     {
-      title: "Ngày kết thúc đơn",
+      title: <div style={{ textAlign: "center" }}>Ngày kết thúc đơn</div>,
       dataIndex: "end_received",
+      className: "text-center",
       key: "end_received",
       sorter: (a, b) => new Date(a.end_received) - new Date(b.end_received),
       render: (date) => convertDateStringV1(date), // Hiển thị ngày đã format
     },
 
     {
-      title: "Trạng thái",
+      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
       dataIndex: "status",
+      className: "text-center",
       key: "status",
       filters: [
         { text: "Chờ duyệt", value: "Chờ duyệt" },
@@ -708,18 +717,18 @@ const UserComponent = () => {
       render: (status) => (
         <Tag
           color={statusColors[status] || "default"}
-          style={{ textAlign: "center", fontSize: "15px", padding: "5px" }}
+          style={{ textAlign: "center", fontSize: "12px", padding: "3px" }}
         >
           {status}
         </Tag>
       ),
     },
-
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Chức năng</div>
+        <div style={{ textAlign: "center", width: "100%" }}>Hành động</div>
       ),
       dataIndex: "action",
+      className: "text-center",
       render: (text, record) => (
         <div style={{ display: "flex", justifyContent: "center" }}>
           {renderAction(text, record)}
@@ -731,7 +740,31 @@ const UserComponent = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý đơn thu nhiên liệu</h5>
+        {/* Nút Quay lại */}
+        <button
+          onClick={() => navigate(-1)}
+          className=" flex items-center bg-black text-white font-semibold py-1 px-3 rounded-md"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
+        <h5 className="content-title text-2xl text-center">
+          các nguyên liệu cần nhập
+        </h5>
+
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -1014,7 +1047,7 @@ const UserComponent = () => {
 
       {/* Modal Confirm Delete Product */}
       <ModalComponent
-        title="Xóa Tài Khoản"
+        title="Xóa yêu cầu"
         open={isOpenDelete}
         onCancel={handleCancelDelete}
         onOk={handleConfirmDelete}

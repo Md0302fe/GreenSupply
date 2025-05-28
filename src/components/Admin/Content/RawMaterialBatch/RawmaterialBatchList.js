@@ -456,13 +456,13 @@ const columns = [
           className="absolute right-0 flex gap-2 mt-2"
           style={{ top: "65%", transform: "translateY(20%)" }}
         >
-          <Button
+          {/* <Button
             type="primary"
             className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
             onClick={() => navigate("/system/admin/raw-material-batch")}
           >
             Tạo lô bổ sung
-          </Button>
+          </Button> */}
           <Button
             type="primary"
             className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
@@ -490,7 +490,7 @@ const columns = [
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="30%"
+        width="40%"
       >
         {selectedBatch && (
           <>
