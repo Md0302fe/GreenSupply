@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Form, Input, Select, DatePicker, Button, message } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -19,6 +19,9 @@ const MaterialStorageExport = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const batchId = params.get("id");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -87,9 +90,12 @@ const MaterialStorageExport = () => {
 
         setProductionRequests(productionRes.data.requests || []);
         setRawMaterialBatches(filteredBatches);
-        // setRawMaterialBatches(
-        //   batchRes.data.batches || batchRes.data.requests || []
-        // );
+
+        // Nếu có batchId trong URL và có trong danh sách thì set luôn
+        if (batchId && filteredBatches.find((b) => b._id === batchId)) {
+          form.setFieldsValue({ batch_id: batchId });
+          handleBatchChange(batchId);
+        }
       } catch (error) {
         toast.error("Lỗi khi tải dữ liệu từ server.");
       } finally {
@@ -234,7 +240,9 @@ const MaterialStorageExport = () => {
           <Form.Item
             label="Tên đơn xuất kho"
             name="export_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên đơn xuất kho" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập tên đơn xuất kho" },
+            ]}
           >
             <Input placeholder="Nhập tên đơn xuất kho" maxLength={60} />
           </Form.Item>
