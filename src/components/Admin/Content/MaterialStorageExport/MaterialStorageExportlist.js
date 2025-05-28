@@ -11,7 +11,7 @@ import {
   Space,
 } from "antd";
 import { SearchOutlined, FilterOutlined } from "@ant-design/icons";
-import axios from "axios";  
+import axios from "axios";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 import { ToastContainer } from "react-toastify";
@@ -21,18 +21,20 @@ import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { convertDateStringV1 } from "../../../../ultils";
-
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+import Highlighter from "react-highlight-words";
 const { Option } = Select;
 
 const statusColors = {
   "Chờ duyệt": "gold",
   "Đã duyệt": "green",
-  "Từ chối": "red",
+  "Hoàn thành": "blue",
 };
 
 const MaterialStorageExportList = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [exports, setExports] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,6 +46,7 @@ const MaterialStorageExportList = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [showSearchInput, setShowSearchInput] = useState(false); // Quản lý việc hiển thị thanh tìm kiếm nhỏ
   const [showStatusFilter, setShowStatusFilter] = useState(false); // Quản lý việc hiển thị lọc trạng thái
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -95,100 +98,98 @@ const MaterialStorageExportList = () => {
     fetchExports();
   }, [debouncedSearch, statusFilter, sortOrder]);
 
-  const columns = [
-    // {
-    //   title: (
-    //     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-    //       <span>Người Tạo đơn</span>
-    //       <Popover
-    //         content={
-    //           <div style={{ padding: 10 }}>
-    //             <Input
-    //               placeholder="Tìm kiếm theo tên người tạo..."
-    //               value={searchText}
-    //               onChange={(e) => setSearchText(e.target.value)}
-    //               style={{ width: 250 }}
-    //             />
-    //             <div style={{ marginTop: 10 }}>
-    //               <Button type="primary" onClick={() => fetchExports()}>
-    //                 Tìm
-    //               </Button>
-    //               <Button onClick={() => setSearchText("")} style={{ marginLeft: 8 }}>
-    //                 Đặt lại
-    //               </Button>
-    //               <Button
-    //                 type="link"
-    //                 onClick={() => setShowSearchInput(false)}
-    //                 style={{ marginLeft: 8 }}
-    //               >
-    //                 Đóng
-    //               </Button>
-    //             </div>
-    //           </div>
-    //         }
-    //         title="Tìm kiếm"
-    //         trigger="click"
-    //         visible={showSearchInput}
-    //         onVisibleChange={() => setShowSearchInput(!showSearchInput)}
-    //       >
-    //         <Button type="link" icon={<SearchOutlined />} />
-    //       </Popover>
-    //     </div>
-    //   ),
-    //   key: "created_by",
-    //   render: (_, record) => record?.user_id?.full_name || "Không rõ",
-    // },
-    {
-      title: (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span>Tên Xuất Kho</span>
-          <Popover
-            content={
-              <div style={{ padding: 10 }}>
-                <Input
-                  placeholder="Tìm kiếm theo tên xuất kho..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  style={{ width: 250 }}
-                />
-                <div style={{ marginTop: 10 }}>
-                  <Button type="primary" onClick={() => fetchExports()}>
-                    Tìm
-                  </Button>
-                  <Button
-                    onClick={() => setSearchText("")}
-                    style={{ marginLeft: 8 }}
-                  >
-                    Đặt lại
-                  </Button>
-                  <Button
-                    type="link"
-                    onClick={() => setShowSearchInput(false)}
-                    style={{ marginLeft: 8 }}
-                  >
-                    Đóng
-                  </Button>
-                </div>
-              </div>
-            }
-            title="Tìm kiếm"
-            trigger="click"
-            visible={showSearchInput}
-            onVisibleChange={() => setShowSearchInput(!showSearchInput)}
+  const getColumnSearchProps = (dataIndex, placeholder) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          placeholder={placeholder || `Tìm kiếm ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+          autoFocus
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
           >
-            <Button type="link" icon={<SearchOutlined />} />
-          </Popover>
-        </div>
-      ),
-      dataIndex: "export_name",
-      key: "export_name",
+            Search
+          </Button>
+          <Button
+            onClick={() => {
+              clearFilters();
+              setSearchText("");
+              fetchExports();
+            }}
+            size="small"
+            style={{ width: 70 }}
+          >
+            Đặt lại
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+              setShowSearchInput(false);
+            }}
+          >
+            Đóng
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : false,
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setShowSearchInput(true);
+      } else {
+        setShowSearchInput(false);
+      }
     },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const columns = [
     {
       title: "Loại Xuất Kho",
       dataIndex: "type_export",
@@ -196,76 +197,87 @@ const MaterialStorageExportList = () => {
     },
     {
       title: "Đơn sản xuất",
-      key: "created_by",
+      key: "production_request",
       render: (_, record) =>
         record?.production_request_id?.request_name || "Không rõ",
     },
     {
       title: "Lô nguyên liệu",
-      key: "created_by",
-      render: (_, record) => record?.batch_id?.batch_id || "Không rõ",
+      key: "batch",
+      render: (_, record) => record?.batch_id?.batch_name || "Không rõ",
     },
-
     {
-      title: (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span>Trạng Thái</span>
-          <Popover
-            content={
-              <div style={{ padding: 10 }}>
-                <Select
-                  value={statusFilter}
-                  onChange={(value) => setStatusFilter(value)}
-                  style={{ width: 200 }}
-                >
-                  <Option value="">Tất cả</Option>
-                  <Option value="Chờ duyệt">Chờ duyệt</Option>
-                  <Option value="Hoàn thành">Hoàn thành</Option>
-                </Select>
-              </div>
-            }
-            title="Lọc theo trạng thái"
-            trigger="click"
-            visible={showStatusFilter}
-            onVisibleChange={() => setShowStatusFilter(!showStatusFilter)}
-          >
-            <Button type="link" icon={<FilterOutlined />} />
-          </Popover>
-        </div>
-      ),
+      title: "Trạng Thái",
       dataIndex: "status",
+      className: "text-center",
       key: "status",
-      render: (status) => (
-        <Tag color={status === "Chờ duyệt" ? "gold" : "green"}>
-          {status || "Không rõ"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Ngày Tạo",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (date) => new Date(date).toLocaleString(),
+      filters: [
+        {
+          text: "Chờ duyệt",
+          value: "Chờ duyệt",
+        },
+        {
+          text: "Hoàn thành",
+          value: "Hoàn thành",
+        },
+      ],
+
+      onFilter: (value, record) => record.status === value,
+      filteredValue: statusFilter ? [statusFilter] : null,
+      render: (status) => {
+        let color = "";
+        switch (status) {
+          case "Chờ duyệt":
+            color = "orange";
+            break;
+          case "Đã duyệt":
+            color = "green";
+            break;
+          case "Đã Hủy":
+            color = "red";
+            break;
+          case "Hoàn thành":
+            color = "blue";
+            break;
+          case "Đang xử lý":
+            color = "yellow";
+            break;
+          default:
+            color = "default";
+        }
+        return <Tag color={color}>{status}</Tag>;
+      },
     },
     {
       title: "Hành động",
-      dataIndex: "action",
       key: "action",
       render: (_, record) => (
-        <Button type="link" onClick={() => showExportDetails(record._id)}>
-          Xem chi tiết
-        </Button>
+        <Button
+          type="link"
+          icon={
+            <HiOutlineDocumentSearch
+              style={{ fontSize: "20px", color: "dodgerblue" }}
+            />
+          }
+          onClick={() => showExportDetails(record._id)}
+        />
       ),
     },
   ];
+  const handleTableChange = (pagination, filters, sorter) => {
+    // Cập nhật filter trạng thái
+    if (filters.status) {
+      setStatusFilter(filters.status[0] || "");
+    } else {
+      setStatusFilter("");
+    }
 
+    // Cập nhật sortOrder theo createdAt hoặc export_name nếu muốn
+    if (sorter.order) {
+      // sorter.order là 'ascend' hoặc 'descend'
+      setSortOrder(sorter.order === "ascend" ? "asc" : "desc");
+    }
+  };
   // Accept Request
   const mutationAccept = useMutationHooks(async (data) => {
     const response = await MaterialServices.handleAcceptMaterialExport(data);
@@ -388,7 +400,37 @@ const MaterialStorageExportList = () => {
 
   return (
     <div className="material-storage-export-list">
-      <div className="flex justify-between items-center mb-2">
+      <Button
+        onClick={() => navigate(-1)}
+        type="primary"
+        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 mr-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 12H3m0 0l6-6m-6 6l6 6"
+          />
+        </svg>
+        Quay lại
+      </Button>
+      <div
+        style={{
+          marginBottom: 24,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* Nút quay lại */}
+
         <h5 className="text-2xl font-bold text-gray-800">
           Quản lý Đơn Xuất Kho
         </h5>
@@ -422,6 +464,7 @@ const MaterialStorageExportList = () => {
           dataSource={exports}
           rowKey="_id"
           pagination={{ pageSize: 6 }}
+          onChange={handleTableChange}
         />
       </Loading>
 
@@ -437,7 +480,12 @@ const MaterialStorageExportList = () => {
         width="40%"
       >
         {selectedExport ? (
-          <Descriptions bordered column={1}>
+          <Descriptions
+            bordered
+            column={1}
+            labelStyle={{ width: "40%", fontWeight: "600" }}
+            contentStyle={{ width: "60%" }}
+          >
             <Descriptions.Item label="Người tạo đơn">
               {selectedExport?.user_id?.full_name || "Không rõ"}
             </Descriptions.Item>
@@ -448,53 +496,46 @@ const MaterialStorageExportList = () => {
             <Descriptions.Item label="Tên lô">
               {selectedExport?.batch_id?.batch_name || "Không có"}
             </Descriptions.Item>
-            <Descriptions.Item label="Mã lô ">
+            <Descriptions.Item label="Mã lô">
               {selectedExport?.batch_id?.batch_id || "Không có"}
             </Descriptions.Item>
             <Descriptions.Item label="Tên Xuất Kho">
-              {selectedExport?.export_name}
+              {selectedExport?.export_name || "Không có"}
             </Descriptions.Item>
             <Descriptions.Item label="Loại Xuất Kho">
-              {selectedExport?.type_export}
+              {selectedExport?.type_export || "Không có"}
             </Descriptions.Item>
             <Descriptions.Item label="Trạng Thái">
-              <Tag color={statusColors[selectedExport.status]}>
-                {selectedExport.status}
+              <Tag color={statusColors[selectedExport.status] || "default"}>
+                {selectedExport.status || "Không rõ"}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Ngày tạo đơn">
-              <Tag>{convertDateStringV1(selectedExport.createdAt)}</Tag>
+              {new Date(selectedExport.createdAt).toLocaleString()}
             </Descriptions.Item>
             <Descriptions.Item label="Ghi chú">
               {selectedExport?.note || "Không có ghi chú"}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ngày tạo">
-              {selectedExport?.createdAt}
             </Descriptions.Item>
           </Descriptions>
         ) : (
           <p className="text-center">Đang tải dữ liệu...</p>
         )}
         {selectedExport?.status === "Chờ duyệt" && (
-          <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-3">
-            <button
-              type="button"
-              onClick={handleReject}
-              className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
-            >
+          <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-4">
+            <Button danger onClick={handleReject} className="w-full md:w-auto">
               Hủy yêu cầu
-            </button>
-
-            <button
+            </Button>
+            <Button
+              type="primary"
               onClick={handleAccept}
-              className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+              className="w-full md:w-auto"
             >
               Duyệt đơn
-            </button>
+            </Button>
           </div>
         )}
       </DrawerComponent>
-      
+
       {/* ToastContainer */}
       <ToastContainer
         hideProgressBar={false}
