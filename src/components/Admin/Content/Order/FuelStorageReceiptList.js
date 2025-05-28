@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import { useLocation } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -72,6 +73,15 @@ const FuelStorageReceiptList = () => {
     }
     setLoading(false);
   };
+
+  const location = useLocation();
+useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const status = params.get("status");
+  if (status) {
+    setStatusFilterVal(status);
+  }
+}, [location.search]);
 
   const applyFilters = (data) => {
     let filtered = [...data];

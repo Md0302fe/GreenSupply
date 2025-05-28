@@ -135,13 +135,11 @@ const HarvestRequestPage = () => {
     if (!formData.price.trim()) newErrors.price = "Giá không được để trống!";
     if (!formData.address.trim())
       newErrors.address = "Địa chỉ không được để trống!";
-
     // Không gửi form nếu có lỗi
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
     // Thêm tiền tố "Yêu cầu thu hàng"
     let fuelNameWithPrefix = formData.fuel_name.trim();
     if (!fuelNameWithPrefix.startsWith("Yêu cầu thu hàng")) {
@@ -159,7 +157,7 @@ const HarvestRequestPage = () => {
       status: "Chờ duyệt",
       fuel_type: formData.fuel_type,
     };
-
+console.log("123", fuelRequest);
     try {
       await createHarvestRequest(fuelRequest);
       message.success("Tạo yêu cầu thu hàng thành công!");

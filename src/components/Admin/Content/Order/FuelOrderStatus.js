@@ -22,6 +22,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Highlighter from "react-highlight-words";
 import * as util from '../../../../ultils'
+import { useLocation } from "react-router-dom";
+
 
 const FuelOrderStatus = () => {
   const [orders, setOrders] = useState([]);
@@ -31,9 +33,14 @@ const FuelOrderStatus = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+
   const searchInput = useState(null);
   const userRedux = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const defaultStatus = queryParams.get("status") || "";
+  const [statusFilterVal, setStatusFilterVal] = useState(defaultStatus);
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -52,7 +59,11 @@ const FuelOrderStatus = () => {
             createdAt: new Date(order.createdAt),
           }))
           .sort((a, b) => b.createdAt - a.createdAt);
-
+   if (statusFilterVal) {
+        sortedOrders = sortedOrders.filter(
+          (order) => order.status === statusFilterVal
+        );
+      }
         setOrders(sortedOrders);
       } else {
         message.error("Lỗi khi lấy danh sách đơn hàng!");
@@ -65,7 +76,7 @@ const FuelOrderStatus = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [filterType]);
+  }, [filterType, statusFilterVal]);
 
   const confirmCreateFuelStorageReceipt = (order) => {
     Modal.confirm({
@@ -108,9 +119,10 @@ const FuelOrderStatus = () => {
 
       if (response.data.success) {
         message.success("Tạo đơn nhập kho thành công!");
-        setOrders((prevOrders) =>
-          prevOrders.filter((order) => order._id !== orderToCreate._id)
-        );
+        // setOrders((prevOrders) =>
+        //   prevOrders.filter((order) => order._id !== orderToCreate._id)
+        // );
+         fetchOrders();
       } else {
         message.error(`Thất bại: ${response.data.message}`);
       }
@@ -395,6 +407,7 @@ const FuelOrderStatus = () => {
           <Col>
             <Button
               onClick={() => navigate(-1)}
+              type="primary"
               className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
             >
               <svg
@@ -431,7 +444,7 @@ const FuelOrderStatus = () => {
         </Row>
       </div>
 
-      <div
+      {/* <div
         style={{
           marginBottom: 24,
           background: "#fafafa",
@@ -460,7 +473,51 @@ const FuelOrderStatus = () => {
             Đơn cung cấp
           </Button>
         </Space>
-      </div>
+      </div> */}
+      <div
+  style={{
+    marginBottom: 24,
+    background: "#fafafa",
+    padding: 16,
+    borderRadius: 8,
+  }}
+>
+  <Row justify="space-between" align="middle">
+    <Col>
+      <h3 style={{ marginBottom: 12 }}>Lọc theo loại đơn</h3>
+      <Space>
+        <Button
+          type={filterType === "all" ? "primary" : "default"}
+          onClick={() => setFilterType("all")}
+        >
+          Tất cả đơn
+        </Button>
+        <Button
+          type={filterType === "fuelRequests" ? "primary" : "default"}
+          onClick={() => setFilterType("fuelRequests")}
+        >
+          Đơn thu hàng
+        </Button>
+        <Button
+          type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
+          onClick={() => setFilterType("fuelSupplyOrders")}
+        >
+          Đơn cung cấp
+        </Button>
+      </Space>
+    </Col>
+
+    <Col>
+      <Button
+        type="primary"
+         className="bg-blue-600"
+        onClick={() => navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")}
+      >
+        Danh sách Đơn Nhập Kho
+      </Button>
+    </Col>
+  </Row>
+</div>
 
       <div style={{ background: "#fff", padding: 16, borderRadius: 8 }}>
         <h3 style={{ marginBottom: 12 }}>Danh sách đơn hàng</h3>
