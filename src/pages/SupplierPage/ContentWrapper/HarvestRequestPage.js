@@ -7,6 +7,7 @@ import { createHarvestRequest } from "../../../services/HarvestRequestService";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { message } from "antd";
+import { getUserAddresses } from "../../../services/UserService";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ const HarvestRequestPage = () => {
   const [fadeOut, setFadeOut] = useState(false);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
   const [fuelTypeList, setFuelTypeList] = useState([]);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
 
   // Tính tổng giá
   const totalPrice = () => {
@@ -65,6 +68,18 @@ const HarvestRequestPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors(newErrors);
   };
+  const fetchUserAddresses = async () => {
+    try {
+      const res = await getUserAddresses(userRedux.id); // giả sử API trả về { addresses }
+      setAddresses(res.addresses || []);
+      if (res.addresses.length > 0) {
+        setSelectedAddressId(res.addresses[0]._id);
+        setFormData((prev) => ({ ...prev, address: res.addresses[0].address }));
+      }
+    } catch (error) {
+      console.error("Lỗi lấy địa chỉ người dùng:", error);
+    }
+  };
 
   const fetchListFuelType = async () => {
     try {
@@ -92,6 +107,7 @@ const HarvestRequestPage = () => {
 
   useEffect(() => {
     fetchListFuelType();
+    fetchUserAddresses();
   }, []);
   // 🕒 Tự động ẩn lỗi sau 3 giây
   useEffect(() => {
@@ -298,15 +314,35 @@ console.log("123", fuelRequest);
           {/* address */}
           <div>
             <label className="block mb-1 font-semibold">Địa chỉ lấy hàng</label>
-            <input
-              type="text"
+            <select
               name="address"
-              maxLength="120"
-              placeholder="Nhập địa chỉ..."
-              value={formData.address}
-              onChange={handleChange}
+              value={selectedAddressId}
+              onChange={(e) => {
+                const addrId = e.target.value;
+                setSelectedAddressId(addrId);
+                const addrObj = addresses.find((a) => a._id === addrId);
+                setFormData((prev) => ({
+                  ...prev,
+                  address: addrObj ? addrObj.address : "",
+                }));
+                // Xoá lỗi nếu có
+                setErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.address;
+                  return newErrors;
+                });
+              }}
               className="border p-2 rounded w-full mb-2"
-            />
+            >
+              {addresses.length === 0 && (
+                <option value="">Không có địa chỉ nào</option>
+              )}
+              {addresses.map((addr) => (
+                <option key={addr._id} value={addr._id}>
+                  {addr.address}
+                </option>
+              ))}
+            </select>
             {errors.address && (
               <p className="text-red-500 text-sm">{errors.address}</p>
             )}

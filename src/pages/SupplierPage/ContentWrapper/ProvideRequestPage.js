@@ -146,6 +146,8 @@ const ProvideRequestPage = () => {
     }
 
     const quantity = selectedOrder.quantity_remain;
+    const selectedAddressText =
+      addresses.find((addr) => addr._id === selectedAddressId)?.address || "";
 
     const supplyOrder = {
       supplier_id: userRedux.id,
@@ -156,7 +158,7 @@ const ProvideRequestPage = () => {
       price: selectedOrder.price,
       start_received: "",
       end_received: "",
-      user_address: selectedAddressId,
+      user_address: selectedAddressText,
       total_price: totalPrice(),
       note: formData.note,
     };
