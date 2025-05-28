@@ -266,17 +266,18 @@ const RawMaterialBatchList = () => {
       align: "center",
       render: (record) => (
         <div style={{ textAlign: "center" }}>
-          <Button
-            type="link"
-            icon={<VscRequestChanges style={{ fontSize: 20 }} />}
-            onClick={() => handleCreateExportOrder(record._id)}
-          /> 
+          {record.status === "Đang chuẩn bị" ? (
+            <Button
+              type="link"
+              icon={<VscRequestChanges style={{ fontSize: 20 }} />}
+              onClick={() => handleCreateExportOrder(record._id)}
+            />
+          ) : null}
           <Button
             type="link"
             icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
             onClick={() => handleViewDetail(record)}
           />
-          
         </div>
       ),
     },

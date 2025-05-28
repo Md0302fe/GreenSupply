@@ -7,7 +7,6 @@ import * as UserServices from "../../../../services/UserServices";
 import * as OrderServices from "../../../../services/OrderServices";
 import { Descriptions } from "antd";
 
-
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
@@ -31,7 +30,6 @@ import {
 import { FaEye } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-
 const FuelRequestsManagement = () => {
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -44,9 +42,9 @@ const FuelRequestsManagement = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const [stateDetailsUser , setStateDetailsUser ] = useState({
+  const [stateDetailsUser, setStateDetailsUser] = useState({
     _id: "",
     address: "",
     createdAt: "",
@@ -65,7 +63,7 @@ const navigate = useNavigate();
   const fetchGetUserDetails = async ({ id, access_token }) => {
     const res = await OrderServices.getDetailOrders(id, access_token);
     if (res?.data) {
-      setStateDetailsUser ({
+      setStateDetailsUser({
         _id: res?.data._id,
         address: res?.data.address,
         createdAt: res?.data.createdAt,
@@ -85,12 +83,10 @@ const navigate = useNavigate();
     setIsLoadDetails(false);
     return res;
   };
-  
+
   useEffect(() => {
     fetchGetAllOrder();
-    
   }, [reload]);
-
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -98,9 +94,9 @@ const navigate = useNavigate();
 
   const handleApproveOrder = async () => {
     try {
-      const response = await handleAcceptOrders(stateDetailsUser ._id);
+      const response = await handleAcceptOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
         queryOrder.refetch();
       } else {
@@ -113,9 +109,9 @@ const navigate = useNavigate();
 
   const handleCancelOrder = async () => {
     try {
-      const response = await handleCancelOrders(stateDetailsUser ._id);
+      const response = await handleCancelOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
         queryOrder.refetch();
       } else {
@@ -128,15 +124,13 @@ const navigate = useNavigate();
 
   const handleCompleteOrder = async () => {
     try {
-      
-      const response = await handleCompleteOrders(stateDetailsUser ._id);
+      const response = await handleCompleteOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được hoàn thành thành công!");
         setReload(!reload);
       } else {
         message.error("Hoàn thành đơn thất bại!");
-        
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi hoàn thành đơn!");
@@ -204,11 +198,11 @@ const navigate = useNavigate();
         style={{ justifyContent: "space-around", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-       <Button
-         type="link"
-         icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
-         onClick={handleDetailsProduct}
-      />
+        <Button
+          type="link"
+          icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+          onClick={handleDetailsProduct}
+        />
       </div>
     );
   };
@@ -226,7 +220,6 @@ const navigate = useNavigate();
 
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
-
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -322,7 +315,7 @@ const navigate = useNavigate();
       title: "Khách Hàng",
       dataIndex: "customerName",
       key: "customerName",
-       className: "text-center",
+      className: "text-center",
       ...getColumnSearchProps("customerName"),
     },
     {
@@ -336,13 +329,13 @@ const navigate = useNavigate();
       title: "Giá Tiền",
       dataIndex: "price",
       key: "price",
-       className: "text-center",
+      className: "text-center",
       ...getColumnSearchProps("price"),
     },
     {
       title: "Trạng Thái",
       dataIndex: "status",
-       className: "text-center",
+      className: "text-center",
       key: "status",
       filters: [
         {
@@ -391,7 +384,7 @@ const navigate = useNavigate();
     },
     {
       title: "Chức năng",
-       className: "text-center",
+      className: "text-center",
       dataIndex: "action",
       render: renderAction,
     },
@@ -400,43 +393,43 @@ const navigate = useNavigate();
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
         <div
-  style={{
-    marginBottom: 24,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  }}
->
-  {/* Nút quay lại */}
-  <Button
-    onClick={() => navigate(-1)}
-    type="primary"
-    className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-4 w-4 mr-1"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 12H3m0 0l6-6m-6 6l6 6"
-      />
-    </svg>
-    Quay lại
-  </Button>
+          style={{
+            marginBottom: 24,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Nút quay lại */}
+          <Button
+            onClick={() => navigate(-1)}
+            type="primary"
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </Button>
 
-  <h5 className="text-center font-bold text-2xl mb-0">
-    Quản lý đơn yêu cầu thu nguyên liệu
-  </h5>
+          <h5 className="text-center font-bold text-2xl mb-0">
+            Quản lý đơn yêu cầu thu nguyên liệu
+          </h5>
 
-  {/* Placeholder để giữ cân layout bên phải */}
-  <div style={{ width: 100 }}></div>
-</div>
+          {/* Placeholder để giữ cân layout bên phải */}
+          <div style={{ width: 100 }}></div>
+        </div>
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -471,109 +464,113 @@ const navigate = useNavigate();
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails}>
-            <Descriptions
-    bordered
-    column={1}
-    layout="horizontal"
-  >
-    <Descriptions.Item
-      label="Khách Hàng"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.supplier_id?.full_name || "Không có"}
-    </Descriptions.Item>
+          <Descriptions bordered column={1} layout="horizontal">
+            <Descriptions.Item
+              label="Khách Hàng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.supplier_id?.full_name || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Loại Nhiên Liệu"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.fuel_name || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Loại Nhiên Liệu"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.fuel_name || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Giá Tiền"
-      labelStyle={{ width: '35%' }}
-      contentStyle={{ width: '65%' }}
-    >
-      {stateDetailsUser?.price || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Giá Tiền"
+              labelStyle={{ width: "35%" }}
+              contentStyle={{ width: "65%" }}
+            >
+              {stateDetailsUser?.price || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Priority"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.priority || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Priority"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.priority || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Số Lượng"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.quantity || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Số Lượng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.quantity || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Tổng Giá"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.total_price || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Tổng Giá"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.total_price || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Trạng Thái"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {orderStatus || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Địa chỉ"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.address || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Ghi chú"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.note || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Trạng Thái"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {orderStatus || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Ngày tạo"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.createdAt || "Không có"}
-    </Descriptions.Item>
+            <Descriptions.Item
+              label="Ghi chú"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.note || "Không có"}
+            </Descriptions.Item>
 
-    <Descriptions.Item
-      label="Cập nhật gần nhất"
-      labelStyle={{ width: '40%' }}
-      contentStyle={{ width: '60%' }}
-    >
-      {stateDetailsUser?.updatedAt || "Không có"}
-    </Descriptions.Item>
-  </Descriptions>
+            <Descriptions.Item
+              label="Ngày tạo"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.createdAt || "Không có"}
+            </Descriptions.Item>
 
-  {orderStatus === "Chờ duyệt" && (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "10px",
-        marginTop: 24,
-      }}
-    >
-      <Button type="primary" onClick={handleApproveOrder}>
-        Duyệt đơn
-      </Button>
-      <Button danger onClick={handleCancelOrder}>
-        Hủy đơn
-      </Button>
-    </div>
-  )}
+            <Descriptions.Item
+              label="Cập nhật gần nhất"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.updatedAt || "Không có"}
+            </Descriptions.Item>
+          </Descriptions>
+
+          {orderStatus === "Chờ duyệt" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+                marginTop: 24,
+              }}
+            >
+              <Button type="primary" onClick={handleApproveOrder}>
+                Duyệt đơn
+              </Button>
+              <Button danger onClick={handleCancelOrder}>
+                Hủy đơn
+              </Button>
+            </div>
+          )}
         </Loading>
       </DrawerComponent>
     </div>
