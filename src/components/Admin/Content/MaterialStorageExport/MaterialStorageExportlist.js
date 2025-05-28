@@ -256,7 +256,7 @@ const MaterialStorageExportList = () => {
           type="link"
           icon={
             <HiOutlineDocumentSearch
-              style={{ fontSize: "20px", color: "#333" }}
+              style={{ fontSize: "20px", color: "dodgerblue" }}
             />
           }
           onClick={() => showExportDetails(record._id)}
