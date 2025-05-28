@@ -81,7 +81,7 @@ const FuelProvideManagement = () => {
         quality: res?.data.quality,
         quantity: res?.data.quantity,
         status: res?.data.status,
-        address: res?.data.address.address,
+        address: res?.data.address,
         request_id: res?.data.request_id,
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,

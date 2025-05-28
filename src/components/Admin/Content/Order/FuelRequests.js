@@ -27,7 +27,6 @@ import {
 import { FaEye } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-
 const FuelRequestsManagement = () => {
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -41,7 +40,7 @@ const FuelRequestsManagement = () => {
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
 
-  const [stateDetailsUser , setStateDetailsUser ] = useState({
+  const [stateDetailsUser, setStateDetailsUser] = useState({
     _id: "",
     address: "",
     createdAt: "",
@@ -53,6 +52,7 @@ const FuelRequestsManagement = () => {
     priority: "",
     quantity: "",
     status: "",
+    address: "",
     supplier_id: {},
     total_price: "",
   });
@@ -60,7 +60,7 @@ const FuelRequestsManagement = () => {
   const fetchGetUserDetails = async ({ id, access_token }) => {
     const res = await OrderServices.getDetailOrders(id, access_token);
     if (res?.data) {
-      setStateDetailsUser ({
+      setStateDetailsUser({
         _id: res?.data._id,
         address: res?.data.address,
         createdAt: res?.data.createdAt,
@@ -75,17 +75,16 @@ const FuelRequestsManagement = () => {
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
       });
+      console.log(res.data);
       setOrderStatus(res?.data.status); // Cập nhật trạng thái đơn hàng từ dữ liệu
     }
     setIsLoadDetails(false);
     return res;
   };
-  
+
   useEffect(() => {
     fetchGetAllOrder();
-    
   }, [reload]);
-
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -93,9 +92,9 @@ const FuelRequestsManagement = () => {
 
   const handleApproveOrder = async () => {
     try {
-      const response = await handleAcceptOrders(stateDetailsUser ._id);
+      const response = await handleAcceptOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
         queryOrder.refetch();
       } else {
@@ -108,9 +107,9 @@ const FuelRequestsManagement = () => {
 
   const handleCancelOrder = async () => {
     try {
-      const response = await handleCancelOrders(stateDetailsUser ._id);
+      const response = await handleCancelOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
         queryOrder.refetch();
       } else {
@@ -123,15 +122,13 @@ const FuelRequestsManagement = () => {
 
   const handleCompleteOrder = async () => {
     try {
-      
-      const response = await handleCompleteOrders(stateDetailsUser ._id);
+      const response = await handleCompleteOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được hoàn thành thành công!");
         setReload(!reload);
       } else {
         message.error("Hoàn thành đơn thất bại!");
-        
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi hoàn thành đơn!");
@@ -199,11 +196,10 @@ const FuelRequestsManagement = () => {
         style={{ justifyContent: "space-around", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-        <button
-  className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md"
->
-  <FaEye size={16} />Chi Tiết
-</button>
+        <button className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md">
+          <FaEye size={16} />
+          Chi Tiết
+        </button>
       </div>
     );
   };
@@ -221,7 +217,6 @@ const FuelRequestsManagement = () => {
 
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
-
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -439,7 +434,6 @@ const FuelRequestsManagement = () => {
             initialValues={{
               remember: true,
             }}
-        
             autoComplete="on"
             form={formUpdate}
           >
@@ -463,13 +457,15 @@ const FuelRequestsManagement = () => {
             </Form.Item>
 
             <Form.Item label="Trạng Thái" name="status">
-        <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
+              <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
             </Form.Item>
 
             <Form.Item label="Tổng Giá" name="total_price">
               <span>{stateDetailsUser?.total_price || ""}</span>
             </Form.Item>
-
+            <Form.Item label="Địa chỉ" name="address">
+              <span>{stateDetailsUser?.address || ""}</span>
+            </Form.Item>
             <Form.Item label="Ghi chú" name="note">
               <span>{stateDetailsUser?.note || ""}</span>
             </Form.Item>
@@ -482,27 +478,31 @@ const FuelRequestsManagement = () => {
             </Form.Item>
 
             <Form.Item
-  wrapperCol={{
-    offset: 4, // Giảm offset để đẩy UI qua trái
-    span: 16,
-  }}
->
-  <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
-    {orderStatus === 'Chờ duyệt' && (
-      <>
-        <Button type="primary" onClick={handleApproveOrder}>
-          Duyệt đơn
-        </Button>
+              wrapperCol={{
+                offset: 4, // Giảm offset để đẩy UI qua trái
+                span: 16,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {orderStatus === "Chờ duyệt" && (
+                  <>
+                    <Button type="primary" onClick={handleApproveOrder}>
+                      Duyệt đơn
+                    </Button>
 
-        <Button type="default" danger onClick={handleCancelOrder}>
-          Hủy đơn
-        </Button>
-      </>
-    )}
-
-  </div>
-</Form.Item>
-
+                    <Button type="default" danger onClick={handleCancelOrder}>
+                      Hủy đơn
+                    </Button>
+                  </>
+                )}
+              </div>
+            </Form.Item>
           </Form>
         </Loading>
       </DrawerComponent>
