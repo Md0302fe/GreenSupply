@@ -63,6 +63,7 @@ import ProductionRequestFinishList from "../pages/ProductionProcessing/Productio
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
+import CreateFuel from "../components/Admin/Content/Fuel/CreateFuel";
 
 import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
 import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
@@ -134,6 +135,7 @@ const Router = () => {
           <Route path="feature_material_category" element={<FeatureMaterial />} />
           <Route path="fuel-list" element={<FuelList />} />
           <Route path="manage-fuel" element={<DashboardFuel />} />
+          <Route path="fuel-Create" element={<CreateFuel />} />
 
 
           {/* Production Process Management */}

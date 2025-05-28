@@ -64,7 +64,7 @@ const FuelList = () => {
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
-
+ console.log("Danh sách nhiên liệu:", transformedFuels);
         setFuels(transformedFuels);
       } else {
         message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
