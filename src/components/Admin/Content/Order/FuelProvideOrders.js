@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Order.scss";
 
-import { Button, Form, Input, Space } from "antd";
 import * as UserServices from "../../../../services/UserServices";
 import * as OrderServices from "../../../../services/OrderServices";
 
@@ -10,22 +9,30 @@ import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { getBase64 } from "../../../../ultils";
+import { convertPrice } from "../../../../ultils";
+import { useNavigate } from "react-router-dom";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { Tag } from "antd";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 
+import {
+  Space,
+  Input,
+  Form,
+  Button,
+  message,
+} from "antd";
 
-import { message } from "antd";
 import {
   handleAcceptProvideOrders,
   handleCancelProvideOrders,
   handleCompleteProvideOrders,
 } from "../../../../services/OrderServices";
-import { FaEye } from "react-icons/fa";
+
 import { useLocation } from "react-router-dom";
 
 const FuelProvideManagement = () => {
@@ -34,6 +41,7 @@ const FuelProvideManagement = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.user);
 
@@ -61,6 +69,7 @@ const FuelProvideManagement = () => {
     quantity: "",
     status: "",
     request_id: "",
+    address: "",
     supplier_id: "",
     total_price: "",
   });
@@ -80,6 +89,7 @@ const FuelProvideManagement = () => {
         quality: res?.data.quality,
         quantity: res?.data.quantity,
         status: res?.data.status,
+        address: res?.data.address,
         request_id: res?.data.request_id,
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
@@ -94,7 +104,7 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleAcceptProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã duyệt'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được duyệt thành công!");
         queryOrder.refetch();
       } else {
@@ -109,7 +119,7 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCancelProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã Hủy'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
         queryOrder.refetch();
       } else {
@@ -125,9 +135,8 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCompleteProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được hoàn thành thành công!");
-        
       } else {
         message.error("Hoàn thành đơn thất bại!");
       }
@@ -135,7 +144,6 @@ const FuelProvideManagement = () => {
       message.error("Có lỗi xảy ra khi hoàn thành đơn!");
     }
   };
-
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -165,8 +173,6 @@ const FuelProvideManagement = () => {
     isPending: isPendingUpDate,
     isSuccess: isSuccessUpdate,
   } = mutationUpdate;
-
-
 
   // Handle each time rowSelected was call
   useEffect(() => {
@@ -205,24 +211,6 @@ const FuelProvideManagement = () => {
   });
   const { isLoading, data: orders } = queryOrder;
 
-  // Submit Form Update Product
-  const onFinishUpdate = () => {
-    mutationUpdate.mutate(
-      // params 1: Object {chứa thông tin của }
-      {
-        id: rowSelected,
-        token: user?.access_token,
-        dataUpdate: stateDetailsUser,
-      },
-      // callback onSettled : đây là 1 chức năng của useQuery giúp tự động gọi hàm get lại danh sách sản phẩm (cập nhật list mới nhất)
-      {
-        onSettled: () => {
-          queryOrder.refetch();
-        },
-      }
-    );
-  };
-
   // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
   useEffect(() => {
     if (isSuccessUpdate) {
@@ -235,11 +223,6 @@ const FuelProvideManagement = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessUpdate, isErrorUpdate]);
-
-  // CANCEL MODAL - DELETE PRODUCT
-  const handleCancelDelete = () => {
-    setIsOpenDelete(false);
-  };
 
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
@@ -255,57 +238,32 @@ const FuelProvideManagement = () => {
     setIsDrawerOpen(false);
   };
 
-  // ONCHANGE FIELDS - UPDATE
-  const handleOnChangeDetails = (value, name) => {
-    setStateDetailsUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // CHANGE AVATAR - UPDATE
-  const handleChangeAvatarDetails = async (info) => {
-    // C2: getBase64
-    try {
-      const file = info?.fileList[0];
-      if (!file?.url && !file?.preview) {
-        file.preview = await getBase64(file?.originFileObj);
-      }
-      setStateDetailsUser((prev) => ({
-        ...prev,
-        avatar: file.preview,
-      }));
-    } catch (error) {
-      console.log("Error", error);
-    }
-  };
-
   // DATA FROM USERS LIST
   const tableData =
     orders?.data?.length &&
-    orders?.data.map((order) => {
-      return {
-        ...order,
-        key: order._id,
-        customerName: order?.supplier_id?.full_name,
-        createdAt: order?.createdAt,
-      };
-    })
-    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    orders?.data
+      .map((order) => {
+        return {
+          ...order,
+          key: order._id,
+          customerName: order?.supplier_id?.full_name,
+          createdAt: order?.createdAt,
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Actions
   const renderAction = () => {
     return (
       <div
         className="flex-center-center"
-        style={{ justifyContent: "space-around", cursor: "pointer" }}
+        style={{ justifyContent: "center", cursor: "pointer" }}
         onClick={handleDetailsProduct}
       >
-        <button
-          className="flex items-center gap-2 px-3 py-1.5 text-white font-bold text-sm bg-[#FF5733] rounded-md hover:bg-[#E04D2B] transition duration-300 shadow-sm hover:shadow-md"
-        >
-          <FaEye size={16} />Chi Tiết
-        </button>
+        <Button
+          type="link"
+          icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+        />
       </div>
     );
   };
@@ -426,17 +384,21 @@ const FuelProvideManagement = () => {
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
     },
-
     {
-      title: "Giá Tiền",
+      title: "Giá Tiền (vnđ)",
       dataIndex: "price",
       key: "price",
+      align: "center",
+      className: "text-center",
       ...getColumnSearchProps("price"),
+      render : (price) => `${convertPrice(price)}`
     },
     {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
+      align: "center",
+      className: "text-center",
       filters: [
         {
           text: "Chờ duyệt",
@@ -454,7 +416,6 @@ const FuelProvideManagement = () => {
       onFilter: (value, record) => record.status.includes(value),
       filteredValue: defaultStatusFilter ? [defaultStatusFilter] : null,
       render: (status) => {
-
         let color = "";
         switch (status) {
           case "Chờ duyệt":
@@ -479,14 +440,16 @@ const FuelProvideManagement = () => {
     {
       title: "Ngày Tạo",
       dataIndex: "createdAt",
+      align: "center",
+      className: "text-center",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (createdAt) => {
         if (!createdAt) return <span>Không có dữ liệu</span>; // Tránh lỗi khi createdAt là null hoặc undefined
-        
+
         const date = new Date(createdAt);
         if (isNaN(date.getTime())) return <span>Không hợp lệ</span>; // Kiểm tra xem date có hợp lệ không
-        
+
         const vietnamTime = new Intl.DateTimeFormat("vi-VN", {
           year: "numeric",
           month: "2-digit",
@@ -496,12 +459,14 @@ const FuelProvideManagement = () => {
           second: "2-digit",
           timeZone: "Asia/Ho_Chi_Minh",
         }).format(date);
-        
+
         return <span>{vietnamTime}</span>;
       },
-    },    
+    },
     {
       title: "Chức năng",
+      align: "center",
+      className: "text-center",
       dataIndex: "action",
       render: renderAction,
     },
@@ -509,7 +474,44 @@ const FuelProvideManagement = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <h5 className="content-title">quản lý đơn cung cấp nguyên liệu</h5>
+        <div
+          style={{
+            marginBottom: 24,
+            marginTop: 24,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Nút quay lại bên trái */}
+          <Button
+            onClick={() => navigate(-1)}
+            type="primary"
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </Button>
+
+          <h5 className="text-center font-bold text-2xl mb-0">
+            Quản lý đơn cung cấp nguyên liệu
+          </h5>
+          <div style={{ width: 100 }}></div>
+        </div>
+
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -539,6 +541,7 @@ const FuelProvideManagement = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
+        width="35%"
         forceRender
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
@@ -595,19 +598,28 @@ const FuelProvideManagement = () => {
                 span: 16,
               }}
             >
-              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-start" }}>
-
-                {orderStatus === 'Chờ duyệt' && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {orderStatus === "Chờ duyệt" && (
                   <>
                     <Button type="primary" onClick={handleAcceptProvideOrder}>
                       Duyệt đơn
                     </Button>
 
-                    <Button type="default" danger onClick={handleCancelProvideOrder}>
+                    <Button
+                      type="default"
+                      danger
+                      onClick={handleCancelProvideOrder}
+                    >
                       Hủy đơn
                     </Button>
                   </>
-                )}   
+                )}
               </div>
             </Form.Item>
           </Form>

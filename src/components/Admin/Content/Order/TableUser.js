@@ -2,10 +2,17 @@ import React, { useMemo } from "react";
 import { Button, Table } from "antd";
 import { Excel } from "antd-table-saveas-excel";
 import Loading from "../../../LoadingComponent/Loading";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const TableUser = (props) => {
   // get Props List
-  const { isLoading = false, columns = [], data: dataSource, ...rest } = props;
+  const {
+    isLoading = false,
+    columns = [],
+    columnsExport = [],
+    data: dataSource,
+    ...rest
+  } = props;
 
   // useMemo thực thi ghi nhớ và trả về 1 giá trị .
   const dataColumnsExport = useMemo(() => {
@@ -28,27 +35,31 @@ const TableUser = (props) => {
       name: record.name,
     }),
   };
-
   const handleExportFileExcels = () => {
     const excel = new Excel();
     excel
-      .addSheet("test")
-      .addColumns(dataColumnsExport)
-      .addDataSource(dataSource, {
-        str2Percent: true,
-      })
+      .addSheet("Mangovate")
+      .addColumns(columnsExport)
+      .addDataSource(dataSource)
       .saveAs("Excel.xlsx");
   };
 
   return (
     <Loading isPending={isLoading}>
-      <Button
-        type="primary"
-        className="button-exportFile"
-        onClick={handleExportFileExcels}
-      >
-        Xuất File
-      </Button>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          icon={<DownloadOutlined />}
+          style={{
+            backgroundColor: "#1E90FF",
+            color: "#fff",
+            border: "none",
+          }}
+          className="button-exportFile"
+          onClick={handleExportFileExcels}
+        >
+          Xuất File
+        </Button>
+      </div>
 
       <Table
         rowSelection={{

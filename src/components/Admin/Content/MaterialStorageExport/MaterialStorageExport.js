@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Form, Input, Select, DatePicker, Button, message } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -19,6 +19,9 @@ const MaterialStorageExport = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const batchId = params.get("id");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -66,10 +69,10 @@ const MaterialStorageExport = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        setLoadingProduction(true);
-        setLoadingBatch(true);
+      setLoadingProduction(true);
+      setLoadingBatch(true);
 
+      try {
         const [productionRes, batchRes] = await Promise.all([
           axios.get(
             `${process.env.REACT_APP_API_URL}/product-request/getAllProcessing`
@@ -85,11 +88,21 @@ const MaterialStorageExport = () => {
           (batch) => batch.status === "Đang chuẩn bị"
         );
 
-        setProductionRequests(productionRes.data.requests || []);
+        const productionData = productionRes.data.requests || [];
+
         setRawMaterialBatches(filteredBatches);
-        // setRawMaterialBatches(
-        //   batchRes.data.batches || batchRes.data.requests || []
-        // );
+        setProductionRequests(productionData);
+
+        // ✅ Nếu có batchId trên URL và nằm trong danh sách hợp lệ
+        if (batchId) {
+          const selectedBatch = filteredBatches.find((b) => b._id === batchId);
+          if (selectedBatch) {
+            form.setFieldsValue({
+              batch_id: selectedBatch._id,
+              production_request_id: selectedBatch.production_request_id,
+            });
+          }
+        }
       } catch (error) {
         toast.error("Lỗi khi tải dữ liệu từ server.");
       } finally {
@@ -99,7 +112,7 @@ const MaterialStorageExport = () => {
     };
 
     fetchData();
-  }, []);
+  }, [batchId, form]);
 
   // const handleProductionRequestChange = (value) => {
   //   const batch = rawMaterialBatches.find(
@@ -234,9 +247,11 @@ const MaterialStorageExport = () => {
           <Form.Item
             label="Tên đơn xuất kho"
             name="export_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên xuất kho" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập tên đơn xuất kho" },
+            ]}
           >
-            <Input placeholder="Nhập tên xuất kho" maxLength={60} />
+            <Input placeholder="Nhập tên đơn xuất kho" maxLength={60} />
           </Form.Item>
 
           {/* Loại đơn xuất kho */}

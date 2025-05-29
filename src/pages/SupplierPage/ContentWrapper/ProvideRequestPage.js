@@ -7,12 +7,14 @@ import {
 import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestService";
 import { useSelector } from "react-redux";
 import { message } from "antd";
-
+import { getUserAddresses } from "./../../../services/UserService";
 
 const ProvideRequestPage = () => {
   const { id } = useParams();
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [formData, setFormData] = useState({
     quantity: "",
@@ -63,6 +65,7 @@ const ProvideRequestPage = () => {
       console.error("Lỗi khi lấy đơn hàng theo id:", error);
     }
   };
+
   const getTimeRemaining = (endTime) => {
     const total = Date.parse(endTime) - Date.now();
     const seconds = Math.floor((total / 1000) % 60);
@@ -77,12 +80,23 @@ const ProvideRequestPage = () => {
       seconds,
     };
   };
-
+  const fetchUserAddresses = async () => {
+    try {
+      const res = await getUserAddresses(userRedux.id); // giả sử API trả { success, addresses }
+      setAddresses(res.addresses || []);
+      if (res.addresses.length > 0) {
+        setSelectedAddressId(res.addresses[0]._id);
+      }
+    } catch (error) {
+      console.error("Lỗi lấy địa chỉ người dùng:", error);
+    }
+  };
   useEffect(() => {
     if (id) {
       fetchOrderById(id);
     }
     fetchOrders(currentPage);
+    fetchUserAddresses();
   }, [currentPage]);
 
   useEffect(() => {
@@ -132,6 +146,8 @@ const ProvideRequestPage = () => {
     }
 
     const quantity = selectedOrder.quantity_remain;
+    const selectedAddressText =
+      addresses.find((addr) => addr._id === selectedAddressId)?.address || "";
 
     const supplyOrder = {
       supplier_id: userRedux.id,
@@ -142,6 +158,7 @@ const ProvideRequestPage = () => {
       price: selectedOrder.price,
       start_received: "",
       end_received: "",
+      user_address: selectedAddressText,
       total_price: totalPrice(),
       note: formData.note,
     };
@@ -258,7 +275,10 @@ const ProvideRequestPage = () => {
         </div>
 
         {selectedOrder && (
-          <div ref={formRef} className="animate-fade-in-down transition-all duration-500 bg-gray-50 border border-gray-200 rounded-md p-5 mt-6">
+          <div
+            ref={formRef}
+            className="animate-fade-in-down transition-all duration-500 bg-gray-50 border border-gray-200 rounded-md p-5 mt-6"
+          >
             <h3 className="text-lg font-bold mb-4 text-green-700">
               Thông tin Đơn Hàng Đã Chọn
             </h3>
@@ -322,6 +342,22 @@ const ProvideRequestPage = () => {
                   →{" "}
                   {new Date(selectedOrder.end_received).toLocaleString("vi-VN")}
                 </p>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold mb-1">
+                  Địa chỉ giao hàng:
+                </label>
+                <select
+                  value={selectedAddressId}
+                  onChange={(e) => setSelectedAddressId(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-2 w-full"
+                >
+                  {addresses.map((addr) => (
+                    <option key={addr._id} value={addr._id}>
+                      {`${addr.address}`}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="sm:col-span-2">

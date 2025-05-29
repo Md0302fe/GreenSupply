@@ -1,0 +1,149 @@
+import React, { useState } from "react";
+import { Button, Form, Input, message, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { useSelector } from "react-redux";
+
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+const CreateFuel = () => {
+  const [form] = Form.useForm();
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [imageBase64, setImageBase64] = useState(null);
+  const user = useSelector((state) => state.user);
+
+  const normFile = (e) => (Array.isArray(e) ? e : e && e.fileList);
+
+  const handleUploadChange = async (info) => {
+    if (info.file.status === "done" || info.file.status === "uploading" || info.file.status === "removed") {
+      if (info.file.originFileObj) {
+        try {
+          const base64 = await getBase64(info.file.originFileObj);
+          setImageBase64(base64);
+        } catch {
+          message.error("Lỗi khi đọc ảnh.");
+          setImageBase64(null);
+        }
+      } else {
+        setImageBase64(null);
+      }
+    }
+  };
+
+  const onFinish = async (values) => {
+    if (!imageBase64) {
+      message.error("Vui lòng chọn ảnh loại nguyên liệu");
+      return;
+    }
+
+    setSubmitLoading(true);
+    try {
+      const payload = {
+        type_name: values.type_name,
+        description: values.description || "",
+        image_url: imageBase64,
+      };
+
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/fuel/create`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${user.access_token}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        message.success("Tạo loại nguyên liệu mới thành công!");
+        form.resetFields();
+        setImageBase64(null);
+      } else {
+        message.error("Tạo nguyên liệu thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo nguyên liệu:", error);
+      message.error("Có lỗi xảy ra khi tạo nguyên liệu mới.");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const uploadProps = {
+    beforeUpload: (file) => {
+      const isValidType =
+        file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/jpg";
+      if (!isValidType) {
+        message.error("Chỉ hỗ trợ upload ảnh JPG/PNG!");
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error("Ảnh phải nhỏ hơn 2MB!");
+      }
+      return isValidType && isLt2M;
+    },
+    onRemove: () => setImageBase64(null),
+    maxCount: 1,
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
+        <h2 className="text-3xl font-bold mb-6 text-center">Tạo Loại Nguyên Liệu Mới</h2>
+
+        <Form form={form} layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            label="Tên loại nguyên liệu"
+            name="type_name"
+            rules={[{ required: true, message: "Vui lòng nhập tên loại nguyên liệu" }]}
+          >
+            <Input
+              placeholder="Nhập tên loại nguyên liệu"
+              maxLength={100}
+              className="rounded border-gray-300"
+            />
+          </Form.Item>
+
+          <Form.Item label="Mô tả" name="description">
+            <Input.TextArea
+              rows={3}
+              placeholder="Nhập mô tả (không bắt buộc)"
+              className="rounded border-gray-300"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Ảnh loại nguyên liệu (JPG, PNG < 2MB)"
+            name="image_url"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            rules={[{ required: true, message: "Vui lòng chọn ảnh loại nguyên liệu" }]}
+          >
+            <Upload {...uploadProps} onChange={handleUploadChange} listType="picture">
+              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="w-full py-2"
+              loading={submitLoading}
+            >
+              Tạo Loại nguyên Liệu
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    </div>
+  );
+};
+
+export default CreateFuel;

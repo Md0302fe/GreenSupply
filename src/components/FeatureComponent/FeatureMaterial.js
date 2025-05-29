@@ -26,12 +26,12 @@ const UserComponent = () => {
           description="Thông tin Nguyên Liệu"
           image={mng_dashboard_Purchasedorders}
         />
-        {/* <Card
-          link="/system/admin/feature_material_category"
+        <Card
+          link="/system/admin/fuel-Create"
           title="Tạo nguyên liệu mới"
           description="Tạo thông tin cho nguyên liệu mới"
           image={mng_addnew_mango}
-        /> */}
+        />
         <Card
           link="/system/admin/fuel-list"
           title="Danh sách loại nguyên liệu"

@@ -41,13 +41,13 @@ const UserComponent = () => {
           description="Quản lý danh sách các yêu cầu cung cấp nguyên liệu"
           image={mng_supply_orders}
         />
-
+{/* 
         <Card
           link="/system/admin/View-Order-Success"
           title="Tạo yêu cầu nhập kho"
           description="Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
           image={mng_receipt_orders}
-        />
+        /> */}
       </div>
     </div>
   );

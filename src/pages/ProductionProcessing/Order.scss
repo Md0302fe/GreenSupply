@@ -1,5 +1,5 @@
 // Main layout
-.Wrapper-Admin-User {
+.production-processing-list {
   //content Layout
   .Main-Content {
     .content-title {
@@ -16,10 +16,9 @@
     }
     // Css table user
     .content-main-table-user {
-      margin-top: 20px;
       .button-exportFile {
         background-color: black;
-        margin: 12px 0 24px 0;
+        margin: 12px 0 12px 0;
       }
     }
     .ant-table-cell.text-center {

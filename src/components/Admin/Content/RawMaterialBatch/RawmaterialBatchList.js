@@ -22,6 +22,7 @@ import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { useLocation } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { VscRequestChanges } from "react-icons/vsc";
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
@@ -55,6 +56,10 @@ const RawMaterialBatchList = () => {
   const searchInput = useRef(null);
 
   const location = useLocation();
+
+  const handleCreateExportOrder = (batchId) => {
+    navigate(`/system/admin/material-storage-export?id=${batchId}`);
+  };
 
   // Fetch danh sách lô nguyên liệu
   const fetchData = async () => {
@@ -197,80 +202,86 @@ const RawMaterialBatchList = () => {
         text
       ),
   });
-const columns = [
-  {
-    title: <div style={{ textAlign: "center" }}>Mã lô</div>,
-    dataIndex: "batch_id",
-    key: "batch_id",
-    align: "center",
-    ...getColumnSearchProps("batch_id"),
-  },
-  {
-    title: <div style={{ textAlign: "center" }}>Tên lô</div>,
-    dataIndex: "batch_name",
-    key: "batch_name",
-    align: "center",
-    ...getColumnSearchProps("batch_name"),
-    sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
-  },
-  {
-    title: <div style={{ textAlign: "center" }}>Loại nguyên liệu</div>,
-    dataIndex: "fuel_name",
-    key: "fuel_name",
-    align: "center",
-    render: (text) => <div style={{ }}>{text}</div>,
-  },
-  {
-    title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
-    dataIndex: "quantity",
-    key: "quantity",
-    align: "center",
-    sorter: (a, b) => a.quantity - b.quantity,
-    render: (val) => <div style={{ textAlign: "center" }}>{val} Kg</div>,
-  },
-  {
-    title: <div style={{ textAlign: "center" }}>Kho lưu trữ</div>,
-    dataIndex: "name_storage",
-    key: "name_storage",
-    align: "center",
-    render: (_, record) => (
-      <div style={{ textAlign: "center" }}>
-        {record?.fuel_type_id?.storage_id?.name_storage || "Không có"}
-      </div>
-    ),
-  },
-  {
-    title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
-    dataIndex: "status",
-    key: "status",
-    align: "center",
-    filters: Object.keys(statusColors).map((status) => ({
-      text: status,
-      value: status,
-    })),
-    onFilter: (value, record) => record.status === value,
-    render: (stt) => (
-      <div style={{ textAlign: "center" }}>
-        <Tag color={statusColors[stt] || "default"}>{stt}</Tag>
-      </div>
-    ),
-  },
-  {
-  title: <div style={{ textAlign: "center" }}>Hành động</div>,
-  key: "action",
-  align: "center",
-  render: (record) => (
-    <div style={{ textAlign: "center" }}>
-      <Button
-        type="link"
-        icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
-        onClick={() => handleViewDetail(record)}
-      />
-    </div>
-  ),
-},
-];
-
+  const columns = [
+    {
+      title: <div style={{ textAlign: "center" }}>Mã lô</div>,
+      dataIndex: "batch_id",
+      key: "batch_id",
+      align: "center",
+      ...getColumnSearchProps("batch_id"),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Tên lô</div>,
+      dataIndex: "batch_name",
+      key: "batch_name",
+      align: "center",
+      ...getColumnSearchProps("batch_name"),
+      sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Loại nguyên liệu</div>,
+      dataIndex: "fuel_name",
+      key: "fuel_name",
+      align: "center",
+      render: (text) => <div style={{}}>{text}</div>,
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
+      dataIndex: "quantity",
+      key: "quantity",
+      align: "center",
+      sorter: (a, b) => a.quantity - b.quantity,
+      render: (val) => <div style={{ textAlign: "center" }}>{val} Kg</div>,
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Kho lưu trữ</div>,
+      dataIndex: "name_storage",
+      key: "name_storage",
+      align: "center",
+      render: (_, record) => (
+        <div style={{ textAlign: "center" }}>
+          {record?.fuel_type_id?.storage_id?.name_storage || "Không có"}
+        </div>
+      ),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      filters: Object.keys(statusColors).map((status) => ({
+        text: status,
+        value: status,
+      })),
+      onFilter: (value, record) => record.status === value,
+      render: (stt) => (
+        <div style={{ textAlign: "center" }}>
+          <Tag color={statusColors[stt] || "default"}>{stt}</Tag>
+        </div>
+      ),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Hành động</div>,
+      key: "action",
+      align: "center",
+      render: (record) => (
+        <div style={{ textAlign: "center" }}>
+          {record.status === "Đang chuẩn bị" ? (
+            <Button
+              type="link"
+              icon={<VscRequestChanges style={{ fontSize: 20 }} />}
+              onClick={() => handleCreateExportOrder(record._id)}
+            />
+          ) : null}
+          <Button
+            type="link"
+            icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
+            onClick={() => handleViewDetail(record)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   const handleViewDetail = (record) => {
     setSelectedBatch(record);
@@ -490,7 +501,7 @@ const columns = [
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="30%"
+        width="40%"
       >
         {selectedBatch && (
           <>

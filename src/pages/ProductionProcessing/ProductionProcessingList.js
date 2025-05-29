@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import {
   Table,
   Input,
@@ -10,23 +10,34 @@ import {
   Modal,
   message,
   Form,
-  Tag
+  Tag,
 } from "antd";
+import "./Order.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import { CheckCircleOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  EditOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
-import { getAllProductionProcessing, approveProductionProcessing, updateProductionRequest } from "../../services/ProductionProcessingServices";
+import {
+  getAllProductionProcessing,
+  approveProductionProcessing,
+  updateProductionRequest,
+} from "../../services/ProductionProcessingServices";
 import Loading from "../../components/LoadingComponent/Loading";
 import dayjs from "dayjs";
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+import TableUser from "../../components/Admin/Content/Order/TableUser";
 
 const { TextArea } = Input;
 
 const ProductionProcessingList = () => {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [filters, setFilters] = useState({
     status: null,
@@ -165,12 +176,11 @@ const ProductionProcessingList = () => {
     data?.forEach((item) => {
       if (item.status) statuses.add(item.status);
     });
-    return Array.from(statuses).map(status => ({
+    return Array.from(statuses).map((status) => ({
       text: status,
-      value: status
+      value: status,
     }));
   }, [data]);
-
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -184,6 +194,37 @@ const ProductionProcessingList = () => {
     }
   }, [location.search]);
 
+  const dataForExport = useMemo(() => {
+    return (data || []).map((item) => ({
+      _id: item._id,
+      production_name: item.production_name,
+      start_time: item.start_time
+        ? moment(item.start_time).format("DD/MM/YYYY HH:mm")
+        : "",
+      end_time: item.end_time
+        ? moment(item.end_time).format("DD/MM/YYYY HH:mm")
+        : "",
+      status: item.status,
+      processed_quantity: item.processed_quantity ?? "",
+      waste_quantity: item.waste_quantity ?? "",
+      note: item.note ?? "",
+      production_request:
+        item.production_request_id?.request_name ?? "Không rõ",
+    }));
+  }, [data]);
+
+  const columnsExport = [
+    { title: "Mã quy trình", dataIndex: "_id" },
+    { title: "Tên quy trình", dataIndex: "production_name" },
+    { title: "Bắt đầu", dataIndex: "start_time" },
+    { title: "Kết thúc", dataIndex: "end_time" },
+    { title: "Trạng thái", dataIndex: "status" },
+    { title: "Đã xử lý", dataIndex: "processed_quantity" },
+    { title: "Hao hụt", dataIndex: "waste_quantity" },
+    { title: "Ghi chú", dataIndex: "note" },
+    { title: "Yêu cầu sản xuất", dataIndex: "production_request" },
+  ];
+
   // Mở Modal cập nhật
   const handleOpenEditDrawer = () => {
     if (!selectedProcess) return;
@@ -194,14 +235,22 @@ const ProductionProcessingList = () => {
     }
 
     // Đảm bảo giá trị hợp lệ khi mở drawer
-    setStartDate(selectedProcess.start_time ? dayjs(selectedProcess.start_time) : null);
-    setEndDate(selectedProcess.end_time ? dayjs(selectedProcess.end_time) : null);
+    setStartDate(
+      selectedProcess.start_time ? dayjs(selectedProcess.start_time) : null
+    );
+    setEndDate(
+      selectedProcess.end_time ? dayjs(selectedProcess.end_time) : null
+    );
 
     form.setFieldsValue({
       production_name: selectedProcess.production_name,
       note: selectedProcess.note,
-      start_time: selectedProcess.start_time ? dayjs(selectedProcess.start_time) : null,
-      end_time: selectedProcess.end_time ? dayjs(selectedProcess.end_time) : null,
+      start_time: selectedProcess.start_time
+        ? dayjs(selectedProcess.start_time)
+        : null,
+      end_time: selectedProcess.end_time
+        ? dayjs(selectedProcess.end_time)
+        : null,
     });
 
     setIsEditModalOpen(true); // Biến này giờ để mở Drawer thay vì Modal
@@ -250,7 +299,10 @@ const ProductionProcessingList = () => {
       onOk: async () => {
         try {
           const access_token = user?.access_token;
-          await approveProductionProcessing({ id: selectedProcess._id, token: access_token });
+          await approveProductionProcessing({
+            id: selectedProcess._id,
+            token: access_token,
+          });
           message.success("Duyệt quy trình thành công!");
           setIsDrawerOpen(false);
           refetch();
@@ -266,18 +318,21 @@ const ProductionProcessingList = () => {
       title: "Mã quy trình",
       dataIndex: "_id",
       key: "_id",
+      className: "text-center",
       ...getColumnSearchProps("_id"),
     },
     {
       title: "Tên quy trình",
       dataIndex: "production_name",
       key: "production_name",
+      className: "text-center",
       ...getColumnSearchProps("production_name"),
     },
     {
       title: "Bắt đầu",
       dataIndex: "start_time",
       key: "start_time",
+      className: "text-center",
       sorter: true,
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
@@ -285,6 +340,7 @@ const ProductionProcessingList = () => {
       title: "Kết thúc",
       dataIndex: "end_time",
       key: "end_time",
+      className: "text-center",
       sorter: true,
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
@@ -292,6 +348,7 @@ const ProductionProcessingList = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      className: "text-center",
       filters: statusFilters,
       onFilter: (value, record) => record.status === value,
       render: (status) => {
@@ -303,17 +360,24 @@ const ProductionProcessingList = () => {
         else if (status === "Đang sản xuất") color = "blue";
         else if (status === "Hoàn thành") color = "green";
 
-        return <Tag color={color} style={{ fontWeight: 600 }}>{status}</Tag>;
+        return (
+          <Tag color={color} style={{ fontWeight: 600 }}>
+            {status}
+          </Tag>
+        );
       },
     },
     {
       title: "Hành động",
       key: "action",
+      className: "text-center",
       render: (_, record) => (
         <Space>
-          <Button icon={<EyeOutlined />} type="link" onClick={() => handleViewDetail(record)}>
-            Xem chi tiết
-          </Button>
+          <Button
+            icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+            type="link"
+            onClick={() => handleViewDetail(record)}
+          />
         </Space>
       ),
     },
@@ -321,15 +385,43 @@ const ProductionProcessingList = () => {
 
   return (
     <div className="production-processing-list">
-      <h5 className="text-2xl font-bold text-gray-800">Danh sách kế hoạch sản xuất</h5>
+      <div className="Main-Content">
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </Button>
+        <h5 className="text-2xl font-bold text-gray-800 mt-4">
+          Danh sách kế hoạch sản xuất
+        </h5>
 
-      <Loading isPending={isLoading}>
-        <Table
-          columns={columns}
-          dataSource={data?.map((item) => ({ ...item, key: item._id })) || []}
-          pagination={{ pageSize: 6 }}
-        />
-      </Loading>
+        <div className="content-main-table-user">
+          <Loading isPending={isLoading}>
+            <TableUser
+              columns={columns}
+              isLoading={isLoading}
+              data={data}
+              columnsExport={columnsExport}
+            />
+          </Loading>
+        </div>
+      </div>
 
       {/* Drawer Chi Tiết */}
       <Drawer
@@ -344,16 +436,21 @@ const ProductionProcessingList = () => {
               {selectedProcess._id}
             </Descriptions.Item>
             <Descriptions.Item label="Tên quy trình">
-              {selectedProcess.production_name || selectedProcess.production_request_id.request_name}
+              {selectedProcess.production_name ||
+                selectedProcess.production_request_id.request_name}
             </Descriptions.Item>
             <Descriptions.Item label="Trạng thái">
               {selectedProcess.status}
             </Descriptions.Item>
             <Descriptions.Item label="Thời gian bắt đầu">
-              {selectedProcess.start_time ? moment(selectedProcess.start_time).format("DD/MM/YYYY HH:mm") : "Chưa có"}
+              {selectedProcess.start_time
+                ? moment(selectedProcess.start_time).format("DD/MM/YYYY HH:mm")
+                : "Chưa có"}
             </Descriptions.Item>
             <Descriptions.Item label="Thời gian kết thúc">
-              {selectedProcess.end_time ? moment(selectedProcess.end_time).format("DD/MM/YYYY HH:mm") : "Chưa có"}
+              {selectedProcess.end_time
+                ? moment(selectedProcess.end_time).format("DD/MM/YYYY HH:mm")
+                : "Chưa có"}
             </Descriptions.Item>
             <Descriptions.Item label="Ghi chú">
               {selectedProcess.note || "Không có"}
@@ -362,49 +459,79 @@ const ProductionProcessingList = () => {
             {/* Hiển thị thời gian của từng giai đoạn nếu có */}
             {selectedProcess.process_stage1_start && (
               <Descriptions.Item label="Giai đoạn 1">
-                {moment(selectedProcess.process_stage1_start).format("DD/MM/YYYY HH:mm")} -{" "}
+                {moment(selectedProcess.process_stage1_start).format(
+                  "DD/MM/YYYY HH:mm"
+                )}{" "}
+                -{" "}
                 {selectedProcess.process_stage1_end
-                  ? moment(selectedProcess.process_stage1_end).format("DD/MM/YYYY HH:mm")
+                  ? moment(selectedProcess.process_stage1_end).format(
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : "Chưa kết thúc"}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage2_start && (
               <Descriptions.Item label="Giai đoạn 2">
-                {moment(selectedProcess.process_stage2_start).format("DD/MM/YYYY HH:mm")} -{" "}
+                {moment(selectedProcess.process_stage2_start).format(
+                  "DD/MM/YYYY HH:mm"
+                )}{" "}
+                -{" "}
                 {selectedProcess.process_stage2_end
-                  ? moment(selectedProcess.process_stage2_end).format("DD/MM/YYYY HH:mm")
+                  ? moment(selectedProcess.process_stage2_end).format(
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : "Chưa kết thúc"}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage3_start && (
               <Descriptions.Item label="Giai đoạn 3">
-                {moment(selectedProcess.process_stage3_start).format("DD/MM/YYYY HH:mm")} -{" "}
+                {moment(selectedProcess.process_stage3_start).format(
+                  "DD/MM/YYYY HH:mm"
+                )}{" "}
+                -{" "}
                 {selectedProcess.process_stage3_end
-                  ? moment(selectedProcess.process_stage3_end).format("DD/MM/YYYY HH:mm")
+                  ? moment(selectedProcess.process_stage3_end).format(
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : "Chưa kết thúc"}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage4_start && (
               <Descriptions.Item label="Giai đoạn 4">
-                {moment(selectedProcess.process_stage4_start).format("DD/MM/YYYY HH:mm")} -{" "}
+                {moment(selectedProcess.process_stage4_start).format(
+                  "DD/MM/YYYY HH:mm"
+                )}{" "}
+                -{" "}
                 {selectedProcess.process_stage4_end
-                  ? moment(selectedProcess.process_stage4_end).format("DD/MM/YYYY HH:mm")
+                  ? moment(selectedProcess.process_stage4_end).format(
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : "Chưa kết thúc"}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage5_start && (
               <Descriptions.Item label="Giai đoạn 5">
-                {moment(selectedProcess.process_stage5_start).format("DD/MM/YYYY HH:mm")} -{" "}
+                {moment(selectedProcess.process_stage5_start).format(
+                  "DD/MM/YYYY HH:mm"
+                )}{" "}
+                -{" "}
                 {selectedProcess.process_stage5_end
-                  ? moment(selectedProcess.process_stage5_end).format("DD/MM/YYYY HH:mm")
+                  ? moment(selectedProcess.process_stage5_end).format(
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : "Chưa kết thúc"}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage6_start && (
               <Descriptions.Item label="Giai đoạn 6">
-                {moment(selectedProcess.process_stage6_start).format("DD/MM/YYYY HH:mm")} -{" "}
+                {moment(selectedProcess.process_stage6_start).format(
+                  "DD/MM/YYYY HH:mm"
+                )}{" "}
+                -{" "}
                 {selectedProcess.process_stage6_end
-                  ? moment(selectedProcess.process_stage6_end).format("DD/MM/YYYY HH:mm")
+                  ? moment(selectedProcess.process_stage6_end).format(
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : "Chưa kết thúc"}
               </Descriptions.Item>
             )}
@@ -413,19 +540,28 @@ const ProductionProcessingList = () => {
 
         <Space style={{ marginTop: 16, width: "100%" }}>
           {selectedProcess?.status === "Chờ duyệt" && (
-            <Button type="primary" icon={<EditOutlined />} onClick={handleOpenEditDrawer} style={{ flex: 1 }}>
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={handleOpenEditDrawer}
+              style={{ flex: 1 }}
+            >
               Cập nhật
             </Button>
           )}
 
           {selectedProcess?.status === "Chờ duyệt" && (
-            <Button type="primary" icon={<CheckCircleOutlined />} onClick={handleApprove} style={{ flex: 1 }}>
+            <Button
+              type="primary"
+              icon={<CheckCircleOutlined />}
+              onClick={handleApprove}
+              style={{ flex: 1 }}
+            >
               Duyệt
             </Button>
           )}
         </Space>
       </Drawer>
-
 
       {/* Drawer Cập Nhật */}
       <Drawer
@@ -438,7 +574,9 @@ const ProductionProcessingList = () => {
           <Form.Item
             label="Tên quy trình"
             name="production_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên quy trình!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập tên quy trình!" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -453,7 +591,9 @@ const ProductionProcessingList = () => {
               format="DD/MM/YYYY HH:mm"
               value={startDate}
               onChange={(date) => setStartDate(date)}
-              disabledDate={(current) => current && current < moment().startOf("day")}
+              disabledDate={(current) =>
+                current && current < moment().startOf("day")
+              }
             />
           </Form.Item>
 
@@ -465,10 +605,16 @@ const ProductionProcessingList = () => {
               { required: true, message: "Vui lòng chọn ngày kết thúc!" },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || !getFieldValue("start_time") || value.isAfter(getFieldValue("start_time"))) {
+                  if (
+                    !value ||
+                    !getFieldValue("start_time") ||
+                    value.isAfter(getFieldValue("start_time"))
+                  ) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error("Ngày kết thúc phải sau ngày bắt đầu!"));
+                  return Promise.reject(
+                    new Error("Ngày kết thúc phải sau ngày bắt đầu!")
+                  );
                 },
               }),
             ]}
@@ -488,14 +634,13 @@ const ProductionProcessingList = () => {
             <TextArea rows={3} />
           </Form.Item>
           <Space>
-            <Button type="primary" onClick={handleUpdate}>Lưu</Button>
+            <Button type="primary" onClick={handleUpdate}>
+              Lưu
+            </Button>
             <Button onClick={() => setIsEditModalOpen(false)}>Hủy</Button>
           </Space>
         </Form>
       </Drawer>
-
-
-
     </div>
   );
 };

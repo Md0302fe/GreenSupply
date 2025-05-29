@@ -33,7 +33,7 @@ const ImportProductList = () => {
   // Cấu hình Slider
   const sliderSettings = {
     dots: true,
-    infinite: true,
+    infinite: productList.length > 4,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,

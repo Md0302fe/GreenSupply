@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-import Shop from "../../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
-import { toast } from "react-toastify";
-
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Upload } from "antd";
 
@@ -15,8 +10,10 @@ import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServic
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
 
 import { useSelector } from "react-redux";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import { message, DatePicker } from "antd";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
@@ -25,9 +22,9 @@ const HarvestRequestPage = () => {
     fuel_image: "",
     quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
     quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
-    start_received: null, // Ngày bắt đầu nhận nhiên liệu
-    due_date: null, // Hạn chót cần hoàn thành đơn hàng (YYYY-MM-DD)
-    end_received: null, // Ngày kết thúc nhận nhiên liệu
+    start_received: null,
+    end_received: null,
+    due_date: null,
     price: "", // Giá thực tế đã được chốt cho đơn hàng
     total_price: 0, // Tổng giá của yêu cầu cần thu
     priority: "", // Mức độ ưu tiên của đơn hàng (VD: Cao, Trung bình, Thấp)
@@ -40,6 +37,7 @@ const HarvestRequestPage = () => {
   const [fuel_types, setFuel_Types] = useState({});
   const user = useSelector((state) => state.user);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [fileList, setFileList] = useState([]);
   const navigate = useNavigate();
 
   // Tính tổng giá
@@ -51,41 +49,50 @@ const HarvestRequestPage = () => {
 
   // Xử lý onchange <-> input
   const handleChange = (e) => {
-    const { name, value } = e?.target;
-
-    if (name === "start_received") {
-      if (value <= currentDate) {
-        toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
-        return;
-      }
-    } else if (name === "end_received") {
-      if (value < formData.start_received) {
-        toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
-        return;
-      }
-    } else if (name === "due_date") {
-      if (value < formData.end_received) {
-        toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
-        return;
-      }
+    const { name, value } = e?.target || {};
+    if (
+      name === "start_received" ||
+      name === "end_received" ||
+      name === "due_date"
+    ) {
+      // value là moment object hoặc null
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      return;
     }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const disabledStartDate = (current) => {
+    return current && current < moment().startOf("day");
+  };
+
+  const disabledEndDate = (current) => {
+    if (!formData.start_received)
+      return current && current < moment().startOf("day");
+    return current && current < formData.start_received;
+  };
+
+  const disabledDueDate = (current) => {
+    if (!formData.end_received)
+      return current && current < moment().startOf("day");
+    return current && current < formData.end_received;
+  };
+
   // Tuy nhiên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
-  const handleChangeFuelImage = async (info) => {
-    // C2: getBase64
-    if (!info.fileList.length) {
+  const handleChangeFuelImage = async ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+
+    if (newFileList.length === 0) {
       setFuelImage(null);
       return;
     }
 
-    const file = info.fileList[0];
-    if (!file.url && !file.preview) {
+    const file = newFileList[0];
+    if (!file.url && !file.preview && file.originFileObj) {
       file.preview = await getBase64(file.originFileObj);
     }
-    setFuelImage(file.preview);
+    setFuelImage(file.preview || file.url);
   };
 
   // Gửi form
@@ -151,7 +158,7 @@ const HarvestRequestPage = () => {
     // Lặp qua danh sách và kiểm tra điều kiện
     const error = validationRules.find((rule) => rule.condition);
     if (error) {
-      toast.warning(error.message);
+      message.warning(error.message);
       return;
     } else {
       const fuelRequest = {
@@ -160,10 +167,14 @@ const HarvestRequestPage = () => {
         fuel_image: fuelImage,
         quantity: Number(formData.quantity),
         quantity_remain: Number(formData.quantity),
-        due_date: formData.due_date,
         is_deleted: formData.is_deleted,
-        start_received: formData.start_received,
-        end_received: formData.end_received,
+        start_received: formData.start_received
+          ? formData.start_received.toISOString()
+          : null,
+        end_received: formData.end_received
+          ? formData.end_received.toISOString()
+          : null,
+        due_date: formData.due_date ? formData.due_date.toISOString() : null,
         price: Number(formData.price),
         total_price: totalPrice(),
         priority: formData.priority,
@@ -207,40 +218,43 @@ const HarvestRequestPage = () => {
 
   const setNewForm = () => {
     setFormData({
-      request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
-      fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
+      request_name: "",
+      fuel_type: "",
       fuel_image: "",
-      quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
-      quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
-      start_received: null, // Ngày bắt đầu nhận nhiên liệu
-      due_date: null, // Hạn chót cần hoàn thành đơn hàng (YYYY-MM-DD)
-      end_received: null, // Ngày kết thúc nhận nhiên liệu
-      price: "", // Giá thực tế đã được chốt cho đơn hàng
-      total_price: 0, // Tổng giá của yêu cầu cần thu
-      priority: "", // Mức độ ưu tiên của đơn hàng (VD: Cao, Trung bình, Thấp)
-      status: "", // Trạng thái đơn hàng (VD: Đang chờ, Đã hoàn thành, Đã hủy)
-      note: "", // Ghi chú thêm về đơn hàng
-      is_deleted: false, // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
+      quantity: "",
+      quantity_remain: "",
+      start_received: null,
+      due_date: null,
+      end_received: null,
+      price: "",
+      total_price: 0,
+      priority: "",
+      status: "",
+      note: "",
+      is_deleted: false,
     });
     setFuelImage(null);
+    setFileList([]); // Reset fileList cho Upload
   };
 
   // Notification when created success
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data?.PurchaseOrder.status);
+      if (data?.PurchaseOrder?.status) {
+        message.success(data?.PurchaseOrder.status);
+      }
       setTimeout(() => {
         setNewForm();
       }, 1000);
-    } else {
-      toast.error(data?.PurchaseOrder.message);
+    } else if (data?.PurchaseOrder?.message) {
+      message.error(data?.PurchaseOrder.message);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {
-        toast.success("Tạo yêu cầu thu hàng thành công!");
+        message.success("Tạo yêu cầu thu hàng thành công!");
         setFormData({
           request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
           fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
@@ -270,10 +284,10 @@ const HarvestRequestPage = () => {
       {/* Bố cục chính: Flex ngang trên desktop, dọc trên mobile */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Form chính (80%) */}
-        <div className="w-full md:w-full bg-gray-100 p-6">
+        <div className="w-full md:w-full bg-gray-100 p-4">
           <button
             onClick={() => navigate(-1)} // Quay lại trang trước đó
-            className="flex mb-4 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            className="flex mb-1 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +307,7 @@ const HarvestRequestPage = () => {
           </button>
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
-              🛒 Đơn Yêu Cầu Cung Cấp
+              🛒 Đơn Yêu Cầu Cung Cấp Nguyên Liệu
             </h2>
             <div className="space-y-4">
               {/* Tên đơn */}
@@ -347,14 +361,23 @@ const HarvestRequestPage = () => {
                 </div>
                 <div className="flex-[0.74]">
                   <Upload.Dragger
-                    listType="picture"
-                    showUploadList={{ showRemoveIcon: true }}
+                    listType="picture-card"
+                    fileList={fileList}
+                    showUploadList={false}
                     accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .eps"
                     maxCount={1}
                     beforeUpload={() => false}
                     onChange={handleChangeFuelImage}
                   >
-                    <button> Upload Your Image</button>
+                    {fuelImage ? (
+                      <img
+                        src={fuelImage}
+                        alt="preview"
+                        style={{ width: "30%", height: "auto" }}
+                      />
+                    ) : (
+                      <div>Upload Your Image</div>
+                    )}
                   </Upload.Dragger>
                 </div>
               </div>
@@ -403,54 +426,48 @@ const HarvestRequestPage = () => {
 
               {/* Ngày nhận đơn */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    Ngày bắt đầu nhận đơn
-                  </label>
-                  <DatePicker
-                    selected={formData.start_received}
-                    onChange={(date) =>
-                      handleChange({
-                        target: { name: "start_received", value: date },
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                    placeholderText="Chọn ngày"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    Ngày kết thúc nhận đơn
-                  </label>
-                  <DatePicker
-                    selected={formData.end_received}
-                    onChange={(date) =>
-                      handleChange({
-                        target: { name: "end_received", value: date },
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                    placeholderText="Chọn ngày"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    Hạn chót hoàn thành đơn
-                  </label>
-                  <DatePicker
-                    selected={formData.due_date}
-                    onChange={(date) =>
-                      handleChange({
-                        target: { name: "due_date", value: date },
-                      })
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                    placeholderText="Chọn ngày"
-                  />
-                </div>
+                {/* Ngày bắt đầu nhận đơn */}
+                <DatePicker
+                  value={formData.start_received}
+                  onChange={(date) =>
+                    handleChange({
+                      target: { name: "start_received", value: date },
+                    })
+                  }
+                  showTime={{ format: "HH:mm" }}
+                  format="DD/MM/YYYY HH:mm"
+                  disabledDate={disabledStartDate}
+                  placeholder="Chọn ngày bắt đầu nhận đơn"
+                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                />
+
+                <DatePicker
+                  value={formData.end_received}
+                  onChange={(date) =>
+                    handleChange({
+                      target: { name: "end_received", value: date },
+                    })
+                  }
+                  showTime={{ format: "HH:mm" }}
+                  format="DD/MM/YYYY HH:mm"
+                  disabledDate={disabledEndDate}
+                  disabled={!formData.start_received}
+                  placeholder="Chọn ngày kết thúc nhận đơn"
+                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                />
+
+                <DatePicker
+                  value={formData.due_date}
+                  onChange={(date) =>
+                    handleChange({ target: { name: "due_date", value: date } })
+                  }
+                  showTime={{ format: "HH:mm" }}
+                  format="DD/MM/YYYY HH:mm"
+                  disabledDate={disabledDueDate}
+                  disabled={!formData.end_received}
+                  placeholder="Chọn hạn chót hoàn thành đơn"
+                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                />
               </div>
 
               {/* Mức độ ưu tiên */}
@@ -502,17 +519,17 @@ const HarvestRequestPage = () => {
               {/* Nút bấm */}
               <div className="flex flex-col md:flex-row md:justify-between gap-4">
                 <button
-                  onClick={() => handleSubmit()} // Gọi hàm trực tiếp, không truyền reference
-                  className="bg-yellow-400 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
-                >
-                  Gửi Yêu Cầu
-                </button>
-                <button
                   type="button" // Tránh việc form bị submit khi nhấn nút làm mới
                   onClick={() => setNewForm()} // Reset dữ liệu khi nhấn
-                  className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
+                  className="bg-yellow-400 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
                 >
                   Làm mới
+                </button>
+                <button
+                  onClick={() => handleSubmit()} // Gọi hàm trực tiếp, không truyền reference
+                  className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
+                >
+                  Gửi Yêu Cầu
                 </button>
               </div>
             </div>

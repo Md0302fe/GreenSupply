@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import { useLocation } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -35,7 +36,7 @@ const FuelStorageReceiptList = () => {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilterVal, setStatusFilterVal] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortOrder] = useState("desc");
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [showStatusFilter, setShowStatusFilter] = useState(false);
   const [receiptTypeFilter, setReceiptTypeFilter] = useState("");
@@ -72,6 +73,15 @@ const FuelStorageReceiptList = () => {
     }
     setLoading(false);
   };
+
+  const location = useLocation();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const status = params.get("status");
+    if (status) {
+      setStatusFilterVal(status);
+    }
+  }, [location.search]);
 
   const applyFilters = (data) => {
     let filtered = [...data];
@@ -415,6 +425,7 @@ const FuelStorageReceiptList = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       align: "center",
+      className: "text-center",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (date) => (
         <div style={{ textAlign: "center" }}>
@@ -427,9 +438,10 @@ const FuelStorageReceiptList = () => {
       title: (
         <div style={{ textAlign: "center", width: "100%" }}>Ngày Cập Nhật</div>
       ),
+      align: "center",
+      className: "text-center",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      align: "center",
       render: (date) => (
         <div style={{ textAlign: "center" }}>
           {date ? converDateString(date) : "Không có dữ liệu"}
@@ -438,9 +450,10 @@ const FuelStorageReceiptList = () => {
     },
 
     {
-      title: "Hành động",
+      title: <div className="text-center">Hành động</div>,
       key: "action",
       align: "center",
+      className: "text-center",
       render: (_, record) => (
         <Button
           type="link"

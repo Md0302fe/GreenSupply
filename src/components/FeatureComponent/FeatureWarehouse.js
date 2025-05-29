@@ -8,6 +8,7 @@ import mng_raw_materials from "../../assets/Feature_warehouse/mng_raw_materials.
 import mng_created_storage_export from "../../assets/Feature_warehouse/mng_created_storage_export.jpg";
 import mng_mng_storare_export from "../../assets/Feature_warehouse/mng_storare_export.jpg";
 import mng_storage_export_history from "../../assets/Feature_warehouse/mng_storage_export_history.jpg";
+import mng_receipt_orders from "../../assets/Feature_order_suppliers/mng_receipt_orders.jpg";
 
 const UserComponent = () => {
   return (
@@ -29,6 +30,12 @@ const UserComponent = () => {
           description="Quản lý thông tin tổng quát kho"
           image={mng_warehouse_dashboard}
         />
+         <Card
+          link="/system/admin/View-Order-Success"
+          title="Tạo yêu cầu nhập kho"
+          description="Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+          image={mng_receipt_orders}
+         />
         <Card
           link="/system/admin/warehouse-receipt"
           title="D.sách đơn nhập kho"
@@ -59,6 +66,7 @@ const UserComponent = () => {
           description="Quản lý lịch sử đơn xuất kho"
           image={mng_storage_export_history}
         />
+  
       </div>
     </div>
   );
