@@ -44,7 +44,7 @@ const CreateFuel = () => {
 
   const onFinish = async (values) => {
     if (!imageBase64) {
-      message.error("Vui lòng chọn ảnh loại nhiên liệu");
+      message.error("Vui lòng chọn ảnh loại nguyên liệu");
       return;
     }
 
@@ -67,15 +67,15 @@ const CreateFuel = () => {
       );
 
       if (res.data.success) {
-        message.success("Tạo loại nhiên liệu mới thành công!");
+        message.success("Tạo loại nguyên liệu mới thành công!");
         form.resetFields();
         setImageBase64(null);
       } else {
-        message.error("Tạo nhiên liệu thất bại!");
+        message.error("Tạo nguyên liệu thất bại!");
       }
     } catch (error) {
-      console.error("Lỗi khi tạo nhiên liệu:", error);
-      message.error("Có lỗi xảy ra khi tạo nhiên liệu mới.");
+      console.error("Lỗi khi tạo nguyên liệu:", error);
+      message.error("Có lỗi xảy ra khi tạo nguyên liệu mới.");
     } finally {
       setSubmitLoading(false);
     }
@@ -132,20 +132,18 @@ const CreateFuel = () => {
 
 
       <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Tạo Loại Nhiên Liệu Mới
-        </h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">Tạo Loại Nguyên Liệu Mới</h2>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label="Tên loại nhiên liệu"
+            label="Tên loại nguyên liệu"
             name="type_name"
             rules={[
               { required: true, message: "Vui lòng nhập tên loại nhiên liệu" },
             ]}
           >
             <Input
-              placeholder="Nhập tên loại nhiên liệu"
+              placeholder="Nhập tên loại nguyên liệu"
               maxLength={100}
               className="rounded border-gray-300"
             />
@@ -160,7 +158,7 @@ const CreateFuel = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ảnh loại nhiên liệu (JPG, PNG < 2MB)"
+            label="Ảnh loại nguyên liệu (JPG, PNG < 2MB)"
             name="image_url"
             valuePropName="fileList"
             getValueFromEvent={normFile}
@@ -184,7 +182,7 @@ const CreateFuel = () => {
               className="w-full py-2"
               loading={submitLoading}
             >
-              Tạo Loại Nhiên Liệu
+              Tạo Loại nguyên Liệu
             </Button>
           </Form.Item>
         </Form>

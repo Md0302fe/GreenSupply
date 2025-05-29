@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import HeaderSupplier from "../Header/HeaderSupplier";
 import SideBar from "../SideBar/SideBar";
@@ -18,31 +19,71 @@ const SupplierDashboard = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
+  // Tự động ẩn/hiện sidebar khi thay đổi kích thước cửa sổ
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+
+    // Chạy ngay khi component mount
+    handleResize();
+
+    // Lắng nghe resize
+    window.addEventListener("resize", handleResize);
+
+    // Dọn dẹp khi unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <section className="main relative font-nunito">
       <ToastContainer />
       <div
         className={`
-          fixed top-0 left-0 z-50
-          h-screen
-          w-[18%]
-          bg-white
-          transition-transform duration-500 ease-in-out
-          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
+    fixed top-0 left-0 z-40 h-screen bg-white
+    transition-transform duration-500 ease-in-out
+ ${windowWidth < 768
+            ? "w-[70vw]"
+            : windowWidth < 1024
+              ? "w-[30vw]"
+              : "w-[18vw]"
+          }    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+  `}
       >
-        <SideBar />
+        <SideBar
+          onItemClick={() => {
+            if (windowWidth <= 768) setIsSidebarOpen(false);
+          }}
+          windowWidth={windowWidth}
+        />
       </div>
-
+      {isSidebarOpen && windowWidth <= 768 && (
+        <div
+          className="fixed inset-0 bg-black opacity-10 z-30"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
       <div
         className={`
-          transition-all duration-500 ease-in-out
-          ${isSidebarOpen ? "ml-[18%]" : "ml-0"}
-        `}
+    transition-all duration-500 ease-in-out
+    ${isSidebarOpen && windowWidth > 768 ? "ml-[18%]" : "ml-0"}
+  `}
       >
         <HeaderSupplier
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
+          windowWidth={windowWidth}
         />
 
         <div className="contentMain flex relative overflow-hidden">

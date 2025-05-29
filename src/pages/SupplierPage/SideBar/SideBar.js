@@ -12,7 +12,7 @@ import { FaAngleDown } from "react-icons/fa6";
 import { Collapse } from "react-collapse";
 import "../../../styles/css/SidebarSupplier.css";
 
-const SideBar = () => {
+const SideBar = ({ onItemClick }) => {
   const [subMenuIndex, setSubMenuIndex] = useState(null);
   const navigate = useNavigate();
 
@@ -24,12 +24,13 @@ const SideBar = () => {
     navigate(path);
   };
 
+
   return (
     <div className="sidebar w-full h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-3 bg-[#fff]">
       <div className="py-2 w-full">
         <img
           src={logo}
-          className="w-[150px] cursor-pointer ml-7"
+          className="w-[150px] cursor-pointer ml-0 lg:ml-7"
           onClick={() => navigate("/home")}
         />
       </div>
@@ -41,12 +42,11 @@ const SideBar = () => {
             className="w-full !capitalize flex items-center gap-3 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1]"
           >
             <RiBillLine className="text-[24px] shrink-0" />
-            <span className="whitespace-nowrap">Đơn Hàng Đã Tạo</span>
-            <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
+            <span className="whitespace-nowrap text-base lg:text-[15px] md:text-[13px]">Đơn Đã Tạo</span>
+            <span className="hidden md:flex flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
-                className={`transition-all ${
-                  subMenuIndex === 1 ? "rotate-180" : ""
-                }`}
+                className={`transition-all ${subMenuIndex === 1 ? "rotate-180" : ""
+                  }`}
               />
             </span>
           </Button>
@@ -57,8 +57,9 @@ const SideBar = () => {
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !items-center !w-full text-[13px] !font-[500] !pl-4 flex gap-2 min-h-[40px]"
                   onClick={() =>
-                    handleClick("/supplier/harvest-request-management")
-                  }
+                    {handleClick("/supplier/harvest-request-management");
+                      onItemClick?.(); // Tự động ẩn sidebar nếu prop này được truyền;
+                    }}
                 >
                   <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
                   <span className="truncate ml-[8px]">Đơn Thu Nguyên Liệu</span>
@@ -67,7 +68,9 @@ const SideBar = () => {
               <li className="w-full">
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !items-center !w-full text-[13px] !font-[500] !pl-4 flex gap-2 min-h-[40px]"
-                  onClick={() => navigate("/supplier/provide-request-management")}
+                  onClick={() => {navigate("/supplier/provide-request-management");
+                onItemClick?.(); // Tự động ẩn sidebar nếu prop này được truyền}
+                  }}
                 >
                   <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
                   <span className="truncate ml-[8px]">Đơn Cung Cấp Nguyên Liệu</span>
@@ -79,7 +82,9 @@ const SideBar = () => {
 
         <li>
           <Button
-            onClick={() => navigate("/supplier/harvest-request")}
+            onClick={() => {navigate("/supplier/harvest-request");
+              onItemClick?.(); // Tự động ẩn sidebar nếu prop này được truyền
+            }}
             className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <MdOutlineBorderColor className="text-[20px]" />
@@ -88,7 +93,9 @@ const SideBar = () => {
         </li>
         <li>
           <Button
-            onClick={() => navigate("/supplier/provide-request")}
+            onClick={() => {navigate("/supplier/provide-request");
+              onItemClick?.(); // Tự động ẩn sidebar nếu prop này được truyền
+            }}
             className="w-full !capitalize !justify-start flex gap-3 text-[12px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <MdOutlineBorderColor className="text-[20px]" />
@@ -102,11 +109,10 @@ const SideBar = () => {
           >
             <RiBillLine className="text-[24px] shrink-0" />
             <span className="whitespace-nowrap">Lịch sử đơn </span>
-            <span className="ml-auto flex items-center justify-center w-[30px] h-[30px] shrink-0">
+            <span className="hidden md:flex flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
-                className={`transition-all ${
-                  subMenuIndex === 2 ? "rotate-180" : ""
-                }`}
+                className={`transition-all ${subMenuIndex === 2 ? "rotate-180" : ""
+                  }`}
               />
             </span>
           </Button>
@@ -116,7 +122,10 @@ const SideBar = () => {
               <li className="w-full">
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
-                  onClick={() => handleClick("/supplier/history-request-order")}
+                  onClick={() => {
+                    handleClick("/supplier/history-request-order");
+                  onItemClick?.();
+                }}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
                   L.s Đơn yêu cầu thu nguyên liệu
@@ -125,7 +134,10 @@ const SideBar = () => {
               <li className="w-full">
                 <Button
                   className="!text-[rgba(0,0,0,0.7)] !capitalize !justify-start !w-full text-[13px] !font-[500] !pl-9 flex gap-2 text-left"
-                  onClick={() => handleClick("/supplier/history-provide-order")}
+                  onClick={() => {
+                    handleClick("/supplier/history-provide-order");
+                    onItemClick?.(); // Tự động ẩn sidebar nếu prop này được truyền
+                  }}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
                   L.s Đơn cung cấp nguyên liệu
@@ -136,7 +148,9 @@ const SideBar = () => {
         </li>
         <li>
           <Button
-            onClick={() => navigate("/supplier/tracking-shipment")}
+            onClick={() => {navigate("/supplier/tracking-shipment");
+              onItemClick?.(); // Tự động ẩn sidebar nếu prop này được truyền
+            }}
             className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <IoBagCheckOutline className="text-[20px]" />

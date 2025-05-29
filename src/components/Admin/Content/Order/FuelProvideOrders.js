@@ -9,38 +9,24 @@ import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { getBase64 } from "../../../../ultils";
+import { convertPrice } from "../../../../ultils";
 import { useNavigate } from "react-router-dom";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
-import { Tag } from "antd";
+import { Descriptions, Tag } from "antd";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
-
-import {
-  Space,
-  Input,
-  Form,
-  Button,
-  Table,
-  Drawer,
-  Descriptions,
-  Modal,
-  Card,
-  Row,
-  Col,
-  message,
-} from "antd";
+import { Space, Input, Form, Button, message } from "antd";
 
 import {
   handleAcceptProvideOrders,
   handleCancelProvideOrders,
   handleCompleteProvideOrders,
 } from "../../../../services/OrderServices";
-import { FaEye } from "react-icons/fa";
+
 import { useLocation } from "react-router-dom";
 
 const FuelProvideManagement = () => {
@@ -143,9 +129,8 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCompleteProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus('Đã hoàn thành'); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã được hoàn thành thành công!");
-        
       } else {
         message.error("Hoàn thành đơn thất bại!");
       }
@@ -153,7 +138,6 @@ const FuelProvideManagement = () => {
       message.error("Có lỗi xảy ra khi hoàn thành đơn!");
     }
   };
-
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
@@ -265,16 +249,16 @@ const FuelProvideManagement = () => {
   // Actions
   const renderAction = () => {
     return (
-   <div
-      className="flex-center-center"
-      style={{ justifyContent: "center", cursor: "pointer" }}
-      onClick={handleDetailsProduct}
-     >
-      <Button
-      type="link"
-       icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
-     />
-   </div>
+      <div
+        className="flex-center-center"
+        style={{ justifyContent: "center", cursor: "pointer" }}
+        onClick={handleDetailsProduct}
+      >
+        <Button
+          type="link"
+          icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+        />
+      </div>
     );
   };
 
@@ -386,8 +370,6 @@ const FuelProvideManagement = () => {
       title: "Khách Hàng",
       dataIndex: "customerName",
       key: "customerName",
-      align: "center",
-      className: "text-center",
       ...getColumnSearchProps("customerName"),
     },
     {
@@ -396,21 +378,21 @@ const FuelProvideManagement = () => {
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
     },
-
     {
-      title: "Giá Tiền",
+      title: "Giá Tiền (vnđ)",
       dataIndex: "price",
       key: "price",
       align: "center",
-       className: "text-center",
+      className: "text-center",
       ...getColumnSearchProps("price"),
+      render: (price) => `${convertPrice(price)}`,
     },
     {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
       align: "center",
-       className: "text-center",
+      className: "text-center",
       filters: [
         {
           text: "Chờ duyệt",
@@ -453,7 +435,7 @@ const FuelProvideManagement = () => {
       title: "Ngày Tạo",
       dataIndex: "createdAt",
       align: "center",
-       className: "text-center",
+      className: "text-center",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (createdAt) => {
@@ -478,7 +460,7 @@ const FuelProvideManagement = () => {
     {
       title: "Chức năng",
       align: "center",
-       className: "text-center",
+      className: "text-center",
       dataIndex: "action",
       render: renderAction,
     },
@@ -489,6 +471,7 @@ const FuelProvideManagement = () => {
         <div
           style={{
             marginBottom: 24,
+            marginTop: 24,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -546,70 +529,101 @@ const FuelProvideManagement = () => {
         </div>
       </div>
 
-     {/* DRAWER - Chi Tiết Đơn Hàng */}
-<DrawerComponent
-  title="Chi Tiết Đơn Hàng"
-  isOpen={isDrawerOpen}
-  onClose={() => setIsDrawerOpen(false)}
-  placement="right"
-  width="35%"
-  forceRender
->
-  <Loading isPending={isLoadDetails || isPendingUpDate}>
-    <Descriptions bordered column={1} layout="horizontal">
-      <Descriptions.Item label="Khách Hàng" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.supplier_id?.full_name || ""}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Loại Nguyên Liệu" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.fuel_name || ""}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Giá Tiền" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.price || ""}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Chất Lượng" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.quality || ""}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Số Lượng" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.quantity || ""}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Ghi chú" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.note || "Không có"}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Trạng Thái" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {orderStatus || ""}
-      </Descriptions.Item>
-
-      <Descriptions.Item label="Tổng Giá" labelStyle={{ width: "40%" }} contentStyle={{ width: "60%" }}>
-        {stateDetailsUser?.total_price || ""}
-      </Descriptions.Item>
-    </Descriptions>
-
-    {orderStatus === "Chờ duyệt" && (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "10px",
-          marginTop: 24,
-        }}
+      {/* DRAWER - Chi Tiết Đơn Hàng */}
+      <DrawerComponent
+        title="Chi Tiết Đơn Hàng"
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        placement="right"
+        width="35%"
+        forceRender
       >
-        <Button type="primary" onClick={handleAcceptProvideOrder}>
-          Duyệt đơn
-        </Button>
-        <Button danger onClick={handleCancelProvideOrder}>
-          Hủy đơn
-        </Button>
-      </div>
-    )}
-  </Loading>
-</DrawerComponent>
+        <Loading isPending={isLoadDetails || isPendingUpDate}>
+          <Descriptions bordered column={1} layout="horizontal">
+            <Descriptions.Item
+              label="Khách Hàng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.supplier_id?.full_name || ""}
+            </Descriptions.Item>
 
+            <Descriptions.Item
+              label="Loại Nguyên Liệu"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.fuel_name || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Giá Tiền"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.price || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Chất Lượng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.quality || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Số Lượng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.quantity || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Ghi chú"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.note || "Không có"}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Trạng Thái"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {orderStatus || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Tổng Giá"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.total_price || ""}
+            </Descriptions.Item>
+          </Descriptions>
+
+          {orderStatus === "Chờ duyệt" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+                marginTop: 24,
+              }}
+            >
+              <Button type="primary" onClick={handleAcceptProvideOrder}>
+                Duyệt đơn
+              </Button>
+              <Button danger onClick={handleCancelProvideOrder}>
+                Hủy đơn
+              </Button>
+            </div>
+          )}
+        </Loading>
+      </DrawerComponent>
     </div>
   );
 };

@@ -130,6 +130,8 @@ const HarvestRequestPage = () => {
     // Kiểm tra dữ liệu trước khi gửi
     if (!formData.fuel_name.trim())
       newErrors.fuel_name = "Tên yêu cầu không được để trống!";
+    if (!formData.fuel_type.trim())
+      newErrors.fuel_type = "Loại nguyên liệu không được để trống!";
     if (!formData.quantity.trim())
       newErrors.quantity = "Số lượng không được để trống!";
     if (!formData.price.trim()) newErrors.price = "Giá không được để trống!";
@@ -218,7 +220,6 @@ console.log("123", fuelRequest);
             <input
               type="text"
               name="fuel_name"
-              maxLength="50"
               placeholder="Tên yêu cầu..."
               value={formData.fuel_name}
               onChange={handleChange}

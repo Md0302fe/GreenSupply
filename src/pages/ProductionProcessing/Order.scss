@@ -1,0 +1,33 @@
+// Main layout
+.production-processing-list {
+  //content Layout
+  .Main-Content {
+    .content-title {
+      text-transform: uppercase;
+      color: black;
+    }
+    .content-addUser {
+      Button {
+        width: 100px;
+        height: 100px;
+        border: 1px dashed green;
+        font-size: 20px;
+      }
+    }
+    // Css table user
+    .content-main-table-user {
+      .button-exportFile {
+        background-color: black;
+        margin: 12px 0 12px 0;
+      }
+    }
+    .ant-table-cell.text-center {
+     text-align: center !important;
+     vertical-align: middle !important;
+    }
+     .ant-table-thead > tr > th {
+      text-align: center !important;  
+    }
+
+  }
+}

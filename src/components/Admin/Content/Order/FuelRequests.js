@@ -1,16 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Order.scss";
 
-import { Button, Form, Input, Select, Space, Upload } from "antd";
-
-import * as UserServices from "../../../../services/UserServices";
+import { Button, Form, Input, Space } from "antd";
 import * as OrderServices from "../../../../services/OrderServices";
 import { Descriptions } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import { useMutationHooks } from "../../../../hooks/useMutationHook";
-import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { Tag } from "antd";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -27,7 +23,6 @@ import {
   handleCancelOrders,
   handleCompleteOrders,
 } from "../../../../services/OrderServices";
-import { FaEye } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 const FuelRequestsManagement = () => {
@@ -394,7 +389,7 @@ const FuelRequestsManagement = () => {
       <div className="Main-Content">
         <div
           style={{
-            marginBottom: 24,
+            marginBottom: 12,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -423,10 +418,6 @@ const FuelRequestsManagement = () => {
             Quay lại
           </Button>
 
-          <h5 className="text-center font-bold text-2xl mb-0">
-            Quản lý đơn yêu cầu thu nguyên liệu
-          </h5>
-
           {/* Placeholder để giữ cân layout bên phải */}
           <div style={{ width: 100 }}></div>
         </div>
@@ -435,6 +426,9 @@ const FuelRequestsManagement = () => {
             <BsPersonAdd></BsPersonAdd>
           </Button>
         </div> */}
+        <h5 className="text-center font-bold text-2xl mb-0">
+          Quản lý đơn yêu cầu thu nguyên liệu
+        </h5>
         <div className="content-main-table-user">
           <TableUser
             // Props List

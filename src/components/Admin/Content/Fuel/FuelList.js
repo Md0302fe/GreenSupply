@@ -11,7 +11,11 @@ import {
   Drawer,
 } from "antd";
 import axios from "axios";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  EyeOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { Excel } from "antd-table-saveas-excel";
@@ -20,7 +24,10 @@ import { toast } from "react-toastify";
 import { Tooltip } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+
 const FuelList = () => {
+  const navigate = useNavigate();
   const [fuels, setFuels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -323,16 +330,18 @@ const FuelList = () => {
       render: (_, record) => (
         <div style={{ textAlign: "center" }}>
           <Space>
-            <Button
-              type="link"
-              icon={<HiOutlineDocumentSearch style={{ fontSize: "20px" }} />}
-              onClick={() => showFuelDetails(record)}
-            />
-            <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => openUpdateDrawer(record)}
-            />
+            {/* Nút Xem chi tiết */}
+          <Button
+            type="link"
+            icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+            onClick={() => showFuelDetails(record)}
+          ></Button>
+          {/* Nút Chỉnh sửa */}
+          <Button
+            type="link"
+            icon={<EditOutlined style={{ fontSize: "20px" }} />}
+            onClick={() => openUpdateDrawer(record)}
+          ></Button>
           </Space>
         </div>
       ),
@@ -341,51 +350,42 @@ const FuelList = () => {
 
   return (
     <div className="fuel-list">
-      <div className="flex items-center justify-between mb-2">
-        {/* Nút Quay lại */}
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-          type="button"
+      <Button
+        onClick={() => navigate(-1)}
+        type="primary"
+        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 mr-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          Quay lại
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 12H3m0 0l6-6m-6 6l6 6"
+          />
+        </svg>
+        Quay lại
+      </Button>
+      <h2 className="text-center text-2xl font-bold text-gray-800 mt-2">
+        Danh Sách Loại Nguyên Liệu
+      </h2>
 
-        {/* Tiêu đề căn giữa */}
-        <h2 className="text-3xl font-bold text-gray-800 text-center flex-grow mx-6">
-          Danh Sách Loại Nguyên Liệu
-        </h2>
-
-        {/* Placeholder bên phải để cân bằng */}
-        <div style={{ width: 100 }}></div>
-      </div>
-
-      {/* Nút Xuất File nằm dưới tiêu đề, căn phải */}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end">
         <Button
           type="primary"
+          className="mb-4 mt-4"
+          icon={<DownloadOutlined />}
           onClick={handleExportFileExcel}
-          className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2"
+          style={{ backgroundColor: "#1e90ff", borderColor: "#1e90ff" }}
         >
-          <DownloadOutlined />
           Xuất File
         </Button>
       </div>
-
       <Table
         columns={columns}
         dataSource={fuels?.filter((fuel) =>

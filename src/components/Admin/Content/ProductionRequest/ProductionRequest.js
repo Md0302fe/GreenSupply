@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Input, InputNumber, Select, DatePicker, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  DatePicker,
+  message,
+} from "antd";
 import moment from "moment";
 import axios from "axios";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 // Hàm gọi API danh sách nhiên liệu sử dụng axios
 export const getAllFuelType = async () => {
@@ -15,11 +24,13 @@ export const getAllFuelType = async () => {
 };
 
 const ProductionRequest = () => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [fuelTypes, setFuelTypes] = useState([]);
   const [fuelLoading, setFuelLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const user = useSelector((state) => state.user);
+  const [selectedFuelAvailable, setSelectedFuelAvailable] = useState(null);
 
   useEffect(() => {
     const fetchFuelTypes = async () => {
@@ -42,7 +53,9 @@ const ProductionRequest = () => {
   const handleEstimatedProductionChange = (value) => {
     const selectedFuelId = form.getFieldValue("material");
     if (!selectedFuelId) {
-      message.warning("Vui lòng chọn loại nhiên liệu trước khi nhập sản lượng mong muốn.");
+      message.warning(
+        "Vui lòng chọn loại nhiên liệu trước khi nhập sản lượng mong muốn."
+      );
       form.setFieldsValue({ product_quantity: 1, material_quantity: 1 }); // Reset sản lượng và nguyên liệu
       return;
     }
@@ -69,6 +82,31 @@ const ProductionRequest = () => {
       }
     }
     form.setFieldsValue({ material_quantity: required });
+  };
+  const calculateProductQuantity = () => {
+    const material_quantity = form.getFieldValue("material_quantity");
+    const loss_percentage = form.getFieldValue("loss_percentage");
+
+    if (
+      typeof material_quantity === "number" &&
+      selectedFuelAvailable != null
+    ) {
+      if (material_quantity > selectedFuelAvailable) {
+        message.warning(
+          `Số lượng nguyên liệu vượt quá số lượng tồn kho hiện tại (${selectedFuelAvailable} Kg).`
+        );
+        form.setFieldsValue({ material_quantity: selectedFuelAvailable });
+        return;
+      }
+    }
+
+    if (
+      typeof material_quantity === "number" &&
+      typeof loss_percentage === "number"
+    ) {
+      const product_quantity = material_quantity * (1 - loss_percentage / 100);
+      form.setFieldsValue({ product_quantity: Math.floor(product_quantity) });
+    }
   };
 
   // Disabled date cho ngày sản xuất: không cho chọn quá khứ (từ hôm nay)
@@ -132,6 +170,36 @@ const ProductionRequest = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
+        <div className="flex justify-between items-center">
+          <Button
+            onClick={() => navigate(-1)}
+            type="primary"
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </Button>
+          <Button
+            onClick={() => navigate("/system/admin/production-request-list")}
+            type="default"
+            className="flex items-center border border-gray-400 text-gray-700 font-medium py-1 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
+          >
+            Danh sách yêu cầu
+          </Button>
+        </div>
         <h2 className="text-3xl font-bold mb-6 text-center">
           Tạo Yêu Cầu Sản Xuất Mới
         </h2>
@@ -146,7 +214,9 @@ const ProductionRequest = () => {
 
         {submitLoading && (
           <div className="flex justify-center items-center mb-4">
-            <span className="text-lg font-medium text-blue-600">Loading...</span>
+            <span className="text-lg font-medium text-blue-600">
+              Loading...
+            </span>
           </div>
         )}
 
@@ -168,10 +238,27 @@ const ProductionRequest = () => {
             <Form.Item
               label="Loại nhiên liệu"
               name="material"
-              rules={[{ required: true, message: "Vui lòng chọn Loại nhiên liệu" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn Loại nhiên liệu" },
+              ]}
               className="flex-1"
             >
-              <Select placeholder="Chọn Loại nhiên liệu" className="rounded border-gray-300">
+              <Select
+                placeholder="Chọn Loại nhiên liệu"
+                className="rounded border-gray-300"
+                onChange={(value) => {
+                  const selectedFuel = fuelTypes.find((f) => f._id === value);
+                  if (selectedFuel) {
+                    setSelectedFuelAvailable(selectedFuel.quantity);
+                  } else {
+                    setSelectedFuelAvailable(null);
+                  }
+                  form.setFieldsValue({
+                    material_quantity: null,
+                    product_quantity: null,
+                  });
+                }}
+              >
                 {fuelTypes
                   .filter((fuel) => fuel.quantity > 0) // Lọc ra nhiên liệu có quantity > 0
                   .map((fuel) => (
@@ -183,47 +270,74 @@ const ProductionRequest = () => {
             </Form.Item>
 
             <Form.Item
-              label="Sản lượng thành phẩm mong muốn (kg)"
-              name="product_quantity"
+              label="Số lượng nguyên liệu (kg)"
+              name="material_quantity"
               rules={[
-                { required: true, message: "Vui lòng nhập sản lượng mong muốn" },
+                {
+                  required: true,
+                  message: "Vui lòng nhập số lượng nguyên liệu",
+                },
                 {
                   type: "number",
-                  transform: (value) => Number(value),
-                  message: "Vui lòng nhập số hợp lệ",
+                  min: 1,
+                  message: "Giá trị phải lớn hơn 0",
                 },
               ]}
-              className="flex-1"
             >
               <InputNumber
                 min={1}
                 className="w-full rounded border-gray-300"
-                placeholder="Nhập sản lượng mong muốn"
-                onChange={handleEstimatedProductionChange}
-                onKeyDown={(e) => {
-                  if (["e", "E", "-", "+", "."].includes(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
+                placeholder="Nhập số lượng nguyên liệu"
+                onChange={calculateProductQuantity}
               />
             </Form.Item>
           </div>
 
           {/* Hiển thị Số lượng nguyên liệu cần thiết ước tính (tính tự động) */}
           <Form.Item
-            label="Số lượng nguyên liệu cần thiết ước tính (kg)"
-            name="material_quantity"
+            label="Tỷ lệ hao hụt (%)"
+            name="loss_percentage"
+            rules={[
+              { required: true, message: "Vui lòng nhập tỷ lệ hao hụt" },
+              {
+                type: "number",
+                min: 0,
+                max: 100,
+                message: "Phần trăm phải từ 0 đến 100",
+              },
+            ]}
           >
-            <InputNumber disabled className="w-full rounded border-gray-300 bg-gray-50" />
+            <InputNumber
+              min={0}
+              max={100}
+              className="w-full rounded border-gray-300"
+              placeholder="Nhập tỷ lệ hao hụt"
+              onChange={calculateProductQuantity}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Sản lượng thành phẩm ước tính (kg)"
+            name="product_quantity"
+          >
+            <InputNumber
+              disabled
+              className="w-full rounded border-gray-300 bg-gray-50"
+            />
           </Form.Item>
 
           {/* Thêm trường Mức độ ưu tiên */}
           <Form.Item
             label="Mức độ ưu tiên"
             name="priority"
-            rules={[{ required: true, message: "Vui lòng chọn mức độ ưu tiên" }]}
+            rules={[
+              { required: true, message: "Vui lòng chọn mức độ ưu tiên" },
+            ]}
           >
-            <Select placeholder="Chọn mức độ ưu tiên" className="rounded border-gray-300">
+            <Select
+              placeholder="Chọn mức độ ưu tiên"
+              className="rounded border-gray-300"
+            >
               <Select.Option value={3}>Cao</Select.Option>
               <Select.Option value={2}>Trung bình</Select.Option>
               <Select.Option value={1}>Thấp</Select.Option>

@@ -55,12 +55,7 @@ const UserComponent = () => {
           description="Quản lý danh sách các quy trình đã tạo"
           image={processing_list}
         />
-        <Card
-          link="/system/admin/production-processing-list"
-          title="Danh sách quy trình đã tạo"
-          description="Quản lý danh sách các quy trình đã tạo"
-          image={processing_list}
-        />
+        
         <Card
           link="/system/admin/processing-system"
           title="Quy trình"
