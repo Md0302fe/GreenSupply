@@ -11,15 +11,22 @@ import {
   Drawer,
 } from "antd";
 import axios from "axios";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  EyeOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { Excel } from "antd-table-saveas-excel";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { Tooltip } from "antd";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 const FuelList = () => {
+  const navigate = useNavigate();
   const [fuels, setFuels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,7 +71,7 @@ const FuelList = () => {
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
- console.log("Danh sách nhiên liệu:", transformedFuels);
+        console.log("Danh sách nhiên liệu:", transformedFuels);
         setFuels(transformedFuels);
       } else {
         message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
@@ -277,7 +284,7 @@ const FuelList = () => {
       title: "Số Lượng Trong Kho",
       dataIndex: "quantity",
       key: "quantity",
-      sorter: (a, b) => a.quantity - (b.quantity),
+      sorter: (a, b) => a.quantity - b.quantity,
     },
     {
       title: "Trạng Thái",
@@ -300,13 +307,15 @@ const FuelList = () => {
       render: (_, record) => (
         <Space>
           {/* Nút Xem chi tiết */}
-          <Button type="link" onClick={() => showFuelDetails(record)}>
-            Xem chi tiết
-          </Button>
+          <Button
+            type="link"
+            icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+            onClick={() => showFuelDetails(record)}
+          ></Button>
           {/* Nút Chỉnh sửa */}
           <Button
             type="link"
-            icon={<EditOutlined />}
+            icon={<EditOutlined style={{ fontSize: "20px" }} />}
             onClick={() => openUpdateDrawer(record)}
           ></Button>
         </Space>
@@ -315,17 +324,42 @@ const FuelList = () => {
   ];
   return (
     <div className="fuel-list">
-      <h2>Danh Sách Loại Nguyên Liệu</h2>
-
       <Button
+        onClick={() => navigate(-1)}
         type="primary"
-        className="mb-4 mt-4"
-        onClick={handleExportFileExcel}
-        style={{ backgroundColor: "black", borderColor: "black" }}
+        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
       >
-        Xuất File
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 mr-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 12H3m0 0l6-6m-6 6l6 6"
+          />
+        </svg>
+        Quay lại
       </Button>
+      <h2 className="text-center text-2xl font-bold text-gray-800 mt-2">
+        Danh Sách Loại Nguyên Liệu
+      </h2>
 
+      <div className="flex justify-end">
+        <Button
+          type="primary"
+          className="mb-4 mt-4"
+          icon={<DownloadOutlined />}
+          onClick={handleExportFileExcel}
+          style={{ backgroundColor: "#1e90ff", borderColor: "#1e90ff" }}
+        >
+          Xuất File
+        </Button>
+      </div>
       <Table
         columns={columns}
         dataSource={fuels?.filter((fuel) =>

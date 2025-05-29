@@ -69,10 +69,10 @@ const MaterialStorageExport = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        setLoadingProduction(true);
-        setLoadingBatch(true);
+      setLoadingProduction(true);
+      setLoadingBatch(true);
 
+      try {
         const [productionRes, batchRes] = await Promise.all([
           axios.get(
             `${process.env.REACT_APP_API_URL}/product-request/getAllProcessing`
@@ -88,13 +88,20 @@ const MaterialStorageExport = () => {
           (batch) => batch.status === "Đang chuẩn bị"
         );
 
-        setProductionRequests(productionRes.data.requests || []);
-        setRawMaterialBatches(filteredBatches);
+        const productionData = productionRes.data.requests || [];
 
-        // Nếu có batchId trong URL và có trong danh sách thì set luôn
-        if (batchId && filteredBatches.find((b) => b._id === batchId)) {
-          form.setFieldsValue({ batch_id: batchId });
-          handleBatchChange(batchId);
+        setRawMaterialBatches(filteredBatches);
+        setProductionRequests(productionData);
+
+        // ✅ Nếu có batchId trên URL và nằm trong danh sách hợp lệ
+        if (batchId) {
+          const selectedBatch = filteredBatches.find((b) => b._id === batchId);
+          if (selectedBatch) {
+            form.setFieldsValue({
+              batch_id: selectedBatch._id,
+              production_request_id: selectedBatch.production_request_id,
+            });
+          }
         }
       } catch (error) {
         toast.error("Lỗi khi tải dữ liệu từ server.");
@@ -105,7 +112,7 @@ const MaterialStorageExport = () => {
     };
 
     fetchData();
-  }, []);
+  }, [batchId, form]);
 
   // const handleProductionRequestChange = (value) => {
   //   const batch = rawMaterialBatches.find(

@@ -476,7 +476,11 @@ const ProductionRequestList = () => {
       </div>
 
       <Loading isPending={isLoading || fuelLoading}>
-        <Table columns={columns} dataSource={tableData} pagination={{ pageSize: 4 }}  />
+        <Table
+          columns={columns}
+          dataSource={tableData}
+          pagination={{ pageSize: 4 }}
+        />
       </Loading>
 
       <DrawerComponent
@@ -515,21 +519,24 @@ const ProductionRequestList = () => {
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material}
                 </div>
-
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Thành phẩm (Kg)
+                  Tỉ lệ hao hụt (%)
                 </div>
                 <div className="p-3 border border-gray-300">
-                  {selectedRequest.product_quantity} Kg
+                  {selectedRequest.loss_percentage} %
                 </div>
-
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Nguyên liệu (Kg)
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material_quantity} Kg
                 </div>
-
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
+                  Thành phẩm (Kg)
+                </div>
+                <div className="p-3 border border-gray-300">
+                  {selectedRequest.product_quantity} Kg
+                </div>
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Ngày sản xuất
                 </div>
