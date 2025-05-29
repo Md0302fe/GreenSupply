@@ -18,7 +18,8 @@ import { Excel } from "antd-table-saveas-excel";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { Tooltip } from "antd";
-
+import { DownloadOutlined } from "@ant-design/icons";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 const FuelList = () => {
   const [fuels, setFuels] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -64,7 +65,7 @@ const FuelList = () => {
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
- console.log("Danh sách nhiên liệu:", transformedFuels);
+        console.log("Danh sách nhiên liệu:", transformedFuels);
         setFuels(transformedFuels);
       } else {
         message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
@@ -261,26 +262,42 @@ const FuelList = () => {
   // Columns definition
   const columns = [
     {
-      title: "Tên Loại Nhiên Liệu",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          Tên Loại Nhiên Liệu
+        </div>
+      ),
+      // title: "Tên Loại Nhiên Liệu",
       dataIndex: "type_name",
       key: "type_name",
       ...getColumnSearchProps("type_name"),
       sorter: (a, b) => a.type_name.localeCompare(b.type_name),
+      align: "center",
     },
     {
-      title: "Mô Tả",
+      title: <div style={{ textAlign: "center", width: "100%" }}>Mô Tả</div>,
+
       dataIndex: "description",
       key: "description",
-      width: "40%", // Thiết lập chiều rộng 300px
+      width: "40%",
+      align: "center",
     },
     {
-      title: "Số Lượng Trong Kho",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          Số Lượng Trong Kho
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
-      sorter: (a, b) => a.quantity - (b.quantity),
+      sorter: (a, b) => a.quantity - b.quantity,
+      align: "center",
+      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
-      title: "Trạng Thái",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+      ),
       dataIndex: "is_deleted",
       key: "is_deleted",
       filters: [
@@ -288,43 +305,86 @@ const FuelList = () => {
         { text: "Chưa xóa", value: false },
       ],
       onFilter: (value, record) => record.is_deleted === value,
+      align: "center",
       render: (is_deleted) => (
-        <Tag color={is_deleted ? "red" : "green"}>
-          {is_deleted ? "Đã xóa" : "Chưa xóa"}
-        </Tag>
+        <div style={{ textAlign: "center" }}>
+          <Tag color={is_deleted ? "red" : "green"}>
+            {is_deleted ? "Đã xóa" : "Chưa xóa"}
+          </Tag>
+        </div>
       ),
     },
     {
-      title: "Hành Động",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Hành Động</div>
+      ),
       key: "action",
+      align: "center",
       render: (_, record) => (
-        <Space>
-          {/* Nút Xem chi tiết */}
-          <Button type="link" onClick={() => showFuelDetails(record)}>
-            Xem chi tiết
-          </Button>
-          {/* Nút Chỉnh sửa */}
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => openUpdateDrawer(record)}
-          ></Button>
-        </Space>
+        <div style={{ textAlign: "center" }}>
+          <Space>
+            <Button
+              type="link"
+              icon={<HiOutlineDocumentSearch style={{ fontSize: "20px" }} />}
+              onClick={() => showFuelDetails(record)}
+            />
+            <Button
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => openUpdateDrawer(record)}
+            />
+          </Space>
+        </div>
       ),
     },
   ];
+
   return (
     <div className="fuel-list">
-      <h2>Danh Sách Loại Nguyên Liệu</h2>
+      <div className="flex items-center justify-between mb-2">
+        {/* Nút Quay lại */}
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+          type="button"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </button>
 
-      <Button
-        type="primary"
-        className="mb-4 mt-4"
-        onClick={handleExportFileExcel}
-        style={{ backgroundColor: "black", borderColor: "black" }}
-      >
-        Xuất File
-      </Button>
+        {/* Tiêu đề căn giữa */}
+        <h2 className="text-3xl font-bold text-gray-800 text-center flex-grow mx-6">
+          Danh Sách Loại Nguyên Liệu
+        </h2>
+
+        {/* Placeholder bên phải để cân bằng */}
+        <div style={{ width: 100 }}></div>
+      </div>
+
+      {/* Nút Xuất File nằm dưới tiêu đề, căn phải */}
+      <div className="flex justify-end mb-4">
+        <Button
+          type="primary"
+          onClick={handleExportFileExcel}
+          className="bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-2"
+        >
+          <DownloadOutlined />
+          Xuất File
+        </Button>
+      </div>
 
       <Table
         columns={columns}
