@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Modal, Table, Tag, Space, message } from "antd";
 import { useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -235,8 +235,19 @@ const ProvideRequestManagement = () => {
       ),
   });
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Table Columns
-  const columns = [
+  const allColumns = [
     {
       title: "Yêu cầu",
       dataIndex: "fuel_name",
@@ -265,7 +276,7 @@ const ProvideRequestManagement = () => {
       dataIndex: "total_price",
       key: "total_price",
       className: "text-center",
-      sorter: (a, b) => a.total_price - b.total_price, // Enable sorting
+      sorter: (a, b) => a.total_price - b.total_price,
       render: (total_price) => convertPrice(total_price),
     },
     {
@@ -281,69 +292,55 @@ const ProvideRequestManagement = () => {
       onFilter: (value, record) => record.status === value,
       render: (status) => {
         let displayStatus = status;
-        let color = "orange"; // Default for "Chờ duyệt"
-
-        if (status === "Đã duyệt") {
-          color = "green";
-        } else if (status === "Đã hủy") {
-          color = "red";
-        } else if (status === "Đang xử lý") {
-          displayStatus = "Hoàn thành";
-        }
+        let color = "orange";
+        if (status === "Đã duyệt") color = "green";
+        else if (status === "Đã hủy") color = "red";
+        else if (status === "Đang xử lý") displayStatus = "Hoàn thành";
 
         return <Tag color={color}>{displayStatus}</Tag>;
       },
     },
-    // {
-    //   title: "Ghi Chú",
-    //   dataIndex: "note",
-    //   key: "note",
-    //   render: (note) => note || "Không có ghi chú",
-    // },
-    // {
-    //   title: "Cập Nhật",
-    //   dataIndex: "updatedAt",
-    //   key: "updatedAt",
-    //   sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt), // 🔽 Sorting by date
-    //   render: (updatedAt) => converDateString(updatedAt),
-    // },
-    {
-      title: <div style={{ textAlign: "center" }}>Hành động</div>,
-      key: "actions",
-      className: "text-center",
-      render: (_, record) => {
-        const isPending = record.status === "Chờ duyệt";
-        return (
-          <Space size={8}>
-            {/* Sửa */}
-            <Button
-              icon={<AiFillEdit />}
-              onClick={() => handleEdit(record)}
-              disabled={!isPending}
-              size="middle"
-            />
-            {/* Xóa */}
-            <Button
-              icon={<MdDelete style={{ color: "red" }} />}
-              onClick={() => {
-                setRowSelected(record._id);
-                setIsOpenDelete(true);
-              }}
-              disabled={!isPending}
-              size="middle"
-            />
-            {/* Xem Chi Tiết */}
-            <Button
-              icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
-              type="default"
-              onClick={() => handleViewDetail(record)}
-              size="middle"
-            />
-          </Space>
-        );
-      },
-    },
   ];
+
+  const actionColumn = {
+    title: <div style={{ textAlign: "center" }}>Hành động</div>,
+    key: "actions",
+    className: "text-center",
+    render: (_, record) => {
+      const isPending = record.status === "Chờ duyệt";
+      return (
+        <Space size={8}>
+          <Button
+            icon={<AiFillEdit />}
+            onClick={() => handleEdit(record)}
+            disabled={!isPending}
+            size="middle"
+          />
+          <Button
+            icon={<MdDelete style={{ color: "red" }} />}
+            onClick={() => {
+              setRowSelected(record._id);
+              setIsOpenDelete(true);
+            }}
+            disabled={!isPending}
+            size="middle"
+          />
+          <Button
+            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
+            type="default"
+            onClick={() => handleViewDetail(record)}
+            size="middle"
+          />
+        </Space>
+      );
+    },
+  };
+
+  const columns = isMobile
+    ? [allColumns[0], allColumns[4], actionColumn] // Tên nguyên liệu, Trạng thái, Hành động
+    : [...allColumns, actionColumn];
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   return (
     <div className="Wrapper-Admin-FuelRequest">
@@ -469,7 +466,7 @@ const ProvideRequestManagement = () => {
         title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
         isOpen={isDrawerOpen}
         placement="right"
-        width="40%"
+        width={drawerWidth}
         onClose={handleCancelUpdate}
       >
         <Loading isPending={mutationUpdate.isPending}>
@@ -569,12 +566,12 @@ const ProvideRequestManagement = () => {
               {
                 // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
                 formUpdate.getFieldValue("quantity") &&
-                formUpdate.getFieldValue("price")
+                  formUpdate.getFieldValue("price")
                   ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
-                    (
-                      Number(formUpdate.getFieldValue("quantity")) *
-                      Number(formUpdate.getFieldValue("price"))
-                    ).toLocaleString("vi-VN")
+                  (
+                    Number(formUpdate.getFieldValue("quantity")) *
+                    Number(formUpdate.getFieldValue("price"))
+                  ).toLocaleString("vi-VN")
                   : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
               }
             </div>
@@ -597,7 +594,8 @@ const ProvideRequestManagement = () => {
         title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
         isOpen={isDrawerOpen}
         placement="right"
-        width="40%"
+
+        width={drawerWidth}
         onClose={handleCancelUpdate}
       >
         <Loading isPending={mutationUpdate.isPending}>
@@ -687,12 +685,12 @@ const ProvideRequestManagement = () => {
               {
                 // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
                 formUpdate.getFieldValue("quantity") &&
-                formUpdate.getFieldValue("price")
+                  formUpdate.getFieldValue("price")
                   ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
-                    (
-                      Number(formUpdate.getFieldValue("quantity")) *
-                      Number(formUpdate.getFieldValue("price"))
-                    ).toLocaleString("vi-VN")
+                  (
+                    Number(formUpdate.getFieldValue("quantity")) *
+                    Number(formUpdate.getFieldValue("price"))
+                  ).toLocaleString("vi-VN")
                   : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
               }
             </div>
@@ -726,7 +724,7 @@ const ProvideRequestManagement = () => {
         title="Chi Tiết Đơn Cung Cấp"
         isOpen={isDetailDrawerOpen}
         placement="right"
-        width="30%" // Điều chỉnh chiều rộng Drawer nếu cần
+        width={drawerWidth} // Điều chỉnh chiều rộng Drawer nếu cần
         onClose={() => setIsDetailDrawerOpen(false)}
       >
         {detailData ? (
