@@ -132,7 +132,9 @@ const CreateFuel = () => {
 
 
       <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">Tạo Loại Nguyên Liệu Mới</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">
+          Tạo Loại Nhiên Liệu Mới
+        </h2>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item

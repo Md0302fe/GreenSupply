@@ -22,7 +22,6 @@ import { Excel } from "antd-table-saveas-excel";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { Tooltip } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
