@@ -36,6 +36,10 @@ module.exports = {
           },
         },
       },
+       screens: {
+      'xs': '320px', // mobile S
+      'xm': '375px', // mobile M
+    }
     },
   },
   plugins: [],

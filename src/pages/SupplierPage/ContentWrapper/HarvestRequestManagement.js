@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Table, Tag, Space, message } from "antd";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
@@ -39,21 +39,22 @@ const HarvestRequestManagement = () => {
   const searchInput = useRef(null);
   const userRedux = useSelector((state) => state.user);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  
 
   const getAllHarvestRequests = async () => {
-      const access_token = user?.access_token;
-      const user_id = user?.id;
-  
-      const res = await HarverstRequestService.getAllHarvestRequests(
-        access_token, 
-        user_id
-      );
-      return res;
-    };
+    const access_token = user?.access_token;
+    const user_id = user?.id;
+
+    const res = await HarverstRequestService.getAllHarvestRequests(
+      access_token,
+      user_id
+    );
+    return res;
+  };
 
   const { data: requests, isLoading } = useQuery({
     queryKey: ["harvestRequests"],
-    queryFn: () => getAllHarvestRequests(), 
+    queryFn: () => getAllHarvestRequests(),
   });
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -74,6 +75,17 @@ const HarvestRequestManagement = () => {
     return "bg-gray-100 text-gray-800";
   };
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const drawerWidth = isMobile ? "100%" : "40%";
   // Search and filter
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -206,7 +218,7 @@ const HarvestRequestManagement = () => {
     }
   };
 
-  const columns = [
+  const allColumns = [
     {
       title: "Tên yêu cầu",
       dataIndex: "fuel_name",
@@ -242,7 +254,7 @@ const HarvestRequestManagement = () => {
       key: "status",
       className: "text-center",
       render: (status) => {
-        let color = "orange"; // Default for "Chờ duyệt"
+        let color = "orange";
         if (status === "Đã duyệt") color = "green";
         if (status === "Đã huỷ") color = "red";
         return <Tag color={color}>{status}</Tag>;
@@ -254,33 +266,41 @@ const HarvestRequestManagement = () => {
         { text: "Đã huỷ", value: "Đã huỷ" },
       ],
     },
-    {
-      title: <div style={{ textAlign: "center" }}>Hành động</div>,
-      key: "actions",
-      className: "text-center",
-      render: (_, record) => (
-        <Space>
-          <Button
-            icon={<AiFillEdit />}
-            onClick={() => handleEdit(record)}
-            disabled={record.status !== "Chờ duyệt"}
-            size="middle"
-          />
-          <Button
-            icon={<MdDelete style={{ color: "red" }} />}
-            onClick={() => handleCancelClick(record._id, record.status)}
-            disabled={record.status !== "Chờ duyệt"}
-            size="middle"
-          />
-          <Button
-            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
-            onClick={() => handleViewDetail(record)}
-            size="middle"
-          />
-        </Space>
-      ),
-    },
   ];
+
+  const actionColumn = {
+    title: <div style={{ textAlign: "center" }}>Hành động</div>,
+    key: "actions",
+    className: "text-center",
+    render: (_, record) => (
+      <Space>
+        <Button
+          icon={<AiFillEdit />}
+          onClick={() => handleEdit(record)}
+          disabled={record.status !== "Chờ duyệt"}
+          size="middle"
+        />
+        <Button
+          icon={<MdDelete style={{ color: "red" }} />}
+          onClick={() => handleCancelClick(record._id, record.status)}
+          disabled={record.status !== "Chờ duyệt"}
+          size="middle"
+        />
+        <Button
+          icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
+          onClick={() => handleViewDetail(record)}
+          size="middle"
+        />
+      </Space>
+    ),
+  };
+
+  // Chọn cột hiển thị tùy theo thiết bị
+  const columns = isMobile
+    ? [allColumns[0], allColumns[4], actionColumn] // Tên yêu cầu, Trạng thái, Hành động
+    : [...allColumns, actionColumn];
+
+
 
   const handleViewDetail = (record) => {
     setViewDetailRequest(record);
@@ -326,7 +346,7 @@ const HarvestRequestManagement = () => {
         title="Chỉnh sửa yêu cầu thu nguyên liệu"
         isOpen={isDrawerOpen}
         placement="right"
-        width="30%"
+        width={drawerWidth}
         onClose={() => setIsDrawerOpen(false)}
       >
         {selectedRequest ? (
@@ -430,7 +450,7 @@ const HarvestRequestManagement = () => {
                 onClick={handleEditSubmit}
                 className="bg-[#006838] text-white font-bold px-4 py-2 rounded hover:bg-[#028A48] w-full"
               >
-                Cập nhật yêu cầu
+                Cập nhật
               </button>
               <button
                 onClick={() => setIsDrawerOpen(false)}
@@ -450,7 +470,7 @@ const HarvestRequestManagement = () => {
         title="Chi tiết yêu cầu thu nguyên liệu"
         isOpen={isViewDrawerOpen}
         placement="right"
-        width="30%"
+        width={drawerWidth}
         onClose={() => setIsViewDrawerOpen(false)}
       >
         {viewDetailRequest ? (

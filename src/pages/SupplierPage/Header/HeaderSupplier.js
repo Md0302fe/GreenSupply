@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
@@ -38,7 +38,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
+const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
   const userRedux = useSelector((state) => state.user);
@@ -86,6 +86,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
     setOpenUserInfo(false);
   };
 
+
   return (
     <header
       className="
@@ -95,16 +96,19 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen }) => {
         flex items-center justify-between
       "
     >
-      <div className="part1">
+      <div className="part1 transition-all duration-500 ease-in-out w-fit">
         <Button
           sx={{ color: "rgba(0,0,0,0.8)" }}
-          className="!w-[40px] !h-[40px] !rounded-full !min-w-[40px]"
+          className={`
+      !w-[40px] !h-[40px] !rounded-full !min-w-[40px]
+      transition-all duration-500 ease-in-out
+    `}
           onClick={toggleSidebar}
         >
           {isSidebarOpen ? (
-            <RiMenuFold4Line className="text-[18px] transition-all duration-300" />
+            <RiMenuFold4Line className="text-[18px] transition-all duration-500 ease-in-out" />
           ) : (
-            <RiMenuUnfold4Line className="text-[18px] transition-all duration-300" />
+            <RiMenuUnfold4Line className="text-[18px] transition-all duration-500 ease-in-out" />
           )}
         </Button>
       </div>
