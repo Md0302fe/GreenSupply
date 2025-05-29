@@ -12,6 +12,9 @@ import DrawerComponent from "../../components/DrawerComponent/DrawerComponent";
 import * as ProductionRequestServices from "../../services/ProductionRequestServices";
 import { useNavigate } from "react-router-dom";
 
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { FaGear } from "react-icons/fa6";
+
 // Hàm lấy danh sách nhiên liệu
 export const getAllFuelType = async () => {
   const res = await axios.get(
@@ -175,38 +178,48 @@ const ProductionRequestList = () => {
       sorter: (a, b) => a.request_name.localeCompare(b.request_name),
     },
     {
-      title: "Thành phẩm (Kg)",
+      title: <div className="text-center">K.l Thành phẩm (Kg)</div>,
       dataIndex: "product_quantity",
       key: "product_quantity",
+      align: "center",
+      className: "text-center",
       sorter: (a, b) => a.product_quantity - b.product_quantity,
-      render: (val) => `${val} Kg`,
+      render: (val) => `${val}`,
     },
     {
-      title: "Nguyên liệu (Kg)",
+      title: <div className="text-center">K.l Nguyên liệu (Kg)</div>,
       dataIndex: "material_quantity",
       key: "material_quantity",
+      align: "center",
+      className: "text-center",
       sorter: (a, b) => a.material_quantity - b.material_quantity,
-      render: (val) => `${val} Kg`,
+      render: (val) => `${val}`,
     },
     {
-      title: "Ngày bắt đầu",
+      title: <div className="text-center">Ngày bắt đầu</div>,
       dataIndex: "production_date",
       key: "production_date",
+      align: "center",
+      className: "text-center",
       sorter: (a, b) =>
         new Date(a.production_date) - new Date(b.production_date),
       render: (date) => convertDateStringV1(date),
     },
     {
-      title: "Ngày kết thúc",
+      title: <div className="text-center">Ngày kết thúc</div>,
       dataIndex: "end_date",
       key: "end_date",
+      align: "center",
+      className: "text-center",
       sorter: (a, b) => new Date(a.end_date) - new Date(b.end_date),
       render: (date) => convertDateStringV1(date),
     },
     {
-      title: "Trạng thái",
+      title: <div className="text-center">Trạng thái</div>,
       dataIndex: "status",
       key: "status",
+      align: "center",
+      className: "text-center",
       filters: [
         { text: "Đang sản xuất", value: "Đang sản xuất" },
         { text: "Đã duyệt", value: "Đã duyệt" },
@@ -215,14 +228,34 @@ const ProductionRequestList = () => {
       render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
     },
     {
-      title: "Hành động",
+      title: <div className="text-center">Hành động</div>,
       key: "action",
+      align: "center",
+      className: "text-center",
       render: (record) => (
-        <Space>
-          <Button type="link" onClick={() => handleViewDetail(record)}>
-            Xem chi tiết
-          </Button>
-        </Space>
+        <div className="flex justify-center items-center gap-2">
+          <div
+            className=" text-black gap-2 cursor-pointer hover:bg-gray-200  rounded-lg transition-all duration-200 "
+            onClick={() => handleViewDetail(record)}
+          >
+            <Button
+              icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
+              size="middle"
+            />
+          </div>
+          {/* có thể tạo quy trình nhanh */}
+          {record?.status === "Đã duyệt" && (
+            <div className="flex justify-center gap-4">
+              <Button
+                icon={
+                  <FaGear className="text-green-600 transition-transform duration-300 group-hover:rotate-180" />
+                }
+                className="px-6 py-2 text-lg group"
+                onClick={() => navigate(`create/${record._id}`)}
+              ></Button>
+            </div>
+          )}
+        </div>
       ),
     },
   ];
@@ -240,14 +273,41 @@ const ProductionRequestList = () => {
 
   return (
     <div className="production-request-list">
-      <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-bold text-gray-800">
+      <div className="my-4">
+        <div className="absolute">
+          <Button
+            onClick={() => navigate(-1)}
+            type="primary"
+            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </Button>
+        </div>
+        <h5 className="content-title font-bold text-2xl text-center">
           Danh Sách Yêu Cầu Chờ Tạo Quy Trình
         </h5>
       </div>
 
       <Loading isPending={isLoading}>
-        <Table columns={columns} dataSource={tableData} pagination={{ pageSize: 4 }} />
+        <Table
+          columns={columns}
+          dataSource={tableData}
+          pagination={{ pageSize: 4 }}
+        />
       </Loading>
 
       <DrawerComponent
@@ -334,7 +394,7 @@ const ProductionRequestList = () => {
                 )}
               </div>
             </div>
-
+            {/* Nếu đã duyệt thì có thể tạo quy trình */}
             {selectedRequest.status === "Đã duyệt" && (
               <div className="flex justify-center gap-4 mt-6">
                 <Button

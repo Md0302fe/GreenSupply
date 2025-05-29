@@ -21,7 +21,6 @@ const HarvestRequestManagement = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
-  const [rowSelected, setRowSelected] = useState(null);
   const [editForm, setEditForm] = useState({
     fuel_name: "",
     quantity: "",
