@@ -16,16 +16,10 @@ import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
-import { Tag } from "antd";
+import { Descriptions, Tag } from "antd";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
-import {
-  Space,
-  Input,
-  Form,
-  Button,
-  message,
-} from "antd";
+import { Space, Input, Form, Button, message } from "antd";
 
 import {
   handleAcceptProvideOrders,
@@ -391,7 +385,7 @@ const FuelProvideManagement = () => {
       align: "center",
       className: "text-center",
       ...getColumnSearchProps("price"),
-      render : (price) => `${convertPrice(price)}`
+      render: (price) => `${convertPrice(price)}`,
     },
     {
       title: "Trạng Thái",
@@ -535,7 +529,7 @@ const FuelProvideManagement = () => {
         </div>
       </div>
 
-      {/* DRAWER - Update Product */}
+      {/* DRAWER - Chi Tiết Đơn Hàng */}
       <DrawerComponent
         title="Chi Tiết Đơn Hàng"
         isOpen={isDrawerOpen}
@@ -544,85 +538,90 @@ const FuelProvideManagement = () => {
         width="35%"
         forceRender
       >
-        {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails || isPendingUpDate}>
-          <Form
-            name="update-form"
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 16,
-            }}
-            style={{
-              maxWidth: 600,
-            }}
-            initialValues={{
-              remember: true,
-            }}
-            autoComplete="on"
-            form={formUpdate}
-          >
-            <Form.Item label="Khách Hàng" name="customerName">
-              <span>{stateDetailsUser?.supplier_id?.full_name || ""}</span>
-            </Form.Item>
+          <Descriptions bordered column={1} layout="horizontal">
+            <Descriptions.Item
+              label="Khách Hàng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.supplier_id?.full_name || ""}
+            </Descriptions.Item>
 
-            <Form.Item label="Loại Nguyên Liệu" name="fuel_name">
-              <span>{stateDetailsUser?.fuel_name || ""}</span>
-            </Form.Item>
+            <Descriptions.Item
+              label="Loại Nguyên Liệu"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.fuel_name || ""}
+            </Descriptions.Item>
 
-            <Form.Item label="Giá Tiền" name="price">
-              <span>{stateDetailsUser?.price || ""}</span>
-            </Form.Item>
+            <Descriptions.Item
+              label="Giá Tiền"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.price || ""}
+            </Descriptions.Item>
 
-            <Form.Item label="Chất Lượng" name="quality">
-              <span>{stateDetailsUser?.quality || ""}</span>
-            </Form.Item>
-            <Form.Item label="Số Lượng" name="quantity">
-              <span>{stateDetailsUser?.quantity || ""}</span>
-            </Form.Item>
-            <Form.Item label="Ghi chú" name="note">
-              <span>{stateDetailsUser?.note || ""}</span>
-            </Form.Item>
+            <Descriptions.Item
+              label="Chất Lượng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.quality || ""}
+            </Descriptions.Item>
 
-            <Form.Item label="Trạng Thái" name="status">
-              <span>{orderStatus}</span> {/* Hiển thị trạng thái đơn hàng */}
-            </Form.Item>
-            <Form.Item label="Tổng Giá" name="total_price">
-              <span>{stateDetailsUser?.total_price || ""}</span>
-            </Form.Item>
+            <Descriptions.Item
+              label="Số Lượng"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.quantity || ""}
+            </Descriptions.Item>
 
-            <Form.Item
-              wrapperCol={{
-                offset: 4, // Giảm offset để đẩy UI qua trái
-                span: 16,
+            <Descriptions.Item
+              label="Ghi chú"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.note || "Không có"}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Trạng Thái"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {orderStatus || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label="Tổng Giá"
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.total_price || ""}
+            </Descriptions.Item>
+          </Descriptions>
+
+          {orderStatus === "Chờ duyệt" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+                marginTop: 24,
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  justifyContent: "flex-start",
-                }}
-              >
-                {orderStatus === "Chờ duyệt" && (
-                  <>
-                    <Button type="primary" onClick={handleAcceptProvideOrder}>
-                      Duyệt đơn
-                    </Button>
-
-                    <Button
-                      type="default"
-                      danger
-                      onClick={handleCancelProvideOrder}
-                    >
-                      Hủy đơn
-                    </Button>
-                  </>
-                )}
-              </div>
-            </Form.Item>
-          </Form>
+              <Button type="primary" onClick={handleAcceptProvideOrder}>
+                Duyệt đơn
+              </Button>
+              <Button danger onClick={handleCancelProvideOrder}>
+                Hủy đơn
+              </Button>
+            </div>
+          )}
         </Loading>
       </DrawerComponent>
     </div>

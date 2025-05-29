@@ -268,26 +268,42 @@ const FuelList = () => {
   // Columns definition
   const columns = [
     {
-      title: "Tên Loại Nhiên Liệu",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          Tên Loại Nhiên Liệu
+        </div>
+      ),
+      // title: "Tên Loại Nhiên Liệu",
       dataIndex: "type_name",
       key: "type_name",
       ...getColumnSearchProps("type_name"),
       sorter: (a, b) => a.type_name.localeCompare(b.type_name),
+      align: "center",
     },
     {
-      title: "Mô Tả",
+      title: <div style={{ textAlign: "center", width: "100%" }}>Mô Tả</div>,
+
       dataIndex: "description",
       key: "description",
-      width: "40%", // Thiết lập chiều rộng 300px
+      width: "40%",
+      align: "center",
     },
     {
-      title: "Số Lượng Trong Kho",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          Số Lượng Trong Kho
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       sorter: (a, b) => a.quantity - b.quantity,
+      align: "center",
+      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
-      title: "Trạng Thái",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+      ),
       dataIndex: "is_deleted",
       key: "is_deleted",
       filters: [
@@ -295,18 +311,25 @@ const FuelList = () => {
         { text: "Chưa xóa", value: false },
       ],
       onFilter: (value, record) => record.is_deleted === value,
+      align: "center",
       render: (is_deleted) => (
-        <Tag color={is_deleted ? "red" : "green"}>
-          {is_deleted ? "Đã xóa" : "Chưa xóa"}
-        </Tag>
+        <div style={{ textAlign: "center" }}>
+          <Tag color={is_deleted ? "red" : "green"}>
+            {is_deleted ? "Đã xóa" : "Chưa xóa"}
+          </Tag>
+        </div>
       ),
     },
     {
-      title: "Hành Động",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Hành Động</div>
+      ),
       key: "action",
+      align: "center",
       render: (_, record) => (
-        <Space>
-          {/* Nút Xem chi tiết */}
+        <div style={{ textAlign: "center" }}>
+          <Space>
+            {/* Nút Xem chi tiết */}
           <Button
             type="link"
             icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
@@ -318,10 +341,12 @@ const FuelList = () => {
             icon={<EditOutlined style={{ fontSize: "20px" }} />}
             onClick={() => openUpdateDrawer(record)}
           ></Button>
-        </Space>
+          </Space>
+        </div>
       ),
     },
   ];
+
   return (
     <div className="fuel-list">
       <Button

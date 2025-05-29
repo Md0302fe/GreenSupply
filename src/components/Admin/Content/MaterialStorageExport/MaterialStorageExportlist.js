@@ -191,26 +191,47 @@ const MaterialStorageExportList = () => {
 
   const columns = [
     {
-      title: "Loại Xuất Kho",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Loại Xuất Kho</div>
+      ),
       dataIndex: "type_export",
       key: "type_export",
+      align: "center",
+      render: (text) => (
+        <div style={{ textAlign: "center" }}>{text || "Không rõ"}</div>
+      ),
     },
     {
-      title: "Đơn sản xuất",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Đơn sản xuất</div>
+      ),
       key: "production_request",
-      render: (_, record) =>
-        record?.production_request_id?.request_name || "Không rõ",
+      align: "center",
+      render: (_, record) => (
+        <div style={{ }}>
+          {record?.production_request_id?.request_name || "Không rõ"}
+        </div>
+      ),
     },
     {
-      title: "Lô nguyên liệu",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Lô nguyên liệu</div>
+      ),
       key: "batch",
-      render: (_, record) => record?.batch_id?.batch_name || "Không rõ",
+      align: "center",
+      render: (_, record) => (
+        <div style={{ }}>
+          {record?.batch_id?.batch_name || "Không rõ"}
+        </div>
+      ),
     },
     {
-      title: "Trạng Thái",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+      ),
       dataIndex: "status",
-      className: "text-center",
       key: "status",
+      align: "center",
       filters: [
         {
           text: "Chờ duyệt",
@@ -221,7 +242,6 @@ const MaterialStorageExportList = () => {
           value: "Hoàn thành",
         },
       ],
-
       onFilter: (value, record) => record.status === value,
       filteredValue: statusFilter ? [statusFilter] : null,
       render: (status) => {
@@ -245,25 +265,35 @@ const MaterialStorageExportList = () => {
           default:
             color = "default";
         }
-        return <Tag color={color}>{status}</Tag>;
+        return (
+          <div style={{ textAlign: "center" }}>
+            <Tag color={color}>{status}</Tag>
+          </div>
+        );
       },
     },
     {
-      title: "Hành động",
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Hành động</div>
+      ),
       key: "action",
+      align: "center",
       render: (_, record) => (
-        <Button
-          type="link"
-          icon={
-            <HiOutlineDocumentSearch
-              style={{ fontSize: "20px", color: "dodgerblue" }}
-            />
-          }
-          onClick={() => showExportDetails(record._id)}
-        />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            type="link"
+            icon={
+              <HiOutlineDocumentSearch
+                style={{ fontSize: "20px", color: "dodgerblue" }}
+              />
+            }
+            onClick={() => showExportDetails(record._id)}
+          />
+        </div>
       ),
     },
   ];
+
   const handleTableChange = (pagination, filters, sorter) => {
     // Cập nhật filter trạng thái
     if (filters.status) {
@@ -400,40 +430,33 @@ const MaterialStorageExportList = () => {
 
   return (
     <div className="material-storage-export-list">
-      <Button
-        onClick={() => navigate(-1)}
-        type="primary"
-        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 mr-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12H3m0 0l6-6m-6 6l6 6"
-          />
-        </svg>
-        Quay lại
-      </Button>
-      <div
-        style={{
-          marginBottom: 24,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {/* Nút quay lại */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </Button>
 
-        <h5 className="text-2xl font-bold text-gray-800">
+        <h5 className="text-4xl font-bold text-gray-800 absolute left-1/2 transform -translate-x-1/2">
           Quản lý Đơn Xuất Kho
         </h5>
+        <div style={{ width: 120 }} />
       </div>
 
       <div className="flex flex-wrap gap-4 mb-2">
