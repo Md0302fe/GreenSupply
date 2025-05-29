@@ -224,6 +224,9 @@ const ProductionProcessForm = () => {
         </Form.Item>
 
         <Form.Item>
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-2 mb-2 rounded-md shadow-sm">
+                Bạn có thể <span className="font-bold">tạo quy trình</span> ngay khi các lô nguyên liệu đã được chuẩn bị!
+          </div>
           <Button type="primary" htmlType="submit" loading={loading} className="w-full">
             Xác nhận
           </Button>
