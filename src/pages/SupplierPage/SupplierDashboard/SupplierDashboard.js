@@ -54,7 +54,7 @@ const SupplierDashboard = () => {
     fixed top-0 left-0 z-40 h-screen bg-white
     transition-transform duration-500 ease-in-out
  ${windowWidth < 768
-            ? "w-[70vw]"
+            ? "w-[100w]"
             : windowWidth < 1024
               ? "w-[30vw]"
               : "w-[18vw]"
