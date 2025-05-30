@@ -337,7 +337,7 @@ const ProvideRequestManagement = () => {
   };
 
   const columns = isMobile
-    ? [allColumns[0], allColumns[4], actionColumn] // Tên nguyên liệu, Trạng thái, Hành động
+    ? [allColumns[0], allColumns[1],allColumns[2], allColumns[3], allColumns[4], actionColumn] // Tên nguyên liệu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
   const drawerWidth = isMobile ? "100%" : "40%";
@@ -378,6 +378,7 @@ const ProvideRequestManagement = () => {
           loading={isLoading}
           rowKey={(record) => record._id}
           pagination={{ pageSize: 6 }}
+          scroll={{ x: "max-content" }}
         />
       </div>
 

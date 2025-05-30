@@ -43,7 +43,7 @@ const SideBar = ({ onItemClick }) => {
           >
             <RiBillLine className="text-[24px] shrink-0" />
             <span className="whitespace-nowrap text-base lg:text-[15px] md:text-[13px]">Đơn Đã Tạo</span>
-            <span className="hidden md:flex flex items-center justify-center w-[30px] h-[30px] shrink-0">
+            <span className="flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
                 className={`transition-all ${subMenuIndex === 1 ? "rotate-180" : ""
                   }`}
@@ -109,7 +109,7 @@ const SideBar = ({ onItemClick }) => {
           >
             <RiBillLine className="text-[24px] shrink-0" />
             <span className="whitespace-nowrap">Lịch sử đơn </span>
-            <span className="hidden md:flex flex items-center justify-center w-[30px] h-[30px] shrink-0">
+            <span className="flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
                 className={`transition-all ${subMenuIndex === 2 ? "rotate-180" : ""
                   }`}
