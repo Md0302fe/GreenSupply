@@ -304,7 +304,7 @@ const HarvestRequestManagement = () => {
 
   // Chọn cột hiển thị tùy theo thiết bị
   const columns = isMobile
-    ? [allColumns[0], allColumns[4], actionColumn] // Tên yêu cầu, Trạng thái, Hành động
+    ? [allColumns[0], allColumns[1],allColumns[2], allColumns[3], allColumns[4], actionColumn] // Tên yêu cầu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
 
@@ -346,6 +346,7 @@ const HarvestRequestManagement = () => {
         loading={isLoading}
         rowKey={(record) => record._id}
         pagination={{ pageSize: 6 }}
+        scroll={{ x: "max-content" }}
       />
 
       {/* Drawer Update Request */}

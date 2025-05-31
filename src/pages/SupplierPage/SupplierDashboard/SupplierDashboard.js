@@ -54,7 +54,7 @@ const SupplierDashboard = () => {
     fixed top-0 left-0 z-40 h-screen bg-white
     transition-transform duration-500 ease-in-out
  ${windowWidth < 768
-            ? "w-[70vw]"
+            ? "w-[100w]"
             : windowWidth < 1024
               ? "w-[30vw]"
               : "w-[18vw]"
@@ -63,12 +63,12 @@ const SupplierDashboard = () => {
       >
         <SideBar
           onItemClick={() => {
-            if (windowWidth <= 768) setIsSidebarOpen(false);
+            if (windowWidth < 1024) setIsSidebarOpen(false);
           }}
           windowWidth={windowWidth}
         />
       </div>
-      {isSidebarOpen && windowWidth <= 768 && (
+      {isSidebarOpen && windowWidth < 1024 && (
         <div
           className="fixed inset-0 bg-black opacity-10 z-30"
           onClick={() => setIsSidebarOpen(false)}
