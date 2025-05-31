@@ -63,12 +63,12 @@ const SupplierDashboard = () => {
       >
         <SideBar
           onItemClick={() => {
-            if (windowWidth <= 768) setIsSidebarOpen(false);
+            if (windowWidth < 1024) setIsSidebarOpen(false);
           }}
           windowWidth={windowWidth}
         />
       </div>
-      {isSidebarOpen && windowWidth <= 768 && (
+      {isSidebarOpen && windowWidth < 1024 && (
         <div
           className="fixed inset-0 bg-black opacity-10 z-30"
           onClick={() => setIsSidebarOpen(false)}
