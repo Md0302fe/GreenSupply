@@ -22,6 +22,11 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import OTPInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
 
+// translate
+import { useTranslation, Trans } from 'react-i18next';
+import LanguageSwitcher from './../TranslateComponent/LanguageSwitcher';
+
+
 const Login = () => {
   const navigate = useNavigate();
   // Variables
@@ -42,6 +47,11 @@ const Login = () => {
   const [sendOtpLoading, setsendOtpLoading] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
 
+  // translate
+  const { t, i18n } = useTranslation();
+  const switchLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   // Mutation
   const mutation = useMutationHooks((data) => UserServices.userLogin(data));
@@ -226,7 +236,7 @@ const Login = () => {
             <span>Trang chủ</span>
           </a>
           <img src="image/logo-orange.png" alt="" />
-          <p className="text-3xl font-bold text-supply-primary mb-4">Đăng nhập</p>
+          <p className="text-3xl font-bold text-supply-primary mb-4">{t('login')}</p>
           <div className="content-form col-5 w-10/12">
             {/* Email */}
             <div className="form-group">
@@ -304,8 +314,13 @@ const Login = () => {
             </div>
           </GoogleOAuthProvider>
           <div className="mt-4 text-center">
-            <p>Bạn chưa có tài khoản <a href="/register" className="text-supply-primary underline cursor-pointer">Đăng ký</a></p>
+            <div className="flex items-center gap-1">
+              <p>{t('no_account')}</p> <a href="/register" className="text-supply-primary underline cursor-pointer">{t('register')}</a>
+            </div>
             <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
+          </div>
+          <div className="flex w-full justify-end mr-6">
+            <LanguageSwitcher/>
           </div>
         </div>
 
