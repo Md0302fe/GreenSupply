@@ -4,8 +4,11 @@ import backgroundRegister from "../../assets/image/background_login.png";
 import { toast } from "react-toastify";
 import * as UserServices from "../../services/UserServices";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const GoogleRegister = () => {
+  const { t } = useTranslation();
+
   const location = useLocation();
   const user = location.state?.user;
   const [phone, setPhone] = useState("");
@@ -23,9 +26,9 @@ const GoogleRegister = () => {
     const inputDate = event.target.value;
     setBirthday(inputDate);
     if (!inputDate) {
-      setBirthDayError("Vui lòng chọn ngày sinh.");
+      setBirthDayError(t("birthday_required"));
     } else if (inputDate > today) {
-      setBirthDayError("Ngày sinh không thể lớn hơn ngày hiện tại.");
+      setBirthDayError(t("invalid_dob"));
     } else {
       setBirthDayError(""); // Xóa lỗi nếu hợp lệ
     }
@@ -34,7 +37,7 @@ const GoogleRegister = () => {
   // Submit thông tin còn thiếu
   const handleSubmit = async () => {
     if (birthDayError || !phone || !birth_day) {
-      toast.error("Vui lòng nhập đúng thông tin trước khi tiếp tục.");
+      toast.error(t("fill_valid_information"));
       return;
     }
     try {
@@ -51,16 +54,16 @@ const GoogleRegister = () => {
       });
 
       if (result.status === "OK") {
-        toast.success("Thông tin đã được cập nhật!");
+        toast.success(t("fill_valid_information"));
         setTimeout(() => {
           window.location.href = "/login";
         }, 1500);
       } else {
-        toast.error(result.message || "Không thể cập nhật thông tin.");
+        toast.error(result.message || t("update_failed"));
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật thông tin:", error.message);
-      toast.error("Không thể cập nhật thông tin. Vui lòng thử lại.");
+      toast.error(t("update_failed"));
     }
   };
 
@@ -76,10 +79,10 @@ const GoogleRegister = () => {
         <div className="Info-Sign-In bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-6/12 mx-auto relative">
           <a href="/login" className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
             <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
-            <span>Quay lại</span>
+            <span>{t("back")}</span>
           </a>
           <div className="w-full pt-12 font-bold text-3xl text-center text-supply-primary mb-4">
-            Cập Nhật Thông Tin
+            {t("update_profile")}
           </div>
 
           {/* Hiển thị thông tin từ Google */}
@@ -103,7 +106,7 @@ const GoogleRegister = () => {
                 className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^0\d{9}$/.test(phone) ? "border-red-500" : ""
                   }`}
                 value={phone}
-                placeholder="Số điện thoại"
+                placeholder={t("phone_placeholder")}
                 onChange={(event) => {
                   const input = event.target.value;
                   if (/^\d{0,10}$/.test(input)) { // Chỉ cho phép nhập tối đa 10 số
@@ -114,14 +117,14 @@ const GoogleRegister = () => {
               />
               {/* Hiển thị lỗi nếu số điện thoại không hợp lệ */}
               {phone && !/^0\d{9}$/.test(phone) && (
-                <p className="text-red-500 text-sm">Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.</p>
+                <p className="text-red-500 text-sm">{t("invalid_phone")}</p>
               )}
             </div>
 
 
             {/* Gender */}
             <div>
-              <p>Giới tính:</p>
+              <p>{t("gender")}:</p>
               <div className="flex justify-between">
                 <label>
                   <input
@@ -130,7 +133,7 @@ const GoogleRegister = () => {
                     value="male"
                     onChange={(event) => setGender(event.target.value)}
                   />
-                  <span className="ml-2">Nam</span>
+                  <span className="ml-2">{t("male")}</span>
                 </label>
                 <label className="ml-4">
                   <input
@@ -139,7 +142,7 @@ const GoogleRegister = () => {
                     value="female"
                     onChange={(event) => setGender(event.target.value)}
                   />
-                  <span className="ml-2">Nữ</span>
+                  <span className="ml-2">{t("female")}</span>
                 </label>
                 <label className="ml-4">
                   <input
@@ -148,14 +151,14 @@ const GoogleRegister = () => {
                     value="other"
                     onChange={(event) => setGender(event.target.value)}
                   />
-                  <span className="ml-2">Khác</span>
+                  <span className="ml-2">{t("other")}</span>
                 </label>
               </div>
             </div>
 
             {/* Birthday */}
             <div className="form-group">
-              <label htmlFor="birth_day">Ngày sinh</label>
+              <label htmlFor="birth_day">{t("birthday")}</label>
               <input
                 type="date"
                 className={`border-[1px] border-supply-primary text-black ${birthDayError ? "border-red-500" : ""
@@ -177,7 +180,7 @@ const GoogleRegister = () => {
                 checked={role_check}
                 onChange={(event) => setRoleCheck(event.target.checked)}
               />
-              <label htmlFor="roleCheck">Nhấn vào đây nếu bạn là nhà cung ứng</label>
+              <label htmlFor="roleCheck">{t("supplier_check")}</label>
             </div>
 
             {/* Submit Button */}
@@ -186,7 +189,7 @@ const GoogleRegister = () => {
                 className="text-center bg-supply-primary text-white px-10 py-2 rounded-full disabled:bg-supply-sec"
                 onClick={handleSubmit}
               >
-                Hoàn tất
+                {t("complete")}
               </button>
             </div>
           </div>
