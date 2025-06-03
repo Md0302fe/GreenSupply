@@ -24,6 +24,8 @@
   "login_retry": "Đăng nhập không thành công, hãy thử lại sau.",
   "otp_sent": "OTP đã được gửi!",
   "otp_cant_sent": "Không thể gửi OTP!",
+  "user_info": "Thông tin người dùng",
+  "close": "Đóng",
   "invalid_otp": "Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.",
   "otp_verified": "Xác minh mã otp thành công.",
   "password_updated": "Mật khẩu đã được cập nhật thành công!",
@@ -119,5 +121,47 @@
     "phone": "Điện thoại: 0976 000 000",
     "description": "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
     "copyright": "Greensupply.com.vn"
+  },
+  "sidebar": {
+    "created_orders": "Đơn Đã Tạo",
+    "harvest_orders": "Đơn Thu Nguyên Liệu",
+    "provide_orders": "Đơn Cung Cấp Nguyên Liệu",
+    "create_harvest_request": "Tạo yêu cầu thu hàng",
+    "create_provide_order": "Tạo đơn cung cấp hàng",
+    "order_history": "Lịch sử đơn",
+    "history_harvest": "L.s Đơn yêu cầu thu nguyên liệu",
+    "history_provide": "L.s Đơn cung cấp nguyên liệu",
+    "track_shipment": "Theo dõi lô hàng"
+  },
+  "harvestRequest": {
+    "title": "ĐƠN YÊU CẦU THU NGUYÊN LIỆU",
+    "edit_title": "Chỉnh sửa yêu cầu thu nguyên liệu",
+    "detail_title": "Chi tiết yêu cầu thu nguyên liệu",
+    "name": "Tên yêu cầu",
+    "quantity": "Số lượng (kg)",
+    "price": "Giá mỗi đơn vị (VNĐ)",
+    "total_price": "Tổng giá",
+    "address": "Địa chỉ lấy hàng",
+    "note": "Ghi chú",
+    "note_limit": "Ghi chú (tối đa 200 ký tự)",
+    "status": "Trạng thái",
+    "total_price_display": "Tổng giá:",
+    "update": "Cập nhật",
+    "close": "Đóng",
+    "cancel_confirm_msg": "Bạn có chắc chắn muốn hủy yêu cầu này?",
+    "confirm": "Xác nhận",
+    "action": "Hành động",
+    "success_update": "Cập nhật yêu cầu thành công!",
+    "fail_update": "Cập nhật yêu cầu thất bại",
+    "success_cancel": "Yêu cầu đã được hủy thành công!",
+    "fail_cancel": "Hủy yêu cầu thất bại",
+    "only_cancel_pending": "Chỉ có thể hủy yêu cầu ở trạng thái 'Chờ duyệt'.",
+    "no_data": "Không có dữ liệu."
+  },
+  "status": {
+    "pending": "Chờ duyệt",
+    "approve": "Đã duyệt",
+    "cancelled": "Đã hủy",
+    "completed": "Hoàn thành"
   }
 }

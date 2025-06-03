@@ -30,6 +30,7 @@
   "error_generic": "An error occurred, please try again later.",
   "something_wrong": "Something went wrong. Please try again.",
   "login_with_google": "Login with Google",
+  "user_info": "User Information",
   "google_locale": "en",
   "name_placeholder": "Your name",
   "confirm_password_placeholder": "Confirm password",
@@ -38,6 +39,7 @@
   "male": "Male",
   "female": "Female",
   "other": "Other",
+  "close": "Close",
   "birthday": "Birthday",
   "supplier_check": "Check here if you're a supplier",
   "already_have_account": "Already have an account",
@@ -59,7 +61,7 @@
   "personal_info": "Personal Information",
   "logout": "Logout",
   "account": "Account",
-   "carousel": {
+  "carousel": {
     "view_more": "View more",
     "title_2": "CAREFUL SELECTION",
     "desc_1": "A transparent, sustainable, smart mango supply chain platform that connects farms to consumers effectively.",
@@ -122,5 +124,47 @@
     "phone": "Phone: 0976 000 000",
     "description": "A smart, transparent, and sustainable mango supply chain management platform that effectively connects farms to consumers.",
     "copyright": "Greensupply.com.vn"
+  },
+  "sidebar": {
+    "created_orders": "Created Orders",
+    "harvest_orders": "Harvest Orders",
+    "provide_orders": "Provide Orders",
+    "create_harvest_request": "Create Harvest Request",
+    "create_provide_order": "Create Provide Order",
+    "order_history": "Order History",
+    "history_harvest": "Harvest Request History",
+    "history_provide": "Provide Order History",
+    "track_shipment": "Track Shipment"
+  },
+  "harvestRequest": {
+    "title": "HARVEST REQUEST FORM",
+    "edit_title": "Edit Harvest Request",
+    "detail_title": "Harvest Request Details",
+    "name": "Request Name",
+    "quantity": "Quantity (kg)",
+    "price": "Price per Unit (VND)",
+    "total_price": "Total Price",
+    "address": "Pickup Address",
+    "note": "Note",
+    "note_limit": "Note (maximum 200 characters)",
+    "status": "Status",
+    "total_price_display": "Total Price:",
+    "update": "Update",
+    "close": "Close",
+    "action": "Action",
+    "cancel_confirm_msg": "Are you sure you want to cancel this request?",
+    "confirm": "Confirm",
+    "success_update": "Request updated successfully!",
+    "fail_update": "Failed to update request",
+    "success_cancel": "Request cancelled successfully!",
+    "fail_cancel": "Failed to cancel request",
+    "only_cancel_pending": "You can only cancel requests that are 'Pending Approval'.",
+    "no_data": "No data available."
+  },
+  "status": {
+    "pending": "Pending",
+    "approve": "Approve",
+    "cancelled": "Cancelled",
+    "completed": "Completed"
   }
 }
