@@ -4,30 +4,33 @@ import Icon1 from "../../../assets/NewProject/Icon-GreenSupply/OrderManagement.p
 import Icon2 from "../../../assets/NewProject/Icon-GreenSupply/Truck-icon.png";
 import Icon3 from "../../../assets/NewProject/Icon-GreenSupply/Headset-icon.png";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const FeatureButtons = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const features = [
-    {
-      id: 1,
-      icon: Icon1,
-      text: "QUẢN LÝ ĐƠN",
-      path: "/supplier/harvest-request-management",
-    },
-    {
-      id: 2,
-      icon: Icon2,
-      text: "YÊU CẦU THU HÀNG",
-      path: "/supplier/harvest-request",
-    },
-    {
-      id: 3,
-      icon: Icon3,
-      text: "CUNG CẤP NGUYÊN LIỆU",
-      path: "/supplier/provide-request",
-    },
-  ];
+  {
+    id: 1,
+    icon: Icon1,
+    text: t("feature_buttons.order_management"),
+    path: "/supplier/harvest-request-management",
+  },
+  {
+    id: 2,
+    icon: Icon2,
+    text: t("feature_buttons.harvest_request"),
+    path: "/supplier/harvest-request",
+  },
+  {
+    id: 3,
+    icon: Icon3,
+    text: t("feature_buttons.provide_material"),
+    path: "/supplier/provide-request",
+  },
+];
 
   return (
     <div className="flex justify-center items-center mb-4 gap-x-4">

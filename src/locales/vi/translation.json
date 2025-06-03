@@ -50,5 +50,74 @@
   "back": "Quay lại",
   "update_profile": "Cập Nhật Thông Tin",
   "complete": "Hoàn tất",
-  "birthday_required": "Vui lòng chọn ngày sinh."
+  "birthday_required": "Vui lòng chọn ngày sinh.",
+  "notifications": "Thông báo",
+  "system_management": "Quản lý hệ thống",
+  "personal_info": "Thông tin cá nhân",
+  "logout": "Đăng xuất",
+  "account": "Tài khoản",
+  "carousel": {
+    "view_more": "Xem thêm",
+    "title_2": "TUYỂN CHỌN KỸ CÀNG",
+    "desc_1": "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
+    "desc_2": "Được lựa chọn từ những trái xoài to nhất, có độ chín đều ngon ngọt để cho ra thị trường Việt Nam và xuất khẩu.",
+    "title_3": "TIÊU CHUẨN",
+    "desc_3": "Những trái xoài đều được quản lý bằng QR Code dễ dàng truy xuất được thời điểm thu hoạch và vùng trồng sản phẩm.",
+    "desc_4": "Quy trình sản xuất xanh - Kết nối với nông dân đa tỉnh thành."
+  },
+  "import_product_list": {
+    "title": "Mặt hàng cần nhập",
+    "view_more": "Xem thêm",
+    "empty": "Hiện tại chưa có đơn cần cung cấp.",
+    "quantity": "Số lượng",
+    "price_per_unit": "Giá mỗi đơn vị",
+    "total_price": "Tổng giá",
+    "remaining": "Còn lại",
+    "expired": "Đã hết hạn cung cấp",
+    "create_order": "Tạo đơn"
+  },
+  "common": {
+    "days": "ngày",
+    "hours": "giờ",
+    "minutes": "phút",
+    "seconds": "giây"
+  },
+  "homepage": {
+    "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
+    "mango_desc_2": "Với kinh nghiệm nhiều năm xuất khẩu loại quả này, Chánh Thu đã đang và sẽ mang quả xoài đến với người tiêu dùng của nhiều nước trên thế giới. Quả xoài chín có màu vàng hấp dẫn, vị chua ngọt và mùi thơm đặc trưng. Trong xoài chín có chứa các chất dinh dưỡng sau: glucid, protein, lipic, tro, nước và các chất khoáng khác như: Ca, photpho, Sắt, Vitamin A, Vitamin B1, Vitamin C, acid folic, beta caroten…",
+    "slogan": "Giải pháp hiệu quả dành cho nông sản của bạn",
+    "supply_chain_title": "TỔNG QUAN CHUỖI CUNG ỨNG",
+    "supply_chain_desc_1": "Tổng quan chuỗi Tiền Giang và Đồng Tháp là hai tỉnh thuộc số 13 năm trong khu vực châu thổ ĐBSCL, có nhiều diện tích trồng cây xoài được canh tác rất lâu đời. Xoài 'Cát Hòa Lộc' là một giống xoài rất nổi tiếng có nguồn gốc từ tỉnh Tiền Giang. Nhiều chợ đầu mối đã hình thành và phát triển một cách tự phát hiện thu hút nhiều bạn hàng đến đây để giao dịch buôn bán. Tuy nhiên thị trường tiêu thụ chính cho quả xoài là thị trường trong nước và Trung Quốc.",
+    "supply_chain_desc_2": "Đóng gói ở địa phương đóng vai trò rất quan trọng trong công việc điều phối toàn bộ hệ thống tiêu thụ xoài trong cả nước.",
+    "mission_title": "Sứ mệnh - Tầm nhìn",
+    "mission_1": "Lựa chọn của khách hàng quan tâm đến sức khỏe và môi trường",
+    "mission_2": "Cung cấp cho bạn sản phẩm chất lượng cao từ nhà vườn uy tín",
+    "mission_3": "Hãy truy cập",
+    "mission_3_suffix": "để lựa chọn cho mình những quả xoài sạch, an toàn cho sức khỏe",
+    "garden_title": "Nhà vườn",
+    "area_title": "Hecta đất trồng trọt",
+    "info_knowledge_title": "Thông tin - Kiến thức",
+    "article_1_date": "25 tháng 11 năm 2025",
+    "article_1_title": "Tình hình sản xuất Xoài thế giới và Việt Nam | Kỹ thuật trồng và chăm sóc Xoài",
+    "article_2_date": "25 tháng 11 năm 2025",
+    "article_2_title": "Cải tiến chuỗi giá trị ngành hàng xoài tại tỉnh Đồng Tháp",
+    "article_3_date": "25 tháng 11 năm 2025",
+    "article_3_title": "Xây dựng chuỗi giá trị xoài Việt Nam phục vụ thị trường trong nước và các thị trường xuất khẩu chủ lực"
+  },
+  "feature_buttons": {
+    "order_management": "QUẢN LÝ ĐƠN",
+    "harvest_request": "YÊU CẦU THU HÀNG",
+    "provide_material": "CUNG CẤP NGUYÊN LIỆU"
+  },
+  "footer": {
+    "intro": "Giới thiệu",
+    "company_name": "Công ty TNHH Green Supply",
+    "office": "Văn phòng",
+    "address": "Địa chỉ: 120 đường Nguyễn Văn Cừ, phường Long Tuyền, quận Bình Thủy - Cần Thơ",
+    "contact": "Thông tin liên lạc",
+    "email": "Email: Greensupply@gmail.com",
+    "phone": "Điện thoại: 0976 000 000",
+    "description": "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
+    "copyright": "Greensupply.com.vn"
+  }
 }

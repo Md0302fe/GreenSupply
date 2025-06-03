@@ -53,5 +53,74 @@
   "back": "Back",
   "update_profile": "Update Profile",
   "complete": "Complete",
-  "birthday_required": "Please select your birth date."
+  "birthday_required": "Please select your birth date.",
+  "notifications": "Notifications",
+  "system_management": "System Management",
+  "personal_info": "Personal Information",
+  "logout": "Logout",
+  "account": "Account",
+   "carousel": {
+    "view_more": "View more",
+    "title_2": "CAREFUL SELECTION",
+    "desc_1": "A transparent, sustainable, smart mango supply chain platform that connects farms to consumers effectively.",
+    "desc_2": "Selected from the biggest, ripest, and sweetest mangoes for domestic and export markets.",
+    "title_3": "STANDARDIZED",
+    "desc_3": "Mangoes are managed by QR code for easy traceability of harvest time and origin.",
+    "desc_4": "Green production process – Connecting farmers across provinces."
+  },
+  "import_product_list": {
+    "title": "Products to Import",
+    "view_more": "View more",
+    "empty": "There are currently no requests to supply.",
+    "quantity": "Quantity",
+    "price_per_unit": "Price per unit",
+    "total_price": "Total price",
+    "remaining": "Remaining",
+    "expired": "Supply expired",
+    "create_order": "Create Order"
+  },
+  "common": {
+    "days": "days",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds"
+  },
+  "homepage": {
+    "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
+    "mango_desc_2": "With many years of experience in exporting mangoes, Chanh Thu has been and will continue to bring mangoes to consumers around the world. Ripe mangoes have an attractive yellow color, a sweet and sour taste, and a characteristic aroma. Ripe mangoes contain nutrients such as glucid, protein, lipids, ash, water, and other minerals like calcium, phosphorus, iron, vitamin A, vitamin B1, vitamin C, folic acid, and beta-carotene.",
+    "slogan": "Effective solution for your agricultural products",
+    "supply_chain_title": "SUPPLY CHAIN OVERVIEW",
+    "supply_chain_desc_1": "Tien Giang and Dong Thap are two of the 13 provinces in the Mekong River Delta region, with vast mango growing areas cultivated for generations. The 'Cat Hoa Loc' mango is a very famous variety originating from Tien Giang. Many wholesale markets have spontaneously formed and developed here, attracting many traders to come and do business. However, the main consumption market for mangoes is still domestic and China.",
+    "supply_chain_desc_2": "Local packaging plays a very important role in coordinating the entire national mango distribution system.",
+    "mission_title": "Mission - Vision",
+    "mission_1": "Preferred by customers who care about health and the environment",
+    "mission_2": "Providing high-quality products from trusted local farmers",
+    "mission_3": "Visit",
+    "mission_3_suffix": "Green to choose clean, healthy mangoes for yourself",
+    "garden_title": "Farmers",
+    "area_title": "Hectares of cultivated land",
+    "info_knowledge_title": "Information - Knowledge",
+    "article_1_date": "November 25, 2025",
+    "article_1_title": "Global and Vietnam mango production | Techniques for growing and caring for mangoes",
+    "article_2_date": "November 25, 2025",
+    "article_2_title": "Improving the mango value chain in Dong Thap province",
+    "article_3_date": "November 25, 2025",
+    "article_3_title": "Building Vietnam’s mango value chain to serve the domestic market and key export markets"
+  },
+  "feature_buttons": {
+    "order_management": "ORDER MANAGEMENT",
+    "harvest_request": "HARVEST REQUEST",
+    "provide_material": "SUPPLY MATERIALS"
+  },
+  "footer": {
+    "intro": "Introduction",
+    "company_name": "Green Supply Co., Ltd",
+    "office": "Office",
+    "address": "Address: 120 Nguyen Van Cu Street, Long Tuyen Ward, Binh Thuy District - Can Tho",
+    "contact": "Contact information",
+    "email": "Email: Greensupply@gmail.com",
+    "phone": "Phone: 0976 000 000",
+    "description": "A smart, transparent, and sustainable mango supply chain management platform that effectively connects farms to consumers.",
+    "copyright": "Greensupply.com.vn"
+  }
 }

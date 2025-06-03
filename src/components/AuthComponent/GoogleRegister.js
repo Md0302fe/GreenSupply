@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import * as UserServices from "../../services/UserServices";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 
 const GoogleRegister = () => {
   const { t } = useTranslation();
@@ -67,18 +68,39 @@ const GoogleRegister = () => {
     }
   };
 
-
   return (
-    <div
-      className={`login-container flex-center-center h-screen`}
-    >
+    <div className={`login-container flex-center-center h-screen`}>
       <div
         className="Login-wapper Width items-center bg-cover max-w-full w-full h-full flex"
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
       >
         <div className="Info-Sign-In bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-6/12 mx-auto relative">
-          <a href="/login" className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
-            <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
+          <a
+            href="/login"
+            className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer"
+          >
+            <svg
+              width="16px"
+              height="16px"
+              viewBox="0 0 1024 1024"
+              className="icon"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000000"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z"
+                  fill="#ff8b00"
+                ></path>
+              </g>
+            </svg>
             <span>{t("back")}</span>
           </a>
           <div className="w-full pt-12 font-bold text-3xl text-center text-supply-primary mb-4">
@@ -103,13 +125,15 @@ const GoogleRegister = () => {
             <div className="form-group">
               <input
                 type="text"
-                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${phone && !/^0\d{9}$/.test(phone) ? "border-red-500" : ""
-                  }`}
+                className={`border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black ${
+                  phone && !/^0\d{9}$/.test(phone) ? "border-red-500" : ""
+                }`}
                 value={phone}
                 placeholder={t("phone_placeholder")}
                 onChange={(event) => {
                   const input = event.target.value;
-                  if (/^\d{0,10}$/.test(input)) { // Chỉ cho phép nhập tối đa 10 số
+                  if (/^\d{0,10}$/.test(input)) {
+                    // Chỉ cho phép nhập tối đa 10 số
                     setPhone(input);
                   }
                 }}
@@ -120,7 +144,6 @@ const GoogleRegister = () => {
                 <p className="text-red-500 text-sm">{t("invalid_phone")}</p>
               )}
             </div>
-
 
             {/* Gender */}
             <div>
@@ -161,14 +184,17 @@ const GoogleRegister = () => {
               <label htmlFor="birth_day">{t("birthday")}</label>
               <input
                 type="date"
-                className={`border-[1px] border-supply-primary text-black ${birthDayError ? "border-red-500" : ""
-                  }`}
+                className={`border-[1px] border-supply-primary text-black ${
+                  birthDayError ? "border-red-500" : ""
+                }`}
                 id="birth_day"
                 value={birth_day}
                 onChange={handleBirthDayChange}
                 required
               />
-              {birthDayError && <p className="text-red-500 text-sm">{birthDayError}</p>}
+              {birthDayError && (
+                <p className="text-red-500 text-sm">{birthDayError}</p>
+              )}
             </div>
 
             {/* Is supplier */}
@@ -196,6 +222,9 @@ const GoogleRegister = () => {
 
           <div className="mt-4 text-center">
             <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
+          </div>
+          <div className="flex w-full justify-end mr-6">
+            <LanguageSwitcher />
           </div>
         </div>
       </div>
