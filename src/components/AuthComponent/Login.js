@@ -23,9 +23,8 @@ import OTPInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
 
 // translate
-import { useTranslation, Trans } from 'react-i18next';
-import LanguageSwitcher from './../TranslateComponent/LanguageSwitcher';
-
+import { useTranslation, Trans } from "react-i18next";
+import LanguageSwitcher from "./../TranslateComponent/LanguageSwitcher";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,24 +34,20 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [stateNotification, setStateNotification] = useState(false);
   const dishpatch = useDispatch();
-  const [messageBlocked, setMessageBlocked] = useState(null);  
+  const [messageBlocked, setMessageBlocked] = useState(null);
 
   // FORGOT PASSWORD
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [emailForgot, setEmailForgot] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
   const [otpPopupVisible, setOtpPopupVisible] = useState(false);
   const [resendTimer, setResendTimer] = useState(0); // Thời gian chờ (giây)
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [sendOtpLoading, setsendOtpLoading] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
 
   // translate
   const { t, i18n } = useTranslation();
-  const switchLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
-
   // Mutation
   const mutation = useMutationHooks((data) => UserServices.userLogin(data));
   const { isPending, data, isSuccess } = mutation;
@@ -62,9 +57,8 @@ const Login = () => {
     if (isSuccess) {
       // chuẩn bị active box notification (success/fails)
 
-
       if (data.status === "BLOCKED") {
-        setMessageBlocked(data.message)
+        setMessageBlocked(data.message);
         return null;
       }
       setStateNotification(true);
@@ -72,7 +66,6 @@ const Login = () => {
       if (data.status === "OK") {
         // lấy token từ phía BE
         const token = data?.access_token;
-        console.log("Token nhận được:", token);
         // setItem (token)
         localStorage.setItem("access_token", JSON.stringify(token));
         if (data?.access_token) {
@@ -84,7 +77,7 @@ const Login = () => {
         setTimeout(() => {
           setEmail("");
           setPassword("");
-          window.location.replace('/home');
+          window.location.replace("/home");
           setStateNotification(false);
         }, 1000);
       }
@@ -102,51 +95,52 @@ const Login = () => {
     const googleToken = credentialResponse.credential;
     try {
       const response = await UserServices.userLogin({ googleToken });
-      console.log(response)
+      console.log(response);
       const { status, user, message } = response;
       if (status === "NEW_USER") {
-
         navigate("/google-register", { state: { user } });
       } else if (status === "BLOCKED") {
-        setMessageBlocked(message)
+        setMessageBlocked(message);
         return null;
       } else if (status === "OK") {
         // Đăng nhập thành công
-        localStorage.setItem("access_token", JSON.stringify(response.access_token));
+        localStorage.setItem(
+          "access_token",
+          JSON.stringify(response.access_token)
+        );
         if (response?.access_token) {
           const decode = jwtDecode(response.access_token);
           if (decode?.id) {
             handleGetDetailsUser(decode?.id, response.access_token);
           }
         }
-        toast.success("Đăng nhập thành công!");
+        toast.success(t("login_success"));
         setTimeout(() => {
-          window.location.replace('/home')
+          window.location.replace("/home");
         }, 1000);
       } else {
-        toast.error(message || "Đăng nhập thất bại.");
+        toast.error(message || t("login_fail"));
       }
     } catch (error) {
       console.error("Google login failed:", error);
-      toast.error("Đăng nhập không thành công, hãy thử lại sau.");
+      toast.error(t("login_retry"));
     }
   };
 
-
   const handleGoogleLoginFailure = (error) => {
-    toast.error("Đăng nhập không thành công, hãy thử lại sau.")
+    toast.error(t("login_retry"));
     console.error("Google Login Failed:", error);
   };
   const handleCloseOtpPopup = () => {
-    setOtp(''); 
-    setOtpPopupVisible(false); 
-    setResendTimer(0); 
+    setOtp("");
+    setOtpPopupVisible(false);
+    setResendTimer(0);
   };
 
   // USER INFOMATIONS
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserServices.getDetailsUser(id, token);
-    dishpatch(updateUser({ ...res?.data , access_token: token }));
+    dishpatch(updateUser({ ...res?.data, access_token: token }));
   };
 
   // CLICK BTN LOGIN
@@ -157,7 +151,7 @@ const Login = () => {
 
   const handleCheckEmail = async () => {
     setsendOtpLoading(true);
-    setErrorMessage('');
+    setErrorMessage("");
     try {
       const res = await UserServices.checkEmail({ emailForgot });
       if (res.status === "ERROR") {
@@ -176,7 +170,7 @@ const Login = () => {
           });
         }, 1000);
 
-        toast.success("OTP đã được gửi!");
+        toast.success(t("otp_sent"));
       }
     } catch (error) {
       console.error("API call failed:", error);
@@ -184,38 +178,41 @@ const Login = () => {
     } finally {
       setsendOtpLoading(false);
     }
-  }
-
+  };
 
   const handleSubmitOTP = async () => {
-    setErrorMessage('');
-    if (!otp || otp.length !== 6) { // Kiểm tra OTP
-      toast.error("Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.");
+    setErrorMessage("");
+    if (!otp || otp.length !== 6) {
+      // Kiểm tra OTP
+      toast.error(t("invalid_otp"));
       return;
     }
     const res = await UserServices.checkOtp({ otp, emailForgot });
     if (res.status === "ERROR") {
       setErrorMessage(res.message);
     }
-    toast.success('Xác minh mã otp thành công.')
+    toast.success(t("otp_verified"));
     setNewPassword(true);
     setOtpPopupVisible(false);
     setIsForgotPassword(false);
-  }
+  };
 
   const handlePasswordReset = async (newPassword) => {
     try {
-      const res = await UserServices.updatePassword({ newPassword, email: emailForgot });
+      const res = await UserServices.updatePassword({
+        newPassword,
+        email: emailForgot,
+      });
 
       if (res.status === "ERROR") {
         toast.error(res.message);
         return;
       }
       setNewPassword(false);
-      toast.success("Mật khẩu đã được cập nhật thành công!");
+      toast.success(t("password_updated"));
     } catch (error) {
       console.error("Lỗi khi cập nhật mật khẩu:", error);
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau.");
+      toast.error(t("error_generic"));
     } finally {
       setsendOtpLoading(false);
     }
@@ -223,20 +220,46 @@ const Login = () => {
 
   return (
     //  Overlay - Login-container
-    <div
-      className={`login-container flex-center-center h-screen`}
-    >
+    <div className={`login-container flex-center-center h-screen`}>
       {/* Wrapper Login */}
-      <div className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
-        style={{ backgroundImage: `url("${backgroundRegister}")` }}>
+      <div
+        className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
+        style={{ backgroundImage: `url("${backgroundRegister}")` }}
+      >
         <div className="Info-Sign-In bg-white rounded-2xl pt-12 pb-6  md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
           {/* Button Close Form */}
-          <a href="/" className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer">
-            <svg width="16px" height="16px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#ff8b00"></path></g></svg>
-            <span>Trang chủ</span>
+          <a
+            href="/"
+            className="absolute flex gap-1 items-center top-3 left-4 text-supply-primary cursor-pointer"
+          >
+            <svg
+              width="16px"
+              height="16px"
+              viewBox="0 0 1024 1024"
+              className="icon"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000000"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z"
+                  fill="#ff8b00"
+                ></path>
+              </g>
+            </svg>
+            <span>{t("home")}</span>
           </a>
           <img src="image/logo-orange.png" alt="" />
-          <p className="text-3xl font-bold text-supply-primary mb-4">{t('login')}</p>
+          <p className="text-3xl font-bold text-supply-primary mb-4">
+            {t("login")}
+          </p>
           <div className="content-form col-5 w-10/12">
             {/* Email */}
             <div className="form-group">
@@ -245,7 +268,7 @@ const Login = () => {
                 type={"email"}
                 className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={email}
-                placeholder="Email"
+                placeholder={t("email_placeholder")}
                 onChange={(event) => setEmail(event.target.value)}
               ></input>
             </div>
@@ -257,24 +280,28 @@ const Login = () => {
                 type={"password"}
                 className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={password}
-                placeholder="Mật khẩu "
+                placeholder={t("password_placeholder")}
                 onChange={(event) => setPassword(event.target.value)}
               ></input>
             </div>
             {messageBlocked && (
               <>
-              <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded-lg shadow-md">
-                <strong>{messageBlocked} !</strong> 
-              </div>
-            </>
+                <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded-lg shadow-md">
+                  <strong>{messageBlocked} !</strong>
+                </div>
+              </>
             )}
             {/* Forget Password */}
-            <div className="forget-password cursor-pointer" onClick={() => setIsForgotPassword(true)}>
-              <span>Quên mật khẩu ?</span>
+            <div
+              className="forget-password cursor-pointer"
+              onClick={() => setIsForgotPassword(true)}
+            >
+              <span>{t("forgot_password")}</span>
             </div>
             <div
-              className={`errorShow register ${stateNotification ? "active" : ""
-                }`}
+              className={`errorShow register ${
+                stateNotification ? "active" : ""
+              }`}
             >
               {data?.status === "ERROR" ? (
                 <div className="errorShow">
@@ -299,14 +326,14 @@ const Login = () => {
                   onClick={() => handleLogin()}
                   disabled={!email.length || !password.length}
                 >
-                  Đăng nhập
+                  {t("login")}
                 </button>
               </div>
             </Loading>
           </div>
           <GoogleOAuthProvider clientId={CLIENT_ID}>
             <div className="login-container text-center">
-              <h2 className="my-3 text-xs">Hoặc</h2>
+              <h2 className="my-3 text-xs">{t("or")}</h2>
               <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginFailure}
@@ -315,18 +342,24 @@ const Login = () => {
           </GoogleOAuthProvider>
           <div className="mt-4 text-center">
             <div className="flex items-center gap-1">
-              <p>{t('no_account')}</p> <a href="/register" className="text-supply-primary underline cursor-pointer">{t('register')}</a>
+              <p>{t("no_account")}</p>{" "}
+              <a
+                href="/register"
+                className="text-supply-primary underline cursor-pointer"
+              >
+                {t("register")}
+              </a>
             </div>
-            <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
+            <p className="text-[8px]">{t("copyright")}</p>
           </div>
           <div className="flex w-full justify-end mr-6">
-            <LanguageSwitcher/>
+            <LanguageSwitcher />
           </div>
         </div>
 
         <div className="hidden md:flex flex-col items-center justify-center text-center">
           <img src="image/logo-white.png" alt="" />
-          <p className="text-white font-semibold text-3xl">Giải pháp hiệu quả <br /> dành cho nông sản của bạn</p>
+          <p className="text-white font-semibold text-3xl">{t("slogan")}</p>
           <div className="flex items-center gap-3 justify-center mt-3">
             <img src="image/icon/fb.png" alt="" />
             <img src="image/icon/yt.png" alt="" />
@@ -336,33 +369,52 @@ const Login = () => {
         {isForgotPassword && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-              <div onClick={() => setIsForgotPassword(false)} className="absolute top-4 right-4 cursor-pointer">
+              <div
+                onClick={() => setIsForgotPassword(false)}
+                className="absolute top-4 right-4 cursor-pointer"
+              >
                 <img src="/image/icon/close.png" alt="" className="w-4" />
               </div>
-              <h2 className="text-lg font-semibold text-gray-700">Quên mật khẩu?</h2>
-              <p className="text-gray-500 text-sm mb-4">Vui lòng nhập email của bạn</p>
+              <h2 className="text-lg font-semibold text-gray-700">
+                {t("forgot_password")}
+              </h2>
+              <p className="text-gray-500 text-sm mb-4">{t("enter_email")}</p>
               <input
                 type="email"
                 required
-                placeholder="Nhập email..."
+                placeholder={t("email_placeholder")}
                 onChange={(event) => setEmailForgot(event.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
               />
               {errorMessage && (
                 <p className="text-red-500 mt-2 ml-2">{errorMessage}</p>
               )}
-              <button onClick={() => handleCheckEmail()} disabled={sendOtpLoading} className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition">
+              <button
+                onClick={() => handleCheckEmail()}
+                disabled={sendOtpLoading}
+                className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
+              >
                 {sendOtpLoading === true ? (
                   <div role="status" className="w-fit mx-auto">
-                    <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                    <svg
+                      aria-hidden="true"
+                      className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                      viewBox="0 0 100 101"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="currentFill"
+                      />
                     </svg>
                   </div>
                 ) : (
-                  <span>
-                    Gửi yêu cầu
-                  </span>
+                  <span>{t("send_request")}</span>
                 )}
               </button>
 
@@ -371,24 +423,30 @@ const Login = () => {
                   onClick={() => setIsForgotPassword(false)}
                   className="absolute top-3 right-3 cursor-pointer"
                 >
-                  <img src="/image/icon/close.png" alt="Đóng" className="w-4 opacity-70 hover:opacity-100 transition" />
+                  <img
+                    src="/image/icon/close.png"
+                    alt="Đóng"
+                    className="w-4 opacity-70 hover:opacity-100 transition"
+                  />
                 </div>
               )}
             </div>
-
           </div>
         )}
         {otpPopupVisible && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
-              <div onClick={handleCloseOtpPopup} className="absolute top-4 right-4 cursor-pointer">
+              <div
+                onClick={handleCloseOtpPopup}
+                className="absolute top-4 right-4 cursor-pointer"
+              >
                 <img src="/image/icon/close.png" alt="" className="w-4" />
               </div>
               <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-                Nhập mã OTP
+                {t("enter_otp")}
               </h3>
               <p className="text-sm text-gray-600 text-center mb-4">
-                Vui lòng nhập mã OTP gồm 6 chữ số được gửi đến email của bạn
+                {t("otp_instruction")}
               </p>
               <OTPInput
                 value={otp}
@@ -414,23 +472,25 @@ const Login = () => {
                 className="mt-6 w-full py-3 bg-indigo-600 text-white text-lg font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
                 onClick={() => handleSubmitOTP(otp)}
               >
-                Xác nhận OTP
+                {t("confirm_otp")}
               </button>
               <p className="text-sm text-gray-500 text-center mt-4">
-                Không nhận được mã?{" "}
+                {t("not_receive_code")}{" "}
                 <span
-                  className={`cursor-pointer ${resendTimer > 0
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-indigo-600 hover:underline"
-                    }`}
+                  className={`cursor-pointer ${
+                    resendTimer > 0
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-indigo-600 hover:underline"
+                  }`}
                   onClick={resendTimer === 0 ? handleCheckEmail : undefined}
                 >
-                  {resendTimer > 0 ? `Gửi lại sau ${resendTimer}s` : "Gửi lại"}
+                  {resendTimer > 0
+                    ? t("resend_after", { count: resendTimer })
+                    : t("resend")}
                 </span>
               </p>
             </div>
           </div>
-
         )}
         {newPassword && (
           <PasswordResetPopup
