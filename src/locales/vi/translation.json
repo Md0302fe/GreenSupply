@@ -82,7 +82,12 @@
     "days": "ngày",
     "hours": "giờ",
     "minutes": "phút",
-    "seconds": "giây"
+    "seconds": "giây",
+    "search": "Tìm kiếm",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "update": "Cập nhật",
+    "updating": "Đang cập nhật"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -156,7 +161,31 @@
     "success_cancel": "Yêu cầu đã được hủy thành công!",
     "fail_cancel": "Hủy yêu cầu thất bại",
     "only_cancel_pending": "Chỉ có thể hủy yêu cầu ở trạng thái 'Chờ duyệt'.",
-    "no_data": "Không có dữ liệu."
+    "no_data": "Không có dữ liệu.",
+    "delete": "Xóa",
+    "detail": "Chi tiết",
+    "create_request_title": "Tạo Yêu Cầu Thu Hàng",
+    "request_name": "Tên yêu cầu",
+    "request_name_placeholder": "Tên yêu cầu...",
+    "material_type": "Loại nguyên liệu",
+    "material_type_placeholder": "Chọn loại nguyên liệu",
+    "quantity_placeholder": "Số lượng...",
+    "price_placeholder": "Giá bán...",
+    "pickup_address": "Địa chỉ lấy hàng",
+    "no_address": "Không có địa chỉ nào",
+    "note_placeholder": "Ghi chú (tối đa 200 ký tự)",
+    "total_price_label": "Tổng giá:",
+    "submit_button": "Gửi Yêu Cầu",
+    "reset_button": "Làm mới",
+    "invalid_request_name": "Tên yêu cầu chỉ chứa chữ, số và khoảng trắng!",
+    "empty_request_name": "Tên yêu cầu không được để trống!",
+    "empty_material_type": "Loại nguyên liệu không được để trống!",
+    "empty_quantity": "Số lượng không được để trống!",
+    "empty_price": "Giá không được để trống!",
+    "empty_address": "Địa chỉ không được để trống!",
+    "create_success": "Tạo yêu cầu thu hàng thành công!",
+    "create_fail": "Tạo yêu cầu thất bại! Vui lòng thử lại.",
+    "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!"
   },
   "status": {
     "pending": "Chờ duyệt",
@@ -192,5 +221,30 @@
   "about": {
     "description": "Chúng tôi nỗ lực chuyển đổi chuỗi cung ứng xoài bằng cách cung cấp các giải pháp đổi mới đảm bảo chất lượng, hiệu quả và tính bền vững từ trang trại đến bàn ăn. Với MSCM, tính minh bạch và hợp tác là trọng tâm trong mọi việc chúng tôi làm. Để đơn giản hóa và nâng cao chuỗi cung ứng xoài, trao quyền cho nông dân, nhà phân phối và nhà bán lẻ thông qua các giải pháp đổi mới, công nghệ và dựa trên dữ liệu.",
     "see_more": "Xem thêm"
+  },
+  "provideRequest": {
+    "title": "ĐƠN CUNG CẤP NGUYÊN LIỆU",
+    "editTitle": "Cập Nhật Đơn Cung Cấp",
+    "confirmDelete": "Xóa Yêu Cầu",
+    "deleteConfirmMessage": "Bạn có chắc muốn xóa yêu cầu này?",
+    "delete_success": "Yêu cầu đã bị xóa!",
+    "delete_fail": "Xóa thất bại!",
+    "update_success": "Cập nhật thành công!",
+    "update_fail": "Cập nhật thất bại!",
+    "quantityRemain": "Số lượng còn lại:",
+    "request_name": "Yêu cầu",
+    "quantity_kg": "Số lượng (Kg)",
+    "unit_price": "Giá mỗi đơn vị (VNĐ/Kg)",
+    "total_price": "Tổng giá (VNĐ)",
+    "total_price_display": "Tổng Giá:",
+    "status": "Trạng thái",
+    "note": "Ghi Chú",
+    "enter_quantity": "Số lượng muốn cung cấp",
+    "enter_quantity_required": "Vui lòng nhập số lượng!",
+    "actions": "Hành động",
+    "detail_title": "Chi Tiết Đơn Cung Cấp",
+    "updated_at": "Ngày Cập Nhật",
+    "exceed_quantity": "Số lượng không được vượt quá {{quantity}}!",
+    "must_divisible_by_10": "Số lượng phải chia hết cho 10!"
   }
 }

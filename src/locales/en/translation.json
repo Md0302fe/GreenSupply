@@ -85,7 +85,12 @@
     "days": "days",
     "hours": "hours",
     "minutes": "minutes",
-    "seconds": "seconds"
+    "seconds": "seconds",
+    "search": "Search",
+    "cancel": "Cancel",
+    "close": "Close",
+    "update": "Update",
+    "updating": "Updatting"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -159,7 +164,31 @@
     "success_cancel": "Request cancelled successfully!",
     "fail_cancel": "Failed to cancel request",
     "only_cancel_pending": "You can only cancel requests that are 'Pending Approval'.",
-    "no_data": "No data available."
+    "no_data": "No data available.",
+    "delete": "Delete",
+    "detail": "Detail",
+    "create_request_title": "Create Harvest Request",
+    "request_name": "Request Name",
+    "request_name_placeholder": "Enter request name...",
+    "material_type": "Material Type",
+    "material_type_placeholder": "Select material type",
+    "quantity_placeholder": "Enter quantity...",
+    "price_placeholder": "Enter price...",
+    "pickup_address": "Pickup Address",
+    "no_address": "No address available",
+    "note_placeholder": "Note (max 200 characters)",
+    "total_price_label": "Total Price:",
+    "submit_button": "Submit Request",
+    "reset_button": "Reset",
+    "invalid_request_name": "Request name must only contain letters, numbers, and spaces!",
+    "empty_request_name": "Request name is required!",
+    "empty_material_type": "Material type is required!",
+    "empty_quantity": "Quantity is required!",
+    "empty_price": "Price is required!",
+    "empty_address": "Address is required!",
+    "create_success": "Harvest request created successfully!",
+    "create_fail": "Failed to create request! Please try again.",
+    "invalid_address": "Address must not contain special characters!"
   },
   "status": {
     "pending": "Pending",
@@ -195,5 +224,30 @@
   "about": {
     "description": "We strive to transform the mango supply chain by providing innovative solutions that ensure quality, efficiency, and sustainability from farm to table. At MSCM, transparency and collaboration are at the heart of everything we do. We simplify and enhance the mango supply chain by empowering farmers, distributors, and retailers through innovative, technology-driven, and data-based solutions.",
     "see_more": "See More"
+  },
+  "provideRequest": {
+    "title": "SUPPLY REQUEST",
+    "editTitle": "Update Supply Request",
+    "confirmDelete": "Delete Request",
+    "deleteConfirmMessage": "Are you sure you want to delete this request?",
+    "delete_success": "Request has been deleted!",
+    "delete_fail": "Failed to delete!",
+    "update_success": "Update successful!",
+    "update_fail": "Update failed!",
+    "quantityRemain": "Remaining quantity:",
+    "request_name": "Request",
+    "quantity_kg": "Quantity (Kg)",
+    "unit_price": "Price per unit (VND/Kg)",
+    "total_price": "Total Price (VND)",
+    "total_price_display": "Total Price:",
+    "status": "Status",
+    "note": "Note",
+    "enter_quantity": "Quantity to supply",
+    "enter_quantity_required": "Please enter quantity!",
+    "actions": "Actions",
+    "detail_title": "Supply Request Details",
+    "updated_at": "Updated At",
+    "exceed_quantity": "Quantity must not exceed {{quantity}}!",
+    "must_divisible_by_10": "Quantity must be divisible by 10!"
   }
 }

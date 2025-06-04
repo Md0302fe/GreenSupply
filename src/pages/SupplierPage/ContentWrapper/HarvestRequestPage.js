@@ -8,8 +8,11 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { message } from "antd";
 import { getUserAddresses } from "../../../services/UserService";
+import { useTranslation } from "react-i18next";
 
 const HarvestRequestPage = () => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     fuel_name: "",
     quantity: "",
@@ -159,7 +162,7 @@ const HarvestRequestPage = () => {
       status: "Chờ duyệt",
       fuel_type: formData.fuel_type,
     };
-console.log("123", fuelRequest);
+    console.log("123", fuelRequest);
     try {
       await createHarvestRequest(fuelRequest);
       message.success("Tạo yêu cầu thu hàng thành công!");
@@ -181,46 +184,22 @@ console.log("123", fuelRequest);
 
   return (
     <div className="px-2">
-      {/* Giới thiệu
-      <div className="w-full border border-gray-200 flex flex-col md:flex-row items-center gap-10 md:gap-16 lg:gap-20 mb-5 justify-between rounded-md p-6 bg-white shadow">
-        <div className="info md:text-left max-w-xl">
-          <h3 className="text-2xl md:text-3xl font-bold mb-3 text-black">
-            Chào mừng bạn đến với{" "}
-            <span className="text-[#006838]">Green Supply</span>🌿
-          </h3>
-          <p className="text-gray-700">
-            Hãy bắt đầu bằng cách{" "}
-            <span className="font-bold"> tạo yêu cầu thu hàng </span> cho chúng
-            tôi. Sau khi gửi yêu cầu, bạn có thể theo dõi trạng thái xử lý và
-            nhận phản hồi nhanh chóng từ hệ thống của chúng tôi.
-          </p>
-          <p className="text-gray-700 mt-3">
-            Chúng tôi mong muốn xây dựng một mối quan hệ hợp tác bền vững và
-            cùng nhau phát triển!
-          </p>
-        </div>
-        <img
-          src={Shop}
-          className="w-[180px] md:w-[220px] lg:w-[250px] object-contain"
-          alt="Shop Illustration"
-        />
-      </div> */}
 
       {/* Form Tạo Yêu Cầu Thu Hàng */}
       <div className="w-full border border-gray-200 p-6 rounded-md bg-white shadow">
         <h2 className="text-xl font-[800] mb-4 text-black flex items-center gap-3">
           <AiFillEdit />
-          Tạo Yêu Cầu Thu Hàng
+          {t("harvestRequest.create_request_title")}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* fuel_name */}
           <div>
-            <label className="block mb-1 font-semibold">Tên yêu cầu</label>
+            <label className="block mb-1 font-semibold">{t("harvestRequest.request_name")}</label>
             <input
               type="text"
               name="fuel_name"
-              placeholder="Tên yêu cầu..."
+              placeholder={t("harvestRequest.request_name_placeholder")}
               value={formData.fuel_name}
               onChange={handleChange}
               onFocus={() => {
@@ -247,14 +226,14 @@ console.log("123", fuelRequest);
 
           {/* fuel_type */}
           <div>
-            <label className="block mb-1 font-semibold">Loại nguyên liệu</label>
+            <label className="block mb-1 font-semibold">{t("harvestRequest.material_type")}</label>
             <select
               name="fuel_type"
               value={formData.fuel_type}
               onChange={handleChange}
               className="border p-2 rounded w-full mb-2"
             >
-              <option value="">Chọn loại nguyên liệu</option>
+              <option value="">{t("harvestRequest.material_type_placeholder")}</option>
               {fuelTypeList.map((fuel) => (
                 <option key={fuel._id} value={fuel._id}>
                   {fuel.type_name}
@@ -268,12 +247,12 @@ console.log("123", fuelRequest);
 
           {/* quantity */}
           <div>
-            <label className="block mb-1 font-semibold">Số lượng (kg )</label>
+            <label className="block mb-1 font-semibold">{t("harvestRequest.quantity")}</label>
             <input
               type="number"
               name="quantity"
               min="1"
-              placeholder="Số lượng..."
+              placeholder={t("harvestRequest.quantity_placeholder")}
               value={formData.quantity}
               onChange={handleChange}
               onKeyDown={(e) => {
@@ -291,13 +270,13 @@ console.log("123", fuelRequest);
           {/* price */}
           <div>
             <label className="block mb-1 font-semibold">
-              Giá mỗi đơn vị (VNĐ)
+              {t("harvestRequest.price")}
             </label>
             <input
               type="number"
               name="price"
               min="1"
-              placeholder="Giá bán..."
+              placeholder={t("harvestRequest.price")}
               value={formData.price}
               onChange={handleChange}
               onKeyDown={(e) => {
@@ -314,7 +293,7 @@ console.log("123", fuelRequest);
 
           {/* address */}
           <div>
-            <label className="block mb-1 font-semibold">Địa chỉ lấy hàng</label>
+            <label className="block mb-1 font-semibold">{t("harvestRequest.pickup_address")}</label>
             <select
               name="address"
               value={selectedAddressId}
@@ -336,7 +315,7 @@ console.log("123", fuelRequest);
               className="border p-2 rounded w-full mb-2"
             >
               {addresses.length === 0 && (
-                <option value="">Không có địa chỉ nào</option>
+                <option value="">{t("harvestRequest.no_address")}</option>
               )}
               {addresses.map((addr) => (
                 <option key={addr._id} value={addr._id}>
@@ -353,18 +332,18 @@ console.log("123", fuelRequest);
         {/* Hiển thị total_price */}
         <div className="mt-4 mb-4">
           <p>
-            <span className="font-semibold mr-2">Tổng giá:</span>
+            <span className="font-semibold mr-2">{t("harvestRequest.total_price_label")}</span>
             {totalPrice().toLocaleString("vi-VN")} VNĐ
           </p>
         </div>
 
         {/* note */}
         <div className="mb-4">
-          <label className="block mb-1 font-semibold">Ghi chú</label>
+          <label className="block mb-1 font-semibold">{t("harvestRequest.note")}</label>
           <textarea
             name="note"
             maxLength="200"
-            placeholder="Ghi chú (tối đa 200 ký tự)"
+            placeholder={t("harvestRequest.note_placeholder")}
             value={formData.note}
             onChange={handleChange}
             className="w-full border p-2 rounded"
@@ -377,7 +356,7 @@ console.log("123", fuelRequest);
             onClick={handleSubmit}
             className="bg-[#FFE814] text-[#F14A00] font-bold px-4 py-2 rounded hover:bg-[#FBC02D] w-full md:w-auto"
           >
-            Gửi Yêu Cầu
+            {t("harvestRequest.submit_button")}
           </button>
           <button
             onClick={() =>
@@ -392,7 +371,7 @@ console.log("123", fuelRequest);
             className="bg-[#006838] flex items-center text-white font-bold px-3 py-2 rounded hover:bg-[#028A48] w-full md:w-auto gap-2"
           >
             <FiRefreshCw />
-            Làm mới
+            {t("harvestRequest.reset_button")}
           </button>
         </div>
       </div>
