@@ -29,7 +29,13 @@ const ProvideRequestPage = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const fetchOrders = async (page = 1) => {
     try {
-      const response = await getAllFuelEntry({ page, limit: 6 });
+      const access_token = userRedux?.access_token;
+      const user_id = userRedux?.id;
+      const response = await getAllFuelEntry(
+        { page, limit: 6 },
+        access_token,
+        user_id
+      );
       console.log(response);
       setAdminOrders(response.data);
       setTotalPages(response.pagination?.totalPages || 1);

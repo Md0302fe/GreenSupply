@@ -10,10 +10,14 @@ import { resetUser } from "../../redux/slides/userSlides";
 import { persistor } from "../../redux/store";
 import { LuUser } from "react-icons/lu";
 import "./Header.scss";
+import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 import * as UserServices from "../../services/UserServices";
 
 const Header = () => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const userRedux = useSelector((state) => state.user);
@@ -58,13 +62,9 @@ const Header = () => {
         <div className="container mx-auto flex flex-wrap w-full justify-center md:justify-end items-center gap-4 md:gap-4 px-2 md:px-6 py-2">
           <button className="text-sm font-medium text-white flex items-center space-x-2 hover:text-[#FFD700] transition-all duration-300">
             <i className="fa-solid fa-bell"></i>
-            <span>Thông báo</span>
+            <span>{t("notifications")}</span>
           </button>
-          <button className="text-sm font-medium text-white flex items-center space-x-2 hover:text-[#FFD700] transition-all duration-300">
-            <i className="fa-solid fa-globe"></i>
-            <span>Tiếng Việt</span>
-            <i className="fa-solid fa-chevron-down"></i>
-          </button>
+          <LanguageSwitcher />
         </div>
 
         {/* Nội dung chính */}
@@ -98,7 +98,7 @@ const Header = () => {
                                   style={{ cursor: "pointer" }}
                                   onClick={() => navigate("/system/admin")}
                                 >
-                                  Quản lý hệ thống
+                                  {t("system_management")}
                                 </WrapperContentPopup>
                               </li>
                             )}
@@ -107,7 +107,7 @@ const Header = () => {
                                 style={{ cursor: "pointer" }}
                                 onClick={() => navigate("/Profile")}
                               >
-                                Thông tin cá nhân
+                                {t("personal_info")}
                               </WrapperContentPopup>
                             </li>
                             <li>
@@ -115,7 +115,7 @@ const Header = () => {
                                 style={{ cursor: "pointer" }}
                                 onClick={() => handleClickBtnLogout()}
                               >
-                                Đăng xuất
+                                {t("logout")}
                               </WrapperContentPopup>
                             </li>
                           </ul>
@@ -148,7 +148,7 @@ const Header = () => {
                   <div className="None-account">
                     {/* Icons User */}
                     <AiOutlineUser className="shopping-cart-icons user text-black"></AiOutlineUser>
-                    <span className="text-lg text-black">Tài khoản</span>
+                    <span className="text-lg text-black">{t("account")}</span>
                   </div>
                 )}
               </div>
