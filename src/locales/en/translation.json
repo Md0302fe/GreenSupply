@@ -166,5 +166,33 @@
     "approve": "Approve",
     "cancelled": "Cancelled",
     "completed": "Completed"
+  },
+  "navbar": {
+    "search_placeholder": "What are you looking for?",
+    "login": "Login",
+    "register": "Register",
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "blogs": "Blogs",
+    "contact": "Contact"
+  },
+  "banner": {
+    "description": "A smart, transparent, and sustainable mango supply chain management platform that effectively connects farms to consumers.",
+    "see_more": "See More"
+  },
+  "cards": {
+    "cost_satisfaction": "Cost Satisfaction",
+    "cost_satisfaction_desc": "Ensure optimal cost at every step in your supply chain, from production to delivery.",
+    "support_24_7": "24x7 Support",
+    "support_24_7_desc": "Get 24x7 support to keep your supply chain running smoothly anytime, anywhere.",
+    "seamless_integration": "Seamless Integration",
+    "seamless_integration_desc": "Easily connect processes in your supply chain with modern tools and technology for smooth operations.",
+    "real_time_tracking": "Real-Time Tracking",
+    "real_time_tracking_desc": "Monitor your supply chain in real time with accurate updates, ensuring transparency and control at every step."
+  },
+  "about": {
+    "description": "We strive to transform the mango supply chain by providing innovative solutions that ensure quality, efficiency, and sustainability from farm to table. At MSCM, transparency and collaboration are at the heart of everything we do. We simplify and enhance the mango supply chain by empowering farmers, distributors, and retailers through innovative, technology-driven, and data-based solutions.",
+    "see_more": "See More"
   }
 }

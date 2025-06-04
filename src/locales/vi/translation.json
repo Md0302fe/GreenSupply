@@ -163,5 +163,33 @@
     "approve": "Đã duyệt",
     "cancelled": "Đã hủy",
     "completed": "Hoàn thành"
+  },
+  "navbar": {
+    "search_placeholder": "Bạn đang tìm kiếm gì?",
+    "login": "Đăng Nhập",
+    "register": "Đăng Ký",
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "services": "Dịch vụ",
+    "blogs": "Blogs",
+    "contact": "Liên Hệ"
+  },
+  "banner": {
+    "description": "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
+    "see_more": "Xem thêm"
+  },
+  "cards": {
+    "cost_satisfaction": "Chi phí hài lòng",
+    "cost_satisfaction_desc": "Đảm bảo mức chi phí tối ưu nhất ở mọi bước trong chuỗi cung ứng của bạn, từ sản xuất đến giao hàng.",
+    "support_24_7": "Hỗ trợ 24x7",
+    "support_24_7_desc": "Nhận hỗ trợ 24x7 để đảm bảo chuỗi cung ứng của bạn hoạt động liền mạch mọi lúc, mọi nơi.",
+    "seamless_integration": "Tích hợp liền mạch",
+    "seamless_integration_desc": "Kết nối các quy trình trong chuỗi cung ứng của bạn một cách dễ dàng với các công cụ và công nghệ hiện đại, đảm bảo hoạt động trơn tru.",
+    "real_time_tracking": "Theo dõi thời gian thực",
+    "real_time_tracking_desc": "Giám sát chuỗi cung ứng của bạn trong thời gian thực với các cập nhật chính xác, đảm bảo tính minh bạch và kiểm soát ở mọi bước."
+  },
+  "about": {
+    "description": "Chúng tôi nỗ lực chuyển đổi chuỗi cung ứng xoài bằng cách cung cấp các giải pháp đổi mới đảm bảo chất lượng, hiệu quả và tính bền vững từ trang trại đến bàn ăn. Với MSCM, tính minh bạch và hợp tác là trọng tâm trong mọi việc chúng tôi làm. Để đơn giản hóa và nâng cao chuỗi cung ứng xoài, trao quyền cho nông dân, nhà phân phối và nhà bán lẻ thông qua các giải pháp đổi mới, công nghệ và dựa trên dữ liệu.",
+    "see_more": "Xem thêm"
   }
 }
