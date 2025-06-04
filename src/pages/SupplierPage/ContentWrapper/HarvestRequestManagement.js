@@ -72,6 +72,7 @@ const HarvestRequestManagement = () => {
     if (status === "Chờ duyệt") return "bg-yellow-100 text-yellow-800";
     if (status === "Đã duyệt") return "bg-green-100 text-green-800";
     if (status === "Đã huỷ") return "bg-red-100 text-red-800";
+    if (status === "Hoàn thành") return "bg-red-100 text-green-800";
     return "bg-gray-100 text-gray-800";
   };
 
@@ -228,7 +229,11 @@ const HarvestRequestManagement = () => {
       sorter: (a, b) => a.fuel_name.localeCompare(b.fuel_name),
     },
     {
-      title: <div style={{ textAlign: "center" }}>{t("harvestRequest.quantity")}</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("harvestRequest.quantity")}
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       className: "text-center",
@@ -236,7 +241,9 @@ const HarvestRequestManagement = () => {
       render: (quantity) => convertPrice(quantity),
     },
     {
-      title: <div style={{ textAlign: "center" }}>{t("harvestRequest.price")}</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("harvestRequest.price")}</div>
+      ),
       dataIndex: "price",
       key: "price",
       className: "text-center",
@@ -244,7 +251,11 @@ const HarvestRequestManagement = () => {
       render: (price) => convertPrice(price),
     },
     {
-      title: <div style={{ textAlign: "center" }}>{t("harvestRequest.total_price")} (VNĐ)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("harvestRequest.total_price")} (VNĐ)
+        </div>
+      ),
       dataIndex: "total_price",
       key: "total_price",
       className: "text-center",
@@ -252,35 +263,56 @@ const HarvestRequestManagement = () => {
       render: (total_price) => convertPrice(total_price),
     },
     {
-      title: <div style={{ textAlign: "center" }}>{t("harvestRequest.address")}</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("harvestRequest.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       className: "text-center",
       render: (status) => {
+        let displayText = status;
         let color = "orange"; // Mặc định là "Chờ duyệt"
-        if (status === "Đã duyệt") color = "green";
-        if (status === "Hoàn thành" || status === "Đang xử lý")
+        if (status === "Đã duyệt") {
+          color = "green";
+          displayText = t("status.approve");
+        }
+        if (status === "Hoàn Thành" || status === "Đang xử lý") {
           color = "yellow";
-        if (status === "Đã huỷ") color = "red";
-
-        const displayText =
-          status === "Đang xử lý" || status === "Hoàn thành"
-            ? "Hoàn thành"
-            : status;
+          displayText = t("status.completed"); // Hiển thị "Hoàn Thành" cho cả 2 status
+        }
+        if (status === "Đã huỷ") {
+          color = "red";
+          displayText = t("status.cancelled");
+        }
+        if (status === "Chờ duyệt") {
+          displayText = t("status.pending");
+        }
 
         return <Tag color={color}>{displayText}</Tag>;
       },
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      onFilter: (value, record) => {
+        // Kiểm tra xem giá trị status có phải là "Hoàn Thành" hay "Đang xử lý" không
+        if (value === "Hoàn Thành") {
+          return (
+            record.status === "Hoàn Thành" || record.status === "Đang xử lý"
+          );
+        }
+        console.log(value);
+        return record.status.indexOf(value) === 0;
+      },
       filters: [
-        { text: t('status.pending'), value: "Chờ duyệt" },
-        { text: t('status.approve'), value: "Đã duyệt" },
-        { text: t('status.cancelled'), value: "Đã huỷ" },
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đã duyệt" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+        { text: t("status.completed"), value: "Hoàn Thành" },
       ],
     },
   ];
 
   const actionColumn = {
-    title: <div style={{ textAlign: "center" }}>{t('harvestRequest.action')}</div>,
+    title: (
+      <div style={{ textAlign: "center" }}>{t("harvestRequest.action")}</div>
+    ),
     key: "actions",
     className: "text-center",
     render: (_, record) => (
@@ -352,12 +384,14 @@ const HarvestRequestManagement = () => {
           <div className="w-full p-6 bg-white rounded-md shadow">
             <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
-                <label className="block mb-1 font-semibold">Tên yêu cầu</label>
+                <label className="block mb-1 font-semibold">
+                  {t("harvestRequest.name")}
+                </label>
                 <input
                   type="text"
                   name="fuel_name"
                   maxLength="50"
-                  placeholder="Tên yêu cầu..."
+                  placeholder={t("harvestRequest.name")}
                   value={editForm.fuel_name}
                   onChange={handleEditChange}
                   className="border p-2 rounded w-full mb-1"
@@ -369,13 +403,13 @@ const HarvestRequestManagement = () => {
 
               <div>
                 <label className="block mb-1 font-semibold">
-                  Số lượng (kg)
+                  {t("harvestRequest.quantity")}
                 </label>
                 <input
                   type="number"
                   name="quantity"
                   min="1"
-                  placeholder="Số lượng..."
+                  placeholder={t("harvestRequest.quantity")}
                   value={editForm.quantity}
                   onChange={handleEditChange}
                   className="border p-2 rounded w-full mb-1"
@@ -387,13 +421,13 @@ const HarvestRequestManagement = () => {
 
               <div>
                 <label className="block mb-1 font-semibold">
-                  Giá mỗi đơn vị (VNĐ)
+                  {t("harvestRequest.price")}
                 </label>
                 <input
                   type="number"
                   name="price"
                   min="1"
-                  placeholder="Giá bán..."
+                  placeholder={t("harvestRequest.price")}
                   value={editForm.price}
                   onChange={handleEditChange}
                   className="border p-2 rounded w-full mb-1"
@@ -405,13 +439,13 @@ const HarvestRequestManagement = () => {
 
               <div>
                 <label className="block mb-1 font-semibold">
-                  Địa chỉ lấy hàng
+                  {t("harvestRequest.address")}
                 </label>
                 <input
                   type="text"
                   name="address"
                   maxLength="120"
-                  placeholder="Nhập địa chỉ..."
+                  placeholder={t("harvestRequest.address")}
                   value={editForm.address}
                   onChange={handleEditChange}
                   className="border p-2 rounded w-full mb-1"
@@ -567,7 +601,18 @@ const HarvestRequestManagement = () => {
                     viewDetailRequest.status
                   )}`}
                 >
-                  {viewDetailRequest.status}
+                  {
+                    viewDetailRequest.status === "Chờ duyệt"
+                      ? t("status.pending")
+                      : viewDetailRequest.status === "Đã duyệt"
+                      ? t("status.approve")
+                      : viewDetailRequest.status === "Hoàn Thành" ||
+                        viewDetailRequest.status === "Đang xử lý"
+                      ? t("status.completed")
+                      : viewDetailRequest.status === "Đã huỷ"
+                      ? t("status.cancelled")
+                      : viewDetailRequest.status // fallback nếu không có trạng thái nào trùng khớp
+                  }
                 </span>
               </div>
             </div>

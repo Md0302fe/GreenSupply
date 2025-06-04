@@ -165,7 +165,8 @@
     "pending": "Pending",
     "approve": "Approve",
     "cancelled": "Cancelled",
-    "completed": "Completed"
+    "completed": "Completed",
+    "processing": "Processing"
   },
   "navbar": {
     "search_placeholder": "What are you looking for?",

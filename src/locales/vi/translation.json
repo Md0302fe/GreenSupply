@@ -162,7 +162,8 @@
     "pending": "Chờ duyệt",
     "approve": "Đã duyệt",
     "cancelled": "Đã hủy",
-    "completed": "Hoàn thành"
+    "completed": "Hoàn Thành",
+    "processing": "Đang xử lý"
   },
   "navbar": {
     "search_placeholder": "Bạn đang tìm kiếm gì?",
