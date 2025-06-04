@@ -17,7 +17,7 @@ const Carousel = () => {
   };
 
   return (
-    <div className="w-full max-w-[1450px] mx-auto mt-10">
+    <div className="w-full max-w-[1450px] mx-auto mt-4 md:mt-8 lg:mt-10 mb-2">
       <Slider {...settings} className="overflow-hidden">
         {ImageList.map((item) => (
           <div

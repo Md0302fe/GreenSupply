@@ -13,38 +13,39 @@ import ProvideRequestManagement from "../ContentWrapper/ProvideRequestManagement
 import { ToastContainer } from "react-toastify";
 
 const SupplierDashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    // Set initial state correctly based on current screen width
+    if (typeof window !== "undefined") {
+      return window.innerWidth > 768;
+    }
+    return true;
+  });
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
+  const [windowWidth, setWindowWidth] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth;
+    }
+    return 1024;
+  });
 
-  // Tự động ẩn/hiện sidebar khi thay đổi kích thước cửa sổ
+  // Lắng nghe thay đổi kích thước để cập nhật windowWidth
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
-      }
+      const width = window.innerWidth;
+      setWindowWidth(width);
+      setIsSidebarOpen(width > 768); // Cập nhật trạng thái sidebar mỗi lần resize
     };
 
-    // Chạy ngay khi component mount
+    // Gọi lần đầu khi component mount
     handleResize();
 
-    // Lắng nghe resize
-    window.addEventListener("resize", handleResize);
-
-    // Dọn dẹp khi unmount
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+const toggleSidebar = () => {
+  setIsSidebarOpen((prev) => !prev);
+};
 
   return (
     <section className="main relative font-nunito">
@@ -86,7 +87,7 @@ const SupplierDashboard = () => {
           windowWidth={windowWidth}
         />
 
-        <div className="contentMain flex relative overflow-hidden">
+        <div className="contentMain flex relative overflow-hidden pt-16">
           {/* Content Wrapper*/}
           <div className="contentRight py-4 px-8 w-full">
             <Routes>

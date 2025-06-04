@@ -58,14 +58,14 @@ const ImportProductList = () => {
     navigate(`/supplier/provide-request`);
   };
   return (
-    <div className="max-w-[1400px] mx-auto p-6 bg-[#F4F4F4] border border-gray-800 shadow-inner mb-10 mt-[6rem]">
+    <div className="max-w-[1400px] mx-auto p-6 bg-[#F4F4F4] border border-gray-800 shadow-inner mb-4 mt-[5rem]">
       <div className="flex justify-between items-center mb-4 mt-3 mx-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-orange-500 font-instrument">
+        <h2 className="text-[16px] sm:text-2xl lg:text-3xl font-bold text-orange-500 font-instrument">
           Mặt hàng cần nhập
         </h2>
         <button
           onClick={handleCreateOrder}
-          className="text-sm sm:text-base text-blue-600 font-semibold hover:underline hover:text-blue-800 transition"
+          className="text-[12px] sm:text-sm md:text-base text-blue-600 font-semibold hover:underline hover:text-blue-800 transition"
         >
           Xem thêm →
         </button>
@@ -90,7 +90,7 @@ const ImportProductList = () => {
           </div>
         )
       ) : (
-        <p className="text-lg font-semibold text-center text-gray-700 my-5">
+        <p className="text-[12px] sm:text-base md:text-lg font-semibold text-center text-gray-700 my-4">
           Hiện tại chưa có đơn cần cung cấp.
         </p>
       )}

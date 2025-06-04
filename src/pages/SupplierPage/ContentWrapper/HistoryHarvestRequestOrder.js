@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
 import * as harverstRequestService from "../../../services/HarvestRequestService";
@@ -32,7 +32,7 @@ const HistoryHarvestRequestOrder = () => {
     const user_id = user?.id;
 
     const res = await harverstRequestService.getHarvestRequestHistory(
-      access_token , user_id
+      access_token, user_id
     );
     return res;
   };
@@ -188,7 +188,7 @@ const HistoryHarvestRequestOrder = () => {
                 size="middle"
             /> */}
           <Button
-            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }}/>}  
+            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
             onClick={() => handleViewDetail(record)}
             size="middle"
           />
@@ -201,7 +201,24 @@ const HistoryHarvestRequestOrder = () => {
     if (status === "Hoàn thành") return "bg-green-100 text-green-800";
     return "bg-gray-100 text-gray-800";
   };
-
+  const [isMobile, setIsMobile] = useState(() => {
+      if (typeof window !== "undefined") {
+        return window.innerWidth < 768;
+      }
+      return false;
+    });
+  
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      handleResize(); // cập nhật ngay khi component mount
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  const drawerWidth = isMobile ? "100%" : "40%";
   return (
     <div className="px-2">
       <div className="text-center font-bold text-2xl mb-5">
@@ -220,13 +237,14 @@ const HistoryHarvestRequestOrder = () => {
             loading={isLoading}
             rowKey={(record) => record._id}
             pagination={{ pageSize: 6 }}
+            scroll={{ x: "max-content" }}
           />
           {/* Drawer View Detail */}
           <DrawerComponent
             title="Chi tiết yêu cầu thu nguyên liệu"
             isOpen={isViewDrawerOpen}
             placement="right"
-            width="40%"
+            width={drawerWidth}
             onClose={() => setIsViewDrawerOpen(false)}
           >
             {viewDetailRequest ? (

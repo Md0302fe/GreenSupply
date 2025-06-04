@@ -17,11 +17,11 @@ import { message, DatePicker } from "antd";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
-    request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
-    fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
+    request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nguyên liệu)
+    fuel_type: "", // Loại nguyên liệu cần thu (VD: Xăng, Dầu, Khí)
     fuel_image: "",
-    quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
-    quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
+    quantity: "", // Số lượng nguyên liệu yêu cầu thu gom
+    quantity_remain: "", // Số lượng nguyên liệu còn lại cần thu (nếu chưa hoàn thành)
     start_received: null,
     end_received: null,
     due_date: null,
@@ -78,7 +78,7 @@ const HarvestRequestPage = () => {
     return current && current < formData.end_received;
   };
 
-  // Tuy nhiên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
+  // Tuy nguyên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
   const handleChangeFuelImage = async ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -109,19 +109,19 @@ const HarvestRequestPage = () => {
       },
       {
         condition: !formData.fuel_type.trim(),
-        message: "Loại nhiên liệu không được để trống!",
+        message: "Loại nguyên liệu không được để trống!",
       },
       {
         condition: !fuelImage || fuelImage.trim() === "",
-        message: "Hình ảnh nhiên liệu không được để trống!",
+        message: "Hình ảnh nguyên liệu không được để trống!",
       },
       {
         condition: !formData.quantity || formData.quantity.trim() === "",
-        message: "Tổng sl nhiên liệu cần thu không được để trống!",
+        message: "Tổng sl nguyên liệu cần thu không được để trống!",
       },
       {
         condition: !formData.price || formData.price.trim() === "",
-        message: "Giá nhiên liệu không được để trống!",
+        message: "Giá nguyên liệu không được để trống!",
       },
       {
         condition: !formData.start_received,
@@ -256,15 +256,15 @@ const HarvestRequestPage = () => {
       if (data?.status === "OK") {
         message.success("Tạo yêu cầu thu hàng thành công!");
         setFormData({
-          request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
-          fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
+          request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nguyên liệu)
+          fuel_type: "", // Loại nguyên liệu cần thu (VD: Xăng, Dầu, Khí)
           fuel_image: "",
-          quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
-          quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
+          quantity: "", // Số lượng nguyên liệu yêu cầu thu gom
+          quantity_remain: "", // Số lượng nguyên liệu còn lại cần thu (nếu chưa hoàn thành)
           due_date: "", // Hạn chót cần hoàn thành đơn hàng (YYYY-MM-DD)
           is_deleted: "", // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
-          start_received: "", // Ngày bắt đầu nhận nhiên liệu
-          end_received: "", // Ngày kết thúc nhận nhiên liệu
+          start_received: "", // Ngày bắt đầu nhận nguyên liệu
+          end_received: "", // Ngày kết thúc nhận nguyên liệu
           price: "", // Giá thực tế đã được chốt cho đơn hàng
           total_price: "",
           priority: "", // Mức độ ưu tiên của đơn hàng (VD: Cao, Trung bình, Thấp)
@@ -326,10 +326,10 @@ const HarvestRequestPage = () => {
                 />
               </div>
 
-              {/* Loại nhiên liệu */}
+              {/* Loại nguyên liệu */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Loại nhiên liệu cần thu
+                  Loại nguyên liệu cần thu
                 </label>
                 <select
                   name="fuel_type"
@@ -338,7 +338,7 @@ const HarvestRequestPage = () => {
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 >
                   <option value="" disabled>
-                    Chọn loại nhiên liệu
+                    Chọn loại nguyên liệu
                   </option>
                   {fuel_types && fuel_types.length > 0 ? (
                     fuel_types.map((fuel) => (
@@ -352,14 +352,13 @@ const HarvestRequestPage = () => {
                 </select>
               </div>
 
-              {/* Ảnh nhiên liệu */}
-              <div className="flex justify-between items-center min-h-[20vh]">
-                <div className="flex-[0.25] block text-gray-800 font-semibold mb-2">
-                  <MDBCardText className="block text-gray-800 font-semibold mb-2">
-                    Hình ảnh
-                  </MDBCardText>
+              {/* Ảnh nguyên liệu */}
+              <div className="flex flex-col min-h-[20vh] space-y-4">
+                {/* Phần Hình ảnh hiển thị dọc */}
+                <div className="block text-gray-800 font-semibold mb-2">
+                  <MDBCardText>Hình ảnh</MDBCardText>
                 </div>
-                <div className="flex-[0.74]">
+                <div>
                   <Upload.Dragger
                     listType="picture-card"
                     fileList={fileList}
@@ -373,7 +372,7 @@ const HarvestRequestPage = () => {
                       <img
                         src={fuelImage}
                         alt="preview"
-                        style={{ width: "30%", height: "auto" }}
+                        style={{ width: "100%", height: "auto", maxWidth: "200px" }}
                       />
                     ) : (
                       <div>Upload Your Image</div>
@@ -382,47 +381,58 @@ const HarvestRequestPage = () => {
                 </div>
               </div>
 
-              {/* Số lượng cần thu */}
+              {/* Số lượng cần thu (Kg) */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Tổng số lượng cần thu (Kg)
+                  Tổng số lượng cần thu
                 </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  min="1"
-                  placeholder="Nhập số lượng..."
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (["e", "E", "-", "."].includes(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="relative w-full">
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    placeholder="Nhập số lượng..."
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "-", "."].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="border border-gray-300 p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                    Kg
+                  </span>
+                </div>
               </div>
 
-              {/* Giá trên mỗi kg */}
+              {/* Giá trên mỗi Kg / Đơn vị */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Giá trên mỗi Kg / Đơn vị (VND)
+                  Giá trên mỗi Kg
                 </label>
-                <input
-                  type="number"
-                  name="price"
-                  min="1"
-                  placeholder="Nhập giá..."
-                  value={formData.price}
-                  onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (["e", "E", "-", "."].includes(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="relative w-full">
+                  <input
+                    type="number"
+                    name="price"
+                    min="1"
+                    placeholder="Nhập giá..."
+                    value={formData.price}
+                    onChange={handleChange}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "-", "."].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="border border-gray-300 p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                    VND
+                  </span>
+                </div>
               </div>
+
 
               {/* Ngày nhận đơn */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -542,7 +552,7 @@ const HarvestRequestPage = () => {
             <h3 className="text-xl md:text-lg font-bold text-black">
               Tạo Đơn{" "}
               <span className="text-[#006838]">
-                <br></br>Thu Nhiên Liệu
+                <br></br>Thu Nguyên Liệu
               </span>{" "}
               🌿
             </h3>

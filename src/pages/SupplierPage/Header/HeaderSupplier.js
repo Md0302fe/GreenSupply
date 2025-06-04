@@ -94,6 +94,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
         py-2 pr-5 bg-[#fff]
         shadow-md border-b
         flex items-center justify-between
+        fixed top-0 left-0 right-0 z-20 bg-white shadow
       "
     >
       <div className="part1 transition-all duration-500 ease-in-out w-fit">

@@ -83,15 +83,12 @@ const Header = () => {
             <Loading isPending={loading}>
               <div className="Wrapper-Account text-black">
                 {userRedux?.full_name !== "" &&
-                userRedux?.full_name !== undefined ? (
+                  userRedux?.full_name !== undefined ? (
                   <div className="user-login flex-center-center">
                     <>
                       <Popover
                         content={
-                          <ul
-                            className="user-nav"
-                            style={{ padding: "0", minWidth: "160px" }}
-                          >
+                          <ul className="user-nav" style={{ padding: "0", minWidth: "160px" }}>
                             {userRedux?.isAdmin === "Admin" && (
                               <li>
                                 <WrapperContentPopup
@@ -123,25 +120,24 @@ const Header = () => {
                         trigger="click"
                         open={open}
                         onOpenChange={handleOpenChange}
-                        className="flex-center-center Popover"
+                        className="flex items-center justify-end gap-2"
                       >
                         {userAvatar ? (
                           <img
-                            className="w-[40px] h-[40px] rounded-[50%] object-cover cursor-pointer mr-2"
+                            className="w-[40px] h-[40px] rounded-full object-cover cursor-pointer"
                             src={userAvatar}
                             alt="avatar"
-                          ></img>
+                          />
                         ) : (
-                          <LuUser
-                            style={{ fontSize: "35px", padding: "0 6px" }}
-                          ></LuUser>
+                          <LuUser style={{ fontSize: "35px", padding: "0 6px" }} />
                         )}
-                        <Button>
-                          <span onClick={() => setOpen(false)}>
-                            {userRedux.full_name}
-                          </span>
+
+                        {/* Tên người dùng chỉ hiển thị ở desktop */}
+                        <Button className="hidden lg:inline-flex items-center">
+                          <span onClick={() => setOpen(false)}>{userRedux.full_name}</span>
                         </Button>
                       </Popover>
+
                     </>
                   </div>
                 ) : (
