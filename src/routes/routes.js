@@ -65,6 +65,11 @@ import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess"
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
 import CreateFuel from "../components/Admin/Content/Fuel/CreateFuel";
 
+import CreatePackageCategory from "../components/Admin/Content/PackageMaterial/CreatePackageCategory";
+import PackageCategoryList from "../components/Admin/Content/PackageMaterial/PackageCategoryList";
+import BoxList from "../components/Admin/Content/PackageMaterial/BoxList";
+import CreateBox from "../components/Admin/Content/PackageMaterial/CreateBox";
+
 import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
 import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
 
@@ -136,6 +141,12 @@ const Router = () => {
           <Route path="fuel-list" element={<FuelList />} />
           <Route path="manage-fuel" element={<DashboardFuel />} />
           <Route path="fuel-Create" element={<CreateFuel />} />
+
+          <Route path="box-categories/create" element={<CreatePackageCategory />} />
+          <Route path="box-categories/list" element={<PackageCategoryList />} />
+          <Route path="box-list" element={<BoxList />} />
+          <Route path="box-Create" element={<CreateBox />} />
+
 
 
           {/* Production Process Management */}
