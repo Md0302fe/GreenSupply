@@ -15,6 +15,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Info1 from "../../assets/NewProject/Carousel/info-1.png";
 import Info2 from "../../assets/NewProject/Carousel/info-2.png";
 import Info3 from "../../assets/NewProject/Carousel/info-3.png";
+import { useTranslation } from "react-i18next";
 
 const HomePage = () => {
   return (
@@ -36,6 +37,8 @@ const HomePage = () => {
 };
 
 const MangoDescription = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="relative flex max-w-[1450px] mx-auto mt-16 mb-8 items-start">
       {/* Wrapper cho hình ảnh */}
@@ -62,20 +65,10 @@ const MangoDescription = () => {
       {/* Nội dung màu vàng */}
       <div className="bg-[#FFD412] rounded-[3rem] p-6 shadow-lg mt-12 ml-4 max-w-[840px]">
         <p className="font-instrument text-black text-sm leading-6 text-justify ml-[18.5rem]">
-          Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến
-          quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng
-          xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các
-          tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh
-          Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế
-          giới.
+          {t("homepage.mango_desc_1")}
         </p>
         <p className="font-instrument text-black text-sm leading-6 text-justify mt-4 ml-[25rem]">
-          Với kinh nghiệm nhiều năm xuất khẩu loại quả này, Chánh Thu đã đang và
-          sẽ mang quả xoài đến với người tiêu dùng của nhiều nước trên thế giới.
-          Quả xoài chín có màu vàng hấp dẫn, vị chua ngọt và mùi thơm đặc trưng.
-          Trong xoài chín có chứa các chất dinh dưỡng sau: glucid, protein,
-          lipic, tro, nước và các chất khoáng khác như: Ca, photpho, Sắt,
-          Vitamin A, Vitamin B1, Vitamin C, acid folic, beta caroten…
+          {t("homepage.mango_desc_2")}
         </p>
       </div>
     </div>
@@ -83,6 +76,8 @@ const MangoDescription = () => {
 };
 
 const AboutSupplyChain = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-[1450px] mx-auto mt-8 mb-8 p-6 rounded-lg">
       {/* Phần logo và dòng mô tả */}
@@ -91,7 +86,7 @@ const AboutSupplyChain = () => {
           <div className="flex items-center gap-4">
             <img src={LogoOrange} alt="Logo" className="w-[200px] h-auto" />
             <div className="text-[#FF8B00] font-semibold text-lg ml-4">
-              Giải pháp hiệu quả dành cho nông sản của bạn
+              {t("slogan")}
             </div>
           </div>
         </div>
@@ -101,19 +96,14 @@ const AboutSupplyChain = () => {
       {/* Nội dung */}
       <div className="mx-auto">
         <div className="border-4 border-[#FF8B00] border-t-0 p-20 pt-4 pb-4">
-          <h2 className="font-bold text-lg mb-4 text-black">TỔNG QUAN CHUỖI CUNG ỨNG</h2>
+          <h2 className="font-bold text-lg mb-4 text-black">
+            {t("homepage.supply_chain_title")}
+          </h2>
           <p className="text-black text-base leading-6 mb-4 w-[1250px]">
-            Tổng quan chuỗi Tiền Giang và Đồng Tháp là hai tỉnh thuộc số 13 năm
-            trong khu vực châu thổ ĐBSCL, có nhiều diện tích trồng cây xoài được
-            canh tác rất lâu đời. Xoài 'Cát Hòa Lộc' là một giống xoài rất nổi
-            tiếng có nguồn gốc từ tỉnh Tiền Giang. Nhiều chợ đầu mối đã hình
-            thành và phát triển một cách tự phát hiện thu hút nhiều bạn hàng đến
-            đây để giao dịch buôn bán. Tuy nhiên thị trường tiêu thụ chính cho
-            quả xoài là thị trường trong nước và Trung Quốc.
+            {t("homepage.supply_chain_desc_1")}
           </p>
           <p className="text-black text-base leading-6">
-            Đóng gói ở địa phương đóng vai trò rất quan trọng trong công việc
-            điều phối toàn bộ hệ thống tiêu thụ xoài trong cả nước.
+            {t("homepage.supply_chain_desc_2")}
           </p>
         </div>
       </div>
@@ -122,22 +112,25 @@ const AboutSupplyChain = () => {
 };
 
 const VisionOverview = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="relative flex max-w-[1000px] mx-auto md:flex-nowrap items-start justify-between gap-6 mb-36 font-instrument">
       {/* Phần nội dung */}
       <div className="md:w-[40%] text-left self-start mt-4 font-bold">
         <h3 className="text-[#006838] text-xs md:text-lg font-bold mb-4 leading-snug">
-          Sứ mệnh - Tầm nhìn
+          {t("homepage.mission_title")}
         </h3>
         <p className="mb-3 text-xs md:text-base leading-relaxed">
-          Lựa chọn của khách hàng quan tâm đến sức khỏe và môi trường
+          {t("homepage.mission_1")}
         </p>
         <p className="mb-3 text-xs md:text-base leading-relaxed">
-          Cung cấp cho bạn sản phẩm chất lượng cao từ nhà vườn uy tín
+          {t("homepage.mission_2")}
         </p>
         <p className="text-xs md:text-base leading-relaxed">
-          Hãy truy cập <strong className="text-[#006838]">Green</strong> để lựa
-          chọn cho mình những quả xoài sạch, an toàn cho sức khỏe
+          {t("homepage.mission_3")}{" "}
+          <strong className="text-[#006838]">Green</strong>{" "}
+          {t("homepage.mission_3_suffix")}
         </p>
       </div>
 
@@ -154,14 +147,16 @@ const VisionOverview = () => {
         <div className="absolute bottom-[-40px] right-40 flex gap-6">
           {/* Nhà vườn */}
           <div className="w-[270px] bg-[#006838] text-white px-6 py-8 rounded-lg shadow-right-bottom flex flex-col justify-center">
-            <h3 className="text-xl font-bold text-left">Nhà vườn</h3>
+            <h3 className="text-xl font-bold text-left">
+              {t("homepage.garden_title")}
+            </h3>
             <h1 className="text-4xl font-bold text-center mt-2">1000+</h1>
           </div>
 
           {/* Hecta đất trồng */}
           <div className="w-[270px] bg-[#FFD412] text-white px-6 py-8 rounded-lg shadow-right-bottom flex flex-col justify-center">
             <h3 className="text-xl font-bold text-left">
-              Hecta đất trồng trọt
+              {t("homepage.area_title")}
             </h3>
             <h1 className="text-4xl font-bold text-center mt-2">60.000+</h1>
           </div>
@@ -172,23 +167,23 @@ const VisionOverview = () => {
 };
 
 const InfoKnowledge = () => {
+  const { t } = useTranslation();
+
   const articles = [
     {
       image: Info1,
-      date: "25 tháng 11 năm 2025",
-      title:
-        "Tình hình sản xuất Xoài thế giới và Việt Nam | Kỹ thuật trồng và chăm sóc Xoài",
+      date: t("homepage.article_1_date"),
+      title: t("homepage.article_1_title"),
     },
     {
       image: Info2,
-      date: "25 tháng 11 năm 2025",
-      title: "Cải tiến chuỗi giá trị ngành hàng xoài tại tỉnh Đồng Tháp",
+      date: t("homepage.article_2_date"),
+      title: t("homepage.article_2_title"),
     },
     {
       image: Info3,
-      date: "25 tháng 11 năm 2025",
-      title:
-        "Xây dựng chuỗi giá trị xoài Việt Nam phục vụ thị trường trong nước và các thị trường xuất khẩu chủ lực",
+      date: t("homepage.article_3_date"),
+      title: t("homepage.article_3_title"),
     },
   ];
 
@@ -226,7 +221,7 @@ const InfoKnowledge = () => {
       {/* Tiêu đề */}
       <div className="relative mb-4 mx-[3rem]">
         <h2 className="text-3xl font-bold text-[#006838] inline-block">
-          Thông tin - Kiến thức
+          {t('homepage.info_knowledge_title')}
         </h2>
         <div className="absolute bottom-2 right-0 w-[75%] h-[3px] bg-[#006838]"></div>
       </div>

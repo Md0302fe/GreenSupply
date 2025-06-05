@@ -26,8 +26,9 @@ import * as UserServices from "../../../services/UserServices";
 import { resetUser } from "../../../redux/slides/userSlides";
 import { persistor } from "../../../redux/store";
 
-
 import { MdDashboardCustomize } from "react-icons/md";
+import LanguageSwitcher from "../../../components/TranslateComponent/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -39,6 +40,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
+  const { t } = useTranslation();
+
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
   const openMyAcc = Boolean(anchorMyAcc);
   const userRedux = useSelector((state) => state.user);
@@ -86,7 +89,6 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
     setOpenUserInfo(false);
   };
 
-
   return (
     <header
       className="
@@ -119,6 +121,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
             <FaRegBell />
           </StyledBadge>
         </IconButton>
+        <LanguageSwitcher />
 
         <div className="relative">
           <div
@@ -208,7 +211,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
             >
               <FaRegUser className="text-[16px]" />
               <a href="/profile" className="text-[14px]">
-                Profile
+                {t("personal_info")}
               </a>
             </MenuItem>
 
@@ -218,7 +221,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
             >
               <MdDashboardCustomize className="text-[16px]" />
               <a href="/system/admin" className="text-[14px]">
-                Quản lý hệ thống
+                {t("system_management")}
               </a>
             </MenuItem>
 
@@ -230,13 +233,13 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               className="flex items-center gap-3"
             >
               <FiLogOut className="text-[18px]" />
-              <span className="text-[14px]">Đăng Xuất</span>
+              <span className="text-[14px]">{t("logout")}</span>
             </MenuItem>
           </Menu>
 
           {/* Popup hiển thị thông tin user */}
           <Dialog open={openUserInfo} onClose={handleCloseUserInfo}>
-            <DialogTitle>Thông tin người dùng</DialogTitle>
+            <DialogTitle>{t("user_info")}</DialogTitle>
             <DialogContent dividers>
               <div className="flex items-center gap-3">
                 <div className="rounded-full w-[50px] h-[50px] overflow-hidden">
@@ -262,7 +265,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseUserInfo} color="primary">
-                Đóng
+                {t("close")}
               </Button>
             </DialogActions>
           </Dialog>

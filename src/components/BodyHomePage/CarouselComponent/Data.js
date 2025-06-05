@@ -19,6 +19,7 @@ export const ImageList = [
     description:
       "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
     contentPosition: "top-16 left-6",
+    descriptionKey: "carousel.desc_1",
   },
   {
     id: 2,
@@ -30,6 +31,8 @@ export const ImageList = [
     description:
       "Được lựa chọn từ những trái xoài to nhất, có độ chín đều ngon ngọt để cho ra thị trường Việt Nam và xuất khẩu.",
     contentPosition: "top-20",
+    descriptionKey: "carousel.desc_2",
+    titleKey: "carousel.title_2",
   },
   {
     id: 3,
@@ -43,6 +46,8 @@ export const ImageList = [
       "Những trái xoài đều được quản lý bằng QR Code dễ dàng truy xuất được thời điểm thu hoạch và vùng trồng sản phẩm.",
     contentPosition:
       "top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+    descriptionKey: "carousel.desc_3",
+    titleKey: "carousel.title_3",
   },
   {
     id: 4,
@@ -51,8 +56,11 @@ export const ImageList = [
     logoSize: "h-30 w-auto",
     title: "",
     titleSize: "text-2xl md:text-2xl font-bold font-instrument",
-    descriptionSize: "text-2xl md:text-2xl font-instrument text-white font-bold mr-4",
-    description: "Quy trình sản xuất xanh - Kết nối với nông dân đa tỉnh thành.",
+    descriptionSize:
+      "text-2xl md:text-2xl font-instrument text-white font-bold mr-4",
+    description:
+      "Quy trình sản xuất xanh - Kết nối với nông dân đa tỉnh thành.",
     contentPosition: "top-16",
+    descriptionKey: "carousel.desc_4",
   },
 ];
