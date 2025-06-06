@@ -16,8 +16,11 @@ import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 import { convertPrice } from "../../../ultils";
+import { useTranslation } from "react-i18next";
 
 const ProvideRequestManagement = () => {
+  const { t } = useTranslation();
+
   const user = useSelector((state) => state.user);
   const [rowSelected, setRowSelected] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -63,12 +66,12 @@ const ProvideRequestManagement = () => {
     mutationFn: ({ id, data }) =>
       FuelSupplyRequestService.updateFuelSupplyRequest(id, data),
     onSuccess: () => {
-      message.success("Cập nhật thành công!");
+      message.success(t("provideRequest.update_success"));
       queryClient.invalidateQueries("fuelRequests");
       handleCancelUpdate();
     },
     onError: () => {
-      message.error("Cập nhật thất bại!");
+      message.error(t("provideRequest.update_fail"));
     },
   });
 
@@ -76,12 +79,12 @@ const ProvideRequestManagement = () => {
   const mutationDelete = useMutation({
     mutationFn: (id) => FuelSupplyRequestService.deleteFuelRequest(id),
     onSuccess: () => {
-      message.success("Yêu cầu đã bị xóa!");
+      message.success(t("provideRequest.delete_success"));
       queryClient.invalidateQueries("fuelRequests");
       setIsOpenDelete(false);
     },
     onError: () => {
-      message.error("Xóa thất bại!");
+      message.error(t("provideRequest.delete_fail"));
     },
   });
 
@@ -249,22 +252,30 @@ const ProvideRequestManagement = () => {
   // Table Columns
   const allColumns = [
     {
-      title: "Yêu cầu",
+      title: t("provideRequest.request_name"),
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
       sorter: (a, b) => a.fuel_name.localeCompare(b.fuel_name),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("provideRequest.quantity_kg")}
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       className: "text-center",
       sorter: (a, b) => a.quantity - b.quantity,
-       render: (quantity) => convertPrice(quantity),
+      render: (quantity) => convertPrice(quantity),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Giá mỗi đơn vị (VNĐ/Kg)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("provideRequest.unit_price")}
+        </div>
+      ),
       dataIndex: "price",
       key: "price",
       className: "text-center",
@@ -272,7 +283,11 @@ const ProvideRequestManagement = () => {
       render: (price) => convertPrice(price) || "Không có giá mỗi kg",
     },
     {
-      title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("provideRequest.total_price")}
+        </div>
+      ),
       dataIndex: "total_price",
       key: "total_price",
       className: "text-center",
@@ -280,30 +295,56 @@ const ProvideRequestManagement = () => {
       render: (total_price) => convertPrice(total_price),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("provideRequest.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       className: "text-center",
-      filters: [
-        { text: "Đã duyệt", value: "Đã duyệt" },
-        { text: "Chờ duyệt", value: "Chờ duyệt" },
-        { text: "Đã hủy", value: "Đã hủy" },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (status) => {
-        let displayStatus = status;
-        let color = "orange";
-        if (status === "Đã duyệt") color = "green";
-        else if (status === "Đã hủy") color = "red";
-        else if (status === "Đang xử lý") displayStatus = "Hoàn thành";
+        let displayText = status;
+        let color = "orange"; // Mặc định là "Chờ duyệt"
+        if (status === "Đã duyệt") {
+          color = "green";
+          displayText = t("status.approve");
+        }
+        if (status === "Hoàn Thành" || status === "Đang xử lý") {
+          color = "yellow";
+          displayText = t("status.completed"); // Hiển thị "Hoàn Thành" cho cả 2 status
+        }
+        if (status === "Đã huỷ") {
+          color = "red";
+          displayText = t("status.cancelled");
+        }
+        if (status === "Chờ duyệt") {
+          displayText = t("status.pending");
+        }
 
-        return <Tag color={color}>{displayStatus}</Tag>;
+        return <Tag color={color}>{displayText}</Tag>;
       },
+      onFilter: (value, record) => {
+        // Kiểm tra xem giá trị status có phải là "Hoàn Thành" hay "Đang xử lý" không
+        if (value === "Hoàn Thành") {
+          return (
+            record.status === "Hoàn Thành" || record.status === "Đang xử lý"
+          );
+        }
+        console.log(value);
+        return record.status.indexOf(value) === 0;
+      },
+      filters: [
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đã duyệt" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+        { text: t("status.completed"), value: "Hoàn Thành" },
+      ],
     },
   ];
 
   const actionColumn = {
-    title: <div style={{ textAlign: "center" }}>Hành động</div>,
+    title: (
+      <div style={{ textAlign: "center" }}>{t("provideRequest.actions")}</div>
+    ),
     key: "actions",
     className: "text-center",
     render: (_, record) => {
@@ -337,35 +378,22 @@ const ProvideRequestManagement = () => {
   };
 
   const columns = isMobile
-    ? [allColumns[0], allColumns[1],allColumns[2], allColumns[3], allColumns[4], actionColumn] // Tên nguyên liệu, Trạng thái, Hành động
+    ? [
+        allColumns[0],
+        allColumns[1],
+        allColumns[2],
+        allColumns[3],
+        allColumns[4],
+        actionColumn,
+      ] // Tên nguyên liệu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
   const drawerWidth = isMobile ? "100%" : "40%";
 
   return (
     <div className="Wrapper-Admin-FuelRequest">
-      {/* <div className="w-full border border-gray-200 flex items-center gap-20 mb-4 justify-between rounded-md p-6 bg-white shadow">
-        <div className="info">
-          <h1 className="text-3xl font-bold mb-3 text-black">
-            Quản Lý Đơn Cung Cấp Nguyên Liệu
-          </h1>
-          <div className="max-w-[44rem]">
-            <p className="w-full text-[16px] text-gray-700">
-              Đây là trang quản lý các đơn cung cấp nguyên liệu mà{" "}
-              <span className="font-semibold text-[#006838]">
-                {userRedux?.full_name || "nhà cung cấp"}
-              </span>{" "}
-              đã tạo và gửi đến hệ thống. Bạn có thể theo dõi trạng thái, xem
-              chi tiết hoặc thực hiện các thao tác cần thiết với các đơn hàng
-              này.
-            </p>
-          </div>
-        </div>
-        <img src={Shop} className="w-[250px]" alt="Shop Illustration" />
-      </div> */}
-
       <div className="text-center font-bold text-2xl mb-5">
-        ĐƠN CUNG CẤP NGUYÊN LIỆU
+        {t("provideRequest.title")}
       </div>
 
       <hr />
@@ -464,7 +492,11 @@ const ProvideRequestManagement = () => {
       </DrawerComponent> */}
 
       <DrawerComponent
-        title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("provideRequest.editTitle")}
+          </div>
+        }
         isOpen={isDrawerOpen}
         placement="right"
         width={drawerWidth}
@@ -477,23 +509,31 @@ const ProvideRequestManagement = () => {
             onFinish={onFinishUpdate}
             layout="vertical"
           >
-            <Form.Item label="Tên yêu cầu" name="fuel_name">
+            <Form.Item
+              label={t("harvestRequest.name_request")}
+              name="fuel_name"
+            >
               <Input value={selectedRequest.fuel_name} disabled />
             </Form.Item>
 
             <Form.Item>
               {quantityRemain !== null && (
                 <div style={{ fontSize: "14px", color: "gray" }}>
-                  <strong>Số lượng còn lại: {quantityRemain} KG</strong>
+                  <strong>
+                    {t("provideRequest.quantityRemain")} {quantityRemain} KG
+                  </strong>
                 </div>
               )}
             </Form.Item>
 
             <Form.Item
               name="quantity"
-              label="Số lượng muốn cung cấp"
+              label={t("provideRequest.enter_quantity")}
               rules={[
-                { required: true, message: "Vui lòng nhập số lượng!" },
+                {
+                  required: true,
+                  message: t("provideRequest.enter_quantity_required"),
+                },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value) {
@@ -502,13 +542,17 @@ const ProvideRequestManagement = () => {
                     if (value > quantityRemain) {
                       return Promise.reject(
                         new Error(
-                          `Số lượng không được vượt quá ${quantityRemain}!`
+                          new Error(
+                            t("provideRequest.exceed_quantity", {
+                              quantity: quantityRemain,
+                            })
+                          )
                         )
                       );
                     }
                     if (value % 10 !== 0) {
                       return Promise.reject(
-                        new Error("Số lượng phải chia hết cho 10!")
+                        new Error(t("provideRequest.must_divisible_by_10"))
                       );
                     }
                     return Promise.resolve();
@@ -532,47 +576,27 @@ const ProvideRequestManagement = () => {
               />
             </Form.Item>
 
-            {/* <Form.Item
-              label="Giá mỗi đơn vị (VNĐ/Kg)"
-              name="price"
-              rules={[
-                { required: true, message: "Vui lòng nhập giá mỗi đơn vị!" },
-              ]}
-            >
-              <Input
-                type="number"
-                defaultValue={selectedRequest.price || 0}
-                min="0"
-                required
-                onChange={(e) => {
-                  const price = e.target.value;
-                  formUpdate.setFieldsValue({ price });
-                  updateTotalPrice(formUpdate.getFieldValue("quantity"), price);
-                }}
-              />
-            </Form.Item> */}
-
-            <Form.Item label="Giá mỗi đơn vị (VNĐ/Kg)" name="price">
+            <Form.Item label={t("provideRequest.unit_price")} name="price">
               <Input disabled />
             </Form.Item>
 
-            <Form.Item label="Ghi Chú" name="note">
-              <Input.TextArea rows={3} placeholder="Ghi chú thêm nếu có" />
+            <Form.Item label={t("provideRequest.note")} name="note">
+              <Input.TextArea rows={3} placeholder={t("provideRequest.note")} />
             </Form.Item>
 
             <div
               style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
             >
-              <span>Tổng Giá: </span>
+              <span>{t("provideRequest.total_price_display")}</span>
               {
                 // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
                 formUpdate.getFieldValue("quantity") &&
-                  formUpdate.getFieldValue("price")
+                formUpdate.getFieldValue("price")
                   ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
-                  (
-                    Number(formUpdate.getFieldValue("quantity")) *
-                    Number(formUpdate.getFieldValue("price"))
-                  ).toLocaleString("vi-VN")
+                    (
+                      Number(formUpdate.getFieldValue("quantity")) *
+                      Number(formUpdate.getFieldValue("price"))
+                    ).toLocaleString("vi-VN")
                   : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
               }
             </div>
@@ -584,126 +608,9 @@ const ProvideRequestManagement = () => {
                 loading={mutationUpdate.isPending}
                 style={{ width: "100%" }}
               >
-                {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
-              </Button>
-            </Form.Item>
-          </Form>
-        </Loading>
-      </DrawerComponent>
-
-      <DrawerComponent
-        title={<div style={{ textAlign: "center" }}>Cập Nhật Đơn Cung Cấp</div>}
-        isOpen={isDrawerOpen}
-        placement="right"
-
-        width={drawerWidth}
-        onClose={handleCancelUpdate}
-      >
-        <Loading isPending={mutationUpdate.isPending}>
-          <Form
-            name="update-form"
-            form={formUpdate}
-            onFinish={onFinishUpdate}
-            layout="vertical"
-          >
-            <Form.Item label="Tên yêu cầu" name="fuel_name">
-              <Input value={selectedRequest.fuel_name} disabled />
-            </Form.Item>
-
-            <Form.Item>
-              {quantityRemain !== null && (
-                <div style={{ fontSize: "14px", color: "gray" }}>
-                  <strong>Số lượng còn lại: {quantityRemain} KG</strong>
-                </div>
-              )}
-            </Form.Item>
-
-            <Form.Item
-              name="quantity"
-              label="Số lượng muốn cung cấp"
-              rules={[
-                { required: true, message: "Vui lòng nhập số lượng!" },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.resolve();
-                    }
-                    if (value > quantityRemain) {
-                      return Promise.reject(
-                        new Error(
-                          `Số lượng không được vượt quá ${quantityRemain}!`
-                        )
-                      );
-                    }
-                    if (value % 10 !== 0) {
-                      return Promise.reject(
-                        new Error("Số lượng phải chia hết cho 10!")
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-            >
-              <Input
-                type="number"
-                onChange={(e) => {
-                  const quantity = e.target.value;
-                  formUpdate.setFieldsValue({ quantity });
-                  updateTotalPrice(quantity, formUpdate.getFieldValue("price"));
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Giá mỗi đơn vị (VNĐ/Kg)"
-              name="price"
-              rules={[
-                { required: true, message: "Vui lòng nhập giá mỗi đơn vị!" },
-              ]}
-            >
-              <Input
-                type="number"
-                defaultValue={selectedRequest.price || 0}
-                min="0"
-                required
-                onChange={(e) => {
-                  const price = e.target.value;
-                  formUpdate.setFieldsValue({ price });
-                  updateTotalPrice(formUpdate.getFieldValue("quantity"), price);
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item label="Ghi Chú" name="note">
-              <Input.TextArea rows={3} placeholder="Ghi chú thêm nếu có" />
-            </Form.Item>
-
-            <div
-              style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
-            >
-              <span>Tổng Giá: </span>
-              {
-                // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
-                formUpdate.getFieldValue("quantity") &&
-                  formUpdate.getFieldValue("price")
-                  ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
-                  (
-                    Number(formUpdate.getFieldValue("quantity")) *
-                    Number(formUpdate.getFieldValue("price"))
-                  ).toLocaleString("vi-VN")
-                  : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
-              }
-            </div>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={mutationUpdate.isPending}
-                style={{ width: "100%" }}
-              >
-                {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
+                {mutationUpdate.isPending
+                  ? t("common.updating")
+                  : t("common.update")}
               </Button>
             </Form.Item>
           </Form>
@@ -712,17 +619,17 @@ const ProvideRequestManagement = () => {
 
       {/* Modal Confirm Delete */}
       <Modal
-        title="Xóa Yêu Cầu"
+        title={t("provideRequest.confirmDelete")}
         open={isOpenDelete}
         onCancel={() => setIsOpenDelete(false)}
         onOk={handleConfirmDelete}
         confirmLoading={mutationDelete.isPending}
       >
-        <p>Bạn có chắc muốn xóa yêu cầu này?</p>
+        <p>{t("provideRequest.deleteConfirmMessage")}</p>
       </Modal>
 
       <DrawerComponent
-        title="Chi Tiết Đơn Cung Cấp"
+        title={t("provideRequest.detail_title")}
         isOpen={isDetailDrawerOpen}
         placement="right"
         width={drawerWidth} // Điều chỉnh chiều rộng Drawer nếu cần
@@ -733,7 +640,7 @@ const ProvideRequestManagement = () => {
             <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
                 <label className="block mb-1 font-semibold">
-                  Tên yêu cầu
+                  {t("provideRequest.request_name")}
                 </label>
                 <input
                   type="text"
@@ -745,7 +652,7 @@ const ProvideRequestManagement = () => {
 
               <div>
                 <label className="block mb-1 font-semibold">
-                  Giá mỗi đơn vị (VNĐ/Kg)
+                  {t("provideRequest.unit_price")}
                 </label>
                 <input
                   type="text"
@@ -757,7 +664,7 @@ const ProvideRequestManagement = () => {
 
               <div>
                 <label className="block mb-1 font-semibold">
-                  Số Lượng (Kg)
+                  {t("provideRequest.quantity_kg")}
                 </label>
                 <input
                   type="text"
@@ -768,7 +675,9 @@ const ProvideRequestManagement = () => {
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Tổng Giá</label>
+                <label className="block mb-1 font-semibold">
+                  {t("provideRequest.total_price")}
+                </label>
                 <input
                   type="text"
                   value={detailData.total_price.toLocaleString("vi-VN")}
@@ -779,7 +688,7 @@ const ProvideRequestManagement = () => {
 
               <div>
                 <label className="block mb-1 font-semibold">
-                  Ngày Cập Nhật
+                  {t("provideRequest.updated_at")}
                 </label>
                 <input
                   type="text"
@@ -790,7 +699,9 @@ const ProvideRequestManagement = () => {
               </div>
 
               <div className="">
-                <label className="block mb-1 font-semibold">Ghi Chú</label>
+                <label className="block mb-1 font-semibold">
+                  {t("provideRequest.note")}
+                </label>
                 <textarea
                   value={detailData.note || "Không có ghi chú"}
                   readOnly
@@ -800,13 +711,26 @@ const ProvideRequestManagement = () => {
 
               {/* Trạng thái */}
               <div className="flex items-center gap-2">
-                <label className="block font-semibold">Trạng Thái: </label>
+                <label className="block font-semibold">
+                  {t("provideRequest.status")}{" "}
+                </label>
                 <span
                   className={`ml-2 px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap ${getStatusClasses(
                     detailData.status
                   )}`}
                 >
-                  {detailData.status}
+                  {
+                    detailData.status === "Chờ duyệt"
+                      ? t("status.pending")
+                      : detailData.status === "Đã duyệt"
+                      ? t("status.approve")
+                      : detailData.status === "Hoàn Thành" ||
+                        detailData.status === "Đang xử lý"
+                      ? t("status.completed")
+                      : detailData.status === "Đã huỷ"
+                      ? t("status.cancelled")
+                      : detailData.status // fallback nếu không có trạng thái nào trùng khớp
+                  }
                 </span>
               </div>
             </div>
@@ -817,12 +741,12 @@ const ProvideRequestManagement = () => {
                 onClick={() => setIsDetailDrawerOpen(false)}
                 className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
               >
-                Đóng
+                {t('close')}
               </Button>
             </div>
           </div>
         ) : (
-          <p>Không có dữ liệu.</p>
+          <p>{t('no_data')}</p>
         )}
       </DrawerComponent>
     </div>

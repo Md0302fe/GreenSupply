@@ -330,17 +330,17 @@ const FuelList = () => {
         <div style={{ textAlign: "center" }}>
           <Space>
             {/* Nút Xem chi tiết */}
-          <Button
-            type="link"
-            icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
-            onClick={() => showFuelDetails(record)}
-          ></Button>
-          {/* Nút Chỉnh sửa */}
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ fontSize: "20px" }} />}
-            onClick={() => openUpdateDrawer(record)}
-          ></Button>
+            <Button
+              type="link"
+              icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+              onClick={() => showFuelDetails(record)}
+            ></Button>
+            {/* Nút Chỉnh sửa */}
+            <Button
+              type="link"
+              icon={<EditOutlined style={{ fontSize: "20px" }} />}
+              onClick={() => openUpdateDrawer(record)}
+            ></Button>
           </Space>
         </div>
       ),
@@ -349,31 +349,32 @@ const FuelList = () => {
 
   return (
     <div className="fuel-list">
-      <Button
-        onClick={() => navigate(-1)}
-        type="primary"
-        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 mr-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+      <div className="flex items-center justify-between mb-4">
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12H3m0 0l6-6m-6 6l6 6"
-          />
-        </svg>
-        Quay lại
-      </Button>
-      <h2 className="text-center text-2xl font-bold text-gray-800 mt-2">
-        Danh Sách Loại Nguyên Liệu
-      </h2>
-
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </Button>
+        <h2 className="text-center text-4xl flex-1 font-bold text-gray-800 mt-2">
+          Danh Sách Loại Nguyên Liệu
+        </h2>
+      </div>
       <div className="flex justify-end">
         <Button
           type="primary"

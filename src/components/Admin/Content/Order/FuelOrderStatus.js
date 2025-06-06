@@ -428,7 +428,7 @@ const FuelOrderStatus = () => {
             </Button>
           </Col>
           <Col>
-            <h2 style={{ fontSize: "24px", fontWeight: "bold", margin: 0 }}>
+            <h2 className="text-4xl font-bold flex-grow text-center mt-1 mb-4">
               Quản lý Đơn Hàng Chờ Nhập Kho
             </h2>
           </Col>

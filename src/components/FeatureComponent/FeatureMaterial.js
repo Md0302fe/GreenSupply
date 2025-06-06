@@ -1,19 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { CubeIcon } from '@heroicons/react/24/outline'
+
 
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 import mng_mango from "../../assets/Feature_materials_category/mng_mango.png";
 import mng_addnew_mango from "../../assets/Feature_materials_category/mng_addnew_mango.jpg";
 import mng_mango_list from "../../assets/Feature_materials_category/mng_mango_list.jpg";
+import mngo_mango_VatLieu from "../../assets/Feature_materials_category/mngo_LoaiVatLieu.jpg"
+import mngo_mango_NguyenVatLieu from "../../assets/Feature_materials_category/mngo_NguyenVatLieu.jpg"
 
 const UserComponent = () => {
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
-      <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
-        <img src={mng_mango} alt="mango-icon" className="w-8 h-8 mr-2" />
+       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
+        <CubeIcon className="w-8 h-8 mr-2 text-blue-500" />
         <h5 className="relative">
-          Quản Lý Nguyên Liệu
+          Quản Lý Nguyên Vật Liệu
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -37,6 +41,24 @@ const UserComponent = () => {
           title="Danh sách loại nguyên liệu"
           description="Quản lý danh sách các loại nguyên liệu"
           image={mng_mango_list}
+        />
+          {/* <Card
+          link="/system/admin/box-categories/create"
+          title="Tạo nguyên liệu Vật Liệu Mới"
+          description="Tạo thông tin cho nguyên liệu mới"
+          image={mng_addnew_mango}
+        /> */}
+          <Card
+          link="/system/admin/box-categories/list"
+          title="Quản lý Loại nguyên vật liệu"
+          description="Quản lý danh sách các loại nguyên liệu"
+          image={mngo_mango_VatLieu}
+        />
+          <Card
+          link="/system/admin/box-list"
+          title="Quản lý nguyên vật liệu"
+          description="Quản lý danh sách các loại nguyên liệu"
+          image={mngo_mango_NguyenVatLieu}
         />
       </div>
     </div>

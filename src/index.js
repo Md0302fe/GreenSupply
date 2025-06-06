@@ -15,6 +15,7 @@ import "../src/styles/css/global.css";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./tailwind.css";
+import './i18n';
 
 import Router from "./routes/routes";
 
