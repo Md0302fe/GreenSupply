@@ -59,6 +59,7 @@ import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
 import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
 import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
 import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
+import ProductionConsolidatedProcessing from "../pages/ProductionProcessing/ProductionConsolidatedProcessing";
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess";
@@ -147,7 +148,10 @@ const Router = () => {
             {/* Danh sách quy trình sản xuất */}
           <Route path="production-processing-list" element={<ProductionProcessingList />} />
           <Route path="production-processing" element={<ProductionRequestFinishList />} />
+          {/* single process */}
           <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
+          {/* consolidated process */}
+          <Route path="production-processing/consolidated-create" element={<ProductionConsolidatedProcessing />} />
           <Route path="process-histories" element={<ProductionHistories />} />
           {/* ROUTES QUY TRÌNH ĐANG THỰC THI */}
           <Route path="processing-system" element={<ProcessingManagement />} />

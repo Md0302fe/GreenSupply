@@ -1,31 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  message,
-  Descriptions,
-  Tag,
-  Input,
-  Select,
-  Popover,
-  Space,
-} from "antd";
+import { Table, Button, message, Descriptions, Tag, Input, Space } from "antd";
 import { SearchOutlined, FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import _ from "lodash";
-import { ToastContainer } from "react-toastify";
-import { toast } from "react-toastify";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { useLocation, useNavigate } from "react-router-dom";
-import { convertDateStringV1 } from "../../../../ultils";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import Highlighter from "react-highlight-words";
-const { Option } = Select;
 
 const statusColors = {
   "Chờ duyệt": "gold",
@@ -79,7 +65,7 @@ const MaterialStorageExportList = () => {
 
   useEffect(() => {
     if (location.state?.createdSuccess) {
-      toast.success("Tạo đơn xuất kho thành công!");
+      message.success("Tạo đơn xuất kho thành công!");
 
       window.history.replaceState({}, document.title);
     }
@@ -208,7 +194,7 @@ const MaterialStorageExportList = () => {
       key: "production_request",
       align: "center",
       render: (_, record) => (
-        <div style={{ }}>
+        <div style={{}}>
           {record?.production_request_id?.request_name || "Không rõ"}
         </div>
       ),
@@ -220,9 +206,7 @@ const MaterialStorageExportList = () => {
       key: "batch",
       align: "center",
       render: (_, record) => (
-        <div style={{ }}>
-          {record?.batch_id?.batch_name || "Không rõ"}
-        </div>
+        <div style={{}}>{record?.batch_id?.batch_name || "Không rõ"}</div>
       ),
     },
     {
@@ -332,22 +316,22 @@ const MaterialStorageExportList = () => {
         );
       }
 
-      toast.success("Duyệt đơn thành công");
+      message.success("Duyệt đơn thành công");
       setIsDrawerOpen(false);
       fetchExports();
     } catch (error) {
       console.error("Lỗi khi duyệt đơn:", error);
-      toast.error("Lỗi khi duyệt đơn hoặc cập nhật trạng thái!");
+      message.error("Lỗi khi duyệt đơn hoặc cập nhật trạng thái!");
     }
   };
 
   // useEffect(() => {
   //   if (isSuccess) {
   //     if (data?.success) {
-  //       toast.success("Xác nhận đơn thành công");
+  //       message.success("Xác nhận đơn thành công");
   //       setIsDrawerOpen(false);
   //     } else {
-  //       toast.error("Xác nhận đơn thất bại");
+  //       message.error("Xác nhận đơn thất bại");
   //       setIsDrawerOpen(false);
   //     }
   //     fetchExports();
@@ -358,10 +342,10 @@ const MaterialStorageExportList = () => {
   // useEffect(() => {
   //   if (isSuccess) {
   //     if (data?.success) {
-  //       toast.success("Xác nhận đơn thành công");
+  //       message.success("Xác nhận đơn thành công");
   //       setIsDrawerOpen(false);
   //     } else {
-  //       toast.error("Xác nhận đơn thất bại");
+  //       message.error("Xác nhận đơn thất bại");
   //       setIsDrawerOpen(false);
   //     }
   //     fetchExports();
@@ -417,10 +401,10 @@ const MaterialStorageExportList = () => {
   useEffect(() => {
     if (isSuccessDelete) {
       if (dataDelete?.success) {
-        toast.success("Xóa đơn thành công");
+        message.success("Xóa đơn thành công");
         setIsDrawerOpen(false);
       } else {
-        toast.error("Xóa đơn thất bại");
+        message.error("Xóa đơn thất bại");
         setIsDrawerOpen(false);
       }
       fetchExports();
@@ -430,7 +414,7 @@ const MaterialStorageExportList = () => {
 
   return (
     <div className="material-storage-export-list">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between my-6">
         <Button
           onClick={() => navigate(-1)}
           type="primary"
@@ -453,7 +437,7 @@ const MaterialStorageExportList = () => {
           Quay lại
         </Button>
 
-        <h5 className="text-4xl font-bold text-gray-800 absolute left-1/2 transform -translate-x-1/2">
+        <h5 className="text-3xl font-bold text-gray-800 absolute left-1/2 transform -translate-x-1/2">
           Quản lý Đơn Xuất Kho
         </h5>
         <div style={{ width: 120 }} />
@@ -559,8 +543,8 @@ const MaterialStorageExportList = () => {
         )}
       </DrawerComponent>
 
-      {/* ToastContainer */}
-      <ToastContainer
+      {/* messageContainer */}
+      <messageContainer
         hideProgressBar={false}
         position="top-right"
         newestOnTop={false}

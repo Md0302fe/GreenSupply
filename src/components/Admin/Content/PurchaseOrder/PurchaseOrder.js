@@ -17,11 +17,11 @@ import { message, DatePicker } from "antd";
 
 const HarvestRequestPage = () => {
   const [formData, setFormData] = useState({
-    request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
-    fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
+    request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom Nguyên liệu)
+    fuel_type: "", // Loại Nguyên liệu cần thu (VD: Xăng, Dầu, Khí)
     fuel_image: "",
-    quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
-    quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
+    quantity: "", // Số lượng Nguyên liệu yêu cầu thu gom
+    quantity_remain: "", // Số lượng Nguyên liệu còn lại cần thu (nếu chưa hoàn thành)
     start_received: null,
     end_received: null,
     due_date: null,
@@ -109,19 +109,19 @@ const HarvestRequestPage = () => {
       },
       {
         condition: !formData.fuel_type.trim(),
-        message: "Loại nhiên liệu không được để trống!",
+        message: "Loại Nguyên liệu không được để trống!",
       },
       {
         condition: !fuelImage || fuelImage.trim() === "",
-        message: "Hình ảnh nhiên liệu không được để trống!",
+        message: "Hình ảnh Nguyên liệu không được để trống!",
       },
       {
         condition: !formData.quantity || formData.quantity.trim() === "",
-        message: "Tổng sl nhiên liệu cần thu không được để trống!",
+        message: "Tổng sl Nguyên liệu cần thu không được để trống!",
       },
       {
         condition: !formData.price || formData.price.trim() === "",
-        message: "Giá nhiên liệu không được để trống!",
+        message: "Giá Nguyên liệu không được để trống!",
       },
       {
         condition: !formData.start_received,
@@ -256,15 +256,15 @@ const HarvestRequestPage = () => {
       if (data?.status === "OK") {
         message.success("Tạo yêu cầu thu hàng thành công!");
         setFormData({
-          request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom nhiên liệu)
-          fuel_type: "", // Loại nhiên liệu cần thu (VD: Xăng, Dầu, Khí)
+          request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom Nguyên liệu)
+          fuel_type: "", // Loại Nguyên liệu cần thu (VD: Xăng, Dầu, Khí)
           fuel_image: "",
-          quantity: "", // Số lượng nhiên liệu yêu cầu thu gom
-          quantity_remain: "", // Số lượng nhiên liệu còn lại cần thu (nếu chưa hoàn thành)
+          quantity: "", // Số lượng Nguyên liệu yêu cầu thu gom
+          quantity_remain: "", // Số lượng Nguyên liệu còn lại cần thu (nếu chưa hoàn thành)
           due_date: "", // Hạn chót cần hoàn thành đơn hàng (YYYY-MM-DD)
           is_deleted: "", // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
-          start_received: "", // Ngày bắt đầu nhận nhiên liệu
-          end_received: "", // Ngày kết thúc nhận nhiên liệu
+          start_received: "", // Ngày bắt đầu nhận Nguyên liệu
+          end_received: "", // Ngày kết thúc nhận Nguyên liệu
           price: "", // Giá thực tế đã được chốt cho đơn hàng
           total_price: "",
           priority: "", // Mức độ ưu tiên của đơn hàng (VD: Cao, Trung bình, Thấp)
@@ -326,10 +326,10 @@ const HarvestRequestPage = () => {
                 />
               </div>
 
-              {/* Loại nhiên liệu */}
+              {/* Loại Nguyên liệu */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Loại nhiên liệu cần thu
+                  Loại Nguyên liệu cần thu
                 </label>
                 <select
                   name="fuel_type"
@@ -338,7 +338,7 @@ const HarvestRequestPage = () => {
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 >
                   <option value="" disabled>
-                    Chọn loại nhiên liệu
+                    Chọn loại Nguyên liệu
                   </option>
                   {fuel_types && fuel_types.length > 0 ? (
                     fuel_types.map((fuel) => (
@@ -352,7 +352,7 @@ const HarvestRequestPage = () => {
                 </select>
               </div>
 
-              {/* Ảnh nhiên liệu */}
+              {/* Ảnh Nguyên liệu */}
               <div className="flex justify-between items-center min-h-[20vh]">
                 <div className="flex-[0.25] block text-gray-800 font-semibold mb-2">
                   <MDBCardText className="block text-gray-800 font-semibold mb-2">
@@ -542,7 +542,7 @@ const HarvestRequestPage = () => {
             <h3 className="text-xl md:text-lg font-bold text-black">
               Tạo Đơn{" "}
               <span className="text-[#006838]">
-                <br></br>Thu Nhiên Liệu
+                <br></br>Thu Nguyên liệu
               </span>{" "}
               🌿
             </h3>

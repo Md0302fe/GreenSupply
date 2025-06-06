@@ -13,9 +13,9 @@ import * as ProductionRequestServices from "../../services/ProductionRequestServ
 import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-import { FaGear } from "react-icons/fa6";
+import { FaG, FaGear } from "react-icons/fa6";
 
-// Hàm lấy danh sách nhiên liệu
+// Hàm lấy danh sách Nguyên liệu
 export const getAllFuelType = async () => {
   const res = await axios.get(
     `${process.env.REACT_APP_API_URL}/fuel-management/getAll`
@@ -43,7 +43,7 @@ const ProductionRequestList = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
-  // 1. FETCH danh sách đơn (GET)
+  // 1. FETCH danh sách kế hoạch (GET)
   const fetchProductionRequests = async () => {
     const access_token = user?.access_token;
     const dataRequest = {};
@@ -171,7 +171,7 @@ const ProductionRequestList = () => {
   // Cấu hình cột
   const columns = [
     {
-      title: "Tên đơn",
+      title: "Tên kế hoạch",
       dataIndex: "request_name",
       key: "request_name",
       ...getColumnSearchProps("request_name"),
@@ -273,7 +273,7 @@ const ProductionRequestList = () => {
 
   return (
     <div className="production-request-list">
-      <div className="my-4">
+      <div className="mt-2 mb-2">
         <div className="absolute">
           <Button
             onClick={() => navigate(-1)}
@@ -298,20 +298,49 @@ const ProductionRequestList = () => {
           </Button>
         </div>
         <h5 className="content-title font-bold text-2xl text-center">
-          Danh Sách Yêu Cầu Chờ Tạo Quy Trình
+          Danh Sách Kế Hoạch Chờ Tạo Quy Trình
         </h5>
+      </div>
+      {/* Notifications Tạo Quy Trình */}
+      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2">
+        <p>
+          <strong>Tạo Quy Trình :</strong>
+        </p>
+        <p className="flex items-center gap-2">
+          + Tạo quy trình
+          <span className="font-medium text-blue-600">(kế hoạch)</span> bằng
+          cách click vào biểu tượng{" "}
+          <span className=" inline-block text-green-600 transition-transform duration-300 group-hover:rotate-180 cursor-pointer">
+            <FaGear />
+          </span>
+        </p>
+        <p className="flex items-center gap-2">
+          + Tạo quy trình{" "}
+          <span className="font-medium text-green-600">(tổng hợp)</span> bằng
+          cách chọn vào nút{" "}
+          <span
+            className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
+            onClick={() =>
+              navigate(
+                "/system/admin/production-processing/consolidated-create"
+              )
+            }
+          >
+            Tạo Quy Trình Tổng Hợp
+          </span>
+        </p>
       </div>
 
       <Loading isPending={isLoading}>
         <Table
           columns={columns}
           dataSource={tableData}
-          pagination={{ pageSize: 4 }}
+          pagination={{ pageSize: 5 }}
         />
       </Loading>
 
       <DrawerComponent
-        title="Chi tiết đơn sản xuất"
+        title="Chi tiết kế hoạch sản xuất"
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
@@ -323,21 +352,21 @@ const ProductionRequestList = () => {
             <div className="border border-gray-300 rounded-lg overflow-hidden">
               <div className="grid grid-cols-2 gap-0">
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Tên đơn
+                  Tên kế hoạch
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.request_name}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Loại đơn
+                  Loại kế hoạch
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.request_type}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Nhiên liệu (ID)
+                  Nguyên liệu (ID)
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material}

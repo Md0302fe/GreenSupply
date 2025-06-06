@@ -397,7 +397,7 @@ const ProvideRequestManagement = () => {
             onFinish={onFinishUpdate}
             layout="vertical" // 🔹 Ensures proper alignment
           >
-            <Form.Item label="Tên Nhiên Liệu" name="fuel_name">
+            <Form.Item label="Tên Nguyên liệu" name="fuel_name">
               <Input value={selectedRequest.fuel_name} disabled />
             </Form.Item>
 

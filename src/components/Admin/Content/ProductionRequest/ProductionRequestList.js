@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
 
-// Hàm lấy danh sách nhiên liệu
+// Hàm lấy danh sách Nguyên liệu
 export const getAllFuelType = async () => {
   const res = await axios.get(
     `${process.env.REACT_APP_API_URL}/fuel-management/getAll`
@@ -62,11 +62,11 @@ const ProductionRequestList = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
-  // Danh sách nhiên liệu
+  // Danh sách Nguyên liệu
   const [fuelLoading, setFuelLoading] = useState(false);
   const [fuelTypes, setFuelTypes] = useState([]);
 
-  // Lấy danh sách nhiên liệu 1 lần
+  // Lấy danh sách Nguyên liệu 1 lần
   useEffect(() => {
     const fetchFuelTypes = async () => {
       setFuelLoading(true);
@@ -74,7 +74,7 @@ const ProductionRequestList = () => {
         const data = await getAllFuelType();
         setFuelTypes(data.requests || []);
       } catch (error) {
-        message.error("Có lỗi xảy ra khi tải danh sách nhiên liệu.");
+        message.error("Có lỗi xảy ra khi tải danh sách Nguyên liệu.");
       } finally {
         setFuelLoading(false);
       }
@@ -159,11 +159,11 @@ const ProductionRequestList = () => {
     })
       .then((res) => {
         if (res?.success) {
-          message.success("Đã duyệt thành công!");
+          message.success("Duyệt kế hoạch sản xuất thành công!");
           refetchRequests();
           setIsDrawerOpen(false);
         } else {
-          message.error("Duyệt thất bại!");
+          message.error("Duyệt kế hoạch sản xuất thất bại!");
         }
       })
       .catch((err) => {
@@ -191,7 +191,7 @@ const ProductionRequestList = () => {
     });
   };
 
-  // Tìm tồn kho nhiên liệu hiện tại
+  // Tìm tồn kho Nguyên liệu hiện tại
   const getAvailableFuel = () => {
     const materialId = form.getFieldValue("material");
     if (!materialId) return 0;
@@ -213,7 +213,7 @@ const ProductionRequestList = () => {
       // Vượt quá
       const maxProduction = Math.floor(available * 0.9);
       message.warning(
-        `Sản lượng mong muốn vượt quá số nhiên liệu. Sản lượng tối đa là ${maxProduction} Kg.`
+        `Sản lượng mong muốn vượt quá số Nguyên liệu. Sản lượng tối đa là ${maxProduction} Kg.`
       );
       form.setFieldsValue({
         product_quantity: maxProduction,
@@ -225,7 +225,7 @@ const ProductionRequestList = () => {
     form.setFieldsValue({ material_quantity: needed });
   };
 
-  // Khi đổi loại nhiên liệu -> tính lại
+  // Khi đổi loại Nguyên liệu -> tính lại
   const handleFuelChange = () => {
     const productQty = form.getFieldValue("product_quantity");
     if (productQty) {
@@ -489,7 +489,7 @@ const ProductionRequestList = () => {
 
   return (
     <div className="production-request-list">
-      <div className="mb-4">
+      <div className="my-6">
         <div className="absolute">
           <Button
             onClick={() => navigate(-1)}
@@ -514,11 +514,29 @@ const ProductionRequestList = () => {
           </Button>
         </div>
         <h5 className="content-title font-bold text-2xl text-center">
-          Danh sách yêu cầu sản xuất
+          Danh sách kế hoạch sản xuất
         </h5>
       </div>
 
+      {/* Notifications Tạo Quy Trình */}
+      <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2">
+        <div className="flex items-center justify-between gap-2">
+          <p>
+            Sau khi <span className="font-bold text-yellow-300">Duyệt</span> các
+            kế hoạch / các kế hoạch sẽ được đưa vào hàng chờ sản xuất
+          </p>
+          <p
+            className="font-semibold text-black bg-yellow-300 px-2 py-1 rounded-lg cursor-pointer 
+             shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-200 ease-in-out"
+            onClick={() => navigate("/system/admin/production-processing")}
+          >
+            Hàng Chờ Sản Xuất
+          </p>
+        </div>
+      </div>
+
       <Loading isPending={isLoading || fuelLoading}>
+        
         <Table
           columns={columns}
           dataSource={tableData}
@@ -541,7 +559,7 @@ const ProductionRequestList = () => {
     </h2> */}
 
             <div className="border border-gray-300 rounded-lg overflow-hidden">
-              <div className="grid grid-cols-2 gap-0">
+              <div className="grid grid-cols-[3fr_7fr] gap-0">
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   Tên đơn
                 </div>
@@ -557,7 +575,7 @@ const ProductionRequestList = () => {
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Nhiên liệu (ID)
+                  Nguyên liệu
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material}
@@ -616,7 +634,7 @@ const ProductionRequestList = () => {
             </div>
 
             {/* Nút Chỉnh Sửa / Duyệt */}
-            <div className="flex justify-center gap-4 mt-6">
+            <div className="flex justify-end gap-4 mt-6">
               <Button
                 type="primary"
                 className="px-6 py-2 text-lg"
@@ -674,16 +692,16 @@ const ProductionRequestList = () => {
                 <Input />
               </Form.Item>
 
-              {/* Chọn Nhiên liệu */}
+              {/* Chọn Nguyên liệu */}
               <Form.Item
-                label="Nhiên liệu"
+                label="Nguyên liệu"
                 name="material"
                 rules={[
-                  { required: true, message: "Vui lòng chọn nhiên liệu" },
+                  { required: true, message: "Vui lòng chọn Nguyên liệu" },
                 ]}
               >
                 <Select
-                  placeholder="Chọn loại nhiên liệu"
+                  placeholder="Chọn loại Nguyên liệu"
                   onChange={handleFuelChange}
                 >
                   {fuelTypes.map((fuel) => (

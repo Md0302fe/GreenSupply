@@ -280,7 +280,7 @@ const RawMaterialBatchList = () => {
         width="50%"
       >
         <Loading isPending={loadingDetails}>
-          {/* Form cập nhật đơn thu nhiên liệu */}
+          {/* Form cập nhật đơn thu Nguyên liệu */}
           <div className="w-full bg-gray-100 p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
               <div className="space-y-4">
@@ -293,7 +293,7 @@ const RawMaterialBatchList = () => {
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu nhiên liệu..."
+                    placeholder="Tên đơn thu Nguyên liệu..."
                     value={stateDetailsBatch?.batch_id.batch_name || ""}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
@@ -308,13 +308,13 @@ const RawMaterialBatchList = () => {
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu nhiên liệu..."
+                    placeholder="Tên đơn thu Nguyên liệu..."
                     value={stateDetailsBatch.export_name || ""}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
 
-                {/* Ảnh nhiên liệu */}
+                {/* Ảnh Nguyên liệu */}
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 min-h-[20vh]">
                   {/* Tiêu đề */}
                   <div className="w-full md:w-1/4 text-gray-800 font-semibold">
@@ -326,7 +326,7 @@ const RawMaterialBatchList = () => {
                     <div className="w-full md:w-1/2">
                       <img
                         src={stateDetailsBatch.fuel_image}
-                        alt="Hình ảnh nhiên liệu"
+                        alt="Hình ảnh Nguyên liệu"
                         className="w-full h-auto max-h-[300px] object-contain rounded-lg shadow-md border border-gray-300"
                       />
                     </div>

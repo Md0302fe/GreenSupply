@@ -133,7 +133,7 @@ const CreateFuel = () => {
 
       <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
         <h2 className="text-3xl font-bold mb-6 text-center">
-          Tạo Loại Nhiên Liệu Mới
+          Tạo Loại Nguyên liệu Mới
         </h2>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -141,7 +141,7 @@ const CreateFuel = () => {
             label="Tên loại nguyên liệu"
             name="type_name"
             rules={[
-              { required: true, message: "Vui lòng nhập tên loại nhiên liệu" },
+              { required: true, message: "Vui lòng nhập tên loại Nguyên liệu" },
             ]}
           >
             <Input
@@ -165,7 +165,7 @@ const CreateFuel = () => {
             valuePropName="fileList"
             getValueFromEvent={normFile}
             rules={[
-              { required: true, message: "Vui lòng chọn ảnh loại nhiên liệu" },
+              { required: true, message: "Vui lòng chọn ảnh loại Nguyên liệu" },
             ]}
           >
             <Upload

@@ -71,10 +71,10 @@ const FuelList = () => {
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
-        console.log("Danh sách nhiên liệu:", transformedFuels);
+        console.log("Danh sách Nguyên liệu:", transformedFuels);
         setFuels(transformedFuels);
       } else {
-        message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
+        message.error("Lỗi khi lấy danh sách loại Nguyên liệu!");
       }
     } catch (error) {
       message.error("Không thể kết nối đến server!");
@@ -91,7 +91,7 @@ const FuelList = () => {
   const handleUpdate = async () => {
     try {
       if (updateData.type_name.trim() === "") {
-        toast.error("Tên nhiên liệu không được để trống");
+        toast.error("Tên Nguyên liệu không được để trống");
         return;
       }
 
@@ -128,7 +128,7 @@ const FuelList = () => {
       );
 
       if (res.data.success) {
-        message.success("Đã chuyển nhiên liệu vào trạng thái Đã xóa!");
+        message.success("Đã chuyển Nguyên liệu vào trạng thái Đã xóa!");
         setFuels((prev) =>
           prev.map((fuel) =>
             fuel._id === id ? { ...fuel, is_deleted: true } : fuel
@@ -230,7 +230,7 @@ const FuelList = () => {
 
     const excel = new Excel();
     const exportColumns = [
-      { title: "Tên Loại Nhiên Liệu", dataIndex: "type_name" },
+      { title: "Tên Loại Nguyên liệu", dataIndex: "type_name" },
       { title: "Mô Tả", dataIndex: "description" },
       { title: "Trạng Thái", dataIndex: "is_deleted" },
       { title: "Số Lượng", dataIndex: "quantity" },
@@ -244,7 +244,7 @@ const FuelList = () => {
     }));
 
     excel
-      .addSheet("Danh sách Loại Nhiên Liệu")
+      .addSheet("Danh sách Loại Nguyên liệu")
       .addColumns(exportColumns)
       .addDataSource(exportData)
       .saveAs("DanhSachLoaiNhienLieu.xlsx");
@@ -260,7 +260,7 @@ const FuelList = () => {
     setIsUpdateDrawerOpen(true); // Mở Drawer cập nhật
   };
   const showFuelDetails = (fuel) => {
-    console.log("Dữ liệu nhiên liệu:", fuel); // Debug dữ liệu
+    console.log("Dữ liệu Nguyên liệu:", fuel); // Debug dữ liệu
     setSelectedFuel(fuel);
     setIsDrawerOpen(true);
   };
@@ -270,10 +270,10 @@ const FuelList = () => {
     {
       title: (
         <div style={{ textAlign: "center", width: "100%" }}>
-          Tên Loại Nhiên Liệu
+          Tên Loại Nguyên liệu
         </div>
       ),
-      // title: "Tên Loại Nhiên Liệu",
+      // title: "Tên Loại Nguyên liệu",
       dataIndex: "type_name",
       key: "type_name",
       ...getColumnSearchProps("type_name"),
@@ -396,7 +396,7 @@ const FuelList = () => {
       />
 
       <Drawer
-        title="Chi tiết Loại Nhiên Liệu"
+        title="Chi tiết Loại Nguyên liệu"
         open={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
@@ -407,7 +407,7 @@ const FuelList = () => {
       >
         {selectedFuel ? (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Tên Loại Nhiên Liệu">
+            <Descriptions.Item label="Tên Loại Nguyên liệu">
               {selectedFuel.type_name || "Không có dữ liệu"}
             </Descriptions.Item>
             <Descriptions.Item label="Mô Tả">
@@ -437,7 +437,7 @@ const FuelList = () => {
       </Drawer>
 
       <Drawer
-        title="Cập nhật Loại Nhiên Liệu"
+        title="Cập nhật Loại Nguyên liệu"
         open={isUpdateDrawerOpen}
         onClose={() => {
           setIsUpdateDrawerOpen(false);
@@ -453,7 +453,7 @@ const FuelList = () => {
               onChange={(e) =>
                 setUpdateData({ ...updateData, type_name: e.target.value })
               }
-              placeholder="Tên Loại Nhiên Liệu"
+              placeholder="Tên Loại Nguyên liệu"
               className="mb-2"
             />
             <Input.TextArea

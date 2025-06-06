@@ -6,17 +6,15 @@ import {
   Space,
   Tag,
   Button,
-  Modal,
   Form,
   Descriptions,
   InputNumber,
+  message,
   Select,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
@@ -76,7 +74,7 @@ const RawMaterialBatchList = () => {
         set_fuel_managements(getAllManagements.requests);
       }
     } catch (error) {
-      toast.error("Lỗi khi tải danh sách lô nguyên liệu!");
+      message.error("Lỗi khi tải danh sách lô nguyên liệu!");
     } finally {
       setLoading(false);
     }
@@ -95,7 +93,7 @@ const RawMaterialBatchList = () => {
         setStorages([]); // Nếu không có dữ liệu, gán storages là mảng trống
       }
     } catch (error) {
-      toast.error("Lỗi khi tải danh sách kho lưu trữ!");
+      message.error("Lỗi khi tải danh sách kho lưu trữ!");
       setStorages([]); // Nếu có lỗi, gán mảng trống
     }
   };
@@ -112,9 +110,9 @@ const RawMaterialBatchList = () => {
 
   useEffect(() => {
     if (location.state?.createdSuccess) {
-      toast.success("Tạo lô nguyên liệu thành công!");
+      message.success("Tạo lô nguyên liệu thành công!");
 
-      // 👉 Xoá flag để tránh toast lặp nếu user refresh lại trang
+      // 👉 Xoá flag để tránh message lặp nếu user refresh lại trang
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -298,7 +296,7 @@ const RawMaterialBatchList = () => {
 
   const handleEdit = (record) => {
     if (record.status !== "Đang chuẩn bị") {
-      toast.error("Chỉ được chỉnh sửa lô ở trạng thái 'Đang chuẩn bị'");
+      message.error("Chỉ được chỉnh sửa lô ở trạng thái 'Đang chuẩn bị'");
       return;
     }
 
@@ -327,7 +325,7 @@ const RawMaterialBatchList = () => {
       .validateFields()
       .then((values) => {
         if (!values.fuel_type_id || !values.storage_id) {
-          toast.error(
+          message.error(
             "Vui lòng chọn đầy đủ thông tin loại nguyên liệu và kho lưu trữ!"
           );
           return;
@@ -343,7 +341,7 @@ const RawMaterialBatchList = () => {
 
         const { access_token } = user;
         if (!access_token) {
-          toast.error("Token không hợp lệ.");
+          message.error("Token không hợp lệ.");
           return;
         }
 
@@ -353,7 +351,7 @@ const RawMaterialBatchList = () => {
           access_token,
         })
           .then((res) => {
-            toast.success("Cập nhật thành công!");
+            message.success("Cập nhật thành công!");
             fetchData(); // Reload lại danh sách
             form.resetFields(); // Reset form sau khi cập nhật
             setSelectedBatch(null); // Reset selectedBatch
@@ -362,11 +360,11 @@ const RawMaterialBatchList = () => {
           })
           .catch((error) => {
             console.error("Lỗi khi cập nhật:", error);
-            toast.error("Cập nhật thất bại!");
+            message.error("Cập nhật thất bại!");
           });
       })
       .catch((err) => {
-        toast.error("Vui lòng điền đầy đủ thông tin!");
+        message.error("Vui lòng điền đầy đủ thông tin!");
       });
   };
 
@@ -400,7 +398,7 @@ const RawMaterialBatchList = () => {
     }
 
     if (value === 0 || /e|E|[^0-9]/.test(value)) {
-      toast.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
+      message.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
       form.setFieldsValue({ quantity: null });
       return;
     }
@@ -418,8 +416,8 @@ const RawMaterialBatchList = () => {
         const availableFuel = selectedFuel.quantity;
         if (required > availableFuel) {
           const maxProduction = Math.floor(availableFuel * 0.9);
-          toast.warning(
-            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có...`
+          message.warning(
+            `Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có...`
           );
           form.setFieldsValue({
             quantity: maxProduction,
@@ -553,7 +551,7 @@ const RawMaterialBatchList = () => {
                     ]}
                   >
                     <Select
-                      placeholder="Chọn loại nhiên liệu"
+                      placeholder="Chọn loại Nguyên liệu"
                       className="rounded border-gray-300"
                       onChange={handleFuelTypeChange}
                     >
@@ -709,8 +707,8 @@ const RawMaterialBatchList = () => {
         )}
       </DrawerComponent>
 
-      {/* ToastContainer */}
-      <ToastContainer
+      {/* messageContainer */}
+      <messageContainer
         hideProgressBar={false}
         position="top-right"
         newestOnTop={false}
