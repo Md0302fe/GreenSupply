@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Form, Input, Select, DatePicker, Button, message } from "antd";
+import { Form, Input, Select, Button, message } from "antd";
 import axios from "axios";
-import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { createMaterialStorageExport } from "../../../../services/MaterialStorageExportService";
-import * as UserServices from "../../../../services/UserServices";
-import { toast } from "react-toastify";
 
 const MaterialStorageExport = () => {
   const [form] = Form.useForm();
@@ -18,7 +15,6 @@ const MaterialStorageExport = () => {
   const [loadingBatch, setLoadingBatch] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const [selectedBatch, setSelectedBatch] = useState(null);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const batchId = params.get("id");
@@ -31,7 +27,7 @@ const MaterialStorageExport = () => {
         const formattedToken = token.replace(/^"(.*)"$/, "$1");
 
         if (!token) {
-          toast.error("Bạn chưa đăng nhập.");
+          message.error("Bạn chưa đăng nhập.");
           return;
         }
 
@@ -39,7 +35,7 @@ const MaterialStorageExport = () => {
         const userId = decodedToken?.id;
 
         if (!userId) {
-          toast.error("Không tìm thấy ID người dùng.");
+          message.error("Không tìm thấy ID người dùng.");
           return;
         }
 
@@ -56,11 +52,11 @@ const MaterialStorageExport = () => {
         if (response.data && response.data.status === "OK") {
           setUser(response.data.data);
         } else {
-          toast.error("Không thể lấy thông tin người dùng.");
+          message.error("Không thể lấy thông tin người dùng.");
         }
       } catch (error) {
         console.error("Lỗi khi lấy user:", error);
-        toast.error("Lỗi khi lấy thông tin người dùng từ server.");
+        message.error("Lỗi khi lấy thông tin người dùng từ server.");
       }
     };
 
@@ -104,7 +100,7 @@ const MaterialStorageExport = () => {
           }
         }
       } catch (error) {
-        toast.error("Lỗi khi tải dữ liệu từ server.");
+        message.error("Lỗi khi tải dữ liệu từ server.");
       } finally {
         setLoadingProduction(false);
         setLoadingBatch(false);
@@ -144,7 +140,7 @@ const MaterialStorageExport = () => {
       setLoading(true);
 
       if (!user || !user._id) {
-        toast.error("Không tìm thấy thông tin người dùng.");
+        message.error("Không tìm thấy thông tin người dùng.");
         return;
       }
 
@@ -181,7 +177,7 @@ const MaterialStorageExport = () => {
         state: { createdSuccess: true },
       });
     } catch (error) {
-      toast.error(error.response?.data?.message || "Lỗi không xác định!");
+      message.error(error.response?.data?.message || "Lỗi không xác định!");
     } finally {
       setLoading(false);
     }

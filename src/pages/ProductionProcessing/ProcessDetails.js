@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
-
 import { convertDateStringV1 } from "../../ultils";
 
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-import Loading from "../../components/LoadingComponent/Loading";
+import { message } from "antd";
+import { useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
+
 import StageDetailsComponents from "./StageDetailsComponents";
+import Loading from "../../components/LoadingComponent/Loading";
 import * as ProductionsProcessServices from "../../services/ProductionProcessingServices";
 
 import {
   getDetailsProcessByID,
   getProcessStageDetails,
+  getDetailsConsolidateProcessByID,
+  getConsolidateProcessStageDetails,
 } from "../../services/ProductionProcessingServices";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 
 const ProcessDetails = () => {
   const { process_id } = useParams();
   const user = useSelector((state) => state.user);
+
+  const location = useLocation();
+  const processType = location.state?.type;
 
   const [dataProcess, setDataProcess] = useState();
   const [dataStage, setDataStage] = useState();
@@ -32,16 +37,26 @@ const ProcessDetails = () => {
   const [stage6, setStage6] = useState();
   const [stage7, setStage7] = useState();
 
-
   // Fetch process details từ API
   const fetchBothDetails = async () => {
-    const [processDetails, processStages] = await Promise.all([
-      getDetailsProcessByID(process_id, user?.access_token),
-      getProcessStageDetails(process_id, user?.access_token),
-    ]);
-    setDataProcess(processDetails);
-    setDataStage(processStages);
-    return { processDetails, processStages };
+    if (processType === "single") {
+      const [processDetails, processStages] = await Promise.all([
+        getDetailsProcessByID(process_id, user?.access_token),
+        getProcessStageDetails(process_id, user?.access_token),
+      ]);
+      setDataProcess(processDetails);
+      setDataStage(processStages);
+      return { processDetails, processStages };
+    }
+    if (processType === "consolidate") {
+      const [processDetails, processStages] = await Promise.all([
+        getDetailsConsolidateProcessByID(process_id, user?.access_token),
+        getConsolidateProcessStageDetails(process_id, user?.access_token),
+      ]);
+      setDataProcess(processDetails);
+      setDataStage(processStages);
+      return { processDetails, processStages };
+    }
   };
 
   const { data, isLoading, isSuccess, refetch } = useQuery({
@@ -59,7 +74,6 @@ const ProcessDetails = () => {
       setStage5(dataStage?.data[4] || []);
       setStage6(dataStage?.data[5] || []);
       setStage7(dataStage?.data[6] || []);
-
     }
   }, [dataStage]);
 
@@ -69,17 +83,18 @@ const ProcessDetails = () => {
     const response = await ProductionsProcessServices.handleFinishStage({
       process_id,
       noStage,
+      process_type : dataProcess?.data?.process_type,
       stage_id,
       access_token: user?.access_token,
     });
     if (response?.data?.success) {
       // reload quy trình
+      message.success("Xác nhận hoàn thành stage thành công");
       await refetch();
       // Thông báo
-      toast.success("Xác nhận hoàn thành stage ", noStage, " thành công");
     } else {
+      message.error("Hệ thống gặp lỗi trong quá trình hoàn thành quá trình");
       await refetch();
-      toast.error("Hệ thống gặp lỗi trong quá trình hoàn thành quá trình");
     }
   };
 
@@ -94,11 +109,11 @@ const ProcessDetails = () => {
             {/* Name & ID */}
             <div class="w-[80%]">
               <div className="text-lg font-bold text-center rounded p-2 text-green-600">
-                🔖 {dataProcess?.data.production_name}
+                🔖 {dataProcess?.data?.production_name}
               </div>
               <div className="bg-white shadow-sm border border-gray-200 rounded p-1 max-w-[200px] mx-auto mt-2">
                 <p className="text-gray-500 text-xs mb-2 text-center">
-                  🆔 {dataProcess?.data._id}
+                  🆔 {dataProcess?.data?._id}
                 </p>
               </div>
             </div>
@@ -129,26 +144,26 @@ const ProcessDetails = () => {
               <div className="info-box">
                 <p className="text-gray-500 text-xs mb-2">📅 Start Time</p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {convertDateStringV1(dataProcess?.data.start_time)}
+                  {convertDateStringV1(dataProcess?.data?.start_time)}
                 </p>
               </div>
               <div className="info-box">
                 <p className="text-gray-500 text-xs mb-2">📅 ETA End Time</p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {convertDateStringV1(dataProcess?.data.end_time)}
+                  {convertDateStringV1(dataProcess?.data?.end_time)}
                 </p>
               </div>
               <div className="info-box">
                 <p className="text-gray-500 text-xs mb-2">⏳ Current Stage</p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.data.current_stage}
+                  {dataProcess?.data?.current_stage}
                 </p>
               </div>
               <div className="info-box">
                 <p className="text-gray-500 text-xs mb-2">🔄 Status</p>
                 <span
                   className={`inline-block text-xs px-1 py-0.5 rounded text-black ${
-                    dataProcess?.data.status === "Hoàn thành"
+                    dataProcess?.data?.status === "Hoàn thành"
                       ? "bg-green-500"
                       : "bg-yellow-200"
                   }`}
@@ -165,7 +180,7 @@ const ProcessDetails = () => {
               <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
                 <p className="text-gray-500 text-xs mb-2">📝 Note</p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.data.note}
+                  {dataProcess?.data?.note}
                 </p>
               </div>
             </div>

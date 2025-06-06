@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import {
-  Table,
   Input,
   Button,
   Space,
@@ -15,24 +14,23 @@ import {
 import "./Order.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
-import {
-  CheckCircleOutlined,
-  EditOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { CheckCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import {
   getAllProductionProcessing,
   approveProductionProcessing,
+  approveConsolidateProcessing,
   updateProductionRequest,
+  getAllConsolidateProcess,
 } from "../../services/ProductionProcessingServices";
 import Loading from "../../components/LoadingComponent/Loading";
 import dayjs from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-import TableUser from "../../components/Admin/Content/Order/TableUser";
+import TableProcess from "../../components/Admin/Content/Order/TableUser";
+import { toast } from "react-toastify";
 
 const { TextArea } = Input;
 
@@ -55,9 +53,11 @@ const ProductionProcessingList = () => {
   const [form] = Form.useForm();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [consolidateProcessData, setConsolidateProcessData] = useState([]);
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [type_process, set_type_process] = useState("single");
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -291,6 +291,18 @@ const ProductionProcessingList = () => {
     }
   };
 
+  const handleLoadConsolidate = async () => {
+    set_type_process("consolidate");
+    const access_token = user?.access_token;
+    const response = await getAllConsolidateProcess(access_token);
+
+    if (response?.success) {
+      setConsolidateProcessData(response?.data);
+    } else {
+      message.error("Có lỗi trong quá trình tải dữ liệu quy trình");
+    }
+  };
+
   // Xử lý duyệt đơn
   const handleApprove = async () => {
     Modal.confirm({
@@ -298,14 +310,28 @@ const ProductionProcessingList = () => {
       content: "Bạn có chắc muốn duyệt quy trình này không?",
       onOk: async () => {
         try {
-          const access_token = user?.access_token;
-          await approveProductionProcessing({
-            id: selectedProcess._id,
-            token: access_token,
-          });
-          message.success("Duyệt quy trình thành công!");
-          setIsDrawerOpen(false);
-          refetch();
+          // approve single process
+          if (type_process === "single") {
+            const access_token = user?.access_token;
+            await approveProductionProcessing({
+              id: selectedProcess._id,
+              token: access_token,
+            });
+            message.success("Duyệt quy trình thành công!");
+            setIsDrawerOpen(false);
+            refetch();
+          }
+          // approve consolidate process
+          if (type_process === "consolidate") {
+            const access_token = user?.access_token;
+            await approveConsolidateProcessing({
+              id: selectedProcess._id,
+              token: access_token,
+            });
+            message.success("Duyệt quy trình tổng hợp thành công!");
+            setIsDrawerOpen(false);
+            refetch();
+          }
         } catch (error) {
           message.error("Duyệt thất bại, vui lòng thử lại.");
         }
@@ -318,14 +344,12 @@ const ProductionProcessingList = () => {
       title: "Mã quy trình",
       dataIndex: "_id",
       key: "_id",
-      className: "text-center",
       ...getColumnSearchProps("_id"),
     },
     {
       title: "Tên quy trình",
       dataIndex: "production_name",
       key: "production_name",
-      className: "text-center",
       ...getColumnSearchProps("production_name"),
     },
     {
@@ -386,37 +410,68 @@ const ProductionProcessingList = () => {
   return (
     <div className="production-processing-list">
       <div className="Main-Content">
-        <Button
-          onClick={() => navigate(-1)}
-          type="primary"
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          Quay lại
-        </Button>
-        <h5 className="text-2xl font-bold text-gray-800 mt-4">
-          Danh sách kế hoạch sản xuất
-        </h5>
+        {/* button back & title of page */}
+        <div className="my-6">
+          <div className="absolute">
+            <Button
+              onClick={() => navigate(-1)}
+              type="primary"
+              className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12H3m0 0l6-6m-6 6l6 6"
+                />
+              </svg>
+              Quay lại
+            </Button>
+          </div>
+          <h5 className="content-title font-bold text-2xl text-center">
+            Các Quy Trình Đã Tạo
+          </h5>
+        </div>
 
         <div className="content-main-table-user">
+          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-fit">
+            <p>Phân loại quy trình</p>
+            <div className="flex gap-2 mt-2">
+              <span
+                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
+                  type_process === "single"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-slate-500 hover:bg-slate-600"
+                }`}
+                onClick={() => set_type_process("single")}
+              >
+                Quy trình đơn
+              </span>
+              <span
+                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
+                  type_process === "consolidate"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-slate-500 hover:bg-slate-600"
+                }`}
+                onClick={() => handleLoadConsolidate()}
+              >
+                Quy trình tổng hợp
+              </span>
+            </div>
+          </div>
+          
           <Loading isPending={isLoading}>
-            <TableUser
+            <TableProcess
               columns={columns}
               isLoading={isLoading}
-              data={data}
+              data={type_process === "single" ? data : consolidateProcessData}
               columnsExport={columnsExport}
             />
           </Loading>

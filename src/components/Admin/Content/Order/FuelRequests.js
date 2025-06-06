@@ -468,7 +468,7 @@ const FuelRequestsManagement = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Loại Nhiên Liệu"
+              label="Loại Nguyên liệu"
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >

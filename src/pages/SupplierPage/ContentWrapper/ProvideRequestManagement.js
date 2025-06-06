@@ -410,6 +410,87 @@ const ProvideRequestManagement = () => {
         />
       </div>
 
+      {/* Drawer for Editing */}
+      {/* <DrawerComponent
+        title="Chi Tiết Yêu Cầu"
+        isOpen={isDrawerOpen}
+        onClose={handleCancelUpdate}
+        placement="right"
+        width="30%"
+      >
+        <Loading isPending={mutationUpdate.isPending}>
+          <Form
+            name="update-form"
+            form={formUpdate}
+            onFinish={onFinishUpdate}
+            layout="vertical" // 🔹 Ensures proper alignment
+          >
+            <Form.Item label="Tên Nguyên liệu" name="fuel_name">
+              <Input value={selectedRequest.fuel_name} disabled />
+            </Form.Item>
+
+            <Form.Item label="Số Lượng">
+              {quantityRemain !== null && (
+                <div
+                  style={{ marginBottom: 5, fontSize: "14px", color: "gray" }}
+                >
+                  Số lượng còn lại: <strong>{quantityRemain}</strong>
+                </div>
+              )}
+              <Form.Item
+                name="quantity"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số lượng!" },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value) {
+                        return Promise.resolve();
+                      }
+                      if (value > quantityRemain) {
+                        return Promise.reject(
+                          new Error(
+                            `Số lượng không được vượt quá ${quantityRemain}!`
+                          )
+                        );
+                      }
+                      if (value % 10 !== 0) {
+                        return Promise.reject(
+                          new Error("Số lượng phải chia hết cho 10!")
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
+              >
+                <Input
+                  type="number"
+                  onKeyDown={(e) => {
+                    if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              </Form.Item>
+            </Form.Item>
+            <Form.Item label="Ghi Chú" name="note">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={mutationUpdate.isPending}
+                style={{ width: "100%" }}
+              >
+                {mutationUpdate.isPending ? "Đang cập nhật..." : "Cập nhật"}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Loading>
+      </DrawerComponent> */}
+
       <DrawerComponent
         title={
           <div style={{ textAlign: "center" }}>

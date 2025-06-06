@@ -2,30 +2,30 @@ import React from "react";
 import { convertDateStringV1 } from "../../ultils";
 import { useNavigate } from "react-router-dom";
 
-
-const ProcessingComponent = ({ data }) => {
-
-    const navigate = useNavigate();
+const ProcessingComponent = ({ data , type }) => {
+  const navigate = useNavigate();
 
   const colorOfBox = [
-    { stage: 1, color: "#FFFBEA" },  
-    { stage: 2, color: "#FFF3C4" },  
-    { stage: 3, color: "#FCE588" }, 
-    { stage: 4, color: "#FADB5F" },  
-    { stage: 5, color: "#F7C948" },  
-    { stage: 6, color: "#F0B429" },  
-    { stage: 7, color: "#DE911D" },  
-    { stage: 7, color: "#B2EBF2" }, 
+    { stage: 1, color: "#FFFBEA" },
+    { stage: 2, color: "#FFF3C4" },
+    { stage: 3, color: "#FCE588" },
+    { stage: 4, color: "#FADB5F" },
+    { stage: 5, color: "#F7C948" },
+    { stage: 6, color: "#F0B429" },
+    { stage: 7, color: "#DE911D" },
+    { stage: 7, color: "#B2EBF2" },
   ];
 
   // Lấy màu tương ứng với current_stage
   const currentColor =
     colorOfBox.find((box) => box.stage === data.current_stage)?.color ||
     "#FFFFFF"; // Mặc định là trắng nếu không tìm thấy
-
+  
   const handleDetailProcess = (process_id) => {
     // Open Process Details Page
-    navigate(`/system/admin/process_details/${process_id}` );
+    navigate(`/system/admin/process_details/${process_id}`, {
+      state: { type: type },
+    });
   };
 
   return (

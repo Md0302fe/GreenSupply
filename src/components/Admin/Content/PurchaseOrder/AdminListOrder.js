@@ -212,7 +212,7 @@ const UserComponent = () => {
     }
 
     if (!purchaseDetails.fuel_type || purchaseDetails.fuel_type.trim() === "") {
-      errors.push("Loại nhiên liệu không được để trống!");
+      errors.push("Loại Nguyên liệu không được để trống!");
     }
 
     if (!purchaseDetails.start_received) {
@@ -795,7 +795,7 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title="Chi Tiết Đơn Thu Nhiên Liệu"
+        title="Chi Tiết Đơn Thu Nguyên liệu"
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -803,11 +803,11 @@ const UserComponent = () => {
         forceRender
       >
         <Loading isPending={isLoadDetails}>
-          {/* Form cập nhật đơn thu nhiên liệu */}
+          {/* Form cập nhật đơn thu Nguyên liệu */}
           <div className="w-full bg-gray-100 p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                🚀 Cập Nhật Đơn Thu Nhiên Liệu
+                🚀 Cập Nhật Đơn Thu Nguyên liệu
               </h2>
               <div className="space-y-4">
                 {/* Tên đơn */}
@@ -819,17 +819,17 @@ const UserComponent = () => {
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu nhiên liệu..."
+                    placeholder="Tên đơn thu Nguyên liệu..."
                     value={purchaseDetails.request_name}
                     onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
 
-                {/* Loại nhiên liệu */}
+                {/* Loại Nguyên liệu */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Loại nhiên liệu cần thu
+                    Loại Nguyên liệu cần thu
                   </label>
                   <select
                     name="fuel_type"
@@ -838,7 +838,7 @@ const UserComponent = () => {
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   >
                     <option value="" disabled>
-                      Chọn loại nhiên liệu
+                      Chọn loại Nguyên liệu
                     </option>
                     {fuel_types && fuel_types.length > 0 ? (
                       fuel_types.map((fuel) => (
@@ -852,7 +852,7 @@ const UserComponent = () => {
                   </select>
                 </div>
 
-                {/* Ảnh nhiên liệu */}
+                {/* Ảnh Nguyên liệu */}
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 min-h-[20vh]">
                   {/* Tiêu đề */}
                   <div className="w-full md:w-1/4 text-gray-800 font-semibold">
@@ -881,7 +881,7 @@ const UserComponent = () => {
                     <div className="w-full md:w-1/2">
                       <img
                         src={purchaseDetails.fuel_image}
-                        alt="Hình ảnh nhiên liệu"
+                        alt="Hình ảnh Nguyên liệu"
                         className="w-full h-auto max-h-[300px] object-contain rounded-lg shadow-md border border-gray-300"
                       />
                     </div>
