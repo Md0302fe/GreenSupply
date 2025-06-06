@@ -5,6 +5,7 @@ import { FaGear } from "react-icons/fa6";
 import request_list from "../../assets/Feature_product_process/request_list.jpg";
 import processing_list from "../../assets/Feature_product_process/processing_list.jpg";
 import gear_loading from "../../assets/Feture_production_processing/gearLoading.jpg";
+import { useTranslation } from "react-i18next";
 
 import "./ProductProcess.css";
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
@@ -15,13 +16,15 @@ import wating_create_process_list from "../../assets/Feature_product_process/wat
 import created_process_list from "../../assets/Feature_product_process/created_process_list-removebg.png";
 
 const UserComponent = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaGear className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản Lý Yêu Cầu Sản Xuất
+          {t("production.title")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -30,48 +33,46 @@ const UserComponent = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
         <Card
           link="/system/admin/dashboard-production-request"
-          title="Dashboard"
-          description="Thông tin toàn bộ đơn quy trình"
+          title={t("production.dashboard.title")}
+          description={t("production.dashboard.description")}
           image={mng_dashboard_Purchasedorders}
         />
         <Card
           link="/system/admin/production-request"
-          title="Lập kế hoạch sản xuất"
-          description="Tạo mới yêu cầu sản xuất (đơn thể) - Quy trình sản xuất"
+          title={t("production.create.title")}
+          description={t("production.create.description")}
           image={single_process}
         />
         <Card
           link="/system/admin/production-request-list"
-          title="D.sách kế hoạch sản xuất"
-          description="Quản lý danh sách kế hoạch sản xuất"
+          title={t("production.requestList.title")}
+          description={t("production.requestList.description")}
           image={request_list}
         />
         <Card
           link="/system/admin/production-processing"
-          title="Danh sách chờ"
-          description="Quản lý các kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
+          title={t("production.waitingList.title")}
+          description={t("production.waitingList.description")}
           image={wating_create_process_list}
         />
         <Card
           link="/system/admin/production-processing-list"
-          title="Danh sách quy trình đã tạo"
-          description="Q.lý danh sách quy trình đã tạo"
+          title={t("production.createdProcesses.title")}
+          description={t("production.createdProcesses.description")}
           image={created_process_list}
         />
-
         <Card
           link="/system/admin/processing-system"
-          title="Quy trình"
-          description="Quản lý danh sách quy trình đang thực thi"
+          title={t("production.executing.title")}
+          description={t("production.executing.description")}
           image={processing_list}
           is1={true}
         />
         <Card
           link="/system/admin/process-histories"
-          title="Lịch Sử Quy Trình"
-          description="Quản lý danh sách quy trình đã hoàn thành"
+          title={t("production.history.title")}
+          description={t("production.history.description")}
           image={history_process}
-          is1={false}
         />
       </div>
     </div>

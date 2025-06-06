@@ -13,7 +13,8 @@ import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
 import { MdDashboardCustomize } from "react-icons/md";
 import { FaLemon } from "react-icons/fa6";
-import { FaFileInvoice  } from "react-icons/fa6";
+import { FaFileInvoice } from "react-icons/fa6";
+import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 
 import Sidebar from "./Sidebar";
 
@@ -72,7 +73,7 @@ const Admin = (props) => {
     },
 
     {
-      icon: <FaFileInvoice   className="text-2xl" />,
+      icon: <FaFileInvoice className="text-2xl" />,
       text: "Q.lý đơn đặt hàng",
       label: "manaement_product_orders",
       href: "feature_product_orders",
@@ -85,10 +86,11 @@ const Admin = (props) => {
     return navigationsData.map(({ icon, label, href, text }, index) => (
       <div
         key={index}
-        className={`relative group flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 group ${toggleIcons === label
+        className={`relative group flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 group ${
+          toggleIcons === label
             ? "bg-gray-100  text-blue-500"
             : "bg-black hover:bg-gray-100"
-          }`}
+        }`}
         onClick={() => handleTogge(label, href)} // Cập nhật trạng thái khi nhấp
       >
         <button className="flex justify-center items-center">{icon}</button>
@@ -112,7 +114,7 @@ const Admin = (props) => {
       </div>
       <div className="admin-content w-full overflow-x-hidden">
         {/* New Nav */}
-        <div className="flex items-center bg-gray-400 px-6 py-2 rounded-b-[50px] space-x-4">
+        <div className="flex items-center bg-gray-400 px-6 py-2 rounded-b-[50px]">
           <div className="flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-gray-200  hover:text-black p-2 transition-all duration-200 group rounded-[50%]">
             <button
               onClick={() => setCollapsed(!collapsed)}
@@ -128,11 +130,14 @@ const Admin = (props) => {
           <div className="flex items-center w-full justify-center gap-[30px]">
             {renderNavigations()}
           </div>
-          <div
-            className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-all duration-200"
-            onClick={() => navigate("/home")}
-          >
-            <AiOutlineHome className="text-2xl" />
+          <div className="flex items-center gap-2 w-[120px]">
+            <LanguageSwitcher />
+            <div
+              className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-all duration-200"
+              onClick={() => navigate("/home")}
+            >
+              <AiOutlineHome className="text-2xl" />
+            </div>
           </div>
         </div>
 

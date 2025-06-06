@@ -1,23 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { CubeIcon } from '@heroicons/react/24/outline'
-
+import { CubeIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 import mng_mango from "../../assets/Feature_materials_category/mng_mango.png";
 import mng_addnew_mango from "../../assets/Feature_materials_category/mng_addnew_mango.jpg";
 import mng_mango_list from "../../assets/Feature_materials_category/mng_mango_list.jpg";
-import mngo_mango_VatLieu from "../../assets/Feature_materials_category/mngo_LoaiVatLieu.jpg"
-import mngo_mango_NguyenVatLieu from "../../assets/Feature_materials_category/mngo_NguyenVatLieu.jpg"
+import mngo_mango_VatLieu from "../../assets/Feature_materials_category/mngo_LoaiVatLieu.jpg";
+import mngo_mango_NguyenVatLieu from "../../assets/Feature_materials_category/mngo_NguyenVatLieu.jpg";
 
 const UserComponent = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
-       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
+      <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <CubeIcon className="w-8 h-8 mr-2 text-blue-500" />
         <h5 className="relative">
-          Quản Lý Nguyên Vật Liệu
+          {t("material.title")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -26,38 +28,32 @@ const UserComponent = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
         <Card
           link="/system/admin/manage-fuel"
-          title="Dashboard"
-          description="Thông tin Nguyên Liệu"
+          title={t("material.dashboard.title")}
+          description={t("material.dashboard.description")}
           image={mng_dashboard_Purchasedorders}
         />
         <Card
           link="/system/admin/fuel-Create"
-          title="Tạo nguyên liệu mới"
-          description="Tạo thông tin cho nguyên liệu mới"
+          title={t("material.create.title")}
+          description={t("material.create.description")}
           image={mng_addnew_mango}
         />
         <Card
           link="/system/admin/fuel-list"
-          title="Danh sách loại nguyên liệu"
-          description="Quản lý danh sách các loại nguyên liệu"
+          title={t("material.list.title")}
+          description={t("material.list.description")}
           image={mng_mango_list}
         />
-          {/* <Card
-          link="/system/admin/box-categories/create"
-          title="Tạo nguyên liệu Vật Liệu Mới"
-          description="Tạo thông tin cho nguyên liệu mới"
-          image={mng_addnew_mango}
-        /> */}
-          <Card
+        <Card
           link="/system/admin/box-categories/list"
-          title="Quản lý Loại nguyên vật liệu"
-          description="Quản lý danh sách các loại nguyên liệu"
+          title={t("material.type.title")}
+          description={t("material.type.description")}
           image={mngo_mango_VatLieu}
         />
-          <Card
+        <Card
           link="/system/admin/box-list"
-          title="Quản lý nguyên vật liệu"
-          description="Quản lý danh sách các loại nguyên liệu"
+          title={t("material.manage.title")}
+          description={t("material.manage.description")}
           image={mngo_mango_NguyenVatLieu}
         />
       </div>

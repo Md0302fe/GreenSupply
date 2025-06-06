@@ -6,15 +6,17 @@ import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/
 import mng_created_purchased_orders from "../../assets/Feature_purchased_order/mng_created_purchased_orders.png";
 import mng_purchased_orders from "../../assets/Feature_purchased_order/mng_purchased_orders.png";
 import mng_finish_orders from "../../assets/Feature_purchased_order/mng_finish_orders.png";
+import { useTranslation } from "react-i18next";
 
 const UserComponent = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaClipboard className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản Lý Nguyên Liệu Cần Nhập
+          {t("purchaseRequest.title")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -24,32 +26,32 @@ const UserComponent = () => {
         {/* Dashboard */}
         <Card
           link="/system/admin/manage-Supplier-request"
-          title="Dashboard"
-          description="Thông tin phân tích quản lý nguyên liệu cần nhập"
+          title={t("purchaseRequest.dashboard.title")}
+          description={t("purchaseRequest.dashboard.description")}
           image={mng_dashboard_Purchasedorders}
         />
 
         {/* Tạo Yêu Cầu */}
         <Card
           link="/system/admin/C_purchase-order"
-          title="Tạo yêu cầu"
-          description="Tạo yêu cầu nhập nguyên liệu mới"
+          title={t("purchaseRequest.create.title")}
+          description={t("purchaseRequest.create.description")}
           image={mng_created_purchased_orders}
         />
 
         {/* Quản lý yêu cầu đã tạo */}
         <Card
           link="/system/admin/R_purchase-orders"
-          title="Quản lý yêu cầu"
-          description="Quản lý thông tin, các yêu cầu nhập nguyên liệu đã tạo"
+          title={t("purchaseRequest.manage.title")}
+          description={t("purchaseRequest.manage.description")}
           image={mng_purchased_orders}
         />
 
         {/* Các yêu cầu đã hoàn thành */}
         <Card
           link="/system/admin/feature_purchase_orders"
-          title="Hoàn thành"
-          description="Các yêu cầu nhập nguyên liệu đã hoàn thành"
+          title={t("purchaseRequest.completed.title")}
+          description={t("purchaseRequest.completed.description")}
           image={mng_finish_orders}
         />
       </div>

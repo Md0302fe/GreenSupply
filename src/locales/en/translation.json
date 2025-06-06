@@ -139,7 +139,13 @@
     "order_history": "Order History",
     "history_harvest": "Harvest Request History",
     "history_provide": "Provide Order History",
-    "track_shipment": "Track Shipment"
+    "track_shipment": "Track Shipment",
+    "adminTitle": "ADMIN",
+    "dashboard": "Dashboard",
+    "schedule": "Schedule",
+    "marketAnalysis": "Market Analysis",
+    "supplierConnect": "Supplier Connection",
+    "footer": "minhduc.lmd Dev"
   },
   "harvestRequest": {
     "title": "HARVEST REQUEST FORM",
@@ -306,5 +312,189 @@
     "statusLabel": "Status",
     "completed": "Completed",
     "viewRequestDetails": "View Request Details"
+  },
+  "dashboard": {
+    "title": "System Overview",
+    "subtitle": "GreenSupply🌿",
+    "description": "This is the admin dashboard of the GreenSupply system, where you can monitor and manage key metrics in the production, inventory, and mango distribution process.",
+    "button": {
+      "createPurchase": "Create purchase request",
+      "createProduction": "Create production request",
+      "createProcess": "Create manufacturing process",
+      "createExport": "Create export request",
+      "createImport": "Create import request"
+    },
+    "card": {
+      "import": {
+        "title": "Import Requests"
+      },
+      "export": {
+        "title": "Export Requests"
+      },
+      "batch": {
+        "title": "Raw Material Batches"
+      },
+      "finished": {
+        "title": "Finished Product Batches",
+        "dateRange": "From January 1 to March 25"
+      }
+    },
+    "chart": {
+      "importExport": {
+        "title": "Import/Export Requests (Daily)",
+        "titleCompleted": "Number of Completed Import/Export Requests (Daily)",
+        "requestsPendingProduction": "Number of Requests Pending Production Process Creation (Daily)",
+        "completedProductionProcesses": "Number of Completed Production Processes (Daily)"
+      }
+    }
+  },
+  "chart": {
+    "import": "Import",
+    "export": "Export",
+    "pending": "Pending approval",
+    "approved": "Approved",
+    "inProgress": "In production",
+    "completed": "Completed"
+  },
+  "userManagement": {
+    "title": "User Management",
+    "manageUsers": {
+      "title": "Manage Users",
+      "description": "Manage user information"
+    },
+    "manageAccounts": {
+      "title": "Manage Accounts",
+      "description": "Manage account information"
+    }
+  },
+  "purchaseRequest": {
+    "title": "Material Purchase Management",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Analytical insights for incoming material management"
+    },
+    "create": {
+      "title": "Create Request",
+      "description": "Create a new material purchase request"
+    },
+    "manage": {
+      "title": "Manage Requests",
+      "description": "Manage created material purchase requests"
+    },
+    "completed": {
+      "title": "Completed",
+      "description": "Completed material purchase requests"
+    }
+  },
+  "supplierRequest": {
+    "title": "Supplier Request Management",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview of all supplier requests"
+    },
+    "collectList": {
+      "title": "Material Collection Requests",
+      "description": "Manage requests to collect raw materials"
+    },
+    "provideList": {
+      "title": "Material Supply Requests",
+      "description": "Manage requests to supply raw materials"
+    },
+    "receipt": {
+      "title": "Create Warehouse Receipt",
+      "description": "Manage received goods and create warehouse receipts"
+    }
+  },
+  "warehouse": {
+    "title": "Warehouse Management",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview of warehouse information"
+    },
+    "createReceipt": {
+      "title": "Create Receipt Request",
+      "description": "Manage incoming goods and create warehouse receipt requests"
+    },
+    "receiptList": {
+      "title": "Receipt Orders",
+      "description": "Manage pending warehouse receipt requests"
+    },
+    "rawMaterialBatch": {
+      "title": "Raw Material Batches",
+      "description": "Manage raw material batches needed for production"
+    },
+    "createExport": {
+      "title": "Create Export Order",
+      "description": "Manage pending warehouse export orders"
+    },
+    "exportList": {
+      "title": "Export Order List",
+      "description": "Manage all warehouse export orders"
+    },
+    "exportHistory": {
+      "title": "Export History",
+      "description": "View export order history"
+    }
+  },
+  "material": {
+    "title": "Material Management",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Material information"
+    },
+    "create": {
+      "title": "Create new material",
+      "description": "Create information for a new material"
+    },
+    "list": {
+      "title": "Material type list",
+      "description": "Manage list of material types"
+    },
+    "type": {
+      "title": "Manage material categories",
+      "description": "Manage list of material categories"
+    },
+    "manage": {
+      "title": "Manage materials",
+      "description": "Manage list of materials"
+    }
+  },
+  "production": {
+    "title": "Production Request Management",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview of all production processes"
+    },
+    "create": {
+      "title": "Create Production Plan",
+      "description": "Create a new production request (single) - Production process"
+    },
+    "requestList": {
+      "title": "Production Plan List",
+      "description": "Manage production plan list"
+    },
+    "waitingList": {
+      "title": "Pending Processes",
+      "description": "Manage plans pending process creation"
+    },
+    "createdProcesses": {
+      "title": "Created Process List",
+      "description": "Manage list of created processes"
+    },
+    "executing": {
+      "title": "Executing Process",
+      "description": "Manage executing production processes"
+    },
+    "history": {
+      "title": "Process History",
+      "description": "Manage completed production processes"
+    }
+  },
+  "customerOrders": {
+    "title": "Customer Order Management",
+    "productOrderList": {
+      "title": "Product Order List",
+      "description": "Manage the list of product orders"
+    }
   }
 }

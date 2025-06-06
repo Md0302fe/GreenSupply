@@ -136,7 +136,13 @@
     "order_history": "Lịch sử đơn",
     "history_harvest": "L.s Đơn yêu cầu thu nguyên liệu",
     "history_provide": "L.s Đơn cung cấp nguyên liệu",
-    "track_shipment": "Theo dõi lô hàng"
+    "track_shipment": "Theo dõi lô hàng",
+    "adminTitle": "QUẢN TRỊ",
+    "dashboard": "Bảng điều khiển",
+    "schedule": "Lên lịch",
+    "marketAnalysis": "Phân tích thị trường",
+    "supplierConnect": "Kết nối nhà cung cấp",
+    "footer": "minhduc.lmd Dev"
   },
   "harvestRequest": {
     "title": "ĐƠN YÊU CẦU THU NGUYÊN LIỆU",
@@ -303,5 +309,189 @@
     "statusLabel": "Trạng thái",
     "completed": "Hoàn thành",
     "viewRequestDetails": "Xem chi tiết yêu cầu"
+  },
+  "dashboard": {
+    "title": "Tổng Quan Hệ Thống",
+    "subtitle": "GreenSupply🌿",
+    "description": "Đây là trang Dashboard dành cho quản trị viên của hệ thống GreenSupply, nơi bạn có thể theo dõi và quản lý các chỉ số quan trọng trong quy trình sản xuất, tồn kho và phân phối xoài.",
+    "button": {
+      "createPurchase": "Tạo yêu cầu cung cấp",
+      "createProduction": "Tạo yêu cầu sản xuất",
+      "createProcess": "Tạo quy trình sản xuất",
+      "createExport": "Tạo yêu cầu xuất kho",
+      "createImport": "Tạo yêu cầu nhập kho"
+    },
+    "card": {
+      "import": {
+        "title": "Yêu cầu nhập kho"
+      },
+      "export": {
+        "title": "Yêu cầu xuất kho"
+      },
+      "batch": {
+        "title": "Số lượng lô nguyên liệu"
+      },
+      "finished": {
+        "title": "Số lượng lô thành phẩm",
+        "dateRange": "Từ 1 tháng 1 - 25 tháng 3"
+      }
+    },
+    "chart": {
+      "importExport": {
+        "title": "Số Lượng Yêu Cầu Nhập/Xuất Kho (Theo Ngày)",
+        "titleCompleted": "Số Lượng Yêu Cầu Nhập/Xuất Kho đã hoàn thành (Theo Ngày)",
+        "requestsPendingProduction": "Số Lượng Yêu Cầu Chờ Tạo Quy Trình Sản Xuất (Theo Ngày)",
+        "completedProductionProcesses": "Số Lượng Quy Trình Sản Xuất Đã Hoàn Thành (Theo Ngày)"
+      }
+    }
+  },
+  "chart": {
+    "import": "Nhập kho",
+    "export": "Xuất kho",
+    "pending": "Chờ Duyệt",
+    "approved": "Đã Duyệt",
+    "inProgress": "Đang Sản Xuất",
+    "completed": "Hoàn Thành"
+  },
+  "userManagement": {
+    "title": "Quản lý người dùng",
+    "manageUsers": {
+      "title": "Quản lý người dùng",
+      "description": "Quản lý thông tin người dùng"
+    },
+    "manageAccounts": {
+      "title": "Quản lý tài khoản",
+      "description": "Quản lý thông tin tài khoản"
+    }
+  },
+  "purchaseRequest": {
+    "title": "Quản Lý Nguyên Liệu Cần Nhập",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin phân tích quản lý nguyên liệu cần nhập"
+    },
+    "create": {
+      "title": "Tạo yêu cầu",
+      "description": "Tạo yêu cầu nhập nguyên liệu mới"
+    },
+    "manage": {
+      "title": "Quản lý yêu cầu",
+      "description": "Quản lý thông tin, các yêu cầu nhập nguyên liệu đã tạo"
+    },
+    "completed": {
+      "title": "Hoàn thành",
+      "description": "Các yêu cầu nhập nguyên liệu đã hoàn thành"
+    }
+  },
+  "supplierRequest": {
+    "title": "Quản Lý Yêu Cầu Supplier",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin toàn yêu cầu supplier"
+    },
+    "collectList": {
+      "title": "D.sách yêu cầu thu nguyên liệu",
+      "description": "Quản lý danh sách các yêu cầu thu nguyên liệu"
+    },
+    "provideList": {
+      "title": "D.sách yêu cầu cung cấp nguyên liệu",
+      "description": "Quản lý danh sách các yêu cầu cung cấp nguyên liệu"
+    },
+    "receipt": {
+      "title": "Tạo yêu cầu nhập kho",
+      "description": "Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+    }
+  },
+  "warehouse": {
+    "title": "Quản Lý Kho",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Quản lý thông tin tổng quát kho"
+    },
+    "createReceipt": {
+      "title": "Tạo yêu cầu nhập kho",
+      "description": "Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+    },
+    "receiptList": {
+      "title": "D.sách đơn nhập kho",
+      "description": "Quản lý danh sách các yêu cầu (chờ) nhập kho"
+    },
+    "rawMaterialBatch": {
+      "title": "Lô nguyên liệu thô",
+      "description": "Quản lý thông tin các lô nguyên liệu thô , cần cho khâu sản xuất"
+    },
+    "createExport": {
+      "title": "Tạo đơn xuất kho",
+      "description": "Quản lý danh sách các đơn (chờ) xuất kho"
+    },
+    "exportList": {
+      "title": "Danh sách đơn xuất kho",
+      "description": "Quản lý danh sách đơn xuất kho"
+    },
+    "exportHistory": {
+      "title": "Lịch sử đơn xuất kho",
+      "description": "Quản lý lịch sử đơn xuất kho"
+    }
+  },
+  "material": {
+    "title": "Quản Lý Nguyên Vật Liệu",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin Nguyên Liệu"
+    },
+    "create": {
+      "title": "Tạo nguyên liệu mới",
+      "description": "Tạo thông tin cho nguyên liệu mới"
+    },
+    "list": {
+      "title": "Danh sách loại nguyên liệu",
+      "description": "Quản lý danh sách các loại nguyên liệu"
+    },
+    "type": {
+      "title": "Quản lý Loại nguyên vật liệu",
+      "description": "Quản lý danh sách các loại nguyên liệu"
+    },
+    "manage": {
+      "title": "Quản lý nguyên vật liệu",
+      "description": "Quản lý danh sách các loại nguyên liệu"
+    }
+  },
+  "production": {
+    "title": "Quản Lý Yêu Cầu Sản Xuất",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin toàn bộ đơn quy trình"
+    },
+    "create": {
+      "title": "Lập kế hoạch sản xuất",
+      "description": "Tạo mới yêu cầu sản xuất (đơn thể) - Quy trình sản xuất"
+    },
+    "requestList": {
+      "title": "D.sách kế hoạch sản xuất",
+      "description": "Quản lý danh sách kế hoạch sản xuất"
+    },
+    "waitingList": {
+      "title": "Danh sách chờ",
+      "description": "Quản lý các kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
+    },
+    "createdProcesses": {
+      "title": "Danh sách quy trình đã tạo",
+      "description": "Q.lý danh sách quy trình đã tạo"
+    },
+    "executing": {
+      "title": "Quy trình",
+      "description": "Quản lý danh sách quy trình đang thực thi"
+    },
+    "history": {
+      "title": "Lịch Sử Quy Trình",
+      "description": "Quản lý danh sách quy trình đã hoàn thành"
+    }
+  },
+  "customerOrders": {
+    "title": "Quản Lý Yêu Cầu Khách Hàng",
+    "productOrderList": {
+      "title": "D.sách đơn đặt hàng sản phẩm",
+      "description": "Quản lý danh sách đơn đặt hàng sản phẩm"
+    }
   }
 }

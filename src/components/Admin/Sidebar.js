@@ -26,8 +26,11 @@ import { FaUserGear } from "react-icons/fa6";
 
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
+  const { t } = useTranslation();
+
   const user = useSelector((state) => state.user);
   return (
     <>
@@ -46,7 +49,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
                 className="SidebarHeader-avatar object-contain"
                 style={{ backgroundImage: `url(${logo})` }}
               ></div>
-              <span className="SidebarHeader-title">ADMIN</span>
+              <span className="SidebarHeader-title">{t("sidebar.adminTitle")}</span>
             </div>
           </div>
         </SidebarHeader>
@@ -54,28 +57,28 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
         <SidebarContent>
           <Menu iconShape="circle">
             <MenuItem icon={<MdDashboardCustomize />}>
-              Dashboard
+              {t("sidebar.dashboard")}
               <Link to={"/system/admin"} />
             </MenuItem>
             {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
           </Menu>
           <Menu iconShape="circle">
             <MenuItem icon={<MdDashboardCustomize />}>
-              Lên Lịch
+              {t("sidebar.schedule")}
               <Link to={"/system/admin"} />
             </MenuItem>
             {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
           </Menu>
           <Menu iconShape="circle">
             <MenuItem icon={<MdDashboardCustomize />}>
-              Phân tích thị trường
+              {t("sidebar.marketAnalysis")}
               <Link to={"/system/admin"} />
             </MenuItem>
             {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
           </Menu>
           <Menu iconShape="circle">
             <MenuItem icon={<MdDashboardCustomize />}>
-              Kết nối supplier
+              {t("sidebar.supplierConnect")}
               <Link to={"/system/admin"} />
             </MenuItem>
             {/* <MenuItem icon={<FaGem />}> components</MenuItem> */}
@@ -101,7 +104,7 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
                 }}
               >
                 {/* footer link */}
-                <span>minhduc.lmd Dev</span>
+                <span>{t("sidebar.footer")}</span>
               </span>
             </a>
           </div>
