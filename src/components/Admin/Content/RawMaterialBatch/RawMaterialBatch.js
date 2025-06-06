@@ -107,7 +107,7 @@ const RawMaterialBatch = () => {
           toast.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
       } catch (error) {
-        toast.error("Lỗi khi tải dữ liệu kho hoặc nhiên liệu!");
+        toast.error("Lỗi khi tải dữ liệu kho hoặc Nguyên liệu!");
       } finally {
         setLoading(false);
       }
@@ -153,7 +153,7 @@ const RawMaterialBatch = () => {
         if (required > availableFuel) {
           const maxProduction = Math.floor(availableFuel * 0.9);
           toast.warning(
-            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
+            `Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
           );
           form.setFieldsValue({
             quantity: maxProduction,
@@ -169,7 +169,7 @@ const RawMaterialBatch = () => {
 
   const handleFuelTypeChange = (value) => {
     form.setFieldsValue({ fuel_type_id: value });
-    setIsFuelSelected(true); // Khi chọn loại nhiên liệu, mở khóa ô nhập sản lượng mong muốn
+    setIsFuelSelected(true); // Khi chọn loại Nguyên liệu, mở khóa ô nhập sản lượng mong muốn
   };
 
   const onFinish = async (values) => {
@@ -273,7 +273,7 @@ const RawMaterialBatch = () => {
             </Select>
           </Form.Item>
 
-          {/* Chọn loại nhiên liệu */}
+          {/* Chọn loại Nguyên liệu */}
           <Form.Item
             label="Loại nguyên liệu"
             name="fuel_type_id"

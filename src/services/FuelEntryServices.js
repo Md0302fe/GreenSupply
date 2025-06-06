@@ -1,13 +1,21 @@
 import axios from "axios";
 export const axiosJWT = axios.create();
 
-export const getAllFuelEntry = async (params = {}) => {
+export const getAllFuelEntry = async (params = {}, access_token , user_id) => {
   const query = new URLSearchParams(params).toString();
   const url = `${process.env.REACT_APP_API_URL}/fuel/fuel-list${
     query ? `?${query}` : ""
   }`;
 
-  const res = await axiosJWT.get(url);
+  const res = await axiosJWT.get(url, {
+    params: {
+      user_id: user_id,
+    },
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      "Content-Type": "application/json",
+    },
+  });
   return res?.data;
 };
 

@@ -10,10 +10,14 @@ import { resetUser } from "../../redux/slides/userSlides";
 import { persistor } from "../../redux/store";
 import { LuUser } from "react-icons/lu";
 import "./Header.scss";
+import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 import * as UserServices from "../../services/UserServices";
 
 const Header = () => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const userRedux = useSelector((state) => state.user);
@@ -58,13 +62,9 @@ const Header = () => {
         <div className="container mx-auto flex flex-wrap w-full justify-center md:justify-end items-center gap-4 md:gap-4 px-2 md:px-6 py-2">
           <button className="text-sm font-medium text-white flex items-center space-x-2 hover:text-[#FFD700] transition-all duration-300">
             <i className="fa-solid fa-bell"></i>
-            <span>Thông báo</span>
+            <span>{t("notifications")}</span>
           </button>
-          <button className="text-sm font-medium text-white flex items-center space-x-2 hover:text-[#FFD700] transition-all duration-300">
-            <i className="fa-solid fa-globe"></i>
-            <span>Tiếng Việt</span>
-            <i className="fa-solid fa-chevron-down"></i>
-          </button>
+          <LanguageSwitcher />
         </div>
 
         {/* Nội dung chính */}
@@ -83,19 +83,22 @@ const Header = () => {
             <Loading isPending={loading}>
               <div className="Wrapper-Account text-black">
                 {userRedux?.full_name !== "" &&
-                  userRedux?.full_name !== undefined ? (
+                userRedux?.full_name !== undefined ? (
                   <div className="user-login flex-center-center">
                     <>
                       <Popover
                         content={
-                          <ul className="user-nav" style={{ padding: "0", minWidth: "160px" }}>
+                          <ul
+                            className="user-nav"
+                            style={{ padding: "0", minWidth: "160px" }}
+                          >
                             {userRedux?.isAdmin === "Admin" && (
                               <li>
                                 <WrapperContentPopup
                                   style={{ cursor: "pointer" }}
                                   onClick={() => navigate("/system/admin")}
                                 >
-                                  Quản lý hệ thống
+                                  {t("system_management")}
                                 </WrapperContentPopup>
                               </li>
                             )}
@@ -104,7 +107,7 @@ const Header = () => {
                                 style={{ cursor: "pointer" }}
                                 onClick={() => navigate("/Profile")}
                               >
-                                Thông tin cá nhân
+                                {t("personal_info")}
                               </WrapperContentPopup>
                             </li>
                             <li>
@@ -112,7 +115,7 @@ const Header = () => {
                                 style={{ cursor: "pointer" }}
                                 onClick={() => handleClickBtnLogout()}
                               >
-                                Đăng xuất
+                                {t("logout")}
                               </WrapperContentPopup>
                             </li>
                           </ul>
@@ -120,31 +123,32 @@ const Header = () => {
                         trigger="click"
                         open={open}
                         onOpenChange={handleOpenChange}
-                        className="flex items-center justify-end gap-2"
+                        className="flex-center-center Popover"
                       >
                         {userAvatar ? (
                           <img
-                            className="w-[40px] h-[40px] rounded-full object-cover cursor-pointer"
+                            className="w-[40px] h-[40px] rounded-[50%] object-cover cursor-pointer mr-2"
                             src={userAvatar}
                             alt="avatar"
-                          />
+                          ></img>
                         ) : (
-                          <LuUser style={{ fontSize: "35px", padding: "0 6px" }} />
+                          <LuUser
+                            style={{ fontSize: "35px", padding: "0 6px" }}
+                          ></LuUser>
                         )}
-
-                        {/* Tên người dùng chỉ hiển thị ở desktop */}
-                        <Button className="hidden lg:inline-flex items-center">
-                          <span onClick={() => setOpen(false)}>{userRedux.full_name}</span>
+                        <Button className="shopping-cart-icons user text-black">
+                          <span onClick={() => setOpen(false)}>
+                            {userRedux.full_name}
+                          </span>
                         </Button>
                       </Popover>
-
                     </>
                   </div>
                 ) : (
                   <div className="None-account">
                     {/* Icons User */}
                     <AiOutlineUser className="shopping-cart-icons user text-black"></AiOutlineUser>
-                    <span className="text-lg text-black">Tài khoản</span>
+                    <span className="text-lg text-black">{t("account")}</span>
                   </div>
                 )}
               </div>

@@ -4,15 +4,17 @@ import * as FuelSupplyRequestService from "../../../services/HistoryProvideOrder
 import { SearchOutlined } from "@ant-design/icons";
 import { IoDocumentText } from "react-icons/io5";
 import { Button, Input, Table, Tag, Space } from "antd";
-import { useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
+import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
 import Highlighter from "react-highlight-words";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
-import * as ultils from "../../../ultils"
+import * as ultils from "../../../ultils";
+import { useTranslation } from "react-i18next";
 
 const HistoryProvideOrder = () => {
+  const { t } = useTranslation();
 
   const user = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
@@ -144,33 +146,44 @@ const HistoryProvideOrder = () => {
       ),
   });
 
-
   const columns = [
     {
-      title: "Yêu cầu",
+      title: t("harvestRequest.name"),
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
       sorter: (a, b) => a.fuel_name.localeCompare(b.fuel_name),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("historyProvideOrder.quantity")}
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       className: "text-center",
       sorter: (a, b) => a.quantity - b.quantity,
-      render: (quantity) => ultils.convertPrice(quantity)
+      render: (quantity) => ultils.convertPrice(quantity),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Giá mỗi đơn vị (VNĐ/Kg)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("historyProvideOrder.unitPrice")}
+        </div>
+      ),
       dataIndex: "price",
       key: "price",
       className: "text-center",
       sorter: (a, b) => a.price - b.price,
-      render: (price) => ultils.convertPrice(price) || "Không có giá mỗi kg",
+      render: (price) => ultils.convertPrice(price),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Tổng giá (VNĐ)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("historyProvideOrder.totalPrice")}
+        </div>
+      ),
       dataIndex: "total_price",
       key: "total_price",
       className: "text-center",
@@ -178,69 +191,63 @@ const HistoryProvideOrder = () => {
       render: (_, record) => ultils.convertPrice(record.total_price), // Calculate dynamically
     },
     {
-      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("harvestRequest.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       className: "text-center",
-      filters: [
-        { text: "Đã duyệt", value: "Đã duyệt" },
-        { text: "Chờ duyệt", value: "Chờ duyệt" },
-        { text: "Đã hủy", value: "Đã hủy" },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (status) => {
-        let color = "orange"; // Default for "Chờ duyệt"
-        if (status === "Đã duyệt") color = "green";
-        if (status === "Hoàn thành" || status === "Đang xử lý") color = "yellow";
-        if (status === "Đã hủy") color = "red";
-
-        const displayText =
-          status === "Đang xử lý" || status === "Hoàn thành"
-            ? "Hoàn thành"
-            : status;
+        let displayText = status;
+        let color = "orange"; // Mặc định là "Chờ duyệt"
+        if (status === "Đã duyệt") {
+          color = "green";
+          displayText = t("status.approve");
+        }
+        if (status === "Hoàn Thành" || status === "Đang xử lý") {
+          color = "yellow";
+          displayText = t("status.completed"); // Hiển thị "Hoàn Thành" cho cả 2 status
+        }
+        if (status === "Đã huỷ") {
+          color = "red";
+          displayText = t("status.cancelled");
+        }
+        if (status === "Chờ duyệt") {
+          displayText = t("status.pending");
+        }
 
         return <Tag color={color}>{displayText}</Tag>;
       },
+      onFilter: (value, record) => {
+        // Kiểm tra xem giá trị status có phải là "Hoàn Thành" hay "Đang xử lý" không
+        if (value === "Hoàn Thành") {
+          return (
+            record.status === "Hoàn Thành" || record.status === "Đang xử lý"
+          );
+        }
+        console.log(value);
+        return record.status.indexOf(value) === 0;
+      },
+      filters: [
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đã duyệt" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+        { text: t("status.completed"), value: "Hoàn Thành" },
+      ],
     },
-    // {
-    //   title: "Ghi Chú",
-    //   dataIndex: "note",
-    //   key: "note",
-    //   render: (note) => note || "Không có ghi chú",
-    // },
-    // {
-    //   title: "Cập Nhật",
-    //   dataIndex: "updatedAt",
-    //   key: "updatedAt",
-    //   sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt), // 🔽 Sorting by date
-    //   render: (updatedAt) => converDateString(updatedAt),
-    // },
     {
-      title: <div style={{ textAlign: "center" }}>Hành động</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {" "}
+          {t("historyProvideOrder.actions")}
+        </div>
+      ),
       key: "actions",
       className: "text-center",
       render: (_, record) => {
         const isPending = record.status === "Chờ duyệt";
         return (
           <Space size={8}>
-            {/* Sửa */}
-            {/* <Button
-                    icon={<AiFillEdit />}
-                    onClick={() => handleEdit(record)}
-                    disabled={!isPending}
-                    size="middle"
-                  /> */}
-            {/* Xóa */}
-            {/* <Button
-                    icon={<MdDelete />}
-                    onClick={() => {
-                      setRowSelected(record._id);
-                      setIsOpenDelete(true);
-                    }}
-                    disabled={!isPending}
-                    size="middle"
-                  /> */}
-            {/* Xem Chi Tiết */}
             <Button
               type="default"
               icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
@@ -255,12 +262,14 @@ const HistoryProvideOrder = () => {
   return (
     <div className="px-2">
       <div className="text-center font-bold text-2xl mb-5">
-        Lịch Sử Đơn Cung Cấp Nguyên Liệu
+        {t("historyProvideOrder.title")}
       </div>
 
       <hr />
       {isLoading ? (
-        <p className="text-center text-gray-500">Đang tải dữ liệu...</p>
+        <p className="text-center text-gray-500">
+          {t("historyProvideOrder.loading")}
+        </p>
       ) : (
         <div className="Main-Content">
           <Table
@@ -276,7 +285,7 @@ const HistoryProvideOrder = () => {
 
       {/* Drawer View Detail */}
       <DrawerComponent
-        title="Xem chi tiết yêu cầu thu nguyên liệu"
+        title={t("historyProvideOrder.viewDetail")}
         isOpen={isViewDrawerOpen}
         placement="right"
         width={drawerWidth}
@@ -286,7 +295,9 @@ const HistoryProvideOrder = () => {
           <div className="w-full p-6 bg-white rounded-md shadow">
             <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
-                <label className="block mb-1 font-semibold">Tên mặt hàng</label>
+                <label className="block mb-1 font-semibold">
+                  {t("historyProvideOrder.itemName")}
+                </label>
                 <input
                   type="text"
                   value={viewDetailRequest.fuel_name}
@@ -296,7 +307,9 @@ const HistoryProvideOrder = () => {
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Số lượng (kg)</label>
+                <label className="block mb-1 font-semibold">
+                  {t("historyProvideOrder.quantity")}
+                </label>
                 <input
                   type="number"
                   value={viewDetailRequest.quantity}
@@ -306,7 +319,9 @@ const HistoryProvideOrder = () => {
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Giá mỗi đơn vị (VNĐ)</label>
+                <label className="block mb-1 font-semibold">
+                  {t("historyProvideOrder.unitPrice")}
+                </label>
                 <input
                   type="number"
                   value={viewDetailRequest.price}
@@ -316,18 +331,23 @@ const HistoryProvideOrder = () => {
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold">Tổng giá</label>
+                <label className="block mb-1 font-semibold">
+                  {t("historyProvideOrder.totalPrice")}
+                </label>
                 <input
                   type="text"
-                  value={`${viewDetailRequest.total_price.toLocaleString("vi-VN")} VNĐ`}
+                  value={`${viewDetailRequest.total_price.toLocaleString(
+                    "vi-VN"
+                  )} VNĐ`}
                   readOnly
                   className="border p-2 rounded w-full mb-1"
                 />
               </div>
 
-
               <div className="mb-4">
-                <label className="block mb-1 font-semibold">Ghi chú</label>
+                <label className="block mb-1 font-semibold">
+                  {t("historyProvideOrder.note")}
+                </label>
                 <textarea
                   value={viewDetailRequest.note}
                   readOnly
@@ -336,13 +356,15 @@ const HistoryProvideOrder = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <label className="font-semibold">Trạng thái:</label>
+                <label className="font-semibold">
+                  {t("historyProvideOrder.status")}
+                </label>
                 <span
                   className={`px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap 
               ${getStatusClasses(viewDetailRequest.status)}`}
                 >
                   {/* {viewDetailRequest.status} */}
-                  Hoàn thành
+                  {t("status.completed")}
                 </span>
               </div>
             </div>
@@ -352,15 +374,14 @@ const HistoryProvideOrder = () => {
                 onClick={() => setIsViewDrawerOpen(false)}
                 className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
               >
-                Đóng
+                {t("historyProvideOrder.close")}
               </button>
             </div>
           </div>
         ) : (
-          <p>Không có dữ liệu.</p>
+          <p>{t("historyProvideOrder.noData")}</p>
         )}
       </DrawerComponent>
-
     </div>
   );
 };

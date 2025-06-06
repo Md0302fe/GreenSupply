@@ -212,7 +212,7 @@ const UserComponent = () => {
     }
 
     if (!purchaseDetails.fuel_type || purchaseDetails.fuel_type.trim() === "") {
-      errors.push("Loại nguyên liệu không được để trống!");
+      errors.push("Loại Nguyên liệu không được để trống!");
     }
 
     if (!purchaseDetails.start_received) {
@@ -820,7 +820,7 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title="Chi Tiết Đơn Thu Nguyên Liệu"
+        title="Chi Tiết Đơn Thu Nguyên liệu"
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -844,17 +844,17 @@ const UserComponent = () => {
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu nguyên liệu..."
+                    placeholder="Tên đơn thu Nguyên liệu..."
                     value={purchaseDetails.request_name}
                     onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
 
-                {/* Loại nguyên liệu */}
+                {/* Loại Nguyên liệu */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Loại nguyên liệu cần thu
+                    Loại Nguyên liệu cần thu
                   </label>
                   <select
                     name="fuel_type"
@@ -863,7 +863,7 @@ const UserComponent = () => {
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   >
                     <option value="" disabled>
-                      Chọn loại nguyên liệu
+                      Chọn loại Nguyên liệu
                     </option>
                     {fuel_types && fuel_types.length > 0 ? (
                       fuel_types.map((fuel) => (
@@ -906,7 +906,7 @@ const UserComponent = () => {
                     <div>
                       <img
                         src={purchaseDetails.fuel_image}
-                        alt="Hình ảnh nguyên liệu"
+                        alt="Hình ảnh Nguyên liệu"
                         className="w-full h-auto max-h-[300px] object-contain rounded-lg shadow-md border border-gray-300"
                       />
                     </div>

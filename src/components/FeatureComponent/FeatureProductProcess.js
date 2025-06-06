@@ -2,14 +2,17 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaGear } from "react-icons/fa6";
 
-import mng_production_list from "../../assets/Feture_production_processing/mng_production_list.jpg";
 import request_list from "../../assets/Feature_product_process/request_list.jpg";
-import waiting_list from "../../assets/Feature_product_process/waiting_list.jpg";
 import processing_list from "../../assets/Feature_product_process/processing_list.jpg";
 import gear_loading from "../../assets/Feture_production_processing/gearLoading.jpg";
 
 import "./ProductProcess.css";
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
+
+import single_process from "../../assets/Feature_product_process/Normal_Process.jpg";
+import history_process from "../../assets/Feature_product_process/History_process.jpg";
+import wating_create_process_list from "../../assets/Feature_product_process/wating_create_process_list.jpg";
+import created_process_list from "../../assets/Feature_product_process/created_process_list-removebg.png";
 
 const UserComponent = () => {
   return (
@@ -25,7 +28,7 @@ const UserComponent = () => {
 
       {/* Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
-      <Card
+        <Card
           link="/system/admin/dashboard-production-request"
           title="Dashboard"
           description="Thông tin toàn bộ đơn quy trình"
@@ -33,29 +36,29 @@ const UserComponent = () => {
         />
         <Card
           link="/system/admin/production-request"
-          title="Tạo yêu cầu sản xuất"
-          description="Tạo mới yêu cầu sản xuất - Quy trình sản xuất"
-          image={mng_production_list}
+          title="Lập kế hoạch sản xuất"
+          description="Tạo mới yêu cầu sản xuất (đơn thể) - Quy trình sản xuất"
+          image={single_process}
         />
         <Card
           link="/system/admin/production-request-list"
-          title="D.sách các yêu cầu"
-          description="Quản lý danh sách các yêu cầu"
+          title="D.sách kế hoạch sản xuất"
+          description="Quản lý danh sách kế hoạch sản xuất"
           image={request_list}
         />
         <Card
           link="/system/admin/production-processing"
-          title="Danh sách chờ sản xuất"
-          description="Quản lý danh sách các đơn chờ sản xuất"
-          image={waiting_list}
+          title="Danh sách chờ"
+          description="Quản lý các kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
+          image={wating_create_process_list}
         />
         <Card
           link="/system/admin/production-processing-list"
           title="Danh sách quy trình đã tạo"
-          description="Quản lý danh sách các quy trình đã tạo"
-          image={processing_list}
+          description="Q.lý danh sách quy trình đã tạo"
+          image={created_process_list}
         />
-        
+
         <Card
           link="/system/admin/processing-system"
           title="Quy trình"
@@ -67,8 +70,8 @@ const UserComponent = () => {
           link="/system/admin/process-histories"
           title="Lịch Sử Quy Trình"
           description="Quản lý danh sách quy trình đã hoàn thành"
-          image={processing_list}
-          is1={true}
+          image={history_process}
+          is1={false}
         />
       </div>
     </div>

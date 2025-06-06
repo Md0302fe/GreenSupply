@@ -71,10 +71,10 @@ const FuelList = () => {
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
-        console.log("Danh sách nhiên liệu:", transformedFuels);
+        console.log("Danh sách Nguyên liệu:", transformedFuels);
         setFuels(transformedFuels);
       } else {
-        message.error("Lỗi khi lấy danh sách loại nhiên liệu!");
+        message.error("Lỗi khi lấy danh sách loại Nguyên liệu!");
       }
     } catch (error) {
       message.error("Không thể kết nối đến server!");
@@ -91,7 +91,7 @@ const FuelList = () => {
   const handleUpdate = async () => {
     try {
       if (updateData.type_name.trim() === "") {
-        toast.error("Tên nhiên liệu không được để trống");
+        toast.error("Tên Nguyên liệu không được để trống");
         return;
       }
 
@@ -128,7 +128,7 @@ const FuelList = () => {
       );
 
       if (res.data.success) {
-        message.success("Đã chuyển nhiên liệu vào trạng thái Đã xóa!");
+        message.success("Đã chuyển Nguyên liệu vào trạng thái Đã xóa!");
         setFuels((prev) =>
           prev.map((fuel) =>
             fuel._id === id ? { ...fuel, is_deleted: true } : fuel
@@ -230,7 +230,7 @@ const FuelList = () => {
 
     const excel = new Excel();
     const exportColumns = [
-      { title: "Tên Loại Nhiên Liệu", dataIndex: "type_name" },
+      { title: "Tên Loại Nguyên liệu", dataIndex: "type_name" },
       { title: "Mô Tả", dataIndex: "description" },
       { title: "Trạng Thái", dataIndex: "is_deleted" },
       { title: "Số Lượng", dataIndex: "quantity" },
@@ -244,7 +244,7 @@ const FuelList = () => {
     }));
 
     excel
-      .addSheet("Danh sách Loại Nhiên Liệu")
+      .addSheet("Danh sách Loại Nguyên liệu")
       .addColumns(exportColumns)
       .addDataSource(exportData)
       .saveAs("DanhSachLoaiNhienLieu.xlsx");
@@ -260,7 +260,7 @@ const FuelList = () => {
     setIsUpdateDrawerOpen(true); // Mở Drawer cập nhật
   };
   const showFuelDetails = (fuel) => {
-    console.log("Dữ liệu nhiên liệu:", fuel); // Debug dữ liệu
+    console.log("Dữ liệu Nguyên liệu:", fuel); // Debug dữ liệu
     setSelectedFuel(fuel);
     setIsDrawerOpen(true);
   };
@@ -270,10 +270,10 @@ const FuelList = () => {
     {
       title: (
         <div style={{ textAlign: "center", width: "100%" }}>
-          Tên Loại Nhiên Liệu
+          Tên Loại Nguyên liệu
         </div>
       ),
-      // title: "Tên Loại Nhiên Liệu",
+      // title: "Tên Loại Nguyên liệu",
       dataIndex: "type_name",
       key: "type_name",
       ...getColumnSearchProps("type_name"),
@@ -330,17 +330,17 @@ const FuelList = () => {
         <div style={{ textAlign: "center" }}>
           <Space>
             {/* Nút Xem chi tiết */}
-          <Button
-            type="link"
-            icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
-            onClick={() => showFuelDetails(record)}
-          ></Button>
-          {/* Nút Chỉnh sửa */}
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ fontSize: "20px" }} />}
-            onClick={() => openUpdateDrawer(record)}
-          ></Button>
+            <Button
+              type="link"
+              icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
+              onClick={() => showFuelDetails(record)}
+            ></Button>
+            {/* Nút Chỉnh sửa */}
+            <Button
+              type="link"
+              icon={<EditOutlined style={{ fontSize: "20px" }} />}
+              onClick={() => openUpdateDrawer(record)}
+            ></Button>
           </Space>
         </div>
       ),
@@ -349,31 +349,32 @@ const FuelList = () => {
 
   return (
     <div className="fuel-list">
-      <Button
-        onClick={() => navigate(-1)}
-        type="primary"
-        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 mr-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+      <div className="flex items-center justify-between mb-4">
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12H3m0 0l6-6m-6 6l6 6"
-          />
-        </svg>
-        Quay lại
-      </Button>
-      <h2 className="text-center text-2xl font-bold text-gray-800 mt-2">
-        Danh Sách Loại Nguyên Liệu
-      </h2>
-
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </Button>
+        <h2 className="text-center text-4xl flex-1 font-bold text-gray-800 mt-2">
+          Danh Sách Loại Nguyên Liệu
+        </h2>
+      </div>
       <div className="flex justify-end">
         <Button
           type="primary"
@@ -396,7 +397,7 @@ const FuelList = () => {
       />
 
       <Drawer
-        title="Chi tiết Loại Nhiên Liệu"
+        title="Chi tiết Loại Nguyên liệu"
         open={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
@@ -407,7 +408,7 @@ const FuelList = () => {
       >
         {selectedFuel ? (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Tên Loại Nhiên Liệu">
+            <Descriptions.Item label="Tên Loại Nguyên liệu">
               {selectedFuel.type_name || "Không có dữ liệu"}
             </Descriptions.Item>
             <Descriptions.Item label="Mô Tả">
@@ -437,7 +438,7 @@ const FuelList = () => {
       </Drawer>
 
       <Drawer
-        title="Cập nhật Loại Nhiên Liệu"
+        title="Cập nhật Loại Nguyên liệu"
         open={isUpdateDrawerOpen}
         onClose={() => {
           setIsUpdateDrawerOpen(false);
@@ -453,7 +454,7 @@ const FuelList = () => {
               onChange={(e) =>
                 setUpdateData({ ...updateData, type_name: e.target.value })
               }
-              placeholder="Tên Loại Nhiên Liệu"
+              placeholder="Tên Loại Nguyên liệu"
               className="mb-2"
             />
             <Input.TextArea

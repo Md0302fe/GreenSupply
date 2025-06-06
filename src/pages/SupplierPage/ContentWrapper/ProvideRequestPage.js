@@ -8,8 +8,11 @@ import { createFuelSupplyRequest } from "../../../services/FuelSupplyRequestServ
 import { useSelector } from "react-redux";
 import { message } from "antd";
 import { getUserAddresses } from "./../../../services/UserService";
+import { useTranslation } from "react-i18next";
 
 const ProvideRequestPage = () => {
+  const { t } = useTranslation();
+
   const { id } = useParams();
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
@@ -29,7 +32,13 @@ const ProvideRequestPage = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const fetchOrders = async (page = 1) => {
     try {
-      const response = await getAllFuelEntry({ page, limit: 6 });
+      const access_token = userRedux?.access_token;
+      const user_id = userRedux?.id;
+      const response = await getAllFuelEntry(
+        { page, limit: 6 },
+        access_token,
+        user_id
+      );
       console.log(response);
       setAdminOrders(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
@@ -133,7 +142,7 @@ const ProvideRequestPage = () => {
 
   const handleNoteChange = (e) => {
     if (e.target.value.length > 2000) {
-      setNoteError("Số lượng không được vượt quá 2000 ký tự!");
+      setNoteError(t("provideRequest.note_length_error"));
     } else {
       setFormData({ ...formData, note: e.target.value });
     }
@@ -141,7 +150,7 @@ const ProvideRequestPage = () => {
 
   const handleSubmit = async () => {
     if (!selectedOrder) {
-      message.error("Vui lòng chọn đơn hàng!");
+      message.error(t("provideRequest.select_order_warning"));
       return;
     }
 
@@ -165,20 +174,22 @@ const ProvideRequestPage = () => {
 
     try {
       await createFuelSupplyRequest(supplyOrder);
-      message.success("Tạo đơn cung cấp thành công!");
+      message.success(t("provideRequest.success_create"));
       setSelectedOrder(null);
       fetchOrders();
       setFormData({ quantity: "", quality: "", note: "" });
     } catch (error) {
       console.error("Lỗi khi tạo đơn cung cấp:", error);
-      message.error("Tạo đơn thất bại!");
+      message.error(t("provideRequest.failed_create"));
     }
   };
 
   return (
     <div>
       <div className="p-6 bg-white shadow-md rounded">
-        <h2 className="text-xl font-bold mb-4">Tạo Đơn Cung Cấp Hàng</h2>
+        <h2 className="text-xl font-bold mb-4">
+          {t("provideRequest.create_title")}
+        </h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {adminOrders.map((order) => (
@@ -197,24 +208,26 @@ const ProvideRequestPage = () => {
                   {order.request_name}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Số lượng còn:{" "}
+                  {t("provideRequest.remaining_quantity")}{" "}
                   <span className="font-semibold">
                     {order.quantity_remain} kg
                   </span>
                 </p>
                 <p className="text-sm text-gray-600">
-                  Đơn giá:{" "}
+                  {t("provideRequest.unit_price")}{" "}
                   <span className="font-semibold">
                     {order.price.toLocaleString("vi-VN")} VNĐ
                   </span>
                 </p>
                 <p className="text-sm text-gray-600">
-                  Thời gian còn lại:{" "}
+                  {t("provideRequest.time_left")}{" "}
                   {(() => {
                     const time = getTimeRemaining(order.end_received);
                     return time.total > 0
-                      ? `${time.days} ngày ${time.hours} giờ ${time.minutes} phút`
-                      : "Đã hết hạn";
+                      ? `${time.days} ${t("common.days")} ${time.hours} ${t(
+                          "common.hours"
+                        )} ${time.minutes} ${t("common.minutes")}`
+                      : t("provideRequest.expired");
                   })()}
                 </p>
 
@@ -222,7 +235,7 @@ const ProvideRequestPage = () => {
                   onClick={() => handleSelectOrder(order._id)}
                   className="mt-3 bg-[#006838] text-white px-4 py-2 rounded hover:bg-[#008c4a] hover:scale-105 transition-transform"
                 >
-                  Tạo đơn
+                  {t("provideRequest.create_button")}
                 </button>
               </div>
 
@@ -280,13 +293,13 @@ const ProvideRequestPage = () => {
             className="animate-fade-in-down transition-all duration-500 bg-gray-50 border border-gray-200 rounded-md p-5 mt-6"
           >
             <h3 className="text-lg font-bold mb-4 text-green-700">
-              Thông tin Đơn Hàng Đã Chọn
+              {t("provideRequest.selected_order_info")}
             </h3>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-1">
-                  Tên nguyên liệu:
+                  {t("provideRequest.material_name")}
                 </label>
                 <p className="bg-white border border-gray-300 rounded px-3 py-2">
                   {selectedOrder.request_name}
@@ -295,7 +308,7 @@ const ProvideRequestPage = () => {
 
               <div>
                 <label className="block text-sm font-semibold mb-1">
-                  Số lượng bạn cung cấp:
+                  {t("provideRequest.your_quantity")}
                 </label>
                 <p className="bg-white border border-gray-300 rounded px-3 py-2">
                   {selectedOrder.quantity_remain} kg
@@ -304,18 +317,22 @@ const ProvideRequestPage = () => {
 
               <div>
                 <label className="block text-sm font-semibold mb-1">
-                  Thời gian còn lại:
+                  {t("provideRequest.time_left")}
                 </label>
                 <p className="text-gray-800 font-medium bg-white border border-gray-300 rounded px-3 py-2">
                   {timeLeft?.total > 0
-                    ? `${timeLeft.days} ngày ${timeLeft.hours} giờ ${timeLeft.minutes} phút ${timeLeft.seconds} giây`
-                    : "Đã hết thời gian nhận đơn"}
+                    ? `${timeLeft.days} ${t("common.days")} ${
+                        timeLeft.hours
+                      } ${t("common.hours")} ${timeLeft.minutes} ${t(
+                        "common.minutes"
+                      )} ${timeLeft.seconds} ${t("common.seconds")}`
+                    : t("provideRequest.expired_receive_time")}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-1">
-                  Đơn giá:
+                  {t("provideRequest.request_price")}
                 </label>
                 <p className="bg-white border border-gray-300 rounded px-3 py-2">
                   {selectedOrder.price.toLocaleString("vi-VN")} VNĐ / kg
@@ -324,7 +341,7 @@ const ProvideRequestPage = () => {
 
               <div>
                 <label className="block text-sm font-semibold mb-1">
-                  Tổng giá trị đơn:
+                  {t("provideRequest.total_price")}
                 </label>
                 <p className="bg-white border border-gray-300 rounded px-3 py-2">
                   {selectedOrder.total_price?.toLocaleString("vi-VN")} VNĐ
@@ -333,7 +350,7 @@ const ProvideRequestPage = () => {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-semibold mb-1">
-                  Thời gian nhận hàng:
+                  {t("provideRequest.delivery_time")}
                 </label>
                 <p className="bg-white border border-gray-300 rounded px-3 py-2">
                   {new Date(selectedOrder.start_received).toLocaleString(
@@ -345,7 +362,7 @@ const ProvideRequestPage = () => {
               </div>
               <div className="mt-6">
                 <label className="block text-sm font-semibold mb-1">
-                  Địa chỉ giao hàng:
+                  {t("provideRequest.delivery_address")}
                 </label>
                 <select
                   value={selectedAddressId}
@@ -362,10 +379,12 @@ const ProvideRequestPage = () => {
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-semibold mb-1">
-                  Ghi chú hệ thống:
+                  {t("provideRequest.system_note")}
                 </label>
                 <p className="bg-white border border-gray-300 rounded px-3 py-2 min-h-[44px]">
-                  {selectedOrder.note ? selectedOrder.note : "Không có"}
+                  {selectedOrder.note
+                    ? selectedOrder.note
+                    : t("common.no_data")}
                 </p>
               </div>
             </div>
@@ -373,7 +392,7 @@ const ProvideRequestPage = () => {
             {/* Ghi chú của người dùng */}
             <div className="mt-6">
               <label className="block text-sm font-semibold mb-1">
-                Ghi chú của bạn:
+                {t("provideRequest.your_note")}
               </label>
               <textarea
                 name="note"
@@ -393,7 +412,7 @@ const ProvideRequestPage = () => {
                 onClick={handleSubmit}
                 className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded transition"
               >
-                Gửi Yêu Cầu
+                {t("provideRequest.send_request")}
               </button>
             </div>
           </div>

@@ -14,10 +14,26 @@ export const createProductionRequest = async (data) => {
   );
   return res?.data;
 };
+// get all 
 export const getAll = async (data) => {
   const { access_token, dataRequest } = data;
   const res = await axiosJWT.get(
     `${process.env.REACT_APP_API_URL}/product-request/getAll`,
+    dataRequest,
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res?.data;
+};
+
+//  get all with status : "Đã duyệt"
+export const getAllv2 = async (data) => {
+  const { access_token, dataRequest } = data;
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/product-request/get-production-requests`,
     dataRequest,
     {
       headers: {

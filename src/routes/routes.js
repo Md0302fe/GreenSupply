@@ -59,11 +59,17 @@ import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
 import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
 import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
 import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
+import ProductionConsolidatedProcessing from "../pages/ProductionProcessing/ProductionConsolidatedProcessing";
 import ProductionRequestFinishList from "../pages/ProductionProcessing/ProductionRequestFinishList";
 import ProductionProcessingList from "../pages/ProductionProcessing/ProductionProcessingList";
 import ProductionHistories from "../pages/ProductionProcessing/HistoriesProcess";
 import DashboardFuel from "../components/Admin/Content/Dashboard/DashboardFuel";
 import CreateFuel from "../components/Admin/Content/Fuel/CreateFuel";
+
+import CreatePackageCategory from "../components/Admin/Content/PackageMaterial/CreatePackageCategory";
+import PackageCategoryList from "../components/Admin/Content/PackageMaterial/PackageCategoryList";
+import BoxList from "../components/Admin/Content/PackageMaterial/BoxList";
+import CreateBox from "../components/Admin/Content/PackageMaterial/CreateBox";
 
 import ProcessingManagement from "../pages/ProductionProcessing/ProcessingManagement";
 import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
@@ -137,6 +143,12 @@ const Router = () => {
           <Route path="manage-fuel" element={<DashboardFuel />} />
           <Route path="fuel-Create" element={<CreateFuel />} />
 
+          <Route path="box-categories/create" element={<CreatePackageCategory />} />
+          <Route path="box-categories/list" element={<PackageCategoryList />} />
+          <Route path="box-list" element={<BoxList />} />
+          <Route path="box-Create" element={<CreateBox />} />
+
+
 
           {/* Production Process Management */}
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
@@ -147,7 +159,10 @@ const Router = () => {
             {/* Danh sách quy trình sản xuất */}
           <Route path="production-processing-list" element={<ProductionProcessingList />} />
           <Route path="production-processing" element={<ProductionRequestFinishList />} />
+          {/* single process */}
           <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
+          {/* consolidated process */}
+          <Route path="production-processing/consolidated-create" element={<ProductionConsolidatedProcessing />} />
           <Route path="process-histories" element={<ProductionHistories />} />
           {/* ROUTES QUY TRÌNH ĐANG THỰC THI */}
           <Route path="processing-system" element={<ProcessingManagement />} />

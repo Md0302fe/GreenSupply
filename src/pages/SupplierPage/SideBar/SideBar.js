@@ -11,10 +11,12 @@ import { FiLogOut } from "react-icons/fi";
 import { FaAngleDown } from "react-icons/fa6";
 import { Collapse } from "react-collapse";
 import "../../../styles/css/SidebarSupplier.css";
+import { useTranslation } from "react-i18next";
 
 const SideBar = ({ onItemClick }) => {
   const [subMenuIndex, setSubMenuIndex] = useState(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const isOpenSubMenu = (index) => {
     setSubMenuIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -23,7 +25,6 @@ const SideBar = ({ onItemClick }) => {
   const handleClick = (path) => {
     navigate(path);
   };
-
 
   return (
     <div className="sidebar w-full h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-3 bg-[#fff]">
@@ -42,7 +43,7 @@ const SideBar = ({ onItemClick }) => {
             className="w-full !capitalize flex items-center !justify-start gap-3 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1]"
           >
             <RiBillLine className="text-[24px] shrink-0" />
-            <span className="whitespace-nowrap">Đơn Đã Tạo</span>
+            <span className="whitespace-nowrap">{t("sidebar.created_orders")}</span>
             <span className="flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
                 className={`transition-all ${subMenuIndex === 1 ? "rotate-180" : ""}`}
@@ -62,7 +63,7 @@ const SideBar = ({ onItemClick }) => {
                   }}
                 >
                   <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
-                  <span className="truncate ml-[8px]">Đơn Thu Nguyên Liệu</span>
+                  <span className="truncate ml-[8px]">{t("sidebar.harvest_orders")}</span>
                 </Button>
               </li>
               <li className="w-full">
@@ -74,7 +75,7 @@ const SideBar = ({ onItemClick }) => {
                   }}
                 >
                   <span className="block w-[6px] h-[6px] rounded-full bg-[rgba(0,0,0,0.2)] mt-[2px]"></span>
-                  <span className="truncate ml-[8px]">Đơn Cung Cấp Nguyên Liệu</span>
+                  <span className="truncate ml-[8px]">{t("sidebar.provide_orders")}</span>
                 </Button>
               </li>
             </ul>
@@ -90,7 +91,7 @@ const SideBar = ({ onItemClick }) => {
             className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <MdOutlineBorderColor className="text-[20px]" />
-            <span>Tạo yêu cầu thu hàng</span>
+            <span>{t("sidebar.create_harvest_request")}</span>
           </Button>
         </li>
         <li>
@@ -102,7 +103,7 @@ const SideBar = ({ onItemClick }) => {
             className="w-full !capitalize !justify-start flex gap-3 text-[12px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <MdOutlineBorderColor className="text-[20px]" />
-            <span>Tạo đơn cung cấp hàng</span>
+            <span>{t("sidebar.create_provide_order")}</span>
           </Button>
         </li>
         <li>
@@ -111,7 +112,7 @@ const SideBar = ({ onItemClick }) => {
             className="w-full !capitalize flex items-center !justify-start gap-2 text-[14px] !text-black !font-[500] !py-4 hover:!bg-[#f1f1f1] text-left"
           >
             <RiBillLine className="text-[24px] shrink-0" />
-            <span className="whitespace-nowrap">Lịch sử đơn</span>
+            <span className="whitespace-nowrap">{t("sidebar.order_history")}</span>
             <span className="flex items-center justify-center w-[30px] h-[30px] shrink-0">
               <FaAngleDown
                 className={`transition-all ${subMenuIndex === 2 ? "rotate-180" : ""}`}
@@ -131,7 +132,7 @@ const SideBar = ({ onItemClick }) => {
                   }}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  L.s Đơn yêu cầu thu nguyên liệu
+                  {t("sidebar.history_harvest")}
                 </Button>
               </li>
               <li className="w-full">
@@ -143,7 +144,7 @@ const SideBar = ({ onItemClick }) => {
                   }}
                 >
                   <span className="block w-[5px] h-[5px] rounded-full bg-[rgba(0,0,0,0.2)]"></span>
-                  L.s Đơn cung cấp nguyên liệu
+                  {t("sidebar.history_provide")}
                 </Button>
               </li>
             </ul>
@@ -158,7 +159,7 @@ const SideBar = ({ onItemClick }) => {
             className="w-full !capitalize !justify-start flex gap-3 text-[14px] !text-black !font-[500] items-center !py-5 hover:!bg-[#f1f1f1]"
           >
             <IoBagCheckOutline className="text-[20px]" />
-            <span>Theo dõi lô hàng</span>
+            <span>{t("sidebar.track_shipment")}</span>
           </Button>
         </li>
       </ul>

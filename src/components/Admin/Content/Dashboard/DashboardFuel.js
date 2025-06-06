@@ -185,13 +185,13 @@ const DashboardFuel = () => {
 
 </div>
 
-          {/* 🔹 Biểu đồ phân bổ nhiên liệu */}
+          {/* 🔹 Biểu đồ phân bổ nguyên liệu */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">📊 Phân Bổ Nguyên Liệu Trong Kho</h2>
             {pieData.length > 0 ? <Pie {...pieConfig} /> : <Alert message="Không có dữ liệu để hiển thị" type="info" />}
           </div>
 
-          {/* 🔹 Danh sách lịch sử nhập/xuất nhiên liệu */}
+          {/* 🔹 Danh sách lịch sử nhập/xuất nguyên liệu */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">📜 Lịch Sử Nhập/Xuất Nguyên Liệu</h2>
             {historyData.length > 0 ? (
@@ -201,11 +201,11 @@ const DashboardFuel = () => {
                 pagination={{ pageSize: 5 }}
               />
             ) : (
-              <Alert message="Không có dữ liệu nhập/xuất nhiên liệu" type="info" />
+              <Alert message="Không có dữ liệu nhập/xuất nguyên liệu" type="info" />
             )}
           </div>
 
-          {/* 🔹 Cảnh báo nhiên liệu sắp hết */}
+          {/* 🔹 Cảnh báo nguyên liệu sắp hết */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">⚠️ Cảnh Báo Nguyên Liệu Sắp Hết</h2>
             <Table

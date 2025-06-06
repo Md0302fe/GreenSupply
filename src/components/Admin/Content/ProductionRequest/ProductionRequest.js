@@ -15,7 +15,9 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
-// Hàm gọi API danh sách nhiên liệu sử dụng axios
+import { GrPlan } from "react-icons/gr";
+
+// Hàm gọi API danh sách Nguyên liệu sử dụng axios
 export const getAllFuelType = async () => {
   const res = await axios.get(
     `${process.env.REACT_APP_API_URL}/fuel-management/getAll`
@@ -41,7 +43,7 @@ const ProductionRequest = () => {
         // Giả sử API trả về dữ liệu dạng { success: true, requests: [...] }
         setFuelTypes(data.requests);
       } catch (error) {
-        message.error("Có lỗi xảy ra khi tải danh sách nhiên liệu.");
+        message.error("Có lỗi xảy ra khi tải danh sách Nguyên liệu.");
       } finally {
         setFuelLoading(false);
       }
@@ -49,12 +51,12 @@ const ProductionRequest = () => {
     fetchFuelTypes();
   }, []);
 
-  // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn nhiên liệu
+  // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn Nguyên liệu
   const handleEstimatedProductionChange = (value) => {
     const selectedFuelId = form.getFieldValue("material");
     if (!selectedFuelId) {
       message.warning(
-        "Vui lòng chọn loại nhiên liệu trước khi nhập sản lượng mong muốn."
+        "Vui lòng chọn loại Nguyên liệu trước khi nhập sản lượng mong muốn."
       );
       form.setFieldsValue({ product_quantity: 1, material_quantity: 1 }); // Reset sản lượng và nguyên liệu
       return;
@@ -71,7 +73,7 @@ const ProductionRequest = () => {
         if (required > availableFuel) {
           const maxProduction = Math.floor(availableFuel * 0.9);
           message.warning(
-            `Sản lượng mong muốn vượt quá số lượng nhiên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
+            `Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
           );
           form.setFieldsValue({
             product_quantity: maxProduction,
@@ -137,7 +139,7 @@ const ProductionRequest = () => {
     console.log(formattedValues);
     setSubmitLoading(true);
     try {
-      // 1. Tạo sản phẩm mới và trừ số lượng nhiên liệu trong kho
+      // 1. Tạo sản phẩm mới và trừ số lượng Nguyên liệu trong kho
       const response = await ProductionRequestServices.createProductionRequest({
         dataRequest: formattedValues,
         access_token: user.access_token,
@@ -151,7 +153,7 @@ const ProductionRequest = () => {
           `${process.env.REACT_APP_API_URL}/fuel-management/getAll`
         );
 
-        // 3. Cập nhật lại danh sách nhiên liệu
+        // 3. Cập nhật lại danh sách Nguyên liệu
         setFuelTypes(updatedFuelData.data.requests);
 
         // Reset form sau khi thành công
@@ -169,48 +171,53 @@ const ProductionRequest = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+      <div className="flex justify-between items-center mb-4 w-full">
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          Quay lại
+        </Button>
+        <Button
+          onClick={() => navigate("/system/admin/production-request-list")}
+          type="default"
+          className="flex items-center border border-gray-400 text-gray-700 font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
+        >
+          <span className="border-b border-black border-solid">
+            Danh sách kế hoạch
+          </span>
+        </Button>
+      </div>
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
-        <div className="flex justify-between items-center">
-          <Button
-            onClick={() => navigate(-1)}
-            type="primary"
-            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
-            </svg>
-            Quay lại
-          </Button>
-          <Button
-            onClick={() => navigate("/system/admin/production-request-list")}
-            type="default"
-            className="flex items-center border border-gray-400 text-gray-700 font-medium py-1 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
-          >
-            Danh sách yêu cầu
-          </Button>
+        <div className="flex items-center justify-center mt-2 mb-4 gap-2">
+          <GrPlan className="size-6" />
+          <h2 className="text-3xl font-bold text-center">
+            Lập Kế Hoạch Sản Xuất
+          </h2>
         </div>
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Tạo Yêu Cầu Sản Xuất Mới
-        </h2>
 
-        {fuelLoading && (
+        {/* {fuelLoading && (
           <div className="flex justify-center items-center mb-4">
             <span className="text-lg font-medium text-blue-600">
-              Loading danh sách nhiên liệu...
+              Loading danh sách Nguyên liệu...
             </span>
           </div>
-        )}
+        )} */}
 
         {submitLoading && (
           <div className="flex justify-center items-center mb-4">
@@ -222,29 +229,29 @@ const ProductionRequest = () => {
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label="Tên yêu cầu"
+            label="Tên kế hoạch"
             name="request_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên yêu cầu" }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên kế hoạch" }]}
           >
             <Input
-              placeholder="Nhập tên yêu cầu"
+              placeholder="Nhập tên kế hoạch"
               maxLength={100}
               className="rounded border-gray-300"
             />
           </Form.Item>
 
-          {/* Chọn Loại nhiên liệu và nhập Sản lượng mong muốn cùng hàng */}
+          {/* Chọn Loại Nguyên liệu và nhập Sản lượng mong muốn cùng hàng */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <Form.Item
-              label="Loại nhiên liệu"
+              label="Loại Nguyên liệu"
               name="material"
               rules={[
-                { required: true, message: "Vui lòng chọn Loại nhiên liệu" },
+                { required: true, message: "Vui lòng chọn Loại Nguyên liệu" },
               ]}
               className="flex-1"
             >
               <Select
-                placeholder="Chọn Loại nhiên liệu"
+                placeholder="Chọn Loại Nguyên liệu"
                 className="rounded border-gray-300"
                 onChange={(value) => {
                   const selectedFuel = fuelTypes.find((f) => f._id === value);
@@ -260,7 +267,7 @@ const ProductionRequest = () => {
                 }}
               >
                 {fuelTypes
-                  .filter((fuel) => fuel.quantity > 0) // Lọc ra nhiên liệu có quantity > 0
+                  .filter((fuel) => fuel.quantity > 0) // Lọc ra Nguyên liệu có quantity > 0
                   .map((fuel) => (
                     <Select.Option key={fuel._id} value={fuel._id}>
                       {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)

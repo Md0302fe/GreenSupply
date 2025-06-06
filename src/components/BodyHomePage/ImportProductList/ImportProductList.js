@@ -5,8 +5,11 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ImportProductList = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [productList, setProductList] = useState([]);
   const { id } = useParams();
@@ -61,13 +64,14 @@ const ImportProductList = () => {
     <div className="max-w-[1400px] mx-auto p-6 bg-[#F4F4F4] border border-gray-800 shadow-inner mb-4 mt-[5rem]">
       <div className="flex justify-between items-center mb-4 mt-3 mx-4">
         <h2 className="text-[16px] sm:text-2xl lg:text-3xl font-bold text-orange-500 font-instrument">
-          Mặt hàng cần nhập
+          {t("import_product_list.title")}
+
         </h2>
         <button
           onClick={handleCreateOrder}
           className="text-[12px] sm:text-sm md:text-base text-blue-600 font-semibold hover:underline hover:text-blue-800 transition"
         >
-          Xem thêm →
+          {t("import_product_list.view_more")} →
         </button>
       </div>
 
@@ -91,7 +95,7 @@ const ImportProductList = () => {
         )
       ) : (
         <p className="text-[12px] sm:text-base md:text-lg font-semibold text-center text-gray-700 my-4">
-          Hiện tại chưa có đơn cần cung cấp.
+         {t("import_product_list.empty")}
         </p>
       )}
     </div>
@@ -99,6 +103,8 @@ const ImportProductList = () => {
 };
 
 const ProductItem = ({ product }) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   // Hàm tính thời gian còn lại
@@ -145,28 +151,28 @@ const ProductItem = ({ product }) => {
           {product.request_name}
         </h3>
         <p className="text-xs sm:text-sm text-gray-700">
-          Số lượng: <span className="font-bold">{product.quantity_remain}</span>
+          {t("import_product_list.quantity")}: <span className="font-bold">{product.quantity_remain}</span>
         </p>
         <p className="text-xs sm:text-sm text-gray-700">
-          Giá mỗi đơn vị:{" "}
+          {t("import_product_list.price_per_unit")}:{" "}
           <span className="font-bold">
             {product.price.toLocaleString("vi-VN")} VNĐ
           </span>
         </p>
         <p className="text-xs sm:text-sm text-gray-700">
-          Tổng giá:{" "}
+          {t("import_product_list.total_price")}:{" "}
           <span className="font-bold">
             {product.total_price.toLocaleString("vi-VN")} VNĐ
           </span>
         </p>
         {timeLeft.total > 0 ? (
           <p className="text-xs sm:text-sm text-red-600 font-semibold">
-            Còn lại: {timeLeft.days} ngày {timeLeft.hours} giờ{" "}
-            {timeLeft.minutes} phút {timeLeft.seconds} giây
+            {t("import_product_list.remaining")}: {timeLeft.days} {t("common.days")} {timeLeft.hours} {t("common.hours")}{" "}
+            {timeLeft.minutes} {t("common.minutes")} {timeLeft.seconds} {t("common.seconds")}
           </p>
         ) : (
           <p className="text-xs sm:text-sm text-gray-500 font-semibold">
-            Đã hết hạn cung cấp
+            {t("import_product_list.expired")}
           </p>
         )}
       </div>
@@ -174,7 +180,7 @@ const ProductItem = ({ product }) => {
         onClick={handleCreateOrderDetail}
         className="bg-[#006838] text-white px-3 sm:px-4 py-2 rounded-md flex items-center hover:bg-[#008c4a] hover:scale-105 hover:shadow-lg transition-transform duration-200 ease-in-out mt-4"
       >
-        <i className="fa-solid fa-file-alt mr-2"></i> Tạo đơn
+        <i className="fa-solid fa-file-alt mr-2"></i> {t("import_product_list.create_order")}
       </button>
     </div>
   );

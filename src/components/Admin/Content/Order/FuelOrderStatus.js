@@ -261,7 +261,7 @@ const FuelOrderStatus = () => {
       align: "center",
     },
     {
-      title: "Loại Nhiên Liệu",
+      title: "Loại Nguyên liệu",
       dataIndex: "fuel_name",
       key: "fuel_name",
     },
@@ -362,7 +362,7 @@ const FuelOrderStatus = () => {
 
   const excelColumns = [
     { title: "Khách Hàng", dataIndex: "customerName" },
-    { title: "Loại Nhiên Liệu", dataIndex: "fuel_name" },
+    { title: "Loại Nguyên liệu", dataIndex: "fuel_name" },
     { title: "Giá Tiền", dataIndex: "price" },
     { title: "Số Lượng", dataIndex: "quantity" },
     { title: "Tổng Giá", dataIndex: "total_price" },
@@ -428,7 +428,7 @@ const FuelOrderStatus = () => {
             </Button>
           </Col>
           <Col>
-            <h2 style={{ fontSize: "24px", fontWeight: "bold", margin: 0 }}>
+            <h2 className="text-4xl font-bold flex-grow text-center mt-1 mb-4">
               Quản lý Đơn Hàng Chờ Nhập Kho
             </h2>
           </Col>
@@ -547,7 +547,7 @@ const FuelOrderStatus = () => {
             <Descriptions.Item label="Khách Hàng">
               {selectedOrder.supplier_id?.full_name || "Không có"}
             </Descriptions.Item>
-            <Descriptions.Item label="Loại Nhiên Liệu">
+            <Descriptions.Item label="Loại Nguyên liệu">
               {selectedOrder.fuel_name}
             </Descriptions.Item>
             <Descriptions.Item label="Số Lượng">

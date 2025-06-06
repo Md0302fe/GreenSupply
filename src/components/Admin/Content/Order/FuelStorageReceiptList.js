@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Table,
   Button,
@@ -42,6 +42,9 @@ const FuelStorageReceiptList = () => {
   const [receiptTypeFilter, setReceiptTypeFilter] = useState("");
   const [originalReceipts, setOriginalReceipts] = useState([]);
   const [showTypeFilter, setShowTypeFilter] = useState(false);
+
+  const searchInput = useRef(null);
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -128,6 +131,86 @@ const FuelStorageReceiptList = () => {
     });
   };
 
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Tìm ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => {
+              clearFilters && handleReset(clearFilters);
+              confirm();
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button type="link" size="small" onClick={close}>
+            Đóng
+          </Button>
+        </Space>
+      </div>
+    ),
+
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record.manager_id?.full_name
+        ? record.manager_id.full_name
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : false,
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <span style={{ backgroundColor: "#ffc069", padding: 0 }}>{text}</span>
+      ) : (
+        text
+      ),
+  });
+
   const updateReceiptStatus = async (id, newStatus) => {
     try {
       setLoading(true);
@@ -210,268 +293,87 @@ const FuelStorageReceiptList = () => {
 
   const columns = [
     {
-      title: (
-        <div
-          style={{ position: "relative", textAlign: "center", width: "100%" }}
-        >
-          <span>Người Quản Lý</span>
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-            }}
-          >
-            <Popover
-              content={
-                <div style={{ padding: 10 }}>
-                  <Input
-                    placeholder="Tìm kiếm theo tên người quản lý..."
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ width: 250 }}
-                  />
-                  <div style={{ marginTop: 10 }}>
-                    <Button type="primary" onClick={() => fetchReceipts()}>
-                      Tìm
-                    </Button>
-                    <Button
-                      onClick={() => setSearchText("")}
-                      style={{ marginLeft: 8 }}
-                    >
-                      Đặt lại
-                    </Button>
-                    <Button
-                      type="link"
-                      onClick={() => setShowSearchInput(false)}
-                      style={{ marginLeft: 8 }}
-                    >
-                      Đóng
-                    </Button>
-                  </div>
-                </div>
-              }
-              title="Tìm kiếm"
-              trigger="click"
-              visible={showSearchInput}
-              onVisibleChange={() => setShowSearchInput(!showSearchInput)}
-            >
-              <Button
-                type="link"
-                icon={<SearchOutlined />}
-                style={{ padding: 0, height: "auto", lineHeight: 1 }}
-              />
-            </Popover>
-          </div>
-        </div>
-      ),
-      align: "center",
+      title: "Người Quản Lý",
+      dataIndex: ["manager_id", "full_name"],
       key: "manager_id",
-      render: (_, record) => (
-        <div style={{ textAlign: "center" }}>
-          {record?.manager_id?.full_name || "Không rõ"}
-        </div>
-      ),
+      align: "center",
+      ...getColumnSearchProps("manager_id.full_name"),
+      render: (_, record) => record.manager_id?.full_name || "Không rõ",
     },
-    // {
-    //   title: (
-    //     <div style={{ textAlign: "center", width: "100%" }}>Loại Đơn Hàng</div>
-    //   ),
-    //   key: "receipt_type",
-    //   align: "center",
-    //   render: (_, record) => (
-    //     <div style={{ textAlign: "center" }}>
-    //       {record.receipt_supply_id ? (
-    //         <Tag color="blue">Cung cấp</Tag>
-    //       ) : (
-    //         <Tag color="green">Thu hàng</Tag>
-    //       )}
-    //     </div>
-    //   ),
-    // },
     {
-      title: (
-        <div
-          style={{ position: "relative", textAlign: "center", width: "100%" }}
-        >
-          <span>Loại Đơn Hàng</span>
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-            }}
-          >
-            <Popover
-              content={
-                <div style={{ padding: 10 }}>
-                  <Select
-                    value={receiptTypeFilter}
-                    onChange={(val) => setReceiptTypeFilter(val)}
-                    style={{ width: 200 }}
-                  >
-                    <Option value="">Tất cả</Option>
-                    <Option value="supply">Cung cấp</Option>
-                    <Option value="request">Thu hàng</Option>
-                  </Select>
-                </div>
-              }
-              title="Lọc theo loại đơn hàng"
-              trigger="click"
-              visible={showTypeFilter}
-              onVisibleChange={() => setShowTypeFilter(!showTypeFilter)}
-            >
-              <Button
-                type="link"
-                icon={<FilterOutlined />}
-                style={{ padding: 0, height: "auto", lineHeight: 1 }}
-              />
-            </Popover>
-          </div>
-        </div>
-      ),
+      title: "Loại Đơn Hàng",
       key: "receipt_type",
       align: "center",
+      filters: [
+        { text: "Cung cấp", value: "supply" },
+        { text: "Thu hàng", value: "request" },
+      ],
+      onFilter: (value, record) => {
+        if (value === "supply") return !!record.receipt_supply_id;
+        if (value === "request") return !!record.receipt_request_id;
+        return true;
+      },
       render: (_, record) => (
-        <div style={{ textAlign: "center" }}>
-          {record.receipt_supply_id ? (
-            <Tag color="blue">Cung cấp</Tag>
-          ) : (
-            <Tag color="green">Thu hàng</Tag>
-          )}
-        </div>
+        <Tag color={record.receipt_supply_id ? "blue" : "green"}>
+          {record.receipt_supply_id ? "Cung cấp" : "Thu hàng"}
+        </Tag>
       ),
     },
-
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Kho</div>,
+      title: "Kho",
       dataIndex: ["storage_id", "name_storage"],
       key: "storage_id",
       align: "center",
-      render: (text) => (
-        <div style={{ textAlign: "center" }}>{text || "Không có dữ liệu"}</div>
-      ),
+      render: (text) => text || "Không có dữ liệu",
     },
-
     {
-      title: (
-        <div
-          style={{ position: "relative", textAlign: "center", width: "100%" }}
-        >
-          <span>Trạng Thái</span>
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-            }}
-          >
-            <Popover
-              content={
-                <div style={{ padding: 10 }}>
-                  <Select
-                    value={statusFilterVal}
-                    onChange={(val) => setStatusFilterVal(val)}
-                    style={{ width: 200 }}
-                  >
-                    <Option value="">Tất cả trạng thái</Option>
-                    <Option value="Chờ duyệt">Chờ duyệt</Option>
-                    <Option value="Đã duyệt">Đã duyệt</Option>
-                    <Option value="Đã huỷ">Đã huỷ</Option>
-                  </Select>
-                </div>
-              }
-              title="Lọc theo trạng thái"
-              trigger="click"
-              visible={showStatusFilter}
-              onVisibleChange={() => setShowStatusFilter(!showStatusFilter)}
-            >
-              <Button
-                type="link"
-                icon={<FilterOutlined />}
-                style={{ padding: 0, height: "auto", lineHeight: 1 }}
-              />
-            </Popover>
-          </div>
-        </div>
-      ),
-
+      title: "Trạng Thái",
       dataIndex: "status",
-      align: "center",
       key: "status",
+      align: "center",
+      filters: [
+        { text: "Chờ duyệt", value: "Chờ duyệt" },
+        { text: "Nhập kho thành công", value: "Nhập kho thành công" },
+        { text: "Đã huỷ", value: "Đã huỷ" },
+      ],
+      onFilter: (value, record) => record.status === value,
       render: (status) => {
-        let color =
-          status === "Chờ duyệt"
-            ? "gold"
-            : status === "Đã duyệt"
-            ? "green"
-            : status === "Nhập kho thành công"
-            ? "blue"
-            : "red";
-        return (
-          <div style={{ textAlign: "center" }}>
-            <Tag color={color}>{status}</Tag>
-          </div>
-        );
+        const colors = {
+          "Chờ duyệt": "gold",
+          "Nhập kho thành công": "blue",
+          "Đã huỷ": "red",
+        };
+        return <Tag color={colors[status] || "default"}>{status}</Tag>;
       },
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Ngày Nhập Kho</div>
-      ),
+      title: "Ngày Nhập Kho",
       dataIndex: "createdAt",
       key: "createdAt",
       align: "center",
-      className: "text-center",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (date) => (
-        <div style={{ textAlign: "center" }}>
-          {date ? converDateString(date) : "Không có dữ liệu"}
-        </div>
-      ),
+      render: (date) => (date ? converDateString(date) : "Không có dữ liệu"),
     },
-
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Ngày Cập Nhật</div>
-      ),
-      align: "center",
-      className: "text-center",
+      title: "Ngày Cập Nhật",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (date) => (
-        <div style={{ textAlign: "center" }}>
-          {date ? converDateString(date) : "Không có dữ liệu"}
-        </div>
-      ),
+      align: "center",
+      render: (date) => (date ? converDateString(date) : "Không có dữ liệu"),
     },
-
     {
-      title: <div className="text-center">Hành động</div>,
+      title: "Hành động",
       key: "action",
       align: "center",
-      className: "text-center",
       render: (_, record) => (
         <Button
           type="link"
-          // icon={<HiOutlineDocumentSearch style={{ fontSize: "20px", alignItems: 'center' }} />}
           onClick={() => {
             setSelectedReceipt(record);
             setIsDrawerOpen(true);
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <HiOutlineDocumentSearch style={{ fontSize: "24px" }} />
-          </div>
+          <HiOutlineDocumentSearch style={{ fontSize: 24 }} />
         </Button>
       ),
     },
