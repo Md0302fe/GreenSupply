@@ -451,14 +451,14 @@ const UserComponent = () => {
 
   const tableData = Array.isArray(data_purchase?.data)
     ? data_purchase.data
-        .filter((item) => {
-          if (!filterStatus) return true;
-          return item.status === filterStatus;
-        })
-        .map((purchaseOrder) => ({
-          ...purchaseOrder,
-          key: purchaseOrder._id || "",
-        }))
+      .filter((item) => {
+        if (!filterStatus) return true;
+        return item.status === filterStatus;
+      })
+      .map((purchaseOrder) => ({
+        ...purchaseOrder,
+        key: purchaseOrder._id || "",
+      }))
     : [];
 
   // Actions
@@ -506,6 +506,26 @@ const UserComponent = () => {
     clearFilters();
     setSearchText("");
   };
+
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
@@ -741,8 +761,9 @@ const UserComponent = () => {
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
         {/* Nút Quay lại */}
-        <div className="my-3">
-          <div className="absolute">
+        <div className="relative my-3 min-h-[60px]">
+          {/* Nút cố định vị trí */}
+          <div className="absolute top-[80px] left-0 z-10">
             <Button
               onClick={() => navigate(-1)}
               type="primary"
@@ -765,10 +786,13 @@ const UserComponent = () => {
               Quay lại
             </Button>
           </div>
-          <h5 className="content-title text-2xl text-center">
+
+          {/* Tiêu đề căn giữa */}
+          <h5 className="content-title text-[25px] sm:text-2xl text-center">
             các nguyên liệu cần nhập
           </h5>
         </div>
+
 
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
@@ -778,6 +802,7 @@ const UserComponent = () => {
         <div className="content-main-table-user">
           <TableOrder
             // Props List
+            scroll={{ x: "max-content" }}
             columns={columns}
             isLoading={isLoading}
             data={tableData}
@@ -799,15 +824,15 @@ const UserComponent = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
-        width="50%"
+        width={drawerWidth}
         forceRender
       >
         <Loading isPending={isLoadDetails}>
-          {/* Form cập nhật đơn thu Nguyên liệu */}
+          {/* Form cập nhật đơn thu nguyên liệu */}
           <div className="w-full bg-gray-100 p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                🚀 Cập Nhật Đơn Thu Nguyên liệu
+              <h2 className="text-[16px] sm:text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
+                🚀 Cập Nhật Đơn Thu Nguyên Liệu
               </h2>
               <div className="space-y-4">
                 {/* Tên đơn */}
@@ -852,15 +877,15 @@ const UserComponent = () => {
                   </select>
                 </div>
 
-                {/* Ảnh Nguyên liệu */}
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 min-h-[20vh]">
+                {/* Ảnh nguyên liệu */}
+                <div className="flex flex-col gap-4 min-h-[20vh]">
                   {/* Tiêu đề */}
-                  <div className="w-full md:w-1/4 text-gray-800 font-semibold">
+                  <div className="text-gray-800 font-semibold">
                     Hình ảnh
                   </div>
 
                   {/* Upload Button */}
-                  <div className="w-full md:w-1/4">
+                  <div>
                     <Upload.Dragger
                       listType="picture"
                       showUploadList={{ showRemoveIcon: true }}
@@ -870,7 +895,7 @@ const UserComponent = () => {
                       onChange={handleChangeFuelImage}
                       className="!w-full"
                     >
-                      <button className="bg-gray-200 p-2 rounded hover:bg-gray-300">
+                      <button className="bg-gray-200 p-2 rounded hover:bg-gray-300 w-full">
                         Tải ảnh lên
                       </button>
                     </Upload.Dragger>
@@ -878,7 +903,7 @@ const UserComponent = () => {
 
                   {/* Hiển thị hình ảnh */}
                   {purchaseDetails?.fuel_image && (
-                    <div className="w-full md:w-1/2">
+                    <div>
                       <img
                         src={purchaseDetails.fuel_image}
                         alt="Hình ảnh Nguyên liệu"
@@ -891,33 +916,43 @@ const UserComponent = () => {
                 {/* Số lượng cần thu */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tổng số lượng cần thu (Kg)
+                    Tổng số lượng cần thu
                   </label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    min="1"
-                    placeholder="Nhập số lượng..."
-                    value={purchaseDetails.quantity}
-                    onChange={handleChange}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="quantity"
+                      min="1"
+                      placeholder="Nhập số lượng..."
+                      value={purchaseDetails.quantity}
+                      onChange={handleChange}
+                      className="border border-gray-300 p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+                      Kg
+                    </span>
+                  </div>
                 </div>
 
                 {/* Giá trên mỗi kg */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Giá trên mỗi Kg / Đơn vị (VND)
+                    Giá trên mỗi Đơn vị
                   </label>
-                  <input
-                    type="number"
-                    name="price"
-                    min="1"
-                    placeholder="Nhập giá..."
-                    value={purchaseDetails.price}
-                    onChange={handleChange}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="price"
+                      min="1"
+                      placeholder="Nhập giá..."
+                      value={purchaseDetails.price}
+                      onChange={handleChange}
+                      className="border border-gray-300 p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+                      VND
+                    </span>
+                  </div>
                 </div>
 
                 {/* Ngày nhận đơn */}
@@ -1016,6 +1051,14 @@ const UserComponent = () => {
                     ).toLocaleString("vi-VN")}{" "}
                     VNĐ
                   </span>
+                </div>
+                <div className="flex justify-end mt-4">
+                  <button
+                    onClick={() => setIsDrawerOpen(false)}
+                    className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+                  >
+                    Đóng
+                  </button>
                 </div>
 
                 {/* Nút bấm */}

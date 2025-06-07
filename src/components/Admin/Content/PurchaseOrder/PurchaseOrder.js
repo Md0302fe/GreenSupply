@@ -78,7 +78,7 @@ const HarvestRequestPage = () => {
     return current && current < formData.end_received;
   };
 
-  // Tuy nhiên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
+  // Tuy nguyên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
   const handleChangeFuelImage = async ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -359,7 +359,7 @@ const HarvestRequestPage = () => {
                     Hình ảnh
                   </MDBCardText>
                 </div>
-                <div className="flex-[0.74]">
+                <div>
                   <Upload.Dragger
                     listType="picture-card"
                     fileList={fileList}
@@ -373,7 +373,7 @@ const HarvestRequestPage = () => {
                       <img
                         src={fuelImage}
                         alt="preview"
-                        style={{ width: "30%", height: "auto" }}
+                        style={{ width: "100%", height: "auto", maxWidth: "200px" }}
                       />
                     ) : (
                       <div>Upload Your Image</div>
@@ -382,47 +382,58 @@ const HarvestRequestPage = () => {
                 </div>
               </div>
 
-              {/* Số lượng cần thu */}
+              {/* Số lượng cần thu (Kg) */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Tổng số lượng cần thu (Kg)
+                  Tổng số lượng cần thu
                 </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  min="1"
-                  placeholder="Nhập số lượng..."
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (["e", "E", "-", "."].includes(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="relative w-full">
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    placeholder="Nhập số lượng..."
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "-", "."].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="border border-gray-300 p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                    Kg
+                  </span>
+                </div>
               </div>
 
-              {/* Giá trên mỗi kg */}
+              {/* Giá trên mỗi Kg / Đơn vị */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Giá trên mỗi Kg / Đơn vị (VND)
+                  Giá trên mỗi Kg
                 </label>
-                <input
-                  type="number"
-                  name="price"
-                  min="1"
-                  placeholder="Nhập giá..."
-                  value={formData.price}
-                  onChange={handleChange}
-                  onKeyDown={(e) => {
-                    if (["e", "E", "-", "."].includes(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="relative w-full">
+                  <input
+                    type="number"
+                    name="price"
+                    min="1"
+                    placeholder="Nhập giá..."
+                    value={formData.price}
+                    onChange={handleChange}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "-", "."].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="border border-gray-300 p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                    VND
+                  </span>
+                </div>
               </div>
+
 
               {/* Ngày nhận đơn */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
