@@ -30,7 +30,9 @@ import { getBase64, convertPrice } from "../../../../ultils";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import * as FuelTypeServices from "../../../../services/FuelTypesServices";
+import { useTranslation } from "react-i18next";
 const UserComponent = () => {
+  const { t } = useTranslation();
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -309,7 +311,7 @@ const UserComponent = () => {
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
     if (!rowSelected) {
-      toast.error("Không có đơn hàng nào được chọn để hủy!");
+      toast.error(t("order.toast.no_order_selected"));
       return;
     }
 
@@ -322,13 +324,13 @@ const UserComponent = () => {
       },
       {
         onSuccess: () => {
-          toast.success("Đã hủy đơn hàng!");
+          toast.success(t("order.toast.cancel_success"));
           queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
           setIsDrawerOpen(false); // 🔹 Đóng form sau khi hủy
         },
         onError: (error) => {
           console.error("🔴 Lỗi khi gọi API:", error);
-          toast.error("Hủy đơn hàng thất bại!");
+          toast.error(t("order.toast.cancel_failed"));
         },
       }
     );
@@ -605,6 +607,13 @@ const UserComponent = () => {
     "Đã huỷ": "volcano",
     "Đã Hoàn Thành": "green",
   };
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đang xử lý": "approve",
+    "Từ chối": "rejected",
+    "Đã huỷ": "cancelled",
+    "Đã Hoàn Thành": "completed",
+  };
   // Định nghĩa danh sách mức độ ưu tiên
   const priorityOptions = [
     { id: 1, label: "Cao" },
@@ -628,7 +637,7 @@ const UserComponent = () => {
   };
   const columns = [
     {
-      title: "Mặt hàng",
+      title: t("order.table.image"),
       dataIndex: "fuel_image",
       key: "fuel_image",
       render: (fuel_image) =>
@@ -644,11 +653,15 @@ const UserComponent = () => {
             }}
           />
         ) : (
-          <span style={{ color: "red" }}>Không có ảnh</span> // Hiển thị nếu không có ảnh
+          <span style={{ color: "red" }}>{t("order.table.no_image")}</span> // Hiển thị nếu không có ảnh
         ),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Yêu cầu</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("order.table.request_name")}
+        </div>
+      ),
       dataIndex: "request_name",
       key: "request_name",
       ...(getColumnSearchProps("request_name") || {}),
@@ -656,7 +669,11 @@ const UserComponent = () => {
       align: "right",
     },
     {
-      title: <div style={{ textAlign: "center" }}>Tiến độ còn thu</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("order.table.quantity_remain")}
+        </div>
+      ),
       dataIndex: "quantity_remain",
       className: "text-center",
       key: "quantity_remain",
@@ -665,7 +682,11 @@ const UserComponent = () => {
     },
 
     {
-      title: <div style={{ textAlign: "center" }}>Tổng thu (Kg)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {t("order.table.total_quantity")}
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       className: "text-center",
@@ -684,7 +705,9 @@ const UserComponent = () => {
       render: (quantity) => `${convertPrice(quantity)} Kg`,
     },
     {
-      title: <div style={{ textAlign: "center" }}>Ngày bắt đầu nhận đơn</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("order.table.start_date")}</div>
+      ),
       dataIndex: "start_received",
       className: "text-center",
       key: "start_received",
@@ -693,7 +716,9 @@ const UserComponent = () => {
     },
 
     {
-      title: <div style={{ textAlign: "center" }}>Ngày kết thúc đơn</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("order.table.end_date")}</div>
+      ),
       dataIndex: "end_received",
       className: "text-center",
       key: "end_received",
@@ -702,16 +727,18 @@ const UserComponent = () => {
     },
 
     {
-      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("order.table.status")}</div>
+      ),
       dataIndex: "status",
       className: "text-center",
       key: "status",
       filters: [
-        { text: "Chờ duyệt", value: "Chờ duyệt" },
-        { text: "Đang xử lý", value: "Đang xử lý" },
-        { text: "Từ chối", value: "Từ chối" },
-        { text: "Đã huỷ", value: "Đã huỷ" },
-        { text: "Đã Hoàn Thành", value: "Đã Hoàn Thành" },
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đang xử lý" },
+        { text: t("status.rejected"), value: "Từ chối" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+        { text: t("status.completed"), value: "Đã Hoàn Thành" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (status) => (
@@ -719,13 +746,15 @@ const UserComponent = () => {
           color={statusColors[status] || "default"}
           style={{ textAlign: "center", fontSize: "12px", padding: "3px" }}
         >
-          {status}
+          {t(`status.${statusMap[status]}`) || status}
         </Tag>
       ),
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Hành động</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("order.table.action")}
+        </div>
       ),
       dataIndex: "action",
       className: "text-center",
@@ -762,19 +791,13 @@ const UserComponent = () => {
                   d="M15 12H3m0 0l6-6m-6 6l6 6"
                 />
               </svg>
-              Quay lại
+              {t("order.back")}
             </Button>
           </div>
           <h5 className="content-title text-2xl text-center">
-            các nguyên liệu cần nhập
+            {t("order.title")}
           </h5>
         </div>
-
-        {/* <div className="content-addUser">
-          <Button onClick={showModal}>
-            <BsPersonAdd></BsPersonAdd>
-          </Button>
-        </div> */}
         <div className="content-main-table-user">
           <TableOrder
             // Props List
@@ -795,7 +818,7 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title="Chi Tiết Đơn Thu Nguyên liệu"
+        title={t("order.drawer_title")}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -807,19 +830,19 @@ const UserComponent = () => {
           <div className="w-full bg-gray-100 p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                🚀 Cập Nhật Đơn Thu Nguyên liệu
+                🚀 {t("order.update_title")}
               </h2>
               <div className="space-y-4">
                 {/* Tên đơn */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tên Đơn
+                    {t("order.form.name")}
                   </label>
                   <input
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu Nguyên liệu..."
+                    placeholder={t("order.form.name_placeholder")}
                     value={purchaseDetails.request_name}
                     onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
@@ -829,7 +852,7 @@ const UserComponent = () => {
                 {/* Loại Nguyên liệu */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Loại Nguyên liệu cần thu
+                    {t("order.form.fuel_type")}
                   </label>
                   <select
                     name="fuel_type"
@@ -838,7 +861,7 @@ const UserComponent = () => {
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   >
                     <option value="" disabled>
-                      Chọn loại Nguyên liệu
+                      {t("order.form.fuel_type_placeholder")}
                     </option>
                     {fuel_types && fuel_types.length > 0 ? (
                       fuel_types.map((fuel) => (
@@ -847,7 +870,7 @@ const UserComponent = () => {
                         </option>
                       ))
                     ) : (
-                      <option disabled>Không có dữ liệu</option>
+                      <option disabled>{t("order.form.no_data")}</option>
                     )}
                   </select>
                 </div>
@@ -856,7 +879,7 @@ const UserComponent = () => {
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 min-h-[20vh]">
                   {/* Tiêu đề */}
                   <div className="w-full md:w-1/4 text-gray-800 font-semibold">
-                    Hình ảnh
+                    {t("order.form.image")}
                   </div>
 
                   {/* Upload Button */}
@@ -871,7 +894,7 @@ const UserComponent = () => {
                       className="!w-full"
                     >
                       <button className="bg-gray-200 p-2 rounded hover:bg-gray-300">
-                        Tải ảnh lên
+                        {t("order.form.upload")}
                       </button>
                     </Upload.Dragger>
                   </div>
@@ -891,13 +914,13 @@ const UserComponent = () => {
                 {/* Số lượng cần thu */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tổng số lượng cần thu (Kg)
+                    {t("order.form.quantity")}
                   </label>
                   <input
                     type="number"
                     name="quantity"
                     min="1"
-                    placeholder="Nhập số lượng..."
+                    placeholder={t("order.form.quantity_placeholder")}
                     value={purchaseDetails.quantity}
                     onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
@@ -907,13 +930,13 @@ const UserComponent = () => {
                 {/* Giá trên mỗi kg */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Giá trên mỗi Kg / Đơn vị (VND)
+                    {t("order.form.price")}
                   </label>
                   <input
                     type="number"
                     name="price"
                     min="1"
-                    placeholder="Nhập giá..."
+                    placeholder={t("order.form.price_placeholder")}
                     value={purchaseDetails.price}
                     onChange={handleChange}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
@@ -924,7 +947,7 @@ const UserComponent = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
-                      Ngày bắt đầu nhận đơn
+                      {t("order.form.start_date")}
                     </label>
                     <DatePicker
                       selected={purchaseDetails.start_received}
@@ -935,12 +958,12 @@ const UserComponent = () => {
                       }
                       dateFormat="dd/MM/yyyy"
                       className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                      placeholderText="Chọn ngày"
+                      placeholderText={t("order.form.date_placeholder")}
                     />
                   </div>
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
-                      Ngày kết thúc nhận đơn
+                      {t("order.form.end_date")}
                     </label>
                     <DatePicker
                       selected={purchaseDetails.end_received}
@@ -951,12 +974,12 @@ const UserComponent = () => {
                       }
                       dateFormat="dd/MM/yyyy"
                       className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                      placeholderText="Chọn ngày"
+                      placeholderText={t("order.form.date_placeholder")}
                     />
                   </div>
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
-                      Hạn chót hoàn thành đơn
+                      {t("order.form.due_date")}
                     </label>
                     <DatePicker
                       selected={purchaseDetails.due_date}
@@ -967,7 +990,7 @@ const UserComponent = () => {
                       }
                       dateFormat="dd/MM/yyyy"
                       className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                      placeholderText="Chọn ngày"
+                      placeholderText={t("order.form.date_placeholder")}
                     />
                   </div>
                 </div>
@@ -975,7 +998,7 @@ const UserComponent = () => {
                 {/* Mức độ ưu tiên */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Mức độ ưu tiên
+                    {t("order.form.priority")}
                   </label>
                   <select
                     name="priority"
@@ -984,22 +1007,24 @@ const UserComponent = () => {
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   >
                     <option value="" disabled>
-                      Chọn mức độ ưu tiên
+                      {t("order.form.priority_placeholder")}
                     </option>
-                    <option value="Cao">Cao</option>
-                    <option value="Trung bình">Trung bình</option>
-                    <option value="Thấp">Thấp</option>
+                    <option value="Cao">{t("order.priority.high")}</option>
+                    <option value="Trung bình">
+                      {t("order.priority.medium")}
+                    </option>
+                    <option value="Thấp">{t("order.priority.low")}</option>
                   </select>
                 </div>
 
                 {/* Ghi chú */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Ghi chú
+                    {t("order.form.note")}
                   </label>
                   <textarea
                     name="note"
-                    placeholder="Nhập ghi chú..."
+                    placeholder={t("order.form.note_placeholder")}
                     rows="3"
                     value={purchaseDetails.note}
                     onChange={handleChange}
@@ -1009,7 +1034,7 @@ const UserComponent = () => {
 
                 {/* Tổng giá */}
                 <div className="font-semibold text-lg text-gray-800">
-                  Tổng giá:{" "}
+                  {t("order.form.total_price")}:{" "}
                   <span className="text-red-500 font-bold">
                     {(
                       purchaseDetails.quantity * purchaseDetails.price
@@ -1025,14 +1050,14 @@ const UserComponent = () => {
                       onClick={handleOpenConfirmUpdate}
                       className="bg-yellow-200 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
                     >
-                      ⏳Cập Nhật
+                      {t("order.actions.update")}
                     </button>
 
                     <button
                       onClick={handleOpenConfirmAccept}
                       className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
                     >
-                      ✅Duyệt đơn
+                      {t("order.actions.accept")}
                     </button>
 
                     <button
@@ -1040,7 +1065,7 @@ const UserComponent = () => {
                       onClick={handleOpenConfirmCancel} // Chỉ đóng form, không cập nhật
                       className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
                     >
-                      Hủy yêu cầu
+                      {t("order.actions.cancel")}
                     </button>
                   </div>
                 )}
@@ -1052,44 +1077,44 @@ const UserComponent = () => {
 
       {/* Modal Confirm Delete Product */}
       <ModalComponent
-        title="Xóa yêu cầu"
+        title={t("order.modal.delete_title")}
         open={isOpenDelete}
         onCancel={handleCancelDelete}
         onOk={handleConfirmDelete}
       >
         <Loading isPending={isPendingDelete}>
-          <div>Bạn có chắc muốn xóa sản phẩm không ?</div>
+          <div>{t("order.modal.delete_confirm")}</div>
         </Loading>
       </ModalComponent>
 
       {/* Modal Xác Nhận Cập Nhật */}
       <ModalComponent
-        title="Xác nhận cập nhật đơn hàng"
+        title={t("order.modal.update_title")}
         open={isConfirmUpdateOpen}
         onCancel={() => setIsConfirmUpdateOpen(false)}
         onOk={handleConfirmUpdate}
       >
-        <p>Bạn có chắc chắn muốn cập nhật thông tin đơn hàng không?</p>
+        <p>{t("order.modal.update_confirm")}</p>
       </ModalComponent>
 
       {/* Modal Xác Nhận Cập Nhật */}
       <ModalComponent
-        title="Xác nhận đơn hàng"
+        title={t("order.modal.accept_title")}
         open={isConfirmAccept}
         onCancel={() => setIsConfirmAccept(false)}
         onOk={handleConfirmAccept}
       >
-        <p>Bạn có chắc chắn muốn Duyệt đơn hàng không?</p>
+        <p>{t("order.modal.accept_confirm")}</p>
       </ModalComponent>
 
       {/* Modal Xác Nhận Hủy */}
       <ModalComponent
-        title="Xác nhận hủy cập nhật"
+        title={t("order.modal.cancel_title")}
         open={isConfirmCancelOpen}
         onCancel={() => setIsConfirmCancelOpen(false)}
         onOk={handleCancelUpdate}
       >
-        <p>Bạn có chắc chắn muốn hủy cập nhật đơn hàng không?</p>
+        <p>{t("order.modal.cancel_confirm")}</p>
       </ModalComponent>
     </div>
   );

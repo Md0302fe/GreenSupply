@@ -199,7 +199,8 @@
     "approve": "Đã duyệt",
     "cancelled": "Đã hủy",
     "completed": "Hoàn Thành",
-    "processing": "Đang xử lý"
+    "processing": "Đang xử lý",
+    "rejected": "Từ chối"
   },
   "navbar": {
     "search_placeholder": "Bạn đang tìm kiếm gì?",
@@ -344,7 +345,31 @@
         "requestsPendingProduction": "Số Lượng Yêu Cầu Chờ Tạo Quy Trình Sản Xuất (Theo Ngày)",
         "completedProductionProcesses": "Số Lượng Quy Trình Sản Xuất Đã Hoàn Thành (Theo Ngày)"
       }
-    }
+    },
+    "title_supply_request": "Dashboard Yêu Cầu Thu Nguyên Liệu",
+    "total_requests": "Tổng Yêu Cầu",
+    "pending": "Chờ Duyệt",
+    "completed": "Hoàn Thành",
+    "processing_orders": "Đơn Hàng Đang Xử Lý",
+    "no_processing_orders": "Không có đơn đang xử lý",
+    "priority_high": "Ưu tiên cao",
+    "priority_medium": "Trung bình",
+    "priority_low": "Thấp",
+    "recent_orders": "Đơn hàng gần đây",
+    "filter_day": "Theo Ngày",
+    "filter_week": "Theo Tuần",
+    "filter_month": "Theo Tháng",
+    "table": {
+      "order_id": "Mã Đơn",
+      "request_name": "Tên đơn",
+      "status": "Trạng thái",
+      "quantity": "Số lượng",
+      "created_at": "Ngày tạo"
+    },
+    "error_fetch_data": "Không thể tải dữ liệu dashboard!",
+    "error_fetch_exception": "Lỗi khi tải dashboard!",
+    "error_fetch_orders": "Không thể tải danh sách đơn hàng!",
+    "error_fetch_orders_exception": "Lỗi khi tải danh sách đơn hàng!"
   },
   "chart": {
     "import": "Nhập kho",
@@ -543,5 +568,120 @@
     "required_email": "Vui lòng điền email!",
     "required_phone": "Vui lòng điền số điện thoại!",
     "required_role": "Vui lòng chọn vai trò!"
+  },
+  "harvest": {
+    "back": "Quay lại",
+    "title": "Đơn Yêu Cầu Cung Cấp Nguyên Liệu",
+    "form": {
+      "name": "Tên đơn",
+      "name_placeholder": "Tên đơn yêu cầu cung cấp...",
+      "fuel_type": "Loại Nguyên liệu cần thu",
+      "fuel_type_placeholder": "Chọn loại Nguyên liệu",
+      "no_data": "Không có dữ liệu",
+      "image": "Hình ảnh",
+      "image_placeholder": "Tải ảnh lên",
+      "quantity": "Tổng số lượng cần thu (Kg)",
+      "quantity_placeholder": "Nhập số lượng...",
+      "price": "Giá trên mỗi Kg / Đơn vị (VND)",
+      "price_placeholder": "Nhập giá...",
+      "start_date_placeholder": "Chọn ngày bắt đầu nhận đơn",
+      "end_date_placeholder": "Chọn ngày kết thúc nhận đơn",
+      "due_date_placeholder": "Chọn hạn chót hoàn thành đơn",
+      "priority": "Mức độ ưu tiên",
+      "priority_placeholder": "Chọn mức độ ưu tiên",
+      "note": "Ghi chú",
+      "note_placeholder": "Nhập ghi chú...",
+      "total_price": "Tổng giá"
+    },
+    "priority": {
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp"
+    },
+    "actions": {
+      "reset": "Làm mới",
+      "submit": "Gửi Yêu Cầu"
+    },
+    "validation": {
+      "empty_name": "Tên đơn hàng không được để trống!",
+      "empty_fuel_type": "Loại Nguyên liệu không được để trống!",
+      "empty_image": "Hình ảnh Nguyên liệu không được để trống!",
+      "empty_quantity": "Tổng sl Nguyên liệu cần thu không được để trống!",
+      "empty_price": "Giá Nguyên liệu không được để trống!",
+      "empty_start_date": "Vui lòng chọn ngày bắt đầu nhận đơn!",
+      "invalid_start_date": "Ngày bắt đầu nhận đơn phải từ hôm nay trở đi!",
+      "empty_end_date": "Vui lòng chọn ngày kết thúc nhận đơn!",
+      "empty_due_date": "Vui lòng chọn hạn chót hoàn thành đơn!",
+      "invalid_end_date": "Ngày kết thúc nhận đơn phải sau ngày bắt đầu!",
+      "invalid_due_date": "Hạn chót hoàn thành đơn phải sau ngày kết thúc nhận đơn!",
+      "empty_priority": "Vui lòng chọn mức độ ưu tiên!"
+    },
+    "success": {
+      "created": "Tạo yêu cầu thu hàng thành công!"
+    }
+  },
+  "order": {
+    "back": "Quay lại",
+    "title": "các nguyên liệu cần nhập",
+    "drawer_title": "Chi Tiết Đơn Thu Nguyên liệu",
+    "update_title": "Cập Nhật Đơn Thu Nguyên liệu",
+    "form": {
+      "name": "Tên Đơn",
+      "name_placeholder": "Tên đơn thu Nguyên liệu...",
+      "fuel_type": "Loại Nguyên liệu cần thu",
+      "fuel_type_placeholder": "Chọn loại Nguyên liệu",
+      "no_data": "Không có dữ liệu",
+      "image": "Hình ảnh",
+      "upload": "Tải ảnh lên",
+      "quantity": "Tổng số lượng cần thu (Kg)",
+      "quantity_placeholder": "Nhập số lượng...",
+      "price": "Giá trên mỗi Kg / Đơn vị (VND)",
+      "price_placeholder": "Nhập giá...",
+      "start_date": "Ngày bắt đầu nhận đơn",
+      "end_date": "Ngày kết thúc nhận đơn",
+      "due_date": "Hạn chót hoàn thành đơn",
+      "date_placeholder": "Chọn ngày",
+      "priority": "Mức độ ưu tiên",
+      "priority_placeholder": "Chọn mức độ ưu tiên",
+      "note": "Ghi chú",
+      "note_placeholder": "Nhập ghi chú...",
+      "total_price": "Tổng giá:"
+    },
+    "priority": {
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp"
+    },
+    "table": {
+      "image": "Mặt hàng",
+      "request_name": "Yêu cầu",
+      "quantity_remain": "Tiến độ còn thu",
+      "total_quantity": "Tổng thu (Kg)",
+      "start_date": "Ngày bắt đầu nhận đơn",
+      "end_date": "Ngày kết thúc đơn",
+      "status": "Trạng thái",
+      "action": "Hành động",
+      "no_image": "Không có ảnh"
+    },
+    "modal": {
+      "delete_title": "Xóa yêu cầu",
+      "delete_confirm": "Bạn có chắc muốn xóa sản phẩm không ?",
+      "update_title": "Xác nhận cập nhật đơn hàng",
+      "update_confirm": "Bạn có chắc chắn muốn cập nhật thông tin đơn hàng không?",
+      "accept_title": "Xác nhận đơn hàng",
+      "accept_confirm": "Bạn có chắc chắn muốn Duyệt đơn hàng không?",
+      "cancel_title": "Xác nhận hủy cập nhật",
+      "cancel_confirm": "Bạn có chắc chắn muốn hủy cập nhật đơn hàng không?"
+    },
+    "actions": {
+      "update": "Cập Nhật",
+      "accept": "Duyệt đơn",
+      "cancel": "Hủy yêu cầu"
+    },
+    "toast": {
+      "no_order_selected": "Không có đơn hàng nào được chọn để hủy!",
+      "cancel_success": "Đã hủy đơn hàng!",
+      "cancel_failed": "Hủy đơn hàng thất bại!"
+    }
   }
 }

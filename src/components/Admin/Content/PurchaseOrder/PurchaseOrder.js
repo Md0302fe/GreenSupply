@@ -15,7 +15,10 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { message, DatePicker } from "antd";
 
+import { useTranslation } from "react-i18next";
+
 const HarvestRequestPage = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom Nguyên liệu)
     fuel_type: "", // Loại Nguyên liệu cần thu (VD: Xăng, Dầu, Khí)
@@ -105,53 +108,53 @@ const HarvestRequestPage = () => {
     const validationRules = [
       {
         condition: !formData.request_name.trim(),
-        message: "Tên đơn hàng không được để trống!",
+        message: t("harvest.validation.empty_name"),
       },
       {
         condition: !formData.fuel_type.trim(),
-        message: "Loại Nguyên liệu không được để trống!",
+        message: t("harvest.validation.empty_fuel_type"),
       },
       {
         condition: !fuelImage || fuelImage.trim() === "",
-        message: "Hình ảnh Nguyên liệu không được để trống!",
+        message: t("harvest.validation.empty_image"),
       },
       {
         condition: !formData.quantity || formData.quantity.trim() === "",
-        message: "Tổng sl Nguyên liệu cần thu không được để trống!",
+        message: t("harvest.validation.empty_quantity"),
       },
       {
         condition: !formData.price || formData.price.trim() === "",
-        message: "Giá Nguyên liệu không được để trống!",
+        message: t("harvest.validation.empty_price"),
       },
       {
         condition: !formData.start_received,
-        message: "Vui lòng chọn ngày bắt đầu nhận đơn!",
+        message: t("harvest.validation.empty_start_date"),
       },
       {
         condition: new Date(formData.start_received) < today,
-        message: "Ngày bắt đầu nhận đơn phải từ hôm nay trở đi!",
+        message: t("harvest.validation.invalid_start_date"),
       }, // Kiểm tra ngày hợp lệ
       {
         condition: !formData.end_received,
-        message: "Vui lòng chọn ngày kết thúc nhận đơn!",
+        message: t("harvest.validation.empty_end_date"),
       },
       {
         condition: !formData.due_date,
-        message: "Vui lòng chọn hạn chót hoàn thành đơn!",
+        message: t("harvest.validation.empty_due_date"),
       },
       {
         condition:
           new Date(formData.start_received) > new Date(formData.end_received),
-        message: "Ngày kết thúc nhận đơn phải sau ngày bắt đầu!",
+        message: t("harvest.validation.invalid_end_date"),
       },
       {
         condition:
           new Date(formData.due_date) < new Date(formData.end_received),
-        message: "Hạn chót hoàn thành đơn phải sau ngày kết thúc nhận đơn!",
+        message: t("harvest.validation.invalid_due_date"),
       },
       {
         condition: !formData.priority.trim(),
-        message: "Vui lòng chọn mức độ ưu tiên!",
+        message: t("harvest.validation.empty_priority"),
       },
     ];
 
@@ -254,7 +257,7 @@ const HarvestRequestPage = () => {
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {
-        message.success("Tạo yêu cầu thu hàng thành công!");
+        message.success(t("	harvest.success.created"));
         setFormData({
           request_name: "", // Tên yêu cầu (Tên của đơn hàng hoặc nhiệm vụ thu gom Nguyên liệu)
           fuel_type: "", // Loại Nguyên liệu cần thu (VD: Xăng, Dầu, Khí)
@@ -303,23 +306,23 @@ const HarvestRequestPage = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("harvest.back")}
           </button>
           <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
-              🛒 Đơn Yêu Cầu Cung Cấp Nguyên Liệu
+              🛒 {t("harvest.title")}
             </h2>
             <div className="space-y-4">
               {/* Tên đơn */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Tên đơn
+                  {t("harvest.form.name")}
                 </label>
                 <input
                   type="text"
                   name="request_name"
                   maxLength="50"
-                  placeholder="Tên đơn yêu cầu cung cấp..."
+                  placeholder={t("harvest.form.name_placeholder")}
                   value={formData.request_name}
                   onChange={handleChange}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
@@ -329,7 +332,7 @@ const HarvestRequestPage = () => {
               {/* Loại Nguyên liệu */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Loại Nguyên liệu cần thu
+                  {t("harvest.form.fuel_type")}
                 </label>
                 <select
                   name="fuel_type"
@@ -338,7 +341,7 @@ const HarvestRequestPage = () => {
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 >
                   <option value="" disabled>
-                    Chọn loại Nguyên liệu
+                    {t("harvest.form.fuel_type_placeholder")}
                   </option>
                   {fuel_types && fuel_types.length > 0 ? (
                     fuel_types.map((fuel) => (
@@ -347,7 +350,7 @@ const HarvestRequestPage = () => {
                       </option>
                     ))
                   ) : (
-                    <option disabled>Không có dữ liệu</option>
+                    <option disabled>{t("harvest.form.no_data")}</option>
                   )}
                 </select>
               </div>
@@ -356,7 +359,7 @@ const HarvestRequestPage = () => {
               <div className="flex justify-between items-center min-h-[20vh]">
                 <div className="flex-[0.25] block text-gray-800 font-semibold mb-2">
                   <MDBCardText className="block text-gray-800 font-semibold mb-2">
-                    Hình ảnh
+                    {t("harvest.form.image")}
                   </MDBCardText>
                 </div>
                 <div className="flex-[0.74]">
@@ -376,7 +379,7 @@ const HarvestRequestPage = () => {
                         style={{ width: "30%", height: "auto" }}
                       />
                     ) : (
-                      <div>Upload Your Image</div>
+                      <div>{t("harvest.form.image_placeholder")}</div>
                     )}
                   </Upload.Dragger>
                 </div>
@@ -385,13 +388,13 @@ const HarvestRequestPage = () => {
               {/* Số lượng cần thu */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Tổng số lượng cần thu (Kg)
+                  {t("harvest.form.quantity")}
                 </label>
                 <input
                   type="number"
                   name="quantity"
                   min="1"
-                  placeholder="Nhập số lượng..."
+                  placeholder={t("harvest.form.quantity_placeholder")}
                   value={formData.quantity}
                   onChange={handleChange}
                   onKeyDown={(e) => {
@@ -406,13 +409,13 @@ const HarvestRequestPage = () => {
               {/* Giá trên mỗi kg */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Giá trên mỗi Kg / Đơn vị (VND)
+                  {t("harvest.form.price")}
                 </label>
                 <input
                   type="number"
                   name="price"
                   min="1"
-                  placeholder="Nhập giá..."
+                  placeholder={t("harvest.form.price_placeholder")}
                   value={formData.price}
                   onChange={handleChange}
                   onKeyDown={(e) => {
@@ -437,7 +440,7 @@ const HarvestRequestPage = () => {
                   showTime={{ format: "HH:mm" }}
                   format="DD/MM/YYYY HH:mm"
                   disabledDate={disabledStartDate}
-                  placeholder="Chọn ngày bắt đầu nhận đơn"
+                  placeholder={t("harvest.form.start_date_placeholder")}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 />
 
@@ -452,7 +455,7 @@ const HarvestRequestPage = () => {
                   format="DD/MM/YYYY HH:mm"
                   disabledDate={disabledEndDate}
                   disabled={!formData.start_received}
-                  placeholder="Chọn ngày kết thúc nhận đơn"
+                  placeholder={t("harvest.form.end_date_placeholder")}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 />
 
@@ -465,7 +468,7 @@ const HarvestRequestPage = () => {
                   format="DD/MM/YYYY HH:mm"
                   disabledDate={disabledDueDate}
                   disabled={!formData.end_received}
-                  placeholder="Chọn hạn chót hoàn thành đơn"
+                  placeholder={t("harvest.form.due_date_placeholder")}
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 />
               </div>
@@ -473,7 +476,7 @@ const HarvestRequestPage = () => {
               {/* Mức độ ưu tiên */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Mức độ ưu tiên
+                  {t("harvest.form.priority")}
                 </label>
                 <select
                   name="priority"
@@ -482,22 +485,24 @@ const HarvestRequestPage = () => {
                   className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                 >
                   <option value="" disabled>
-                    Chọn mức độ ưu tiên
+                    {t("harvest.form.priority_placeholder")}
                   </option>
-                  <option value="Cao">Cao</option>
-                  <option value="Trung bình">Trung bình</option>
-                  <option value="Thấp">Thấp</option>
+                  <option value="Cao">{t("harvest.priority.high")}</option>
+                  <option value="Trung bình">
+                    {t("harvest.priority.medium")}
+                  </option>
+                  <option value="Thấp">{t("harvest.priority.low")}</option>
                 </select>
               </div>
 
               {/* Ghi chú */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  Ghi chú
+                  {t("harvest.form.note")}
                 </label>
                 <textarea
                   name="note"
-                  placeholder="Nhập ghi chú..."
+                  placeholder={t("harvest.form.note_placeholder")}
                   rows="3"
                   value={formData.note}
                   onChange={handleChange}
@@ -507,7 +512,7 @@ const HarvestRequestPage = () => {
 
               {/* Tổng giá */}
               <div className="font-semibold text-lg text-gray-800">
-                Tổng giá :{" "}
+                {t("harvest.form.total_price")} :{" "}
                 <span className="text-red-500 font-bold">
                   {(formData.quantity * formData.price || 0).toLocaleString(
                     "vi-VN"
@@ -523,36 +528,18 @@ const HarvestRequestPage = () => {
                   onClick={() => setNewForm()} // Reset dữ liệu khi nhấn
                   className="bg-yellow-400 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
                 >
-                  Làm mới
+                  {t("harvest.actions.reset")}
                 </button>
                 <button
                   onClick={() => handleSubmit()} // Gọi hàm trực tiếp, không truyền reference
                   className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
                 >
-                  Gửi Yêu Cầu
+                  {t("harvest.actions.submit")}
                 </button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Box "Giới thiệu" (20%) */}
-        {/* <div className="w-full md:w-[15%] border border-gray-200 flex flex-col items-center justify-center text-center rounded-md px-6 bg-white shadow py-4">
-          <div className="info max-w-xs">
-            <h3 className="text-xl md:text-lg font-bold text-black">
-              Tạo Đơn{" "}
-              <span className="text-[#006838]">
-                <br></br>Thu Nguyên liệu
-              </span>{" "}
-              🌿
-            </h3>
-          </div>
-          <img
-            src={Shop}
-            className="w-[140px] md:w-[120px] lg:w-[140px] object-contain mt-3"
-            alt="Shop Illustration"
-          />
-        </div> */}
       </div>
     </div>
   );

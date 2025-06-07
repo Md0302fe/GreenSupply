@@ -5,8 +5,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Table } from "antd";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 const DashboardSupplyRequest = () => {
+  const { t } = useTranslation();
+
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const userRedux = useSelector((state) => state.user);
@@ -32,11 +35,11 @@ const DashboardSupplyRequest = () => {
       if (res.data.status === "SUCCESS") {
         setDashboardData(res.data.data);
       } else {
-        message.error("Không thể tải dữ liệu dashboard!");
+        message.error(t("dashboard.error_fetch_data"));
       }
     } catch (error) {
       console.error("❌ Lỗi khi gọi API:", error);
-      message.error("Lỗi khi tải dashboard!");
+      message.error(t("dashboard.error_fetch_exception"));
     }
     setLoading(false);
   };
@@ -53,11 +56,11 @@ const DashboardSupplyRequest = () => {
       if (res.data.status === "SUCCESS") {
         setAllOrders(res.data.data.data || []);
       } else {
-        message.error("Không thể tải danh sách đơn hàng!");
+        message.error(t("dashboard.error_fetch_orders"));
       }
     } catch (err) {
       console.error("Lỗi khi fetch đơn hàng:", err);
-      message.error("Lỗi khi tải danh sách đơn hàng!");
+      message.error(t("dashboard.error_fetch_orders_exception"));
     }
   };
 
@@ -113,9 +116,7 @@ const DashboardSupplyRequest = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-yellow-500 to-green-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">
-          Dashboard Yêu Cầu Thu Nguyên Liệu
-        </h1>
+        <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
@@ -124,7 +125,10 @@ const DashboardSupplyRequest = () => {
           onClick={handleNavigateAllOrders}
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
-          <Statistic title="Tổng Yêu Cầu" value={dashboardData?.total || 0} />
+          <Statistic
+            title={t("dashboard.total_requests")}
+            value={dashboardData?.total || 0}
+          />
         </Card>
 
         <Card
@@ -132,7 +136,7 @@ const DashboardSupplyRequest = () => {
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
           <Statistic
-            title="Chờ Duyệt"
+            title={t("dashboard.pending")}
             value={dashboardData?.pending || 0}
             valueStyle={{ color: "#faad14" }}
           />
@@ -142,7 +146,7 @@ const DashboardSupplyRequest = () => {
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
           <Statistic
-            title="Hoàn Thành"
+            title={t("dashboard.completed")}
             value={dashboardData?.completed || 0}
             valueStyle={{ color: "#1890ff" }}
           />
@@ -151,9 +155,11 @@ const DashboardSupplyRequest = () => {
 
       {/* 🔹 Đơn Đang Xử Lý */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Đơn Hàng Đang Xử Lý</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t("dashboard.processing_orders")}
+        </h2>
         {dashboardData?.processingList?.length === 0 && (
-          <p className="text-gray-500">Không có đơn đang xử lý</p>
+          <p className="text-gray-500">{t("dashboard.no_processing_orders")}</p>
         )}
 
         <div className="space-y-4">
@@ -177,17 +183,17 @@ const DashboardSupplyRequest = () => {
                   {item.name} -{" "}
                   {item.priority === 1 && (
                     <span className="text-red-600 bg-red-100 px-2 py-0.5 rounded-full text-xs">
-                      Ưu tiên cao
+                      {t("dashboard.priority_high")}
                     </span>
                   )}
                   {item.priority === 2 && (
                     <span className="text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded-full text-xs">
-                      Trung bình
+                      {t("dashboard.priority_medium")}
                     </span>
                   )}
                   {item.priority === 3 && (
                     <span className="text-green-600 bg-green-100 px-2 py-0.5 rounded-full text-xs">
-                      Thấp
+                      {t("dashboard.priority_low")}
                     </span>
                   )}
                 </div>
@@ -218,7 +224,7 @@ const DashboardSupplyRequest = () => {
             }`}
             onClick={() => setFilterType("day")}
           >
-            Theo Ngày
+            {t("dashboard.filter_day")}
           </button>
           <button
             className={`px-4 py-2 ${
@@ -228,7 +234,7 @@ const DashboardSupplyRequest = () => {
             }`}
             onClick={() => setFilterType("week")}
           >
-            Theo Tuần
+            {t("dashboard.filter_week")}
           </button>
           <button
             className={`px-4 py-2 rounded-r ${
@@ -238,23 +244,37 @@ const DashboardSupplyRequest = () => {
             }`}
             onClick={() => setFilterType("month")}
           >
-            Theo Tháng
+            {t("dashboard.filter_month")}
           </button>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4">Đơn hàng gần đây</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t("dashboard.recent_orders")}
+        </h2>
         <Table
           columns={[
-            { title: "Mã Đơn", dataIndex: "_id", key: "_id" },
             {
-              title: "Tên đơn",
+              title: t("dashboard.table.order_id"),
+              dataIndex: "_id",
+              key: "_id",
+            },
+            {
+              title: t("dashboard.table.request_name"),
               dataIndex: "request_name",
               key: "request_name",
             },
-            { title: "Trạng thái", dataIndex: "status", key: "status" },
-            { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
             {
-              title: "Ngày tạo",
+              title: t("dashboard.table.status"),
+              dataIndex: "status",
+              key: "status",
+            },
+            {
+              title: t("dashboard.table.quantity"),
+              dataIndex: "quantity",
+              key: "quantity",
+            },
+            {
+              title: t("dashboard.table.created_at"),
               dataIndex: "createdAt",
               key: "createdAt",
               render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
