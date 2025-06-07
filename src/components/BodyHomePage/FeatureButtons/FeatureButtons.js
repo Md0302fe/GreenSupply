@@ -45,8 +45,8 @@ const FeatureButtons = () => {
     bg-yellow-400 text-black font-bold 
     w-[260px] h-[110px] 
     w-[80px] h-[60px] 
-    md:w-[150px] md:h-[70px]
-    lg:w-[340px] lg:h-[140px] 
+    md:w-[140px] md:h-[70px]
+    lg:w-[320px] lg:h-[140px] 
     rounded-3xl hover:bg-yellow-500 hover:scale-105 
     transition duration-300
   "
