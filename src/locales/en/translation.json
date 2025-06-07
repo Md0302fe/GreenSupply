@@ -90,7 +90,8 @@
     "cancel": "Cancel",
     "close": "Close",
     "update": "Update",
-    "updating": "Updatting"
+    "updating": "Updatting",
+    "confirm": "Confirm"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -496,5 +497,54 @@
       "title": "Product Order List",
       "description": "Manage the list of product orders"
     }
+  },
+  "user_list": {
+    "title": "User List",
+    "back": "Go back",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "role": "Role",
+    "action": "Actions",
+    "detail": "Details",
+    "update_title": "Account Details",
+    "update": "Update",
+    "created_at": "Created At",
+    "updated_at": "Last Updated",
+    "upload_image": "Upload Image",
+    "review_avatar": "Avatar Preview",
+    "confirm_delete_title": "Delete Account",
+    "confirm_delete_text": "Are you sure you want to delete this account?",
+    "select_role": "Please select a role!",
+    "required_name": "Please enter a name!",
+    "required_email": "Please enter an email!",
+    "required_phone": "Please enter a phone number!"
+  },
+  "blocked_user": {
+    "back": "Go back",
+    "title": "User Account Management",
+    "drawer_title": "Account Details",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "role": "Role",
+    "image": "Image",
+    "upload_image": "Upload Image",
+    "review_avatar": "Avatar Preview",
+    "status": "Status",
+    "action": "Actions",
+    "blocked": "Blocked",
+    "active": "Active",
+    "block": "Block Account",
+    "unblock": "Unblock",
+    "update": "Update",
+    "confirm_block_title": "Confirm Account Block",
+    "confirm_block_text": "Are you sure you want to block this account?",
+    "confirm_unblock_title": "Confirm Account Unblock",
+    "confirm_unblock_text": "Are you sure you want to unblock this account?",
+    "required_name": "Please enter a name!",
+    "required_email": "Please enter an email!",
+    "required_phone": "Please enter a phone number!",
+    "required_role": "Please select a role!"
   }
 }

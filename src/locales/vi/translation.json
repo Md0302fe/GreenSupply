@@ -87,7 +87,8 @@
     "cancel": "Hủy",
     "close": "Đóng",
     "update": "Cập nhật",
-    "updating": "Đang cập nhật"
+    "updating": "Đang cập nhật",
+    "confirm": "Xác nhận"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -493,5 +494,54 @@
       "title": "D.sách đơn đặt hàng sản phẩm",
       "description": "Quản lý danh sách đơn đặt hàng sản phẩm"
     }
+  },
+  "user_list": {
+    "title": "Danh sách người dùng",
+    "back": "Quay lại",
+    "name": "Tên khách hàng",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "role": "Vai trò",
+    "action": "Chức năng",
+    "detail": "Chi tiết",
+    "update_title": "Chi Tiết Tài Khoản",
+    "update": "Cập nhật",
+    "created_at": "Ngày tạo",
+    "updated_at": "Cập nhật gần nhất",
+    "upload_image": "Tải ảnh lên",
+    "review_avatar": "Xem trước ảnh",
+    "confirm_delete_title": "Xóa Tài Khoản",
+    "confirm_delete_text": "Bạn có chắc muốn xóa tài khoản không?",
+    "select_role": "Vui lòng chọn vai trò!",
+    "required_name": "Vui lòng điền tên!",
+    "required_email": "Vui lòng điền email!",
+    "required_phone": "Vui lòng điền số điện thoại!"
+  },
+  "blocked_user": {
+    "back": "Quay lại",
+    "title": "Quản lý tài khoản",
+    "drawer_title": "Chi Tiết Tài Khoản",
+    "name": "Tên khách hàng",
+    "email": "Email khách hàng",
+    "phone": "Số điện thoại",
+    "role": "Vai trò",
+    "image": "Hình ảnh",
+    "upload_image": "Tải ảnh lên",
+    "review_avatar": "Xem trước ảnh",
+    "status": "Trạng thái",
+    "action": "Chức năng",
+    "blocked": "Bị chặn",
+    "active": "Hoạt động",
+    "block": "Chặn Tài Khoản",
+    "unblock": "Bỏ Chặn",
+    "update": "Cập nhật",
+    "confirm_block_title": "Xác nhận chặn tài khoản",
+    "confirm_block_text": "Bạn có chắc chắn muốn chặn tài khoản này không?",
+    "confirm_unblock_title": "Xác nhận gỡ chặn tài khoản",
+    "confirm_unblock_text": "Bạn có chắc chắn muốn gỡ chặn tài khoản này không?",
+    "required_name": "Vui lòng điền tên!",
+    "required_email": "Vui lòng điền email!",
+    "required_phone": "Vui lòng điền số điện thoại!",
+    "required_role": "Vui lòng chọn vai trò!"
   }
 }
