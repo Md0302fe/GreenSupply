@@ -207,7 +207,9 @@
     "processing": "Processing",
     "rejected": "Rejected",
     "failed": "Failed",
-    "disable": "Disable"
+    "disable": "Disable",
+    "imported": "Import completed",
+    "importFailed": "Storage Failed"
   },
   "navbar": {
     "search_placeholder": "What are you looking for?",
@@ -787,5 +789,75 @@
     "totalPrice": "Total Price",
     "approveOrder": "Approve",
     "cancelOrder": "Cancel"
+  },
+  "dashboardWarehouse": {
+    "title": "Warehouse Management",
+    "totalReceipts": "Total receipts",
+    "pendingReceipts": "Pending receipts",
+    "approvedReceipts": "Approved receipts",
+    "storageInfo": "Storage Information",
+    "used": "used",
+    "statsChartTitle": "Receipt Statistics",
+    "filter": {
+      "day": "By Day",
+      "week": "By Week",
+      "month": "By Month"
+    },
+    "recentReceipts": "Recent receipts",
+    "columns": {
+      "id": "Receipt ID",
+      "manager": "Manager",
+      "status": "Status",
+      "quantity": "Quantity",
+      "createdAt": "Created At"
+    },
+    "noData": "No data available",
+    "notLoggedIn": "You are not logged in!",
+    "noStorageInfo": "Storage info not found!",
+    "noReceipts": "No receipt data found!",
+    "serverError": "Failed to connect to the server!"
+  },
+  "fuelOrderStatus": {
+    "fetchError": "Failed to fetch order list!",
+    "serverError": "Unable to connect to the server!",
+    "modalTitle": "Confirm Create Storage Receipt",
+    "modalContent": "Are you sure you want to create a storage receipt for this order?",
+    "create": "Create",
+    "cancel": "Cancel",
+    "notLoggedIn": "You are not logged in!",
+    "invalidOrder": "Invalid order data!",
+    "createSuccess": "Storage receipt created successfully!",
+    "createFailPrefix": "Failed:",
+    "createFail": "Error while creating storage receipt!",
+    "search": "Search",
+    "reset": "Reset",
+    "close": "Close",
+    "columns": {
+      "customer": "Customer",
+      "fuelType": "Fuel Type",
+      "totalPrice": "Total Price",
+      "status": "Status",
+      "action": "Action"
+    },
+    "createReceiptBtn": "Create Storage Receipt",
+    "noData": "No data available",
+    "supply": "Supply",
+    "request": "Request",
+    "back": "Go Back",
+    "title": "Manage Orders Waiting for Storage",
+    "filterLabel": "Filter by order type",
+    "allOrders": "All Orders",
+    "requestOrders": "Request Orders",
+    "supplyOrders": "Supply Orders",
+    "receiptList": "Storage Receipt List",
+    "orderList": "Order List",
+    "orderDetail": "Order Details",
+    "note": "Note",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "loading": "Loading data...",
+    "quantity": "Quantity",
+    "price": "Price",
+    "receiptType": "Receipt Type"
   }
 }

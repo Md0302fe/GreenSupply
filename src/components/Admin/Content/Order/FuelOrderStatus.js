@@ -43,6 +43,18 @@ const FuelOrderStatus = () => {
   const queryParams = new URLSearchParams(location.search);
   const defaultStatus = queryParams.get("status") || "";
   const [statusFilterVal, setStatusFilterVal] = useState(defaultStatus);
+  const statusMap = {
+    "Chờ Nhập Kho": "pending",
+    "Đang xử lý": "processing",
+    "Nhập kho thành công": "imported",
+    "Nhập kho thất bại": "importFailed",
+  };
+  const colorMap = {
+    pending: "gold",
+    processing: "blue",
+    imported: "green",
+    importFailed: "red",
+  };
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -68,10 +80,10 @@ const FuelOrderStatus = () => {
         }
         setOrders(sortedOrders);
       } else {
-        message.error("Lỗi khi lấy danh sách đơn hàng!");
+        message.error(t("fuelOrderStatus.fetchError"));
       }
     } catch (error) {
-      message.error("Không thể kết nối đến server!");
+      message.error(t("fuelOrderStatus.serverError"));
     }
     setLoading(false);
   };
@@ -82,10 +94,10 @@ const FuelOrderStatus = () => {
 
   const confirmCreateFuelStorageReceipt = (order) => {
     Modal.confirm({
-      title: "Xác nhận tạo đơn nhập kho",
-      content: `Bạn có chắc chắn muốn tạo đơn nhập kho cho đơn hàng này không?`,
-      okText: "Tạo đơn",
-      cancelText: "Hủy",
+      title: t("fuelOrderStatus.modalTitle"),
+      content: t("fuelOrderStatus.modalContent"),
+      okText: t("fuelOrderStatus.create"),
+      cancelText: t("fuelOrderStatus.cancel"),
       onOk: () => createFuelStorageReceipt(order),
     });
   };
@@ -94,12 +106,12 @@ const FuelOrderStatus = () => {
     try {
       const token = localStorage.getItem("access_token");
       if (!token) {
-        message.error("Bạn chưa đăng nhập!");
+        message.error(t("fuelOrderStatus.notLoggedIn"));
         return;
       }
 
       if (!orderToCreate?._id || !orderToCreate.receipt_type) {
-        message.error("Dữ liệu đơn hàng không hợp lệ!");
+        message.error(t("fuelOrderStatus.invalidOrder"));
         return;
       }
 
@@ -120,16 +132,18 @@ const FuelOrderStatus = () => {
       );
 
       if (response.data.success) {
-        message.success("Tạo đơn nhập kho thành công!");
+        message.success(t("fuelOrderStatus.createSuccess"));
         // setOrders((prevOrders) =>
         //   prevOrders.filter((order) => order._id !== orderToCreate._id)
         // );
         fetchOrders();
       } else {
-        message.error(`Thất bại: ${response.data.message}`);
+        message.error(
+          `${t("fuelOrderStatus.createFailPrefix")} ${response.data.message}`
+        );
       }
     } catch (error) {
-      message.error("Lỗi khi tạo đơn nhập kho!");
+      message.error(t("fuelOrderStatus.createFail"));
     }
   };
   const getColumnSearchProps = (dataIndex) => ({
@@ -207,46 +221,6 @@ const FuelOrderStatus = () => {
     setSearchText("");
   };
 
-  // const createFuelStorageReceipt = async (order) => {
-  //   try {
-  //     const token = localStorage.getItem("access_token");
-  //     if (!token) {
-  //       message.error("Bạn chưa đăng nhập!");
-  //       return;
-  //     }
-
-  //     if (!order?._id || !order.receipt_type) {
-  //       message.error("Dữ liệu đơn hàng không hợp lệ!");
-  //       return;
-  //     }
-
-  //     const payload =
-  //       order.receipt_type === "supply"
-  //         ? { receipt_supply_id: order._id }
-  //         : { receipt_request_id: order._id };
-
-  //     const response = await axios.post(
-  //       `${process.env.REACT_APP_API_URL}/fuel-storage/create`,
-  //       payload,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${userRedux.access_token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.data.success) {
-  //       message.success("Tạo đơn nhập kho thành công!");
-  //       fetchOrders();
-  //     } else {
-  //       message.error(`Thất bại: ${response.data.message}`);
-  //     }
-  //   } catch (error) {
-  //     message.error("Lỗi khi tạo đơn nhập kho!");
-  //   }
-  // };
-
   const tableData = orders?.map((order) => ({
     ...order,
     key: order._id,
@@ -255,7 +229,7 @@ const FuelOrderStatus = () => {
 
   const columns = [
     {
-      title: "Khách Hàng",
+      title: t("fuelOrderStatus.columns.customer"),
       dataIndex: "customerName",
       key: "customerName",
       ...getColumnSearchProps("customerName"),
@@ -263,25 +237,12 @@ const FuelOrderStatus = () => {
       align: "center",
     },
     {
-      title: "Loại Nguyên liệu",
+      title: t("fuelOrderStatus.columns.fuelType"),
       dataIndex: "fuel_name",
       key: "fuel_name",
     },
-    // {
-    //   title: "Giá Tiền",
-    //   dataIndex: "price",
-    //   key: "price",
-    //   sorter: (a, b) => a.price - b.price,
-    //   align: "center",
-    // },
-    // {
-    //   title: "Số Lượng",
-    //   dataIndex: "quantity",
-    //   key: "quantity",
-    //   align: "center",
-    // },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Tổng Giá</div>,
+      title: t("fuelOrderStatus.columns.totalPrice"),
       dataIndex: "total_price",
       key: "total_price",
       align: "center",
@@ -292,50 +253,28 @@ const FuelOrderStatus = () => {
       ),
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
-      ),
+      title: t("fuelOrderStatus.columns.status"),
       dataIndex: "status",
       key: "status",
       align: "center",
       filters: [
-        { text: "Chờ Nhập Kho", value: "Chờ Nhập Kho" },
-        { text: "Đang xử lý", value: "Đang xử lý" },
+        { text: t("status.pending"), value: "Chờ Nhập Kho" },
+        { text: t("status.processing"), value: "Đang xử lý" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (status) => {
-        const colors = {
-          "Chờ Nhập Kho": "gold",
-          "Đang xử lý": "blue",
-          "Nhập kho thành công": "green",
-          "Nhập kho thất bại": "red",
-        };
+        const key = statusMap[status];
         return (
           <div style={{ textAlign: "center", width: "100%" }}>
-            <Tag color={colors[status] || "default"}>{status}</Tag>
+            <Tag color={colorMap[key] || "default"}>
+              {t(`status.${key}`) || status}
+            </Tag>
           </div>
         );
       },
     },
-    // {
-    //   title: (
-    //     <div style={{ textAlign: "center", width: "100%" }}>Loại Đơn Hàng</div>
-    //   ),
-    //   dataIndex: "receipt_type",
-    //   key: "receipt_type",
-    //   align: "center",
-    //   render: (text) => (
-    //     <div style={{ textAlign: "center", width: "100%" }}>
-    //       <Tag color={text === "supply" ? "blue" : "green"}>
-    //         {text === "supply" ? "Cung cấp" : "Thu hàng"}
-    //       </Tag>
-    //     </div>
-    //   ),
-    // },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Chức năng</div>
-      ),
+      title: t("fuelOrderStatus.columns.action"),
       key: "action",
       align: "center",
       render: (_, record) => (
@@ -349,13 +288,12 @@ const FuelOrderStatus = () => {
           >
             <HiOutlineDocumentSearch style={{ fontSize: "24px" }} />
           </Button>
-
           <Button
             type="default"
             onClick={() => confirmCreateFuelStorageReceipt(record)}
             disabled={record.status === "Đang xử lý"}
           >
-            Tạo Đơn Nhập Kho
+            {t("fuelOrderStatus.createReceiptBtn")}
           </Button>
         </div>
       ),
@@ -374,7 +312,7 @@ const FuelOrderStatus = () => {
 
   const handleExportFileExcel = () => {
     if (!orders.length) {
-      message.warning("Không có dữ liệu để xuất!");
+      message.warning(t("fuelOrderStatus.serverError"));
       return;
     }
 
@@ -426,12 +364,12 @@ const FuelOrderStatus = () => {
                   d="M15 12H3m0 0l6-6m-6 6l6 6"
                 />
               </svg>
-              Quay lại
+              {t("fuelOrderStatus.back")}
             </Button>
           </Col>
           <Col>
             <h2 className="text-4xl font-bold flex-grow text-center mt-1 mb-4">
-              Quản lý Đơn Hàng Chờ Nhập Kho
+              {t("fuelOrderStatus.title")}
             </h2>
           </Col>
           <Col>
@@ -440,42 +378,11 @@ const FuelOrderStatus = () => {
               type="primary"
               onClick={handleExportFileExcel}
             >
-              {t('export_excel')}
+              {t("export_excel")}
             </Button>
           </Col>
         </Row>
       </div>
-
-      {/* <div
-        style={{
-          marginBottom: 24,
-          background: "#fafafa",
-          padding: 16,
-          borderRadius: 8,
-        }}
-      >
-        <h3 style={{ marginBottom: 12 }}>Lọc theo loại đơn</h3>
-        <Space>
-          <Button
-            type={filterType === "all" ? "primary" : "default"}
-            onClick={() => setFilterType("all")}
-          >
-            Tất cả đơn
-          </Button>
-          <Button
-            type={filterType === "fuelRequests" ? "primary" : "default"}
-            onClick={() => setFilterType("fuelRequests")}
-          >
-            Đơn thu hàng
-          </Button>
-          <Button
-            type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
-            onClick={() => setFilterType("fuelSupplyOrders")}
-          >
-            Đơn cung cấp
-          </Button>
-        </Space>
-      </div> */}
       <div
         style={{
           marginBottom: 24,
@@ -486,25 +393,27 @@ const FuelOrderStatus = () => {
       >
         <Row justify="space-between" align="middle">
           <Col>
-            <h3 style={{ marginBottom: 12 }}>Lọc theo loại đơn</h3>
+            <h3 style={{ marginBottom: 12 }}>
+              {t("fuelOrderStatus.filterLabel")}
+            </h3>
             <Space>
               <Button
                 type={filterType === "all" ? "primary" : "default"}
                 onClick={() => setFilterType("all")}
               >
-                Tất cả đơn
+                {t("fuelOrderStatus.allOrders")}
               </Button>
               <Button
                 type={filterType === "fuelRequests" ? "primary" : "default"}
                 onClick={() => setFilterType("fuelRequests")}
               >
-                Đơn thu hàng
+                {t("fuelOrderStatus.requestOrders")}
               </Button>
               <Button
                 type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
                 onClick={() => setFilterType("fuelSupplyOrders")}
               >
-                Đơn cung cấp
+                {t("fuelOrderStatus.supplyOrders")}
               </Button>
             </Space>
           </Col>
@@ -517,14 +426,14 @@ const FuelOrderStatus = () => {
                 navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
               }
             >
-              Danh sách Đơn Nhập Kho
+              {t("fuelOrderStatus.receiptList")}
             </Button>
           </Col>
         </Row>
       </div>
 
       <div style={{ background: "#fff", padding: 16, borderRadius: 8 }}>
-        <h3 style={{ marginBottom: 12 }}>Danh sách đơn hàng</h3>
+        <h3 style={{ marginBottom: 12 }}>{t("fuelOrderStatus.orderList")}</h3>
         <Table
           columns={columns}
           dataSource={tableData}
@@ -537,7 +446,7 @@ const FuelOrderStatus = () => {
 
       {/* Drawer Chi tiết */}
       <Drawer
-        title="Chi tiết Đơn Hàng"
+        title={t("fuelOrderStatus.orderDetail")}
         open={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
@@ -548,41 +457,54 @@ const FuelOrderStatus = () => {
       >
         {selectedOrder ? (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Khách Hàng">
-              {selectedOrder.supplier_id?.full_name || "Không có"}
+            <Descriptions.Item label={t("fuelOrderStatus.columns.customer")}>
+              {selectedOrder.supplier_id?.full_name ||
+                t("fuelOrderStatus.noData")}
             </Descriptions.Item>
-            <Descriptions.Item label="Loại Nguyên liệu">
+
+            <Descriptions.Item label={t("fuelOrderStatus.columns.fuelType")}>
               {selectedOrder.fuel_name}
             </Descriptions.Item>
-            <Descriptions.Item label="Số Lượng">
+
+            <Descriptions.Item label={t("fuelOrderStatus.quantity")}>
               {selectedOrder.quantity}
             </Descriptions.Item>
-            <Descriptions.Item label="Giá Tiền">
+
+            <Descriptions.Item label={t("fuelOrderStatus.price")}>
               {selectedOrder.price}
             </Descriptions.Item>
-            <Descriptions.Item label="Tổng Giá">
+
+            <Descriptions.Item label={t("fuelOrderStatus.columns.totalPrice")}>
               {selectedOrder.total_price}
             </Descriptions.Item>
-            <Descriptions.Item label="Loại Đơn Hàng">
+
+            <Descriptions.Item label={t("fuelOrderStatus.receiptType")}>
               {selectedOrder.receipt_type === "supply"
-                ? "Cung cấp"
-                : "Thu hàng"}
+                ? t("fuelOrderStatus.supply")
+                : t("fuelOrderStatus.request")}
             </Descriptions.Item>
-            <Descriptions.Item label="Trạng Thái">
-              {selectedOrder.status}
+
+            <Descriptions.Item label={t("fuelOrderStatus.columns.status")}>
+              {t(`status.${statusMap[selectedOrder.status]}`) ||
+                selectedOrder.status}
             </Descriptions.Item>
-            <Descriptions.Item label="Ngày Tạo">
+
+            <Descriptions.Item label={t("fuelOrderStatus.createdAt")}>
               {converDateString(selectedOrder.createdAt)}
             </Descriptions.Item>
-            <Descriptions.Item label="Cập Nhật">
+
+            <Descriptions.Item label={t("fuelOrderStatus.updatedAt")}>
               {converDateString(selectedOrder.updatedAt)}
             </Descriptions.Item>
-            <Descriptions.Item label="Ghi Chú">
-              {selectedOrder.note || "Không có"}
+
+            <Descriptions.Item label={t("fuelOrderStatus.note")}>
+              {selectedOrder.note || t("fuelOrderStatus.noData")}
             </Descriptions.Item>
           </Descriptions>
         ) : (
-          <p className="text-center text-gray-500">Đang tải dữ liệu...</p>
+          <p className="text-center text-gray-500">
+            {t("fuelOrderStatus.loading")}
+          </p>
         )}
       </Drawer>
     </div>

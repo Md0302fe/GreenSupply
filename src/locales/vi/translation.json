@@ -204,7 +204,9 @@
     "processing": "Đang xử lý",
     "rejected": "Từ chối",
     "failed": "Thất bại",
-    "disable": "Vô hiệu hóa"
+    "disable": "Vô hiệu hóa",
+    "imported": "Nhập kho thành công",
+    "importFailed": "Nhập kho thất bại"
   },
   "navbar": {
     "search_placeholder": "Bạn đang tìm kiếm gì?",
@@ -783,5 +785,75 @@
     "totalPrice": "Tổng Giá",
     "approveOrder": "Duyệt đơn",
     "cancelOrder": "Hủy đơn"
+  },
+  "dashboardWarehouse": {
+    "title": "Quản Lý Kho",
+    "totalReceipts": "Tổng đơn nhập kho",
+    "pendingReceipts": "Đơn Chờ Duyệt",
+    "approvedReceipts": "Đơn Đã Duyệt",
+    "storageInfo": "Thông tin kho",
+    "used": "đã sử dụng",
+    "statsChartTitle": "Thống kê đơn nhập kho",
+    "filter": {
+      "day": "Theo Ngày",
+      "week": "Theo Tuần",
+      "month": "Theo Tháng"
+    },
+    "recentReceipts": "Đơn nhập kho",
+    "columns": {
+      "id": "Mã đơn",
+      "manager": "Người quản lý",
+      "status": "Trạng thái",
+      "quantity": "Số lượng",
+      "createdAt": "Ngày nhập"
+    },
+    "noData": "Không có dữ liệu",
+    "notLoggedIn": "Bạn chưa đăng nhập!",
+    "noStorageInfo": "Không tìm thấy thông tin kho!",
+    "noReceipts": "Không có dữ liệu đơn nhập kho!",
+    "serverError": "Không thể kết nối đến server!"
+  },
+  "fuelOrderStatus": {
+    "fetchError": "Lỗi khi lấy danh sách đơn hàng!",
+    "serverError": "Không thể kết nối đến server!",
+    "modalTitle": "Xác nhận tạo đơn nhập kho",
+    "modalContent": "Bạn có chắc chắn muốn tạo đơn nhập kho cho đơn hàng này không?",
+    "create": "Tạo đơn",
+    "cancel": "Hủy",
+    "notLoggedIn": "Bạn chưa đăng nhập!",
+    "invalidOrder": "Dữ liệu đơn hàng không hợp lệ!",
+    "createSuccess": "Tạo đơn nhập kho thành công!",
+    "createFailPrefix": "Thất bại:",
+    "createFail": "Lỗi khi tạo đơn nhập kho!",
+    "search": "Tìm",
+    "reset": "Reset",
+    "close": "Đóng",
+    "columns": {
+      "customer": "Khách Hàng",
+      "fuelType": "Loại Nguyên liệu",
+      "totalPrice": "Tổng Giá",
+      "status": "Trạng Thái",
+      "action": "Chức năng"
+    },
+    "createReceiptBtn": "Tạo Đơn Nhập Kho",
+    "noData": "Không có dữ liệu",
+    "supply": "Cung cấp",
+    "request": "Thu hàng",
+    "back": "Quay lại",
+    "title": "Quản lý Đơn Hàng Chờ Nhập Kho",
+    "filterLabel": "Lọc theo loại đơn",
+    "allOrders": "Tất cả đơn",
+    "requestOrders": "Đơn thu hàng",
+    "supplyOrders": "Đơn cung cấp",
+    "receiptList": "Danh sách Đơn Nhập Kho",
+    "orderList": "Danh sách đơn hàng",
+    "orderDetail": "Chi tiết Đơn Hàng",
+    "note": "Ghi Chú",
+    "createdAt": "Ngày Tạo",
+    "updatedAt": "Cập Nhật",
+    "loading": "Đang tải dữ liệu...",
+    "quantity": "Số Lượng",
+    "price": "Giá Tiền",
+    "receiptType": "Loại Đơn Hàng"
   }
 }
