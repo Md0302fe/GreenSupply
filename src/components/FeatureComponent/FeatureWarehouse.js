@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaHockeyPuck } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 import mng_warehouse_dashboard from "../../assets/Feature_warehouse/mng_warehouse_dashboard.jpg";
 import mng_receipt_list from "../../assets/Feature_warehouse/mng_receipt_list.jpg";
@@ -11,13 +12,15 @@ import mng_storage_export_history from "../../assets/Feature_warehouse/mng_stora
 import mng_receipt_orders from "../../assets/Feature_order_suppliers/mng_receipt_orders.jpg";
 
 const UserComponent = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title */}
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaHockeyPuck className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản Lý Kho
+          {t("warehouse.title")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -26,47 +29,46 @@ const UserComponent = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
         <Card
           link="/system/admin/manage-warehouse"
-          title="Dashboard"
-          description="Quản lý thông tin tổng quát kho"
+          title={t("warehouse.dashboard.title")}
+          description={t("warehouse.dashboard.description")}
           image={mng_warehouse_dashboard}
         />
-         <Card
+        <Card
           link="/system/admin/View-Order-Success"
-          title="Tạo yêu cầu nhập kho"
-          description="Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+          title={t("warehouse.createReceipt.title")}
+          description={t("warehouse.createReceipt.description")}
           image={mng_receipt_orders}
-         />
+        />
         <Card
           link="/system/admin/warehouse-receipt"
-          title="D.sách đơn nhập kho"
-          description="Quản lý danh sách các yêu cầu (chờ) nhập kho"
+          title={t("warehouse.receiptList.title")}
+          description={t("warehouse.receiptList.description")}
           image={mng_receipt_list}
         />
         <Card
           link="/system/admin/raw-material-batch-list"
-          title="Lô nguyên liệu thô"
-          description="Quản lý thông tin các lô nguyên liệu thô , cần cho khâu sản xuất"
+          title={t("warehouse.rawMaterialBatch.title")}
+          description={t("warehouse.rawMaterialBatch.description")}
           image={mng_raw_materials}
         />
         <Card
           link="/system/admin/material-storage-export"
-          title="Tạo đơn xuất kho"
-          description="Quản lý danh sách các đơn (chờ) xuất kho"
+          title={t("warehouse.createExport.title")}
+          description={t("warehouse.createExport.description")}
           image={mng_created_storage_export}
         />
         <Card
           link="/system/admin/material-storage-export-list"
-          title="Danh sách đơn xuất kho"
-          description="Quản lý danh sách đơn xuất kho"
+          title={t("warehouse.exportList.title")}
+          description={t("warehouse.exportList.description")}
           image={mng_mng_storare_export}
         />
         <Card
           link="/system/admin/batch-history"
-          title="Lịch sử đơn xuất kho"
-          description="Quản lý lịch sử đơn xuất kho"
+          title={t("warehouse.exportHistory.title")}
+          description={t("warehouse.exportHistory.description")}
           image={mng_storage_export_history}
         />
-  
       </div>
     </div>
   );

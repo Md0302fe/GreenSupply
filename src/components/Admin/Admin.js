@@ -9,6 +9,7 @@ import { FaHockeyPuck, FaShoppingCart } from "react-icons/fa";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { MdDashboardCustomize } from "react-icons/md";
 
+import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 import Sidebar from "./Sidebar";
 
 import "./Admin.scss";
@@ -17,7 +18,6 @@ import "react-pro-sidebar/dist/css/styles.css";
 const Admin = (props) => {
   const [collapsed, setCollapsed] = useState(true);
   const navigate = useNavigate();
-
   const [toggleIcons, setToggleIcons] = useState("dashboard");
 
   const navigationsData = [
@@ -71,6 +71,7 @@ const Admin = (props) => {
     },
     {
       icon: <CgBell className="text-2xl" />,
+      label: "notifications",
       text: "Thông báo",
     },
   ];
@@ -103,15 +104,15 @@ const Admin = (props) => {
 
   return (
     <div className="admin-container min-h-screen overflow-y-auto">
-      {/* Admin-Sidebar - [AS] */}
+      {/* Admin-Sidebar */}
       <div className="admin-sidebar min-h-screen">
         <Sidebar collapsed={collapsed} />
       </div>
 
       <div className="admin-content w-full overflow-x-hidden">
-        {/* New Nav */}
+        {/* Top Navigation Bar */}
         <div className="flex items-center bg-gray-400 px-6 py-2 rounded-b-[50px] space-x-4 relative">
-          {/* Nút Toggle Sidebar (trái) */}
+          {/* Toggle Sidebar */}
           <div className="flex-shrink-0 z-10">
             <div className="flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-gray-200 hover:text-black p-2 transition-all duration-200 group rounded-[50%]">
               <button
@@ -127,15 +128,16 @@ const Admin = (props) => {
             </div>
           </div>
 
-          {/* Thanh điều hướng (cuộn ngang) */}
+          {/* Navigation Icons */}
           <div className="flex-1 overflow-x-auto px-4 scrollbar-hide">
             <div className="flex items-center gap-[30px] min-w-max justify-center">
               {renderNavigations()}
             </div>
           </div>
 
-          {/* Nút Home (phải) */}
-          <div className="flex-shrink-0 z-10">
+          {/* Language Switcher + Home */}
+          <div className="flex items-center gap-2 w-[120px] flex-shrink-0 z-10">
+            <LanguageSwitcher />
             <div
               className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-all duration-200"
               onClick={() => navigate("/home")}
@@ -145,7 +147,7 @@ const Admin = (props) => {
           </div>
         </div>
 
-        {/* admin-main-content */}
+        {/* Main Content */}
         <div className="admin-main px-3 py-2 mt-2">
           <Outlet />
         </div>

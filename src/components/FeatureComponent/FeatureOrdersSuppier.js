@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 import mng_request_orders from "../../assets/Feature_order_suppliers/mng_request_orders.jpg";
 import mng_supply_orders from "../../assets/Feature_order_suppliers/mng_supply_orders.jpg";
@@ -8,44 +9,46 @@ import mng_receipt_orders from "../../assets/Feature_order_suppliers/mng_receipt
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 
 const UserComponent = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaShoppingCart className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản Lý Yêu Cầu Supplier
+          {t("supplierRequest.title")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
 
       {/* Feature Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
-           {/* Dashboard */}
-           <Card
+        {/* Dashboard */}
+        <Card
           link="/system/admin/manage-Supplier-orders"
-          title="Dashboard"
-          description="Thông tin toàn yêu cầu supplier"
+          title={t("supplierRequest.dashboard.title")}
+          description={t("supplierRequest.dashboard.description")}
           image={mng_dashboard_Purchasedorders}
         />
         <Card
           link="/system/admin/manage-fuel-orders"
-          title="D.sách yêu cầu thu nguyên liệu"
-          description="Quản lý danh sách các yêu cầu thu nguyên liệu"
+          title={t("supplierRequest.collectList.title")}
+          description={t("supplierRequest.collectList.description")}
           image={mng_request_orders}
         />
 
         <Card
           link="/system/admin/manage-provide-orders"
-          title="D.sách yêu cầu cung cấp nguyên liệu"
-          description="Quản lý danh sách các yêu cầu cung cấp nguyên liệu"
+          title={t("supplierRequest.provideList.title")}
+          description={t("supplierRequest.provideList.description")}
           image={mng_supply_orders}
         />
-{/* 
+        {/* 
         <Card
           link="/system/admin/View-Order-Success"
-          title="Tạo yêu cầu nhập kho"
-          description="Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+          title={t("supplierRequest.receipt.title")}
+          description={t("supplierRequest.receipt.description")}
           image={mng_receipt_orders}
         /> */}
       </div>

@@ -25,7 +25,10 @@ import Highlighter from "react-highlight-words";
 import { useNavigate } from "react-router-dom";
 
 import defaultBackground from "../../../../assets/def_avt.jpg";
+import { useTranslation } from "react-i18next";
 const UserComponent = () => {
+  const { t } = useTranslation();
+
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -291,7 +294,7 @@ const UserComponent = () => {
       >
         <AiOutlineEdit className="text-xl" style={{ color: "blueviolet" }} />
         <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          Chi tiết
+          {t("user_list.detail")}
         </span>
       </div>
     );
@@ -307,7 +310,7 @@ const UserComponent = () => {
     clearFilters();
     setSearchText("");
   };
-  
+
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -400,20 +403,28 @@ const UserComponent = () => {
   });
   const columns = [
     {
-      title: "Tên khách hàng",
+      title: t("user_list.name"),
       dataIndex: "full_name",
       key: "full_name",
       ...getColumnSearchProps("full_name"),
       sorter: (a, b) => a?.full_name.length - b?.full_name.length,
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Email</div>,
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("user_list.email")}
+        </div>
+      ),
       dataIndex: "email",
       key: "email",
       ...getColumnSearchProps("email"),
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Vai trò</div>,
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("user_list.role")}
+        </div>
+      ),
       dataIndex: "role",
       key: "role",
       filters: [
@@ -437,7 +448,9 @@ const UserComponent = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Số điện thoại</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("user_list.phone")}
+        </div>
       ),
       dataIndex: "phone",
       key: "phone",
@@ -446,7 +459,9 @@ const UserComponent = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Chức năng</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("user_list.action")}
+        </div>
       ),
       dataIndex: "action",
       render: (text, record) => (
@@ -478,13 +493,13 @@ const UserComponent = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-          Quay lại
+          {t("user_list.back")}
         </button>
         <div className="flex items-center text-xl font-semibold text-gray-800 mb-4">
           <FaUser className="text-2xl text-blue-500 mr-2" />{" "}
           {/* Biểu tượng người dùng */}
           <h5 className="relative">
-            Danh sách người dùng
+            {t("user_list.title")}
             <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>{" "}
             {/* Hiệu ứng gạch dưới */}
           </h5>
@@ -514,7 +529,7 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title="Chi Tiết Tài Khoản"
+        title={t("user_list.update_title")}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -534,51 +549,55 @@ const UserComponent = () => {
             form={formUpdate}
           >
             <Form.Item
-              label="Tên khách hàng"
+              label={t("user_list.name")}
               name="full_name"
-              rules={[{ required: true, message: "Vui lòng điền tên !" }]}
+              rules={[
+                { required: true, message: t("user_list.required_name") },
+              ]}
             >
               <Input
                 value={stateDetailsUser.full_name}
                 onChange={(event) =>
                   handleOnChangeDetails(event.target.value, "full_name")
                 }
-                placeholder="Tên khách hàng"
+                placeholder={t("user_list.name")}
                 style={{ borderRadius: "5px" }} // Thêm bo góc
               />
             </Form.Item>
 
             <Form.Item
-              label="Email khách hàng"
+              label={t("user_list.email")}
               name="email"
-              rules={[{ required: true, message: "Vui lòng điền email !" }]}
+              rules={[
+                { required: true, message: t("user_list.required_email") },
+              ]}
             >
               <Input
                 value={stateDetailsUser.email}
-                placeholder="Email khách hàng"
+                placeholder={t("user_list.email")}
                 style={{ borderRadius: "5px" }}
                 readOnly
               />
             </Form.Item>
             <Form.Item
-              label="Số điện thoại"
+              label={t("user_list.phone")}
               name="phone"
               rules={[
-                { required: true, message: "Vui lòng điền số điện thoại !" },
+                { required: true, message: t("user_list.required_phone") },
               ]}
             >
               <Input
                 value={stateDetailsUser.phone}
-                placeholder="Số điện thoại khách hàng"
+                placeholder={t("user_list.phone")}
                 style={{ borderRadius: "5px" }}
                 readOnly
               />
             </Form.Item>
 
             <Form.Item
-              label="Vai trò"
+              label={t("user_list.role")}
               name="role"
-              rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
+              rules={[{ required: true, message: t("user_list.select_role") }]}
             >
               <Select
                 onChange={(value) => handleOnChangeDetails(value, "role")}
@@ -596,7 +615,7 @@ const UserComponent = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="Hình ảnh">
+            <Form.Item label={t("user_list.upload_image")}>
               <Upload.Dragger
                 listType="picture"
                 showUploadList={{ showRemoveIcon: true }}
@@ -607,7 +626,7 @@ const UserComponent = () => {
                 style={{ borderRadius: "5px", borderColor: "#1890ff" }} // Thay đổi màu viền
               >
                 <div className="flex-center-center">
-                  Upload File Image
+                  {t("user_list.upload_image")}
                   <BiImageAdd
                     style={{ marginLeft: "10px", fontSize: "20px" }}
                   />
@@ -615,10 +634,14 @@ const UserComponent = () => {
               </Upload.Dragger>
             </Form.Item>
 
-            <Form.Item label="Review Avatar" name="avatar">
+            <Form.Item label={t("user_list.review_avatar")} name="avatar">
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <img
-                  src={stateDetailsUser?.avatar ? stateDetailsUser?.avatar : defaultBackground}
+                  src={
+                    stateDetailsUser?.avatar
+                      ? stateDetailsUser?.avatar
+                      : defaultBackground
+                  }
                   alt="Avatar User"
                   style={{
                     width: "100px",
@@ -630,12 +653,12 @@ const UserComponent = () => {
               </div>
             </Form.Item>
 
-            <Form.Item label="Ngày tạo" name="created">
+            <Form.Item label={t("user_list.created_at")} name="created">
               <div className="flex justify-end">
                 {converDateString(stateDetailsUser?.createdAt)}
               </div>
             </Form.Item>
-            <Form.Item label="Cập nhật gần nhất" name="created">
+            <Form.Item label={t("user_list.updated_at")} name="created">
               <div className="flex justify-end">
                 {converDateString(stateDetailsUser?.updatedAt)}
               </div>
@@ -647,7 +670,7 @@ const UserComponent = () => {
                 htmlType="submit"
                 style={{ display: "block", borderRadius: "5px" }} // Thêm bo góc
               >
-                Cập nhật
+                {t("user_list.update")}
               </Button>
             </Form.Item>
           </Form>
@@ -656,13 +679,13 @@ const UserComponent = () => {
 
       {/* Modal Confirm Delete Product */}
       <ModalComponent
-        title="Xóa Tài Khoản"
+        title={t("user_list.confirm_delete_title")}
         open={isOpenDelete}
         onCancel={handleCancelDelete}
         onOk={handleConfirmDelete}
       >
         <Loading isPending={isPendingDelete}>
-          <div>Bạn có chắc muốn xóa sản phẩm không ?</div>
+          <div>{t("user_list.confirm_delete_text")}</div>
         </Loading>
       </ModalComponent>
     </div>
