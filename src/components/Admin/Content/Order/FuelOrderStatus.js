@@ -21,11 +21,13 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Highlighter from "react-highlight-words";
-import * as util from '../../../../ultils'
+import * as util from "../../../../ultils";
 import { useLocation } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 
 const FuelOrderStatus = () => {
+  const { t } = useTranslation();
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterType, setFilterType] = useState("all");
@@ -59,11 +61,11 @@ const FuelOrderStatus = () => {
             createdAt: new Date(order.createdAt),
           }))
           .sort((a, b) => b.createdAt - a.createdAt);
-   if (statusFilterVal) {
-        sortedOrders = sortedOrders.filter(
-          (order) => order.status === statusFilterVal
-        );
-      }
+        if (statusFilterVal) {
+          sortedOrders = sortedOrders.filter(
+            (order) => order.status === statusFilterVal
+          );
+        }
         setOrders(sortedOrders);
       } else {
         message.error("Lỗi khi lấy danh sách đơn hàng!");
@@ -122,7 +124,7 @@ const FuelOrderStatus = () => {
         // setOrders((prevOrders) =>
         //   prevOrders.filter((order) => order._id !== orderToCreate._id)
         // );
-         fetchOrders();
+        fetchOrders();
       } else {
         message.error(`Thất bại: ${response.data.message}`);
       }
@@ -438,7 +440,7 @@ const FuelOrderStatus = () => {
               type="primary"
               onClick={handleExportFileExcel}
             >
-              Xuất Excel
+              {t('export_excel')}
             </Button>
           </Col>
         </Row>
@@ -475,49 +477,51 @@ const FuelOrderStatus = () => {
         </Space>
       </div> */}
       <div
-  style={{
-    marginBottom: 24,
-    background: "#fafafa",
-    padding: 16,
-    borderRadius: 8,
-  }}
->
-  <Row justify="space-between" align="middle">
-    <Col>
-      <h3 style={{ marginBottom: 12 }}>Lọc theo loại đơn</h3>
-      <Space>
-        <Button
-          type={filterType === "all" ? "primary" : "default"}
-          onClick={() => setFilterType("all")}
-        >
-          Tất cả đơn
-        </Button>
-        <Button
-          type={filterType === "fuelRequests" ? "primary" : "default"}
-          onClick={() => setFilterType("fuelRequests")}
-        >
-          Đơn thu hàng
-        </Button>
-        <Button
-          type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
-          onClick={() => setFilterType("fuelSupplyOrders")}
-        >
-          Đơn cung cấp
-        </Button>
-      </Space>
-    </Col>
-
-    <Col>
-      <Button
-        type="primary"
-         className="bg-blue-600"
-        onClick={() => navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")}
+        style={{
+          marginBottom: 24,
+          background: "#fafafa",
+          padding: 16,
+          borderRadius: 8,
+        }}
       >
-        Danh sách Đơn Nhập Kho
-      </Button>
-    </Col>
-  </Row>
-</div>
+        <Row justify="space-between" align="middle">
+          <Col>
+            <h3 style={{ marginBottom: 12 }}>Lọc theo loại đơn</h3>
+            <Space>
+              <Button
+                type={filterType === "all" ? "primary" : "default"}
+                onClick={() => setFilterType("all")}
+              >
+                Tất cả đơn
+              </Button>
+              <Button
+                type={filterType === "fuelRequests" ? "primary" : "default"}
+                onClick={() => setFilterType("fuelRequests")}
+              >
+                Đơn thu hàng
+              </Button>
+              <Button
+                type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
+                onClick={() => setFilterType("fuelSupplyOrders")}
+              >
+                Đơn cung cấp
+              </Button>
+            </Space>
+          </Col>
+
+          <Col>
+            <Button
+              type="primary"
+              className="bg-blue-600"
+              onClick={() =>
+                navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
+              }
+            >
+              Danh sách Đơn Nhập Kho
+            </Button>
+          </Col>
+        </Row>
+      </div>
 
       <div style={{ background: "#fff", padding: 16, borderRadius: 8 }}>
         <h3 style={{ marginBottom: 12 }}>Danh sách đơn hàng</h3>

@@ -24,8 +24,11 @@ import { toast } from "react-toastify";
 import { Tooltip } from "antd";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FuelList = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [fuels, setFuels] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -383,7 +386,7 @@ const FuelList = () => {
           onClick={handleExportFileExcel}
           style={{ backgroundColor: "#1e90ff", borderColor: "#1e90ff" }}
         >
-          Xuất File
+          {t("export_excel")}
         </Button>
       </div>
       <Table

@@ -25,10 +25,12 @@ import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const { Option } = Select;
 
 const FuelStorageReceiptList = () => {
+  const { t } = useTranslation();
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState(null);
@@ -417,7 +419,7 @@ const FuelStorageReceiptList = () => {
           className="bg-blue-600 text-white"
           onClick={handleExportFileExcel}
         >
-          Xuất Excel
+          {t("export_excel")}
         </Button>
       </div>
 

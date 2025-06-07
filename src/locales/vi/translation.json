@@ -58,6 +58,7 @@
   "personal_info": "Thông tin cá nhân",
   "logout": "Đăng xuất",
   "account": "Tài khoản",
+  "export_excel": "Xuất Excel",
   "carousel": {
     "view_more": "Xem thêm",
     "title_2": "TUYỂN CHỌN KỸ CÀNG",
@@ -88,7 +89,8 @@
     "close": "Đóng",
     "update": "Cập nhật",
     "updating": "Đang cập nhật",
-    "confirm": "Xác nhận"
+    "confirm": "Xác nhận",
+    "no_data": "Không có"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -200,7 +202,9 @@
     "cancelled": "Đã hủy",
     "completed": "Hoàn Thành",
     "processing": "Đang xử lý",
-    "rejected": "Từ chối"
+    "rejected": "Từ chối",
+    "failed": "Thất bại",
+    "disable": "Vô hiệu hóa"
   },
   "navbar": {
     "search_placeholder": "Bạn đang tìm kiếm gì?",
@@ -683,5 +687,101 @@
       "cancel_success": "Đã hủy đơn hàng!",
       "cancel_failed": "Hủy đơn hàng thất bại!"
     }
+  },
+  "supplier_dashboard": {
+    "title": "Dashboard Đơn Hàng Nhà Cung Cấp",
+    "total_orders": "Tổng Đơn",
+    "pending_orders": "Đơn Chờ Duyệt",
+    "approved_orders": "Đơn Đã Duyệt",
+    "request_title": "📥 Yêu Cầu Thu Nguyên Liệu",
+    "supply_title": "📦 Yêu Cầu Cung Cấp Nguyên Liệu",
+    "total": "Tổng số đơn",
+    "status_chart_title": "Biểu đồ trạng thái đơn",
+    "recent_orders": "Đơn hàng gần đây",
+    "filter": {
+      "day": "Theo Ngày",
+      "week": "Theo Tuần",
+      "month": "Theo Tháng"
+    }
+  },
+  "table": {
+    "order_id": "Mã Đơn",
+    "type": "Loại",
+    "supply_order": "Đơn Cung Cấp",
+    "fuel_request": "Yêu Cầu Thu Hàng",
+    "supplier": "Nhà cung cấp",
+    "status": "Trạng thái",
+    "quantity": "Số lượng",
+    "created_at": "Ngày tạo"
+  },
+  "fuel_request": {
+    "back": "Quay lại",
+    "title": "Quản lý đơn yêu cầu thu nguyên liệu",
+    "table": {
+      "customer": "Khách Hàng",
+      "fuel_type": "Loại Nguyên Liệu",
+      "price": "Giá Tiền",
+      "status": "Trạng Thái",
+      "actions": "Chức năng"
+    },
+    "drawer": {
+      "title": "Chi Tiết Đơn Hàng",
+      "priority": "Mức độ ưu tiên",
+      "quantity": "Số Lượng",
+      "total_price": "Tổng Giá",
+      "address": "Địa chỉ",
+      "status": "Trạng Thái",
+      "note": "Ghi chú",
+      "created_at": "Ngày tạo",
+      "updated_at": "Cập nhật gần nhất"
+    },
+    "actions": {
+      "approve": "Duyệt đơn",
+      "cancel": "Hủy đơn"
+    },
+    "toast": {
+      "approve_success": "Đơn hàng đã được duyệt thành công!",
+      "approve_failed": "Duyệt đơn thất bại!",
+      "approve_error": "Có lỗi xảy ra khi duyệt đơn!",
+      "cancel_success": "Đơn hàng đã bị hủy thành công!",
+      "cancel_failed": "Hủy đơn thất bại!",
+      "cancel_error": "Có lỗi xảy ra khi hủy đơn!",
+      "complete_success": "Đơn hàng đã được hoàn thành thành công!",
+      "complete_failed": "Hoàn thành đơn thất bại!",
+      "complete_error": "Có lỗi xảy ra khi hoàn thành đơn!"
+    }
+  },
+  "fuelProvide": {
+    "orderApproved": "Đơn hàng đã được duyệt thành công!",
+    "approveFailed": "Duyệt đơn thất bại!",
+    "errorApproving": "Có lỗi xảy ra khi duyệt đơn:",
+    "orderCanceled": "Đơn hàng đã bị hủy thành công!",
+    "cancelFailed": "Hủy đơn thất bại!",
+    "errorCanceling": "Có lỗi xảy ra khi hủy đơn:",
+    "orderCompleted": "Đơn hàng đã được hoàn thành thành công!",
+    "completeFailed": "Hoàn thành đơn thất bại!",
+    "errorCompleting": "Có lỗi xảy ra khi hoàn thành đơn!",
+    "customer": "Khách Hàng",
+    "fuelType": "Loại Nguyên Liệu",
+    "price": "Giá Tiền (vnđ)",
+    "status": "Trạng Thái",
+    "pending": "Chờ duyệt",
+    "approved": "Đã duyệt",
+    "canceled": "Đã hủy",
+    "completed": "Hoàn thành",
+    "createdAt": "Ngày Tạo",
+    "noData": "Không có dữ liệu",
+    "invalid": "Không hợp lệ",
+    "action": "Chức năng",
+    "back": "Quay lại",
+    "title": "Quản lý đơn cung cấp nguyên liệu",
+    "orderDetail": "Chi Tiết Đơn Hàng",
+    "quality": "Chất Lượng",
+    "quantity": "Số Lượng",
+    "note": "Ghi chú",
+    "noNote": "Không có",
+    "totalPrice": "Tổng Giá",
+    "approveOrder": "Duyệt đơn",
+    "cancelOrder": "Hủy đơn"
   }
 }

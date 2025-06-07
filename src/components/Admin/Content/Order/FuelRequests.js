@@ -24,8 +24,11 @@ import {
   handleCompleteOrders,
 } from "../../../../services/OrderServices";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FuelRequestsManagement = () => {
+  const { t } = useTranslation();
+
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
@@ -38,7 +41,13 @@ const FuelRequestsManagement = () => {
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
   const navigate = useNavigate();
-
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Hoàn Thành": "completed",
+    "Đang xử lý": "processing",
+  };
   const [stateDetailsUser, setStateDetailsUser] = useState({
     _id: "",
     address: "",
@@ -92,13 +101,13 @@ const FuelRequestsManagement = () => {
       const response = await handleAcceptOrders(stateDetailsUser._id);
       if (response) {
         setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
-        message.success("Đơn hàng đã được duyệt thành công!");
+        message.success(t("fuel_request.toast.approve_success"));
         queryOrder.refetch();
       } else {
-        message.error("Duyệt đơn thất bại!");
+        message.error(t("fuel_request.toast.approve_failed"));
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi duyệt đơn!");
+      message.error(t("fuel_request.toast.approve_error"));
     }
   };
 
@@ -307,48 +316,35 @@ const FuelRequestsManagement = () => {
   // COLUMNS DATA TABLE
   const columns = [
     {
-      title: "Khách Hàng",
+      title: t("fuel_request.table.customer"),
       dataIndex: "customerName",
       key: "customerName",
       className: "text-center",
       ...getColumnSearchProps("customerName"),
     },
     {
-      title: "Loại Nguyên Liệu",
+      title: t("fuel_request.table.fuel_type"),
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
     },
-
     {
-      title: "Giá Tiền",
+      title: t("fuel_request.table.price"),
       dataIndex: "price",
       key: "price",
       className: "text-center",
       ...getColumnSearchProps("price"),
     },
     {
-      title: "Trạng Thái",
+      title: t("fuel_request.table.status"),
       dataIndex: "status",
-      className: "text-center",
       key: "status",
+      className: "text-center",
       filters: [
-        {
-          text: "Chờ duyệt",
-          value: "Chờ duyệt",
-        },
-        {
-          text: "Đã duyệt",
-          value: "Đã duyệt",
-        },
-        {
-          text: "Đã Hủy",
-          value: "Đã Hủy",
-        },
-        {
-          text: "Hoàn thành",
-          value: "Hoàn thành",
-        },
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đã duyệt" },
+        { text: t("status.cancelled"), value: "Đã Hủy" },
+        { text: t("status.completed"), value: "Hoàn thành" },
       ],
 
       onFilter: (value, record) => record.status.includes(value),
@@ -374,11 +370,13 @@ const FuelRequestsManagement = () => {
           default:
             color = "default";
         }
-        return <Tag color={color}>{status}</Tag>;
+        return (
+          <Tag color={color}>{t(`status.${statusMap[status]}`) || status}</Tag>
+        );
       },
     },
     {
-      title: "Chức năng",
+      title: t('fuel_request.table.actions'),
       className: "text-center",
       dataIndex: "action",
       render: renderAction,
@@ -415,7 +413,7 @@ const FuelRequestsManagement = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("fuel_request.back")}
           </Button>
 
           {/* Placeholder để giữ cân layout bên phải */}
@@ -427,7 +425,7 @@ const FuelRequestsManagement = () => {
           </Button>
         </div> */}
         <h5 className="text-center font-bold text-2xl mb-0">
-          Quản lý đơn yêu cầu thu nguyên liệu
+          {t("fuel_request.title")}
         </h5>
         <div className="content-main-table-user">
           <TableUser
@@ -449,7 +447,7 @@ const FuelRequestsManagement = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title="Chi Tiết Đơn Hàng"
+        title={t("fuel_request.drawer.title")}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -460,91 +458,91 @@ const FuelRequestsManagement = () => {
         <Loading isPending={isLoadDetails}>
           <Descriptions bordered column={1} layout="horizontal">
             <Descriptions.Item
-              label="Khách Hàng"
+              label={t("fuel_request.table.customer")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.supplier_id?.full_name || "Không có"}
+              {stateDetailsUser?.supplier_id?.full_name || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Loại Nguyên liệu"
+              label={t("fuel_request.table.fuel_type")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.fuel_name || "Không có"}
+              {stateDetailsUser?.fuel_name || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Giá Tiền"
+              label={t("fuel_request.table.price")}
               labelStyle={{ width: "35%" }}
               contentStyle={{ width: "65%" }}
             >
-              {stateDetailsUser?.price || "Không có"}
+              {stateDetailsUser?.price || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Priority"
+              label={t("fuel_request.drawer.priority")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.priority || "Không có"}
+              {stateDetailsUser?.priority || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Số Lượng"
+              label={t("fuel_request.drawer.quantity")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.quantity || "Không có"}
+              {stateDetailsUser?.quantity || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Tổng Giá"
+              label={t("fuel_request.drawer.total_price")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.total_price || "Không có"}
+              {stateDetailsUser?.total_price || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Địa chỉ"
+              label={t("fuel_request.drawer.address")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.address || "Không có"}
+              {stateDetailsUser?.address || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Trạng Thái"
+              label={t("fuel_request.drawer.status")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {orderStatus || "Không có"}
+              {t(`status.${statusMap[orderStatus]}`) || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Ghi chú"
+              label={t("fuel_request.drawer.note")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.note || "Không có"}
+              {stateDetailsUser?.note || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Ngày tạo"
+              label={t("fuel_request.drawer.created_at")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.createdAt || "Không có"}
+              {stateDetailsUser?.createdAt || t("common.no_data")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Cập nhật gần nhất"
+              label={t("fuel_request.drawer.updated_at")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.updatedAt || "Không có"}
+              {stateDetailsUser?.updatedAt || t("common.no_data")}
             </Descriptions.Item>
           </Descriptions>
 
@@ -558,10 +556,10 @@ const FuelRequestsManagement = () => {
               }}
             >
               <Button type="primary" onClick={handleApproveOrder}>
-                Duyệt đơn
+                {t("fuel_request.actions.approve")}
               </Button>
               <Button danger onClick={handleCancelOrder}>
-                Hủy đơn
+                {t("fuel_request.actions.cancel")}
               </Button>
             </div>
           )}

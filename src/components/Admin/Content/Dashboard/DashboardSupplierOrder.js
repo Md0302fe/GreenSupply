@@ -5,8 +5,11 @@ import { useSelector } from "react-redux";
 import { Column } from "@ant-design/plots";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const DashboardSupplierOrder = () => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [combinedOrders, setCombinedOrders] = useState([]);
@@ -81,9 +84,9 @@ const DashboardSupplierOrder = () => {
 
   // 🔷 Biểu đồ cột - Trạng thái đơn
   const chartData = [
-    { type: "Chờ duyệt", value: dashboardData?.pendingRequests || 0 },
-    { type: "Đã duyệt", value: dashboardData?.approvedRequests || 0 },
-    { type: "Hoàn thành", value: dashboardData?.totalCompleted || 0 },
+    { type: t("status.pending"), value: dashboardData?.pendingRequests || 0 },
+    { type: t("status.approve"), value: dashboardData?.approvedRequests || 0 },
+    { type: t("status.completed"), value: dashboardData?.totalCompleted || 0 },
   ];
 
   const chartConfig = {
@@ -104,14 +107,14 @@ const DashboardSupplierOrder = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">Dashboard Đơn Hàng Nhà Cung Cấp</h1>
+        <h1 className="text-3xl font-bold"> {t("supplier_dashboard.title")}</h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <Card>
           <Statistic
-            title="Tổng Đơn"
+            title={t("supplier_dashboard.total_orders")}
             value={
               (dashboardData?.totalFuelRequests || 0) +
               (dashboardData?.totalFuelSupplyOrders || 0)
@@ -120,14 +123,14 @@ const DashboardSupplierOrder = () => {
         </Card>
         <Card>
           <Statistic
-            title="Đơn Chờ Duyệt"
+            title={t("supplier_dashboard.pending_orders")}
             value={dashboardData?.pendingRequests || 0}
             valueStyle={{ color: "#faad14" }}
           />
         </Card>
         <Card>
           <Statistic
-            title="Đơn Đã Duyệt"
+            title={t("supplier_dashboard.approved_orders")}
             value={dashboardData?.approvedRequests || 0}
             valueStyle={{ color: "#52c41a" }}
           />
@@ -137,11 +140,11 @@ const DashboardSupplierOrder = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Card 1: Yêu Cầu Thu Nguyên Liệu */}
         <Card
-          title="📥 Yêu Cầu Thu Nguyên Liệu"
+          title={t("supplier_dashboard.request_title")}
           bordered={false}
           className="shadow-md rounded-lg"
         >
-          <p className="text-gray-600 mb-2">Tổng số đơn</p>
+          <p className="text-gray-600 mb-2">{t("supplier_dashboard.total")}</p>
           <h2 className="text-3xl font-bold mb-4">
             {dashboardData?.fuelRequests?.total || 0}
           </h2>
@@ -151,21 +154,21 @@ const DashboardSupplierOrder = () => {
               onClick={() => handleCardClick("request", "Chờ duyệt")}
               className="text-yellow-500 cursor-pointer hover:underline"
             >
-              🕒 Chờ duyệt:{" "}
+              🕒 {t("status.pending")}:{" "}
               <strong>{dashboardData?.fuelRequests?.pending || 0}</strong>
             </li>
             <li
               onClick={() => handleCardClick("request", "Đã duyệt")}
               className="text-green-600 cursor-pointer hover:underline"
             >
-              ✅ Đã duyệt:{" "}
+              ✅ {t("status.approve")}:{" "}
               <strong>{dashboardData?.fuelRequests?.approved || 0}</strong>
             </li>
             <li
               onClick={() => handleCardClick("request", "Hoàn thành")}
               className="text-blue-500 cursor-pointer hover:underline"
             >
-              🏁 Hoàn thành:{" "}
+              🏁 {t("status.completed")}:{" "}
               <strong>{dashboardData?.fuelRequests?.completed || 0}</strong>
             </li>
           </ul>
@@ -173,11 +176,11 @@ const DashboardSupplierOrder = () => {
 
         {/* Card 2: Yêu Cầu Cung Cấp Nguyên Liệu */}
         <Card
-          title="📦 Yêu Cầu Cung Cấp Nguyên Liệu"
+          title={t("supplier_dashboard.supply_title")}
           bordered={false}
           className="shadow-md rounded-lg"
         >
-          <p className="text-gray-600 mb-2">Tổng số đơn</p>
+          <p className="text-gray-600 mb-2">{t("supplier_dashboard.total")}</p>
           <h2 className="text-3xl font-bold mb-4">
             {dashboardData?.fuelSupplyOrders?.total || 0}
           </h2>
@@ -187,21 +190,21 @@ const DashboardSupplierOrder = () => {
               onClick={() => handleCardClick("supply", "Chờ duyệt")}
               className="text-yellow-500 cursor-pointer hover:underline"
             >
-              🕒 Chờ duyệt:{" "}
+              🕒 {t("status.pending")}:{" "}
               <strong>{dashboardData?.fuelSupplyOrders?.pending || 0}</strong>
             </li>
             <li
               onClick={() => handleCardClick("supply", "Đã duyệt")}
               className="text-green-600 cursor-pointer hover:underline"
             >
-              ✅ Đã duyệt:{" "}
+              ✅ {t("status.approve")}:{" "}
               <strong>{dashboardData?.fuelSupplyOrders?.approved || 0}</strong>
             </li>
             <li
               onClick={() => handleCardClick("supply", "Hoàn thành")}
               className="text-blue-500 cursor-pointer hover:underline"
             >
-              🏁 Hoàn thành:{" "}
+              🏁 {t("status.completed")}:{" "}
               <strong>{dashboardData?.fuelSupplyOrders?.completed || 0}</strong>
             </li>
           </ul>
@@ -210,7 +213,9 @@ const DashboardSupplierOrder = () => {
 
       {/* 🔹 Biểu đồ đơn hàng theo trạng thái */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-4">Biểu đồ trạng thái đơn</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t("supplier_dashboard.status_chart_title")}
+        </h2>
         <Column {...chartConfig} />
       </div>
 
@@ -226,7 +231,7 @@ const DashboardSupplierOrder = () => {
             }`}
             onClick={() => setFilterType("day")}
           >
-            Theo Ngày
+            {t("supplier_dashboard.filter.day")}
           </button>
           <button
             className={`px-4 py-2 ${
@@ -236,7 +241,7 @@ const DashboardSupplierOrder = () => {
             }`}
             onClick={() => setFilterType("week")}
           >
-            Theo Tuần
+            {t("supplier_dashboard.filter.week")}
           </button>
           <button
             className={`px-4 py-2 rounded-r ${
@@ -246,29 +251,37 @@ const DashboardSupplierOrder = () => {
             }`}
             onClick={() => setFilterType("month")}
           >
-            Theo Tháng
+            {t("supplier_dashboard.filter.month")}
           </button>
         </div>
-        <h2 className="text-xl font-semibold mb-4">Đơn hàng gần đây</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t("supplier_dashboard.recent_orders")}
+        </h2>
         <Table
           columns={[
-            { title: "Mã Đơn", dataIndex: "_id", key: "_id" },
+            { title: t("table.order_id"), dataIndex: "_id", key: "_id" },
             {
-              title: "Loại",
+              title: t("table.type"),
               dataIndex: "receipt_type",
               key: "receipt_type",
               render: (type) =>
-                type === "supply" ? "Đơn Cung Cấp" : "Yêu Cầu Thu Hàng",
+                type === "supply"
+                  ? t("table.supply_order")
+                  : t("table.fuel_request"),
             },
             {
-              title: "Nhà cung cấp",
+              title: t("table.supplier"),
               dataIndex: ["supplier_id", "full_name"],
               key: "supplier_id",
             },
-            { title: "Trạng thái", dataIndex: "status", key: "status" },
-            { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
+            { title: t("table.status"), dataIndex: "status", key: "status" },
             {
-              title: "Ngày tạo",
+              title: t("table.quantity"),
+              dataIndex: "quantity",
+              key: "quantity",
+            },
+            {
+              title: t("table.created_at"),
               dataIndex: "createdAt",
               key: "createdAt",
               render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),

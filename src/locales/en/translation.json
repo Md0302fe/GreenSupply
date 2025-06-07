@@ -61,6 +61,7 @@
   "personal_info": "Personal Information",
   "logout": "Logout",
   "account": "Account",
+  "export_excel": "Export Excel",
   "carousel": {
     "view_more": "View more",
     "title_2": "CAREFUL SELECTION",
@@ -91,7 +92,8 @@
     "close": "Close",
     "update": "Update",
     "updating": "Updatting",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "no_data": "No data"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -203,7 +205,9 @@
     "cancelled": "Cancelled",
     "completed": "Completed",
     "processing": "Processing",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "failed": "Failed",
+    "disable": "Disable"
   },
   "navbar": {
     "search_placeholder": "What are you looking for?",
@@ -687,5 +691,101 @@
       "cancel_success": "Order cancelled successfully!",
       "cancel_failed": "Failed to cancel order!"
     }
+  },
+  "supplier_dashboard": {
+    "title": "Supplier Order Dashboard",
+    "total_orders": "Total Orders",
+    "pending_orders": "Pending Orders",
+    "approved_orders": "Approved Orders",
+    "request_title": "📥 Fuel Collection Requests",
+    "supply_title": "📦 Fuel Supply Requests",
+    "total": "Total Requests",
+    "status_chart_title": "Order Status Chart",
+    "recent_orders": "Recent Orders",
+    "filter": {
+      "day": "By Day",
+      "week": "By Week",
+      "month": "By Month"
+    }
+  },
+  "table": {
+    "order_id": "Order ID",
+    "type": "Type",
+    "supply_order": "Supply Order",
+    "fuel_request": "Fuel Collection",
+    "supplier": "Supplier",
+    "status": "Status",
+    "quantity": "Quantity",
+    "created_at": "Created At"
+  },
+  "fuel_request": {
+    "back": "Go Back",
+    "title": "Fuel Request Management",
+    "table": {
+      "customer": "Customer",
+      "fuel_type": "Fuel Type",
+      "price": "Price",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "drawer": {
+      "title": "Order Details",
+      "priority": "Priority",
+      "quantity": "Quantity",
+      "total_price": "Total Price",
+      "address": "Address",
+      "status": "Status",
+      "note": "Note",
+      "created_at": "Created At",
+      "updated_at": "Last Updated"
+    },
+    "actions": {
+      "approve": "Approve",
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "approve_success": "Order approved successfully!",
+      "approve_failed": "Order approval failed!",
+      "approve_error": "An error occurred while approving the order!",
+      "cancel_success": "Order cancelled successfully!",
+      "cancel_failed": "Order cancellation failed!",
+      "cancel_error": "An error occurred while cancelling the order!",
+      "complete_success": "Order completed successfully!",
+      "complete_failed": "Order completion failed!",
+      "complete_error": "An error occurred while completing the order!"
+    }
+  },
+  "fuelProvide": {
+    "orderApproved": "Order approved successfully!",
+    "approveFailed": "Failed to approve order!",
+    "errorApproving": "An error occurred while approving the order:",
+    "orderCanceled": "Order canceled successfully!",
+    "cancelFailed": "Failed to cancel order!",
+    "errorCanceling": "An error occurred while canceling the order:",
+    "orderCompleted": "Order completed successfully!",
+    "completeFailed": "Failed to complete order!",
+    "errorCompleting": "An error occurred while completing the order!",
+    "customer": "Customer",
+    "fuelType": "Fuel Type",
+    "price": "Price (VND)",
+    "status": "Status",
+    "pending": "Pending",
+    "approved": "Approved",
+    "canceled": "Canceled",
+    "completed": "Completed",
+    "createdAt": "Created At",
+    "noData": "No data",
+    "invalid": "Invalid",
+    "action": "Action",
+    "back": "Go Back",
+    "title": "Fuel Provide Management",
+    "orderDetail": "Order Details",
+    "quality": "Quality",
+    "quantity": "Quantity",
+    "note": "Note",
+    "noNote": "No note",
+    "totalPrice": "Total Price",
+    "approveOrder": "Approve",
+    "cancelOrder": "Cancel"
   }
 }
