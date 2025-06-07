@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 
 const DashboardSupplyRequest = () => {
   const { t } = useTranslation();
-
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const userRedux = useSelector((state) => state.user);
@@ -179,8 +178,9 @@ const DashboardSupplyRequest = () => {
 
               {/* Tên + Progress */}
               <div className="flex-1">
-                <div className="text-base font-semibold text-gray-800 mb-1">
-                  {item.name} -{" "}
+                <div className="flex flex-wrap items-center gap-1 mb-1 text-base font-semibold text-gray-800">
+                  <span>{item.name}</span>
+
                   {item.priority === 1 && (
                     <span className="text-red-600 bg-red-100 px-2 py-0.5 rounded-full text-xs">
                       {t("dashboard.priority_high")}
@@ -197,6 +197,7 @@ const DashboardSupplyRequest = () => {
                     </span>
                   )}
                 </div>
+
                 <Progress
                   percent={item.progress || 0}
                   status="active"
@@ -215,9 +216,9 @@ const DashboardSupplyRequest = () => {
       {/* 🔹 Danh sách đơn hàng gần đây theo thời gian */}
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         {/* Bộ lọc thời gian */}
-        <div className="flex justify-start mb-4 space-x-2">
+        <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`px-4 py-2 rounded-l ${
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${
               filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
@@ -226,8 +227,9 @@ const DashboardSupplyRequest = () => {
           >
             {t("dashboard.filter_day")}
           </button>
+
           <button
-            className={`px-4 py-2 ${
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${
               filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
@@ -237,7 +239,7 @@ const DashboardSupplyRequest = () => {
             {t("dashboard.filter_week")}
           </button>
           <button
-            className={`px-4 py-2 rounded-r ${
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${
               filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
@@ -283,6 +285,7 @@ const DashboardSupplyRequest = () => {
           dataSource={filteredOrders}
           rowKey="_id"
           pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
         />
       </div>
     </div>

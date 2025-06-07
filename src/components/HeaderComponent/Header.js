@@ -59,10 +59,10 @@ const Header = () => {
     <div className="Header">
       <header className="bg-customOrange px-4 md:px-6 py-2 rounded-bl-2xl rounded-br-2xl w-full">
         {/* Thanh trên cùng */}
-        <div className="container mx-auto flex flex-wrap w-full justify-center md:justify-end items-center gap-4 md:gap-4 px-2 md:px-6 py-2">
-          <button className="text-sm font-medium text-white flex items-center space-x-2 hover:text-[#FFD700] transition-all duration-300">
+        <div className="container mx-auto flex flex-wrap w-full justify-between md:justify-end items-center gap-2 md:gap-4 md:gap-4 px-1 md:px-6 py-2">
+          <button className="text-sm font-medium text-white flex items-center space-x-2 hover:text-[#FFD700] transition-all duration-300 ml-auto md:ml-0">
             <i className="fa-solid fa-bell"></i>
-            <span>{t("notifications")}</span>
+            <span className="hidden md:inline">{t("notifications")}</span>
           </button>
           <LanguageSwitcher />
         </div>
@@ -70,20 +70,20 @@ const Header = () => {
         {/* Nội dung chính */}
         <div className="container  flex justify-between">
           {/* Logo */}
-          <div className="md:col-span-2 flex justify-center md:justify-center">
+          <div className="md:col-span-2 flex justify- md:justify-center">
             <Link to="/home">
               <img
                 src={logo}
                 alt="Green Supply Logo"
-                className="h-12 md:h-16 max-w-full cursor-pointer"
+                className="h-12 md:h-16 max-w-full cursor-pointer -mt-10 -ml-2"
               />
             </Link>
           </div>
-          <Col span={6} className="Shopping-cart flex-center-center">
+          <Col span={4} className="Shopping-cart flex-center-center">
             <Loading isPending={loading}>
               <div className="Wrapper-Account text-black">
                 {userRedux?.full_name !== "" &&
-                userRedux?.full_name !== undefined ? (
+                  userRedux?.full_name !== undefined ? (
                   <div className="user-login flex-center-center">
                     <>
                       <Popover
@@ -136,7 +136,7 @@ const Header = () => {
                             style={{ fontSize: "35px", padding: "0 6px" }}
                           ></LuUser>
                         )}
-                        <Button>
+                        <Button className="hidden lg:inline-flex items-center shopping-cart-icons user text-black">
                           <span onClick={() => setOpen(false)}>
                             {userRedux.full_name}
                           </span>
