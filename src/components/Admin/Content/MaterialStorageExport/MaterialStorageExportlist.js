@@ -12,6 +12,7 @@ import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import Highlighter from "react-highlight-words";
+import { useTranslation } from "react-i18next";
 
 const statusColors = {
   "Chờ duyệt": "gold",
@@ -20,6 +21,7 @@ const statusColors = {
 };
 
 const MaterialStorageExportList = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [exports, setExports] = useState([]);
@@ -33,7 +35,17 @@ const MaterialStorageExportList = () => {
   const [showSearchInput, setShowSearchInput] = useState(false); // Quản lý việc hiển thị thanh tìm kiếm nhỏ
   const [showStatusFilter, setShowStatusFilter] = useState(false); // Quản lý việc hiển thị lọc trạng thái
   const [searchedColumn, setSearchedColumn] = useState("");
-
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
+    "Hoàn thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+    "Nhập kho thành công": "imported",
+  };
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
 
@@ -55,17 +67,17 @@ const MaterialStorageExportList = () => {
       if (response.data.success) {
         setExports(response.data.exports);
       } else {
-        message.error("Lỗi khi lấy danh sách đơn xuất kho!");
+        message.error(t("messages.fetchExportListError"));
       }
     } catch (error) {
-      message.error("Không thể kết nối đến server!");
+      message.error(t("messages.connectionError"));
     }
     setLoading(false);
   };
 
   useEffect(() => {
     if (location.state?.createdSuccess) {
-      message.success("Tạo đơn xuất kho thành công!");
+      message.success(t("messages.createSuccess"));
 
       window.history.replaceState({}, document.title);
     }
@@ -178,7 +190,9 @@ const MaterialStorageExportList = () => {
   const columns = [
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Loại Xuất Kho</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("materialExportList.exportType")}
+        </div>
       ),
       dataIndex: "type_export",
       key: "type_export",
@@ -189,7 +203,9 @@ const MaterialStorageExportList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Đơn sản xuất</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("materialExportList.productionRequest")}
+        </div>
       ),
       key: "production_request",
       align: "center",
@@ -201,7 +217,9 @@ const MaterialStorageExportList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Lô nguyên liệu</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("materialExportList.batch")}
+        </div>
       ),
       key: "batch",
       align: "center",
@@ -211,18 +229,20 @@ const MaterialStorageExportList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("materialExportList.status")}
+        </div>
       ),
       dataIndex: "status",
       key: "status",
       align: "center",
       filters: [
         {
-          text: "Chờ duyệt",
+          text: t('status.pending'),
           value: "Chờ duyệt",
         },
         {
-          text: "Hoàn thành",
+          text: t('status.completed'),
           value: "Hoàn thành",
         },
       ],
@@ -251,14 +271,16 @@ const MaterialStorageExportList = () => {
         }
         return (
           <div style={{ textAlign: "center" }}>
-            <Tag color={color}>{status}</Tag>
+            <Tag color={color}>{t(statusMap[status] || status)}</Tag>
           </div>
         );
       },
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Hành động</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("common.action")}
+        </div>
       ),
       key: "action",
       align: "center",
@@ -316,48 +338,13 @@ const MaterialStorageExportList = () => {
         );
       }
 
-      message.success("Duyệt đơn thành công");
+      message.success(t("messages.approveSuccess"));
       setIsDrawerOpen(false);
       fetchExports();
     } catch (error) {
       console.error("Lỗi khi duyệt đơn:", error);
-      message.error("Lỗi khi duyệt đơn hoặc cập nhật trạng thái!");
+      message.error(t("messages.approveError"));
     }
-  };
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     if (data?.success) {
-  //       message.success("Xác nhận đơn thành công");
-  //       setIsDrawerOpen(false);
-  //     } else {
-  //       message.error("Xác nhận đơn thất bại");
-  //       setIsDrawerOpen(false);
-  //     }
-  //     fetchExports();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isSuccess, data]);
-
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     if (data?.success) {
-  //       message.success("Xác nhận đơn thành công");
-  //       setIsDrawerOpen(false);
-  //     } else {
-  //       message.error("Xác nhận đơn thất bại");
-  //       setIsDrawerOpen(false);
-  //     }
-  //     fetchExports();
-  //   }
-  // }, [isSuccess, data]);
-
-  const handleSortChange = (value) => {
-    setSortOrder(value);
-  };
-
-  const handleStatusChange = (value) => {
-    setStatusFilter(value);
   };
 
   const showExportDetails = (id) => {
@@ -372,10 +359,10 @@ const MaterialStorageExportList = () => {
           setSelectedExport(response.data.export);
           setIsDrawerOpen(true); // ✅ mở drawer
         } else {
-          message.error("Không tìm thấy đơn xuất kho!");
+          message.error(t("messages.notFound"));
         }
       })
-      .catch(() => message.error("Lỗi khi lấy chi tiết đơn xuất kho!"))
+      .catch(() => message.error(t("messages.fetchDetailError")))
       .finally(() => setLoading(false));
   };
 
@@ -401,10 +388,10 @@ const MaterialStorageExportList = () => {
   useEffect(() => {
     if (isSuccessDelete) {
       if (dataDelete?.success) {
-        message.success("Xóa đơn thành công");
+        message.success(t("messages.deleteSuccess"));
         setIsDrawerOpen(false);
       } else {
-        message.error("Xóa đơn thất bại");
+        message.error(t("messages.deleteError"));
         setIsDrawerOpen(false);
       }
       fetchExports();
@@ -434,37 +421,14 @@ const MaterialStorageExportList = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-          Quay lại
+          {t("common.back")}
         </Button>
 
         <h5 className="text-3xl font-bold text-gray-800 absolute left-1/2 transform -translate-x-1/2">
-          Quản lý Đơn Xuất Kho
+          {t("materialExportList.title")}
         </h5>
         <div style={{ width: 120 }} />
       </div>
-
-      <div className="flex flex-wrap gap-4 mb-2">
-        {/* <Select
-          onChange={handleStatusChange}
-          value={statusFilter}
-          placeholder="Lọc theo trạng thái"
-          style={{ width: 200 }}
-        >
-          <Option value="">Tất cả</Option>
-          <Option value="Chờ duyệt">Chờ duyệt</Option>
-          <Option value="Hoàn thành">Hoàn thành</Option>
-        </Select> */}
-
-        {/* <Select
-          onChange={handleSortChange}
-          value={sortOrder}
-          style={{ width: 200 }}
-        >
-          <Option value="desc">Mới nhất</Option>
-          <Option value="asc">Cũ nhất</Option>
-        </Select> */}
-      </div>
-
       <Loading isPending={loading}>
         <Table
           columns={columns}
@@ -477,7 +441,7 @@ const MaterialStorageExportList = () => {
 
       {/* ✅ Drawer hiển thị chi tiết */}
       <DrawerComponent
-        title="Chi tiết Đơn Xuất Kho"
+        title={t("materialExportList.detailTitle")}
         isOpen={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
@@ -493,35 +457,37 @@ const MaterialStorageExportList = () => {
             labelStyle={{ width: "40%", fontWeight: "600" }}
             contentStyle={{ width: "60%" }}
           >
-            <Descriptions.Item label="Người tạo đơn">
+            <Descriptions.Item label={t("materialExportList.createdBy")}>
               {selectedExport?.user_id?.full_name || "Không rõ"}
             </Descriptions.Item>
-            <Descriptions.Item label="Yêu cầu sản xuất">
+            <Descriptions.Item
+              label={t("materialExportList.productionRequest")}
+            >
               {selectedExport?.production_request_id?.request_name ||
-                "Không có"}
+                t("common.no_data")}
             </Descriptions.Item>
-            <Descriptions.Item label="Tên lô">
-              {selectedExport?.batch_id?.batch_name || "Không có"}
+            <Descriptions.Item label={t("materialExportList.batchName")}>
+              {selectedExport?.batch_id?.batch_name || t("common.no_data")}
             </Descriptions.Item>
-            <Descriptions.Item label="Mã lô">
-              {selectedExport?.batch_id?.batch_id || "Không có"}
+            <Descriptions.Item label={t("materialExportList.batchId")}>
+              {selectedExport?.batch_id?.batch_id || t("common.no_data")}
             </Descriptions.Item>
-            <Descriptions.Item label="Tên Xuất Kho">
-              {selectedExport?.export_name || "Không có"}
+            <Descriptions.Item label={t("materialExportList.exportName")}>
+              {selectedExport?.export_name || t("common.no_data")}
             </Descriptions.Item>
-            <Descriptions.Item label="Loại Xuất Kho">
-              {selectedExport?.type_export || "Không có"}
+            <Descriptions.Item label={t("materialExportList.exportType")}>
+              {selectedExport?.type_export || t("common.no_data")}
             </Descriptions.Item>
-            <Descriptions.Item label="Trạng Thái">
+            <Descriptions.Item label={t("materialExportList.status")}>
               <Tag color={statusColors[selectedExport.status] || "default"}>
-                {selectedExport.status || "Không rõ"}
+                {t(statusMap[selectedExport.status]) || t("common.no_data")}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Ngày tạo đơn">
+            <Descriptions.Item label={t("materialExportList.createdDate")}>
               {new Date(selectedExport.createdAt).toLocaleString()}
             </Descriptions.Item>
-            <Descriptions.Item label="Ghi chú">
-              {selectedExport?.note || "Không có ghi chú"}
+            <Descriptions.Item label={t("materialExportList.note")}>
+              {selectedExport?.note || t("common.no_data")}
             </Descriptions.Item>
           </Descriptions>
         ) : (
@@ -530,14 +496,14 @@ const MaterialStorageExportList = () => {
         {selectedExport?.status === "Chờ duyệt" && (
           <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-4">
             <Button danger onClick={handleReject} className="w-full md:w-auto">
-              Hủy yêu cầu
+              {t("common.reject")}
             </Button>
             <Button
               type="primary"
               onClick={handleAccept}
               className="w-full md:w-auto"
             >
-              Duyệt đơn
+              {t("common.approve")}
             </Button>
           </div>
         )}

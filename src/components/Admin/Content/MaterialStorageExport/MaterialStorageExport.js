@@ -5,8 +5,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { createMaterialStorageExport } from "../../../../services/MaterialStorageExportService";
+import { useTranslation } from "react-i18next";
 
 const MaterialStorageExport = () => {
+  const { t } = useTranslation();
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [productionRequests, setProductionRequests] = useState([]);
@@ -27,7 +30,7 @@ const MaterialStorageExport = () => {
         const formattedToken = token.replace(/^"(.*)"$/, "$1");
 
         if (!token) {
-          message.error("Bạn chưa đăng nhập.");
+          message.error(t("messages.notLoggedIn"));
           return;
         }
 
@@ -35,7 +38,7 @@ const MaterialStorageExport = () => {
         const userId = decodedToken?.id;
 
         if (!userId) {
-          message.error("Không tìm thấy ID người dùng.");
+          message.error(t("messages.userIdNotFound"));
           return;
         }
 
@@ -52,11 +55,11 @@ const MaterialStorageExport = () => {
         if (response.data && response.data.status === "OK") {
           setUser(response.data.data);
         } else {
-          message.error("Không thể lấy thông tin người dùng.");
+          message.error(t("messages.userFetchFailed"));
         }
       } catch (error) {
         console.error("Lỗi khi lấy user:", error);
-        message.error("Lỗi khi lấy thông tin người dùng từ server.");
+        message.error(t("messages.userFetchError"));
       }
     };
 
@@ -100,7 +103,7 @@ const MaterialStorageExport = () => {
           }
         }
       } catch (error) {
-        message.error("Lỗi khi tải dữ liệu từ server.");
+        message.error(t("messages.dataFetchError"));
       } finally {
         setLoadingProduction(false);
         setLoadingBatch(false);
@@ -140,7 +143,7 @@ const MaterialStorageExport = () => {
       setLoading(true);
 
       if (!user || !user._id) {
-        message.error("Không tìm thấy thông tin người dùng.");
+        message.error(t("messages.userNotFound"));
         return;
       }
 
@@ -177,7 +180,9 @@ const MaterialStorageExport = () => {
         state: { createdSuccess: true },
       });
     } catch (error) {
-      message.error(error.response?.data?.message || "Lỗi không xác định!");
+      message.error(
+        error.response?.data?.message || t("messages.unknownError")
+      );
     } finally {
       setLoading(false);
     }
@@ -187,13 +192,13 @@ const MaterialStorageExport = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
         <h2 className="text-3xl font-bold text-gray-800 text-center my-4">
-          🏭 Tạo Đơn Xuất Kho
+          🏭 {t("materialExport.title")}
         </h2>
 
         {/* ✅ Hiển thị tên người dùng */}
         {user && (
           <p className="mb-4 text-lg font-semibold text-gray-700">
-            Người tạo đơn:{" "}
+            {t("materialExport.createdBy")}{" "}
             <span className="text-blue-600">{user.full_name}</span>
           </p>
         )}
@@ -201,20 +206,21 @@ const MaterialStorageExport = () => {
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {/* Chọn Lô nguyên liệu */}
           <Form.Item
-            label="Chọn Lô nguyên liệu"
+            label={t("materialExport.selectBatch")}
             name="batch_id"
             rules={[
               { required: true, message: "Vui lòng chọn lô nguyên liệu" },
             ]}
           >
             <Select
-              placeholder="Chọn lô nguyên liệu"
+              placeholder={t("materialExport.selectBatch")}
               loading={loadingBatch}
               onChange={handleBatchChange}
             >
               {rawMaterialBatches.map((batch) => (
                 <Select.Option key={batch._id} value={batch._id}>
-                  {batch.batch_name} - {batch.quantity} Kg ({batch.status})
+                  {batch.batch_name} - {batch.quantity} Kg (
+                  {t(`status.${batch.statusKey || "preparing"}`)})
                 </Select.Option>
               ))}
             </Select>
@@ -222,12 +228,14 @@ const MaterialStorageExport = () => {
 
           {/* Chọn Đơn sản xuất */}
           <Form.Item
-            label="Chọn Đơn sản xuất"
+            label={t("materialExport.selectProduction")}
             name="production_request_id"
-            rules={[{ required: true, message: "Vui lòng chọn đơn sản xuất" }]}
+            rules={[
+              { required: true, message: t("validation.requiredProduction") },
+            ]}
           >
             <Select
-              placeholder="Chọn đơn sản xuất"
+              placeholder={t("materialExport.selectProduction")}
               loading={loadingProduction}
               disabled
             >
@@ -241,29 +249,37 @@ const MaterialStorageExport = () => {
 
           {/* Tên đơn xuất kho */}
           <Form.Item
-            label="Tên đơn xuất kho"
+            label={t("materialExport.exportName")}
             name="export_name"
             rules={[
-              { required: true, message: "Vui lòng nhập tên đơn xuất kho" },
+              { required: true, message: t("validation.requiredExportName") },
             ]}
           >
-            <Input placeholder="Nhập tên đơn xuất kho" maxLength={60} />
+            <Input
+              placeholder={t("materialExport.exportNamePlaceholder")}
+              maxLength={60}
+            />
           </Form.Item>
 
           {/* Loại đơn xuất kho */}
           <Form.Item
-            label="Loại đơn"
+            label={t("materialExport.exportType")}
             name="type_export"
             initialValue="Đơn sản xuất"
           >
             <Select disabled>
-              <Select.Option value="Đơn sản xuất">Đơn sản xuất</Select.Option>
+              <Select.Option value="Đơn sản xuất">
+                {t("materialExport.productionType")}
+              </Select.Option>
             </Select>
           </Form.Item>
 
           {/* Ghi chú */}
-          <Form.Item label="Ghi chú" name="note">
-            <Input.TextArea rows={4} placeholder="Nhập ghi chú" />
+          <Form.Item label={t("materialExport.note")} name="note">
+            <Input.TextArea
+              rows={4}
+              placeholder={t("materialExport.notePlaceholder")}
+            />
           </Form.Item>
 
           {/* Nút xác nhận */}
@@ -274,7 +290,7 @@ const MaterialStorageExport = () => {
               className="w-full py-2"
               loading={loading}
             >
-              Xác nhận
+              {t("common.confirm")}
             </Button>
           </Form.Item>
         </Form>

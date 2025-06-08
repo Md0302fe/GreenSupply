@@ -93,7 +93,16 @@
     "update": "Update",
     "updating": "Updatting",
     "confirm": "Confirm",
-    "no_data": "No data"
+    "no_data": "No data",
+    "back": "Back",
+    "action": "Action",
+    "edit": "Edit",
+    "save": "Save",
+    "backToDetail": "Back to Detail",
+    "approve": "Approve",
+    "reject": "Reject",
+    "unknown": "Unknown",
+    "noNote": "No note available"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -209,7 +218,10 @@
     "failed": "Failed",
     "disable": "Disable",
     "imported": "Import completed",
-    "importFailed": "Storage Failed"
+    "importFailed": "Storage Failed",
+    "preparing": "Preparing",
+    "waitingExport": "Waiting for Export",
+    "exported": "Exported"
   },
   "navbar": {
     "search_placeholder": "What are you looking for?",
@@ -859,5 +871,118 @@
     "quantity": "Quantity",
     "price": "Price",
     "receiptType": "Receipt Type"
+  },
+  "fuelStorage": {
+    "confirmTitle": {
+      "approve": "Confirm approval",
+      "cancel": "Confirm cancellation"
+    },
+    "confirmContent": {
+      "approve": "Are you sure you want to approve this receipt?",
+      "cancel": "Are you sure you want to cancel this receipt?"
+    },
+    "confirm": {
+      "okText": "Confirm",
+      "cancelText": "Cancel"
+    },
+    "updateSuccess": "Status updated successfully: {{status}}",
+    "updateFail": "Failed to update status!",
+    "serverError": "Unable to connect to server!",
+    "noDataToExport": "No data available for export!",
+    "columns": {
+      "manager": "Manager",
+      "receiptType": "Receipt Type",
+      "storage": "Storage",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "quantity": "Quantity",
+      "note": "Note",
+      "action": "Action"
+    },
+    "unknown": "Unknown",
+    "receiptType": {
+      "supply": "Supply",
+      "request": "Request"
+    },
+    "noDataShort": "N/A",
+    "drawerTitle": "Receipt Details",
+    "back": "Back",
+    "title": "Fuel Storage Receipts",
+    "approve": "Approve"
+  },
+  "materialBatch": {
+    "title": "Raw Material Batch Management",
+    "batchId": "Batch ID",
+    "batchName": "Batch Name",
+    "fuelType": "Fuel Type",
+    "quantity": "Quantity (Kg)",
+    "storage": "Storage",
+    "status": "Status",
+    "note": "Note",
+    "createExportOrder": "Create Export Order",
+    "updateTitle": "Update Raw Material Batch",
+    "detailTitle": "Batch Detail",
+    "estimatedProduction": "Estimated Production (Kg)",
+    "requiredMaterialEstimate": "Estimated Required Material (Kg)",
+    "selectFuelType": "Select Fuel Type",
+    "enterEstimatedProduction": "Enter estimated production",
+    "selectStorage": "Select Storage"
+  },
+  "validation": {
+    "requiredBatchId": "Please enter the batch ID",
+    "requiredBatchName": "Please enter the batch name",
+    "requiredFuelType": "Please select a fuel type",
+    "requiredProduction": "Please enter the estimated production!",
+    "requiredStorage": "Please select a storage",
+    "requiredBatch": "Please select a batch",
+    "requiredProductionOrder": "Please select a production request",
+    "requiredExportName": "Please enter the export order name"
+  },
+  "messages": {
+    "notLoggedIn": "You are not logged in.",
+    "userIdNotFound": "User ID not found.",
+    "userFetchFailed": "Could not retrieve user information.",
+    "userFetchError": "Error fetching user information from server.",
+    "dataFetchError": "Error loading data from server.",
+    "userNotFound": "User information not found.",
+    "unknownError": "Unknown error occurred!",
+    "createSuccess": "Export order created successfully!",
+    "fetchExportListError": "Failed to load export list!",
+    "connectionError": "Unable to connect to server!",
+    "approveSuccess": "Order approved successfully",
+    "approveError": "Failed to approve order or update status!",
+    "notFound": "Export order not found!",
+    "fetchDetailError": "Failed to retrieve export order details!",
+    "deleteSuccess": "Order deleted successfully",
+    "deleteError": "Failed to delete order"
+  },
+  "materialExport": {
+    "title": "Create Material Export Order",
+    "createdBy": "Created by:",
+    "selectBatch": "Select Raw Material Batch",
+    "selectBatchPlaceholder": "Choose a batch",
+    "selectProduction": "Select Production Request",
+    "selectProductionPlaceholder": "Choose a production request",
+    "exportName": "Export Order Name",
+    "exportNamePlaceholder": "Enter export order name",
+    "exportType": "Export Type",
+    "productionType": "Production Order",
+    "note": "Note",
+    "notePlaceholder": "Enter note"
+  },
+  "materialExportList": {
+    "title": "Material Export Management",
+    "exportType": "Export Type",
+    "productionRequest": "Production Request",
+    "batch": "Raw Material Batch",
+    "status": "Status",
+    "detailTitle": "Export Order Detail",
+    "createdBy": "Created by",
+    "batchName": "Batch Name",
+    "batchId": "Batch ID",
+    "exportName": "Export Name",
+    "createdDate": "Created Date",
+    "note": "Note"
   }
 }
