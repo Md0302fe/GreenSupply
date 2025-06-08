@@ -4,8 +4,11 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { Column } from "@ant-design/plots";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const DashboardProductionProcess = () => {
+  const { t } = useTranslation();
+
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const userRedux = useSelector((state) => state.user);
@@ -33,7 +36,6 @@ const DashboardProductionProcess = () => {
     setLoading(false);
   };
 
-
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -53,9 +55,9 @@ const DashboardProductionProcess = () => {
   };
 
   const chartData = [
-    { type: "Chờ duyệt", value: dashboardData?.waiting || 0 },
-    { type: "Đang sản xuất", value: dashboardData?.processing || 0 },
-    { type: "Hoàn thành", value: dashboardData?.done || 0 },
+    { type: t("status.pending"), value: dashboardData?.waiting || 0 },
+    { type: t("status.processing"), value: dashboardData?.processing || 0 },
+    { type: t("status.completed"), value: dashboardData?.done || 0 },
   ];
 
   const chartConfig = {
@@ -77,7 +79,7 @@ const DashboardProductionProcess = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">Dashboard Quy Trình Sản Xuất</h1>
+        <h1 className="text-3xl font-bold">{t("dashboardProduction.title")}</h1>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -89,7 +91,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <span className="flex items-center gap-2 text-gray-600 text-sm">
-                📝 <span>Chờ Duyệt</span>
+                📝 <span>{t("status.pending")}</span>
               </span>
             }
             value={dashboardData?.waiting || 0}
@@ -105,7 +107,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <span className="flex items-center gap-2 text-gray-600 text-sm">
-                ⚙️ <span>Đang Sản Xuất</span>
+                ⚙️ <span>{t("status.processing")}</span>
               </span>
             }
             value={dashboardData?.processing || 0}
@@ -121,7 +123,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <span className="flex items-center gap-2 text-gray-600 text-sm">
-                ✅ <span>Hoàn Thành</span>
+                ✅ <span>{t("status.completed")}</span>
               </span>
             }
             value={dashboardData?.done || 0}
@@ -133,7 +135,7 @@ const DashboardProductionProcess = () => {
       {/* 🔷 Biểu đồ trạng thái quy trình */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">
-          Biểu đồ trạng thái quy trình
+          {t("dashboardProduction.chartTitle")}
         </h2>
         <Column {...chartConfig} />
       </div>

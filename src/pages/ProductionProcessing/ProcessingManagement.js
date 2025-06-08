@@ -10,15 +10,17 @@ import {
 import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 const ProcessingManagement = () => {
+  const { t } = useTranslation();
+
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const [type_process, set_type_process] = useState("single");
   const [dataProcessing, setDataProcessing] = useState([]);
   const [singleProcessData, setSingleProcessData] = useState([]);
-
   // Fetch data từ API
   const fetchGetAllExecuteProcess = async () => {
     const access_token = user?.access_token;
@@ -45,7 +47,7 @@ const ProcessingManagement = () => {
     if (response?.success) {
       setDataProcessing(response?.requests || []);
     } else {
-      message.error("Có lỗi trong quá trình tải dữ liệu quy trình");
+      message.error(t("processingManagement.message.loadError"));
     }
   };
 
@@ -78,20 +80,20 @@ const ProcessingManagement = () => {
                   d="M15 12H3m0 0l6-6m-6 6l6 6"
                 />
               </svg>
-              Quay lại
+              {t("processingManagement.button.back")}
             </Button>
           </div>
 
           <h5 className="content-title font-bold text-2xl text-center flex items-center justify-center gap-2">
             <Cog6ToothIcon className="w-8 h-8 animate-spin text-gray-600" />
-            Quy Trình Đang Thực Thi
+            {t("processingManagement.title.executingProcesses")}
           </h5>
         </div>
 
         {/* type of process */}
         <div className="px-20">
           <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-fit">
-            <p>Phân loại quy trình</p>
+            <p>{t("processingManagement.label.processType")}</p>
             <div className="flex gap-2 mt-2">
               <span
                 className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
@@ -101,7 +103,7 @@ const ProcessingManagement = () => {
                 }`}
                 onClick={handleSingleLoadData}
               >
-                Quy trình đơn
+                {t("processingManagement.button.single")}
               </span>
               <span
                 className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
@@ -111,7 +113,7 @@ const ProcessingManagement = () => {
                 }`}
                 onClick={() => handleLoadConsolidate()}
               >
-                Quy trình tổng hợp
+                {t("processingManagement.button.consolidated")}
               </span>
             </div>
           </div>
@@ -119,7 +121,13 @@ const ProcessingManagement = () => {
 
         <div className="grid grid-cols-3 gap-4 mx-auto px-20 py-8">
           {dataProcessing?.map((process, index) => {
-            return <ProcessingComponent key={index} type={type_process} data={process} />;
+            return (
+              <ProcessingComponent
+                key={index}
+                type={type_process}
+                data={process}
+              />
+            );
           })}
         </div>
       </div>

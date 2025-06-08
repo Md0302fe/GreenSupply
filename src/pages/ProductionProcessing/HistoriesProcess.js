@@ -8,15 +8,29 @@ import React, { useEffect, useRef, useState } from "react";
 import Loading from "../../components/LoadingComponent/Loading";
 import { getHistoriesProcess } from "../../services/ProductionProcessingServices";
 import Highlighter from "react-highlight-words";
+import { useTranslation } from "react-i18next";
 
 const HistoriesProcess = () => {
+  const { t } = useTranslation();
+
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const searchInput = useRef(null);
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
+    "Hoàn thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+    "Nhập kho thành công": "imported",
+    "Đang sản xuất": "in_production",
+  };
   // Fetch data từ API
   const fetchHistoriesProcess = async () => {
     const access_token = user?.access_token;
@@ -88,7 +102,7 @@ const HistoriesProcess = () => {
               width: 90,
             }}
           >
-            Search
+            {t("common.search")}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -97,7 +111,7 @@ const HistoriesProcess = () => {
               width: 90,
             }}
           >
-            Reset
+            {t("common.reset")}
           </Button>
           <Button
             type="link"
@@ -106,7 +120,7 @@ const HistoriesProcess = () => {
               close();
             }}
           >
-            close
+            {t("common.close")}
           </Button>
         </Space>
       </div>
@@ -154,34 +168,34 @@ const HistoriesProcess = () => {
 
   const columns = [
     {
-      title: "Mã quy trình",
+      title: t("histories.field.processCode"),
       dataIndex: "processCode",
       key: "processCode",
       ...getColumnSearchProps("processCode"),
     },
     {
-      title: "Tên quy trình",
+      title: t("histories.field.processName"),
       dataIndex: "processName",
       key: "processName",
       ...getColumnSearchProps("processName"),
       sorter: (a, b) => a?.full_name.length - b?.full_name.length,
     },
     {
-      title: "Bắt đầu",
+      title: t("histories.field.start"),
       dataIndex: "start_time",
       key: "start_time",
       sorter: true,
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
-      title: "Kết thúc",
+      title: t("histories.field.end"),
       dataIndex: "end_time",
       key: "end_time",
       sorter: true,
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
-      title: "Trạng thái",
+      title: t("histories.field.status"),
       dataIndex: "status",
       key: "status",
       render: (status) => {
@@ -189,13 +203,13 @@ const HistoriesProcess = () => {
         if (status === "Hoàn thành") color = "green"; // Tím
         return (
           <Tag color={color} style={{ fontWeight: 600 }}>
-            {status}
+            {t(`status.${statusMap[status]}`) || status}
           </Tag>
         );
       },
     },
     {
-      title: "Hành động",
+      title: t("histories.field.action"),
       key: "action",
       render: (_, record) => (
         <Space>
@@ -206,7 +220,7 @@ const HistoriesProcess = () => {
               navigate(`/system/admin/process_details/${record?.processCode}`)
             }
           >
-            Xem chi tiết
+            {t("histories.button.viewDetails")}
           </Button>
         </Space>
       ),
@@ -215,7 +229,7 @@ const HistoriesProcess = () => {
 
   return (
     <div className="production-processing-list">
-      <h5 className="text-2xl font-bold text-gray-800">Lịch Sử Quy Trình</h5>
+      <h5 className="text-2xl font-bold text-gray-800">{t("histories.title")}</h5>
       <Loading isPending={isLoading}>
         <Table
           columns={columns}

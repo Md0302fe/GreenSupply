@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { FaG, FaGear } from "react-icons/fa6";
+import { Trans, useTranslation } from "react-i18next";
 
 // Hàm lấy danh sách Nguyên liệu
 export const getAllFuelType = async () => {
@@ -32,6 +33,14 @@ const statusColors = {
 };
 
 const ProductionRequestList = () => {
+  const { t } = useTranslation();
+  const statusMap = {
+    "Đã duyệt": "approved",
+    "Đang sản xuất": "in_production",
+    "Đã Hoàn Thành": "completed",
+    "Đang xử lý": "processing",
+    "Vô hiệu hóa": "disabled",
+  };
   const user = useSelector((state) => state.user);
 
   // State quản lý Drawer & chế độ Edit
@@ -110,7 +119,7 @@ const ProductionRequestList = () => {
       >
         <Input
           ref={searchInput}
-          placeholder="Tìm kiếm"
+          placeholder={t("common.search")}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -130,14 +139,14 @@ const ProductionRequestList = () => {
             size="small"
             style={{ width: 70 }}
           >
-            Tìm
+            {t("common.search")}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{ width: 70 }}
           >
-            Đặt lại
+            {t("common.reset")}
           </Button>
           <Button
             type="link"
@@ -145,7 +154,7 @@ const ProductionRequestList = () => {
             onClick={() => clearFilters && confirm()}
             style={{ padding: 0 }}
           >
-            Đóng
+            {t("common.close")}
           </Button>
         </Space>
       </div>
@@ -171,14 +180,14 @@ const ProductionRequestList = () => {
   // Cấu hình cột
   const columns = [
     {
-      title: "Tên kế hoạch",
+      title: t("form.request_name"),
       dataIndex: "request_name",
       key: "request_name",
       ...getColumnSearchProps("request_name"),
       sorter: (a, b) => a.request_name.localeCompare(b.request_name),
     },
     {
-      title: <div className="text-center">K.l Thành phẩm (Kg)</div>,
+      title: <div className="text-center">{t("form.product_quantity")}</div>,
       dataIndex: "product_quantity",
       key: "product_quantity",
       align: "center",
@@ -187,7 +196,7 @@ const ProductionRequestList = () => {
       render: (val) => `${val}`,
     },
     {
-      title: <div className="text-center">K.l Nguyên liệu (Kg)</div>,
+      title: <div className="text-center">{t("form.material_quantity")}</div>,
       dataIndex: "material_quantity",
       key: "material_quantity",
       align: "center",
@@ -196,7 +205,7 @@ const ProductionRequestList = () => {
       render: (val) => `${val}`,
     },
     {
-      title: <div className="text-center">Ngày bắt đầu</div>,
+      title: <div className="text-center">{t("form.production_date")}</div>,
       dataIndex: "production_date",
       key: "production_date",
       align: "center",
@@ -206,7 +215,7 @@ const ProductionRequestList = () => {
       render: (date) => convertDateStringV1(date),
     },
     {
-      title: <div className="text-center">Ngày kết thúc</div>,
+      title: <div className="text-center">{t("form.end_date")}</div>,
       dataIndex: "end_date",
       key: "end_date",
       align: "center",
@@ -215,20 +224,24 @@ const ProductionRequestList = () => {
       render: (date) => convertDateStringV1(date),
     },
     {
-      title: <div className="text-center">Trạng thái</div>,
+      title: <div className="text-center">{t("form.status")}</div>,
       dataIndex: "status",
       key: "status",
       align: "center",
       className: "text-center",
       filters: [
-        { text: "Đang sản xuất", value: "Đang sản xuất" },
-        { text: "Đã duyệt", value: "Đã duyệt" },
+        { text: t("status.in_production"), value: "Đang sản xuất" },
+        { text: t("status.approve"), value: "Đã duyệt" },
       ],
       onFilter: (value, record) => record.status === value,
-      render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
+      render: (stt) => (
+        <Tag color={statusColors[stt] || "default"}>
+          {t(`status.${statusMap[stt]}`) || stt}
+        </Tag>
+      ),
     },
     {
-      title: <div className="text-center">Hành động</div>,
+      title: <div className="text-center">{t("common.action")}</div>,
       key: "action",
       align: "center",
       className: "text-center",
@@ -294,42 +307,40 @@ const ProductionRequestList = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("common.back")}
           </Button>
         </div>
         <h5 className="content-title font-bold text-2xl text-center">
-          Danh Sách Kế Hoạch Chờ Tạo Quy Trình
+          {t("page.title")}
         </h5>
       </div>
       {/* Notifications Tạo Quy Trình */}
-      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2">
-        <p>
-          <strong>Tạo Quy Trình :</strong>
-        </p>
-        <p className="flex items-center gap-2">
+      <p className="flex items-center gap-2">
+        <Trans i18nKey="hint.create_plan_process">
           + Tạo quy trình
           <span className="font-medium text-blue-600">(kế hoạch)</span> bằng
-          cách click vào biểu tượng{" "}
-          <span className=" inline-block text-green-600 transition-transform duration-300 group-hover:rotate-180 cursor-pointer">
-            <FaGear />
-          </span>
-        </p>
-        <p className="flex items-center gap-2">
-          + Tạo quy trình{" "}
+          cách click vào biểu tượng
+        </Trans>
+        <span className="inline-block text-green-600 transition-transform duration-300 group-hover:rotate-180 cursor-pointer">
+          <FaGear />
+        </span>
+      </p>
+
+      <p className="flex items-center gap-2">
+        <Trans i18nKey="hint.create_batch_process">
+          + Tạo quy trình
           <span className="font-medium text-green-600">(tổng hợp)</span> bằng
-          cách chọn vào nút{" "}
-          <span
-            className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
-            onClick={() =>
-              navigate(
-                "/system/admin/production-processing/consolidated-create"
-              )
-            }
-          >
-            Tạo Quy Trình Tổng Hợp
-          </span>
-        </p>
-      </div>
+          cách chọn vào nút
+        </Trans>
+        <span
+          className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
+          onClick={() =>
+            navigate("/system/admin/production-processing/consolidated-create")
+          }
+        >
+          {t("action.create_batch_process")}
+        </span>
+      </p>
 
       <Loading isPending={isLoading}>
         <Table
@@ -340,7 +351,7 @@ const ProductionRequestList = () => {
       </Loading>
 
       <DrawerComponent
-        title="Chi tiết kế hoạch sản xuất"
+        title={t("drawer.detail_title")}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
@@ -352,69 +363,70 @@ const ProductionRequestList = () => {
             <div className="border border-gray-300 rounded-lg overflow-hidden">
               <div className="grid grid-cols-2 gap-0">
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Tên kế hoạch
+                  {t("form.request_name")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.request_name}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Loại kế hoạch
+                  {t("form.request_type")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.request_type}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Nguyên liệu (ID)
+                  {t("form.material_id")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Thành phẩm (Kg)
+                  {t("form.product_quantity")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.product_quantity} Kg
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Nguyên liệu (Kg)
+                  {t("form.material_quantity")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material_quantity} Kg
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Ngày sản xuất
+                  {t("form.production_date")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {convertDateStringV1(selectedRequest.production_date)}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Ngày kết thúc
+                  {t("form.end_date")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {convertDateStringV1(selectedRequest.end_date)}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Trạng thái
+                  {t("form.status")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   <Tag
                     color={statusColors[selectedRequest.status] || "default"}
                   >
-                    {selectedRequest.status}
+                    {t(`status.${statusMap[selectedRequest.status]}`) ||
+                      selectedRequest.status}
                   </Tag>
                 </div>
 
                 {selectedRequest.note && (
                   <>
                     <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                      Ghi chú
+                      {t("form.note")}
                     </div>
                     <div className="p-3 border border-gray-300 whitespace-pre-wrap">
                       {selectedRequest.note}
@@ -431,7 +443,7 @@ const ProductionRequestList = () => {
                   className="px-6 py-2 text-lg"
                   onClick={() => navigate(`create/${selectedRequest._id}`)}
                 >
-                  Tạo quy trình
+                  {t("action.create_process")}
                 </Button>
               </div>
             )}

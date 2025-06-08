@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
-
+import { useTranslation } from "react-i18next";
 // Hàm lấy danh sách Nguyên liệu
 export const getAllFuelType = async () => {
   const res = await axios.get(
@@ -46,7 +46,19 @@ const statusColors = {
 
 const ProductionRequestList = () => {
   const user = useSelector((state) => state.user);
-
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
+    "Hoàn Thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+    "Nhập kho thành công": "imported",
+    "Đang sản xuất": "in_production",
+  };
+  const { t } = useTranslation();
   // State quản lý Drawer & chế độ Edit
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -74,7 +86,7 @@ const ProductionRequestList = () => {
         const data = await getAllFuelType();
         setFuelTypes(data.requests || []);
       } catch (error) {
-        message.error("Có lỗi xảy ra khi tải danh sách Nguyên liệu.");
+        message.error(t("message.fuel_load_error"));
       } finally {
         setFuelLoading(false);
       }
@@ -119,17 +131,17 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.updateProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success("Cập nhật đơn thành công!");
+        message.success(t("message.update_success"));
         refetchRequests();
         setIsEditMode(false);
         setIsDrawerOpen(false);
       } else {
-        message.error("Cập nhật đơn thất bại!");
+        message.error(t("message.update_fail"));
       }
     },
     onError: (err) => {
       console.log("Update error:", err);
-      message.error("Có lỗi xảy ra khi cập nhật!");
+      message.error(t("message.update_error"));
     },
   });
 
@@ -138,15 +150,15 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.deleteProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success("Xóa đơn thành công!");
+        message.success(t("message.delete_success"));
         refetchRequests(); // gọi lại để cập nhật danh sách
       } else {
-        message.error("Xóa đơn thất bại!");
+        message.error(t("message.delete_fail"));
       }
     },
     onError: (err) => {
       console.log("Delete error:", err);
-      message.error("Có lỗi xảy ra khi xóa!");
+      message.error(t("message.delete_error"));
     },
   });
 
@@ -159,16 +171,16 @@ const ProductionRequestList = () => {
     })
       .then((res) => {
         if (res?.success) {
-          message.success("Duyệt kế hoạch sản xuất thành công!");
+          message.success(t("message.approve_success"));
           refetchRequests();
           setIsDrawerOpen(false);
         } else {
-          message.error("Duyệt kế hoạch sản xuất thất bại!");
+          message.error(t("message.approve_fail"));
         }
       })
       .catch((err) => {
         console.log(err);
-        message.error("Có lỗi xảy ra!");
+        message.error(t("message.common_error"));
       });
   };
 
@@ -183,10 +195,10 @@ const ProductionRequestList = () => {
   // Hàm hiển thị popup confirm
   const confirmDelete = (record) => {
     Modal.confirm({
-      title: "Xác nhận xóa",
-      content: "Bạn có chắc chắn muốn xóa đơn sản xuất này?",
-      okText: "Đồng ý",
-      cancelText: "Hủy",
+      title: t("modal.delete_confirm_title"),
+      content: t("modal.delete_confirm_content"),
+      okText: t("common.ok"),
+      cancelText: t("common.cancel"),
       onOk: () => handleDelete(record),
     });
   };
@@ -212,9 +224,7 @@ const ProductionRequestList = () => {
     if (available > 0 && needed > available) {
       // Vượt quá
       const maxProduction = Math.floor(available * 0.9);
-      message.warning(
-        `Sản lượng mong muốn vượt quá số Nguyên liệu. Sản lượng tối đa là ${maxProduction} Kg.`
-      );
+      message.warning(t("warning.over_fuel", { max: maxProduction }));
       form.setFieldsValue({
         product_quantity: maxProduction,
         material_quantity: Math.ceil(maxProduction / 0.9),
@@ -303,7 +313,7 @@ const ProductionRequestList = () => {
       >
         <Input
           ref={searchInput}
-          placeholder="Tìm kiếm"
+          placeholder={t("common.search")}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -323,14 +333,14 @@ const ProductionRequestList = () => {
             size="small"
             style={{ width: 70 }}
           >
-            Tìm
+            {t("common.search")}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{ width: 70 }}
           >
-            Đặt lại
+            {t("common.reset")}
           </Button>
           <Button
             type="link"
@@ -338,7 +348,7 @@ const ProductionRequestList = () => {
             onClick={() => clearFilters && confirm()}
             style={{ padding: 0 }}
           >
-            Đóng
+            {t("common.close")}
           </Button>
         </Space>
       </div>
@@ -364,14 +374,14 @@ const ProductionRequestList = () => {
   // Cấu hình cột
   const columns = [
     {
-      title: "Tên đơn",
+      title: t("table.request_name"),
       dataIndex: "request_name",
       key: "request_name",
       ...getColumnSearchProps("request_name"),
       sorter: (a, b) => a.request_name.localeCompare(b.request_name),
     },
     {
-      title: <div className="text-center">K.l Thành phẩm (Kg)</div>,
+      title: <div className="text-center">{t("table.product_quantity")}</div>,
       dataIndex: "product_quantity",
       key: "product_quantity",
       align: "center",
@@ -380,7 +390,7 @@ const ProductionRequestList = () => {
       render: (val) => `${val}`,
     },
     {
-      title: <div className="text-center">K.l Nguyên liệu (Kg)</div>,
+      title: <div className="text-center">{t("table.material_quantity")}</div>,
       dataIndex: "material_quantity",
       key: "material_quantity",
       align: "center",
@@ -389,7 +399,7 @@ const ProductionRequestList = () => {
       render: (val) => `${val} `,
     },
     {
-      title: <div className="text-center">Ngày bắt đầu</div>,
+      title: <div className="text-center">{t("table.production_date")}</div>,
       dataIndex: "production_date",
       key: "production_date",
       align: "center",
@@ -399,7 +409,7 @@ const ProductionRequestList = () => {
       render: (date) => convertDateStringV1(date),
     },
     {
-      title: <div className="text-center">Ngày kết thúc</div>,
+      title: <div className="text-center">{t("table.end_date")}</div>,
       dataIndex: "end_date",
       key: "end_date",
       align: "center",
@@ -408,20 +418,24 @@ const ProductionRequestList = () => {
       render: (date) => convertDateStringV1(date),
     },
     {
-      title: <div className="text-center">Trạng thái</div>,
+      title: <div className="text-center">{t("table.status")}</div>,
       dataIndex: "status",
       align: "center",
       className: "text-center",
       key: "status",
       filters: [
-        { text: "Chờ duyệt", value: "Chờ duyệt" },
-        { text: "Đã duyệt", value: "Đã duyệt" },
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đã duyệt" },
       ],
       onFilter: (value, record) => record.status === value,
-      render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
+      render: (stt) => (
+        <Tag color={statusColors[stt] || "default"}>
+          {t(`status.${statusMap[stt]}`) || stt}
+        </Tag>
+      ),
     },
     {
-      title: <div className="text-center">Hành động</div>,
+      title: <div className="text-center">{t("table.actions")}</div>,
       key: "action",
       render: (record) => (
         <div className="flex justify-center items-center gap-2">
@@ -510,33 +524,29 @@ const ProductionRequestList = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("common.back")}
           </Button>
         </div>
         <h5 className="content-title font-bold text-2xl text-center">
-          Danh sách kế hoạch sản xuất
+          {t("productionRequestManagement.title")}
         </h5>
       </div>
 
       {/* Notifications Tạo Quy Trình */}
       <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2">
         <div className="flex items-center justify-between gap-2">
-          <p>
-            Sau khi <span className="font-bold text-yellow-300">Duyệt</span> các
-            kế hoạch / các kế hoạch sẽ được đưa vào hàng chờ sản xuất
-          </p>
+          <p>{t("notification.after_approve")}</p>
           <p
             className="font-semibold text-black bg-yellow-300 px-2 py-1 rounded-lg cursor-pointer 
              shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-200 ease-in-out"
             onClick={() => navigate("/system/admin/production-processing")}
           >
-            Hàng Chờ Sản Xuất
+            {t("notification.production_queue")}
           </p>
         </div>
       </div>
 
       <Loading isPending={isLoading || fuelLoading}>
-        
         <Table
           columns={columns}
           dataSource={tableData}
@@ -545,7 +555,7 @@ const ProductionRequestList = () => {
       </Loading>
 
       <DrawerComponent
-        title="Chi tiết đơn sản xuất"
+        title={t("drawer.detail_title")}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
@@ -561,69 +571,69 @@ const ProductionRequestList = () => {
             <div className="border border-gray-300 rounded-lg overflow-hidden">
               <div className="grid grid-cols-[3fr_7fr] gap-0">
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Tên đơn
+                  {t("form.request_name")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.request_name}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Loại đơn
+                  {t("form.request_type")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.request_type}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Nguyên liệu
+                  {t("form.material")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Thành phẩm (Kg)
+                  {t("form.product_quantity")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.product_quantity} Kg
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Nguyên liệu (Kg)
+                  {t("form.material_quantity")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material_quantity} Kg
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Ngày sản xuất
+                  {t("form.production_date")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {convertDateStringV1(selectedRequest.production_date)}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Ngày kết thúc
+                  {t("form.end_date")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   {convertDateStringV1(selectedRequest.end_date)}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  Trạng thái
+                  {t("form.status")}
                 </div>
                 <div className="p-3 border border-gray-300">
                   <Tag
                     color={statusColors[selectedRequest.status] || "default"}
                   >
-                    {selectedRequest.status}
+                    {t(`status.${statusMap[selectedRequest.status]}`)}
                   </Tag>
                 </div>
 
                 {selectedRequest.note && (
                   <>
                     <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                      Ghi chú
+                      {t("form.note")}
                     </div>
                     <div className="p-3 border border-gray-300 whitespace-pre-wrap">
                       {selectedRequest.note}
@@ -640,7 +650,7 @@ const ProductionRequestList = () => {
                 className="px-6 py-2 text-lg"
                 onClick={handleEdit}
               >
-                Chỉnh sửa
+                {t("action.edit")}
               </Button>
               {selectedRequest.status === "Chờ duyệt" && (
                 <Button
@@ -648,7 +658,7 @@ const ProductionRequestList = () => {
                   className="px-6 py-2 text-lg"
                   onClick={() => handleApprove(selectedRequest)}
                 >
-                  Duyệt
+                  {t("action.approve")}
                 </Button>
               )}
             </div>
@@ -674,34 +684,34 @@ const ProductionRequestList = () => {
                 color: "#333",
               }}
             >
-              Cập nhật đơn
+              {t("form.update_title")}
             </h2>
 
             <Form form={form} layout="vertical">
               {/* Tên đơn (bắt buộc) */}
               <Form.Item
-                label="Tên đơn"
+                label={t("form.request_name")}
                 name="request_name"
-                rules={[{ required: true, message: "Vui lòng nhập tên đơn" }]}
+                rules={[
+                  { required: true, message: t("validate.request_name") },
+                ]}
               >
                 <Input />
               </Form.Item>
 
               {/* Loại đơn: có thể cho sửa nếu muốn */}
-              <Form.Item label="Loại đơn" name="request_type">
+              <Form.Item label={t("form.request_type")} name="request_type">
                 <Input />
               </Form.Item>
 
               {/* Chọn Nguyên liệu */}
               <Form.Item
-                label="Nguyên liệu"
+                label={t("form.material")}
                 name="material"
-                rules={[
-                  { required: true, message: "Vui lòng chọn Nguyên liệu" },
-                ]}
+                rules={[{ required: true, message: t("validate.material") }]}
               >
                 <Select
-                  placeholder="Chọn loại Nguyên liệu"
+                  placeholder={t("placeholder.select_material")}
                   onChange={handleFuelChange}
                 >
                   {fuelTypes.map((fuel) => (
@@ -714,9 +724,11 @@ const ProductionRequestList = () => {
 
               {/* Thành phẩm -> Tự tính nguyên liệu */}
               <Form.Item
-                label="Kl Thành phẩm (Kg)"
+                label={t("form.product_quantity")}
                 name="product_quantity"
-                rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+                rules={[
+                  { required: true, message: t("form.product_quantity") },
+                ]}
               >
                 <InputNumber
                   className="w-full"
@@ -726,17 +738,18 @@ const ProductionRequestList = () => {
               </Form.Item>
 
               {/* Nguyên liệu (Kg) -> disabled */}
-              <Form.Item label="Nguyên liệu (Kg)" name="material_quantity">
+              <Form.Item
+                label={t("form.material_quantity")}
+                name="material_quantity"
+              >
                 <InputNumber className="w-full" disabled />
               </Form.Item>
 
               {/* Ngày sản xuất -> DatePicker */}
               <Form.Item
-                label="Ngày sản xuất"
+                label={t("form.production_date")}
                 name="production_date"
-                rules={[
-                  { required: true, message: "Vui lòng chọn ngày sản xuất" },
-                ]}
+                rules={[{ required: true, message: t("form.production_date") }]}
               >
                 <DatePicker
                   format="DD/MM/YYYY"
@@ -747,12 +760,10 @@ const ProductionRequestList = () => {
 
               {/* Ngày kết thúc -> DatePicker */}
               <Form.Item
-                label="Ngày kết thúc"
+                label={t("form.end_date")}
                 name="end_date"
                 dependencies={["production_date"]}
-                rules={[
-                  { required: true, message: "Vui lòng chọn ngày kết thúc" },
-                ]}
+                rules={[{ required: true, message: t("form.end_date") }]}
               >
                 <DatePicker
                   format="DD/MM/YYYY"
@@ -762,20 +773,31 @@ const ProductionRequestList = () => {
               </Form.Item>
 
               {/* Trạng thái -> disable */}
-              <Form.Item label="Trạng thái" name="status">
+              <Form.Item label={t("form.status")} name="status">
                 <Select disabled>
-                  <Select.Option value="Chờ duyệt">Chờ duyệt</Select.Option>
-                  <Select.Option value="Đang xử lý">Đang xử lý</Select.Option>
-                  <Select.Option value="Từ chối">Từ chối</Select.Option>
-                  <Select.Option value="Đã huỷ">Đã huỷ</Select.Option>
+                  <Select.Option value="Chờ duyệt">
+                    {t("status.pending")}
+                  </Select.Option>
+                  <Select.Option value="Đang xử lý">
+                    {t("status.processing")}
+                  </Select.Option>
+                  <Select.Option value="Từ chối">
+                    {t("status.reject")}
+                  </Select.Option>
+                  <Select.Option value="Đã huỷ">
+                    {t("status.canceled")}
+                  </Select.Option>
                   <Select.Option value="Đã Hoàn Thành">
-                    Đã Hoàn Thành
+                    {t("status.completed")}
+                  </Select.Option>
+                  <Select.Option value="Đang sản xuất">
+                    {t("status.in_production")}
                   </Select.Option>
                 </Select>
               </Form.Item>
 
               {/* Ghi chú */}
-              <Form.Item label="Ghi chú" name="note">
+              <Form.Item label={t("form.note")} name="note">
                 <Input.TextArea rows={3} />
               </Form.Item>
             </Form>
@@ -786,13 +808,13 @@ const ProductionRequestList = () => {
                 onClick={handleSaveUpdate}
                 loading={mutationUpdate.isLoading}
               >
-                Lưu
+                {t("action.save")}
               </Button>
               <Button
                 onClick={handleCancelEdit}
                 disabled={mutationUpdate.isLoading}
               >
-                Hủy
+                {t("action.cancel")}
               </Button>
             </Space>
           </div>

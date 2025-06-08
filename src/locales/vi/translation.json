@@ -59,6 +59,7 @@
   "logout": "Đăng xuất",
   "account": "Tài khoản",
   "export_excel": "Xuất Excel",
+  "create_process": "Tạo quy trình",
   "carousel": {
     "view_more": "Xem thêm",
     "title_2": "TUYỂN CHỌN KỸ CÀNG",
@@ -102,7 +103,10 @@
     "noNote": "Không có ghi chú",
     "viewDetail": "Xem chi tiết",
     "enterQuantity": "Nhập số lượng...",
-    "enterNote": "Nhập ghi chú..."
+    "enterNote": "Nhập ghi chú...",
+    "ok": "Đồng ý",
+    "reset": "Đặt lại",
+    "notEnded": "Chưa kết thúc"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -221,7 +225,8 @@
     "importFailed": "Nhập kho thất bại",
     "preparing": "Đang chuẩn bị",
     "waitingExport": "Chờ xuất kho",
-    "exported": "Đã xuất kho"
+    "exported": "Đã xuất kho",
+    "in_production": "Đang sản xuất"
   },
   "navbar": {
     "search_placeholder": "Bạn đang tìm kiếm gì?",
@@ -729,7 +734,13 @@
     "supplier": "Nhà cung cấp",
     "status": "Trạng thái",
     "quantity": "Số lượng",
-    "created_at": "Ngày tạo"
+    "created_at": "Ngày tạo",
+    "request_name": "Tên đơn",
+    "product_quantity": "K.l Thành phẩm (Kg)",
+    "material_quantity": "K.l Nguyên liệu (Kg)",
+    "production_date": "Ngày bắt đầu",
+    "end_date": "Ngày kết thúc",
+    "actions": "Hành động"
   },
   "fuel_request": {
     "back": "Quay lại",
@@ -936,7 +947,16 @@
     "requiredStorage": "Vui lòng chọn kho lưu trữ",
     "requiredBatch": "Vui lòng chọn lô nguyên liệu",
     "requiredProductionOrder": "Vui lòng chọn đơn sản xuất",
-    "requiredExportName": "Vui lòng nhập tên đơn xuất kho"
+    "requiredExportName": "Vui lòng nhập tên đơn xuất kho",
+    "planNameRequired": "Vui lòng nhập tên kế hoạch",
+    "materialRequired": "Vui lòng chọn Loại Nguyên liệu",
+    "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
+    "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
+    "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+    "productionDateRequired": "Vui lòng chọn ngày sản xuất",
+    "endDateRequired": "Vui lòng chọn ngày kết thúc",
+    "mustBeGreaterThanZero": "Giá trị phải lớn hơn 0",
+    "lossPercentageRange": "Phần trăm phải từ 0 đến 100"
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -946,7 +966,7 @@
     "dataFetchError": "Lỗi khi tải dữ liệu từ server.",
     "userNotFound": "Không tìm thấy thông tin người dùng.",
     "unknownError": "Lỗi không xác định!",
-    "createSuccess": "Tạo đơn xuất kho thành công!",
+    "createSuccess": "Tạo đơn thành công!",
     "fetchExportListError": "Lỗi khi lấy danh sách đơn xuất kho!",
     "connectionError": "Không thể kết nối đến server!",
     "approveSuccess": "Duyệt đơn thành công",
@@ -954,7 +974,13 @@
     "notFound": "Không tìm thấy đơn xuất kho!",
     "fetchDetailError": "Lỗi khi lấy chi tiết đơn xuất kho!",
     "deleteSuccess": "Xóa đơn thành công",
-    "deleteError": "Xóa đơn thất bại"
+    "deleteError": "Xóa đơn thất bại",
+    "fetchFuelError": "Có lỗi xảy ra khi tải danh sách Nguyên liệu.",
+    "selectFuelFirst": "Vui lòng chọn loại Nguyên liệu trước khi nhập sản lượng mong muốn.",
+    "materialOverLimit": "Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là {{max}} Kg.",
+    "materialStockExceeded": "Số lượng nguyên liệu vượt quá số lượng tồn kho hiện tại ({{available}} Kg).",
+    "createFail": "Tạo Production Request thất bại!",
+    "submitError": "Có lỗi xảy ra khi tạo Production Request."
   },
   "materialExport": {
     "title": "Tạo Đơn Xuất Kho",
@@ -999,5 +1025,229 @@
     "createdDate": "Ngày Tạo Lô",
     "exportDate": "Ngày Xuất Lô",
     "note": "Ghi chú"
+  },
+  "dashboardProduction": {
+    "title": "Dashboard Quy Trình Sản Xuất",
+    "chartTitle": "Biểu đồ trạng thái quy trình"
+  },
+  "productionRequest": {
+    "title": "Lập Kế Hoạch Sản Xuất",
+    "planList": "Danh sách kế hoạch",
+    "name": "Tên kế hoạch",
+    "namePlaceholder": "Nhập tên kế hoạch",
+    "material": "Loại Nguyên liệu",
+    "selectMaterial": "Chọn Loại Nguyên liệu",
+    "materialQty": "Số lượng nguyên liệu (kg)",
+    "enterMaterialQty": "Nhập số lượng nguyên liệu",
+    "loss": "Tỷ lệ hao hụt (%)",
+    "enterLoss": "Nhập tỷ lệ hao hụt",
+    "productQty": "Sản lượng thành phẩm ước tính (kg)",
+    "priority": "Mức độ ưu tiên",
+    "selectPriority": "Chọn mức độ ưu tiên",
+    "productionDate": "Ngày sản xuất",
+    "selectProductionDate": "Chọn ngày sản xuất",
+    "endDate": "Ngày kết thúc",
+    "note": "Ghi chú",
+    "enterNote": "Nhập ghi chú (nếu có)"
+  },
+  "priority": {
+    "high": "Cao",
+    "medium": "Trung bình",
+    "low": "Thấp"
+  },
+  "productionRequestManagement": {
+    "title": "Danh sách kế hoạch sản xuất"
+  },
+  "form": {
+    "request_name": "Tên đơn",
+    "request_type": "Loại đơn",
+    "material": "Nguyên liệu",
+    "product_quantity": "Thành phẩm (Kg)",
+    "material_quantity": "Nguyên liệu (Kg)",
+    "production_date": "Ngày sản xuất",
+    "end_date": "Ngày kết thúc",
+    "status": "Trạng thái",
+    "note": "Ghi chú",
+    "update_title": "Cập nhật đơn"
+  },
+  "action": {
+    "edit": "Chỉnh sửa",
+    "approve": "Duyệt",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "create_process": "Tạo quy trình",
+    "create_batch_process": "Tạo Quy Trình Tổng Hợp"
+  },
+  "hint": {
+    "create_plan_process": "+ Tạo quy trình <1>(kế hoạch)</1> bằng cách click vào biểu tượng",
+    "create_batch_process": "+ Tạo quy trình <1>(tổng hợp)</1> bằng cách chọn vào nút"
+  },
+  "modal": {
+    "delete_confirm_title": "Xác nhận xóa",
+    "delete_confirm_content": "Bạn có chắc chắn muốn xóa đơn sản xuất này?"
+  },
+  "warning": {
+    "over_fuel": "Sản lượng mong muốn vượt quá số Nguyên liệu. Sản lượng tối đa là {{max}} Kg."
+  },
+  "drawer": {
+    "detail_title": "Chi tiết đơn sản xuất"
+  },
+  "validate": {
+    "request_name": "Vui lòng nhập tên đơn",
+    "material": "Vui lòng chọn Nguyên liệu",
+    "product_quantity": "Vui lòng nhập số lượng",
+    "production_date": "Vui lòng chọn ngày sản xuất",
+    "end_date": "Vui lòng chọn ngày kết thúc"
+  },
+  "placeholder": {
+    "select_material": "Chọn loại Nguyên liệu"
+  },
+  "notification": {
+    "after_approve": "Sau khi Duyệt các kế hoạch / các kế hoạch sẽ được đưa vào hàng chờ sản xuất",
+    "production_queue": "Hàng Chờ Sản Xuất"
+  },
+  "page": {
+    "title": "Danh Sách Kế Hoạch Chờ Tạo Quy Trình"
+  },
+  "instruction": {
+    "create_plan_process": "+ Tạo quy trình <1>(kế hoạch)</1> bằng cách click vào biểu tượng <3></3>",
+    "create_batch_process": "+ Tạo quy trình <1>(tổng hợp)</1> bằng cách chọn vào nút <3>{{buttonLabel}}</3>"
+  },
+  "productionProcess": {
+    "title": {
+      "list": "Các Quy Trình Đã Tạo"
+    },
+    "button": {
+      "back": "Quay lại",
+      "single": "Quy trình đơn",
+      "consolidated": "Quy trình tổng hợp",
+      "update": "Cập nhật",
+      "approve": "Duyệt",
+      "save": "Lưu",
+      "cancel": "Hủy"
+    },
+    "label": {
+      "processType": "Phân loại quy trình"
+    },
+    "confirm": {
+      "approveTitle": "Xác nhận duyệt quy trình?",
+      "approveContent": "Bạn có chắc muốn duyệt quy trình này không?"
+    },
+    "message": {
+      "approveSuccess": "Duyệt quy trình thành công!",
+      "approveFail": "Duyệt thất bại, vui lòng thử lại.",
+      "updateSuccess": "Cập nhật thành công!",
+      "updateFail": "Cập nhật thất bại, vui lòng thử lại.",
+      "onlyPending": "Chỉ có thể cập nhật đơn ở trạng thái 'Chờ duyệt'!"
+    },
+    "drawer": {
+      "detailTitle": "Chi tiết quy trình sản xuất",
+      "editTitle": "Cập nhật quy trình sản xuất"
+    },
+    "form": {
+      "production_name": "Tên quy trình",
+      "start_time": "Ngày bắt đầu",
+      "end_time": "Ngày kết thúc",
+      "note": "Ghi chú",
+      "validation": {
+        "required": "Vui lòng nhập thông tin!",
+        "startRequired": "Vui lòng chọn ngày bắt đầu!",
+        "endRequired": "Vui lòng chọn ngày kết thúc!",
+        "endAfterStart": "Ngày kết thúc phải sau ngày bắt đầu!"
+      }
+    },
+    "field": {
+      "_id": "Mã quy trình",
+      "production_name": "Tên quy trình",
+      "status": "Trạng thái",
+      "start_time": "Thời gian bắt đầu",
+      "end_time": "Thời gian kết thúc",
+      "note": "Ghi chú",
+      "processed_quantity": "Đã xử lý",
+      "waste_quantity": "Hao hụt",
+      "production_request": "Yêu cầu sản xuất",
+      "stage1": "Giai đoạn 1",
+      "stage2": "Giai đoạn 2",
+      "stage3": "Giai đoạn 3",
+      "stage4": "Giai đoạn 4",
+      "stage5": "Giai đoạn 5",
+      "stage6": "Giai đoạn 6"
+    }
+  },
+  "processingManagement": {
+    "title": {
+      "executingProcesses": "Quy Trình Đang Thực Thi"
+    },
+    "button": {
+      "back": "Quay lại",
+      "single": "Quy trình đơn",
+      "consolidated": "Quy trình tổng hợp"
+    },
+    "label": {
+      "processType": "Phân loại quy trình"
+    },
+    "message": {
+      "loadError": "Có lỗi trong quá trình tải dữ liệu quy trình"
+    }
+  },
+  "histories": {
+    "title": "Lịch Sử Quy Trình",
+    "field": {
+      "processCode": "Mã quy trình",
+      "processName": "Tên quy trình",
+      "start": "Bắt đầu",
+      "end": "Kết thúc",
+      "status": "Trạng thái",
+      "action": "Hành động"
+    },
+    "button": {
+      "viewDetails": "Xem chi tiết"
+    }
+  },
+  "processDetails": {
+    "label": {
+      "status": "Trạng thái:"
+    },
+    "status": {
+      "executing": "Đang thực thi",
+      "waiting": "Đợi thực thi",
+      "done": "Đã hoàn thành"
+    },
+    "info": {
+      "start": "Thời gian bắt đầu",
+      "etaEnd": "Dự kiến kết thúc",
+      "currentStage": "Giai đoạn hiện tại",
+      "status": "Trạng thái",
+      "assignedUser": "Người phụ trách",
+      "note": "Ghi chú"
+    },
+    "stages": {
+      "stage1": "Phân loại nguyên liệu",
+      "stage2": "Rửa và làm sạch",
+      "stage3": "Khử trùng/diệt khuẩn bề mặt",
+      "stage4": "Phủ màng sinh học & làm khô",
+      "stage5": "Ủ chín (kiểm soát nhiệt độ/độ ẩm)",
+      "stage6": "Đóng gói thành phẩm",
+      "stage7": "Ghi nhãn & truy xuất nguồn gốc"
+    },
+    "message": {
+      "completeSuccess": "Xác nhận hoàn thành stage thành công",
+      "completeError": "Hệ thống gặp lỗi trong quá trình hoàn thành quá trình"
+    }
+  },
+  "stage": {
+    "title": "Giai đoạn {{no}}",
+    "field": {
+      "start": "Thời gian bắt đầu",
+      "end": "Thời gian kết thúc",
+      "status": "Trạng thái",
+      "user": "Người phụ trách",
+      "note": "Ghi chú"
+    },
+    "button": {
+      "complete": "Hoàn thành"
+    },
+    "empty": "Quy trình chưa thực thi",
+    "system": "hệ thống"
   }
 }

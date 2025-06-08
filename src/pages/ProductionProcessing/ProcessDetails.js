@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { convertDateStringV1 } from "../../ultils";
 
-
 import { message } from "antd";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
@@ -17,8 +16,11 @@ import {
   getConsolidateProcessStageDetails,
 } from "../../services/ProductionProcessingServices";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 const ProcessDetails = () => {
+  const { t } = useTranslation();
+
   const { process_id } = useParams();
   const user = useSelector((state) => state.user);
 
@@ -83,17 +85,17 @@ const ProcessDetails = () => {
     const response = await ProductionsProcessServices.handleFinishStage({
       process_id,
       noStage,
-      process_type : dataProcess?.data?.process_type,
+      process_type: dataProcess?.data?.process_type,
       stage_id,
       access_token: user?.access_token,
     });
     if (response?.data?.success) {
       // reload quy trình
-      message.success("Xác nhận hoàn thành stage thành công");
+      message.success(t("processDetails.message.completeSuccess"));
       await refetch();
       // Thông báo
     } else {
-      message.error("Hệ thống gặp lỗi trong quá trình hoàn thành quá trình");
+      message.error(t("processDetails.message.completeError"));
       await refetch();
     }
   };
@@ -107,7 +109,7 @@ const ProcessDetails = () => {
         <div className="w-full max-w-[1000px] px-4 pb-4 rounded-lg shadow-md bg-green-100">
           <div className="flex justify-between items-center mb-1">
             {/* Name & ID */}
-            <div class="w-[80%]">
+            <div className="w-[80%]">
               <div className="text-lg font-bold text-center rounded p-2 text-green-600">
                 🔖 {dataProcess?.data?.production_name}
               </div>
@@ -120,19 +122,21 @@ const ProcessDetails = () => {
 
             {/* Status Process */}
             <div className="flex flex-col w-[20%] mt-4 items-start justify-start">
-              <span className="text-center font-bold">Trạng thái:</span>
+              <span className="text-center font-bold">
+                {t("processDetails.label.status")}
+              </span>
               <div className="flex flex-col space-y-2 mt-2">
                 <div className="flex items-center">
                   <div className="w-4 h-4 bg-yellow-400 rounded-full mr-2"></div>
-                  <span>Đang thực thi</span>
+                  <span>{t("processDetails.status.executing")}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-4 h-4 bg-gray-400 rounded-full mr-2"></div>
-                  <span>Đợi thực thi</span>
+                  <span>{t("processDetails.status.waiting")}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-4 h-4 bg-green-400 rounded-full mr-2"></div>
-                  <span>Đã hoàn thành</span>
+                  <span>{t("processDetails.status.done")}</span>
                 </div>
               </div>
             </div>
@@ -142,25 +146,33 @@ const ProcessDetails = () => {
           <div className="bg-white p-3 rounded-lg shadow-sm">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 text-xs">
               <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">📅 Start Time</p>
+                <p className="text-gray-500 text-xs mb-2">
+                  📅 {t("processDetails.info.start")}
+                </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {convertDateStringV1(dataProcess?.data?.start_time)}
                 </p>
               </div>
               <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">📅 ETA End Time</p>
+                <p className="text-gray-500 text-xs mb-2">
+                  📅 {t("processDetails.info.etaEnd")}
+                </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {convertDateStringV1(dataProcess?.data?.end_time)}
                 </p>
               </div>
               <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">⏳ Current Stage</p>
+                <p className="text-gray-500 text-xs mb-2">
+                  ⏳ {t("processDetails.info.currentStage")}
+                </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {dataProcess?.data?.current_stage}
                 </p>
               </div>
               <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">🔄 Status</p>
+                <p className="text-gray-500 text-xs mb-2">
+                  🔄 {t("processDetails.info.status")}
+                </p>
                 <span
                   className={`inline-block text-xs px-1 py-0.5 rounded text-black ${
                     dataProcess?.data?.status === "Hoàn thành"
@@ -172,13 +184,17 @@ const ProcessDetails = () => {
                 </span>
               </div>
               <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">👤 Assigned User</p>
+                <p className="text-gray-500 text-xs mb-2">
+                  👤 {t("processDetails.info.assignedUser")}
+                </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {/* {dataProcess?.user_id?.name || "Chưa gán"} */}
                 </p>
               </div>
               <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
-                <p className="text-gray-500 text-xs mb-2">📝 Note</p>
+                <p className="text-gray-500 text-xs mb-2">
+                  📝 {t("processDetails.info.note")}
+                </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {dataProcess?.data?.note}
                 </p>
@@ -190,7 +206,7 @@ const ProcessDetails = () => {
         <div className="w-full max-w-[1000px] p-4 rounded-lg shadow-md flex flex-col gap-3">
           <StageDetailsComponents
             stage={stage1}
-            stageName={"Phân loại nguyên liệu"}
+            stageName={t("processDetails.stages.stage1")}
             noStage="1"
             isOpen={activeStage === 1}
             handleComplete={handleComplete}
@@ -199,7 +215,7 @@ const ProcessDetails = () => {
           <StageDetailsComponents
             stage={stage2}
             noStage="2"
-            stageName={"Rửa và làm sạch"}
+            stageName={t("processDetails.stages.stage2")}
             isOpen={activeStage === 2}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 2 ? null : 2)}
@@ -207,7 +223,7 @@ const ProcessDetails = () => {
           <StageDetailsComponents
             stage={stage3}
             noStage="3"
-            stageName={"Khử trùng/diệt khuẩn bề mặt"}
+            stageName={t("processDetails.stages.stage3")}
             isOpen={activeStage === 3}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 3 ? null : 3)}
@@ -215,7 +231,7 @@ const ProcessDetails = () => {
           <StageDetailsComponents
             stage={stage4}
             noStage="4"
-            stageName={"Phủ màng sinh học & làm khô"}
+            stageName={t("processDetails.stages.stage4")}
             isOpen={activeStage === 4}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 4 ? null : 4)}
@@ -223,7 +239,7 @@ const ProcessDetails = () => {
           <StageDetailsComponents
             stage={stage5}
             noStage="5"
-            stageName={"Ủ chín (kiểm soát nhiệt độ/độ ẩm)"}
+            stageName={t("processDetails.stages.stage5")}
             isOpen={activeStage === 5}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 5 ? null : 5)}
@@ -231,7 +247,7 @@ const ProcessDetails = () => {
           <StageDetailsComponents
             stage={stage6}
             noStage="6"
-            stageName={"Đóng gói thành phẩm"}
+            stageName={t("processDetails.stages.stage6")}
             isOpen={activeStage === 6}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 6 ? null : 6)}
@@ -239,7 +255,7 @@ const ProcessDetails = () => {
           <StageDetailsComponents
             stage={stage7}
             noStage="7"
-            stageName={"Ghi nhãn & truy xuất nguồn gốc"}
+            stageName={t("processDetails.stages.stage7")}
             isOpen={activeStage === 7}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 7 ? null : 7)}
