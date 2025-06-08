@@ -8,7 +8,8 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { Input, Space, Tag, Button } from "antd";
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 import TableHistories from "./TableHistories";
-import {converDateString} from "../../../../ultils"
+import { converDateString } from "../../../../ultils";
+import { useTranslation } from "react-i18next";
 
 const statusColors = {
   "Đã duyệt": "green",
@@ -17,6 +18,8 @@ const statusColors = {
 };
 
 const RawMaterialBatchList = () => {
+  const { t } = useTranslation();
+
   const user = useSelector((state) => state.user);
   // Loading status
   const [loadingDetails, setIsLoadDetails] = useState(false);
@@ -31,7 +34,17 @@ const RawMaterialBatchList = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
+    "Hoàn Thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+    "Nhập kho thành công": "imported",
+  };
   // Details State
   const [stateDetailsBatch, setStateDetailsBatch] = useState({
     production_request_id: {},
@@ -43,7 +56,7 @@ const RawMaterialBatchList = () => {
     status: "",
     createdAt: "",
     is_deleted: false,
-    batch_history : {},
+    batch_history: {},
   });
 
   // GET ALL PRODUCT FROM DB
@@ -81,10 +94,7 @@ const RawMaterialBatchList = () => {
     // Get respone từ api và gán vào state update details
 
     if (res?.data) {
-      console.log(
-        "res?.data => ",
-        res?.data.batch
-      );
+      console.log("res?.data => ", res?.data.batch);
       const batchData = res?.data.batch.material_export_id;
       setStateDetailsBatch({
         production_request_id: batchData?.production_request_id,
@@ -95,7 +105,7 @@ const RawMaterialBatchList = () => {
         note: batchData?.note,
         status: batchData?.status,
         is_deleted: batchData?.is_deleted,
-        batch_history : res?.data.batch
+        batch_history: res?.data.batch,
       });
     }
 
@@ -103,7 +113,10 @@ const RawMaterialBatchList = () => {
     return res;
   };
   console.log("stateDetailsBatch => ", stateDetailsBatch);
-  console.log("stateDetailsBatch?.batch_id?.createdAt => ", stateDetailsBatch?.batch_id?.createdAt);
+  console.log(
+    "stateDetailsBatch?.batch_id?.createdAt => ",
+    stateDetailsBatch?.batch_id?.createdAt
+  );
   // Handle each time rowSelected was call
   useEffect(() => {
     if (rowSelected) {
@@ -140,7 +153,7 @@ const RawMaterialBatchList = () => {
       <div style={{ padding: 8 }}>
         <Input
           ref={searchInput}
-          placeholder={`Tìm kiếm`}
+          placeholder={t("common.search")}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -196,40 +209,45 @@ const RawMaterialBatchList = () => {
 
   const columns = [
     {
-      title: "Mã lô",
+      title: t("batchHistory.batchId"),
       dataIndex: "batch_id",
       key: "batch_id",
       ...getColumnSearchProps("batch_id"),
     },
     {
-      title: "Tên lô",
+      title: t("batchHistory.batchName"),
       dataIndex: "batch_name",
       key: "batch_name",
       ...getColumnSearchProps("batch_name"),
       sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
     },
     {
-      title: "Loại đơn",
+      title: t("batchHistory.exportType"),
       dataIndex: "type_export",
       key: "type_export",
     },
     {
-      title: "Trạng thái",
+      title: t("batchHistory.status"),
       dataIndex: "status",
       key: "status",
       filters: Object.keys(statusColors).map((status) => ({
         text: status,
         value: status,
       })),
-      render: (stt) => <Tag color={statusColors[stt] || "default"}>{stt}</Tag>,
+      render: (stt) => (
+        <Tag color={statusColors[stt] || "default"}>
+          {" "}
+          {t(statusMap[stt] || stt)}
+        </Tag>
+      ),
     },
     {
-      title: "Hành động",
+      title: t("common.action"),
       key: "action",
       render: (record) => (
         <Space>
           <Button type="link" onClick={() => handleViewDetail(record)}>
-            Xem chi tiết
+            {t("common.viewDetail")}
           </Button>
         </Space>
       ),
@@ -246,12 +264,17 @@ const RawMaterialBatchList = () => {
     setSelectedBatch(null);
   };
 
-  console.log("stateDetailsBatch.batch?.createdAt -> ", stateDetailsBatch.batch?.createdAt)
+  console.log(
+    "stateDetailsBatch.batch?.createdAt -> ",
+    stateDetailsBatch.batch?.createdAt
+  );
 
   return (
     <div className="raw-material-batch-list">
       <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-bold text-gray-800">Lịch Sử Xuất Lô</h5>
+        <h5 className="text-2xl font-bold text-gray-800">
+          {t("batchHistory.title")}
+        </h5>
       </div>
 
       <Loading isPending={isLoading || loadingDetails}>
@@ -273,7 +296,7 @@ const RawMaterialBatchList = () => {
       </Loading>
 
       <DrawerComponent
-        title="Chi tiết Lô Nguyên Liệu"
+        title={t("batchHistory.detailTitle")}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
@@ -287,13 +310,13 @@ const RawMaterialBatchList = () => {
                 {/* Tên đơn */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tên Yêu Cầu 
+                    {t("batchHistory.requestName")}
                   </label>
                   <input
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu Nguyên liệu..."
+                    placeholder={t("batchHistory.requestNamePlaceholder")}
                     value={stateDetailsBatch?.batch_id.batch_name || ""}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
@@ -302,13 +325,13 @@ const RawMaterialBatchList = () => {
                 {/* Tên Lô */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tên Yêu Cầu 
+                    {t("materialBatch.batchName")}
                   </label>
                   <input
                     type="text"
                     name="request_name"
                     maxLength="50"
-                    placeholder="Tên đơn thu Nguyên liệu..."
+                    placeholder={t("batchHistory.batchNamePlaceholder")}
                     value={stateDetailsBatch.export_name || ""}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
@@ -318,7 +341,7 @@ const RawMaterialBatchList = () => {
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 min-h-[20vh]">
                   {/* Tiêu đề */}
                   <div className="w-full md:w-1/4 text-gray-800 font-semibold">
-                    Hình ảnh
+                    {t("batchHistory.image")}
                   </div>
 
                   {/* Hiển thị hình ảnh */}
@@ -336,32 +359,29 @@ const RawMaterialBatchList = () => {
                 {/* Số lượng cần thu */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Tổng số lượng nguyên liệu (Kg)
+                    {t("batchHistory.totalQuantity")}
                   </label>
                   <input
                     type="number"
                     name="quantity"
                     min="1"
-                    placeholder="Nhập số lượng..."
+                    placeholder={t("common.enterQuantity")}
                     value={stateDetailsBatch?.batch_id?.quantity}
                     onChange={() => {}}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
 
-            
-
-
                 {/* Mức độ ưu tiên */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Loại xuất kho
+                    {t("batchHistory.exportType")}
                   </label>
                   <input
                     type="text"
                     name="type_export"
                     min="1"
-                    placeholder="Nhập số lượng..."
+                    placeholder={t("batchHistory.exportType")}
                     value={stateDetailsBatch?.type_export}
                     onChange={() => {}}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
@@ -371,14 +391,16 @@ const RawMaterialBatchList = () => {
                 {/* Ngày tạo lô */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Ngày Tạo Lô
+                    {t("batchHistory.createdDate")}
                   </label>
                   <input
                     type="text"
                     name="type_export"
                     min="1"
-                    placeholder="Nhập số lượng..."
-                    value={converDateString(stateDetailsBatch?.batch_id?.createdAt)}
+                    placeholder={t("batchHistory.createdDate")}
+                    value={converDateString(
+                      stateDetailsBatch?.batch_id?.createdAt
+                    )}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -386,14 +408,16 @@ const RawMaterialBatchList = () => {
                 {/* Ngày tạo lô */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Ngày Xuất Lô
+                    {t("batchHistory.exportDate")}
                   </label>
                   <input
                     type="text"
                     name="type_export"
                     min="1"
-                    placeholder="Nhập số lượng..."
-                    value={converDateString(stateDetailsBatch?.batch_history?.createdAt)  }
+                    placeholder={t("batchHistory.exportDate")}
+                    value={converDateString(
+                      stateDetailsBatch?.batch_history?.createdAt
+                    )}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -401,11 +425,11 @@ const RawMaterialBatchList = () => {
                 {/* Ghi chú */}
                 <div>
                   <label className="block text-gray-800 font-semibold mb-2">
-                    Ghi chú
+                    {t("batchHistory.note")}
                   </label>
                   <textarea
                     name="note"
-                    placeholder="Nhập ghi chú..."
+                    placeholder={t("batchHistory.note")}
                     rows="3"
                     value={stateDetailsBatch?.note}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"

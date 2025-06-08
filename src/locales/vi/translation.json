@@ -99,7 +99,10 @@
     "approve": "Duyệt đơn",
     "reject": "Hủy yêu cầu",
     "unknown": "Không rõ",
-    "noNote": "Không có ghi chú"
+    "noNote": "Không có ghi chú",
+    "viewDetail": "Xem chi tiết",
+    "enterQuantity": "Nhập số lượng...",
+    "enterNote": "Nhập ghi chú..."
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -979,6 +982,22 @@
     "batchId": "Mã lô",
     "exportName": "Tên Xuất Kho",
     "createdDate": "Ngày tạo đơn",
+    "note": "Ghi chú"
+  },
+  "batchHistory": {
+    "title": "Lịch Sử Xuất Lô",
+    "batchId": "Mã lô",
+    "batchName": "Tên lô",
+    "batchNamePlaceholder": "Nhập tên lô...",
+    "exportType": "Loại xuất kho",
+    "status": "Trạng thái",
+    "detailTitle": "Chi tiết Lô Nguyên Liệu",
+    "requestName": "Tên Yêu Cầu",
+    "requestNamePlaceholder": "Nhập tên yêu cầu...",
+    "image": "Hình ảnh",
+    "totalQuantity": "Tổng số lượng nguyên liệu (Kg)",
+    "createdDate": "Ngày Tạo Lô",
+    "exportDate": "Ngày Xuất Lô",
     "note": "Ghi chú"
   }
 }
