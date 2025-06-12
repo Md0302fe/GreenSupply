@@ -95,11 +95,11 @@ const CreateBox = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">
-      <div className="w-full mb-4 ">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-2 lg:p-6">
+      <div className="w-full mb-3 lg:mb-4 ">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+          className="flex items-center bg-blue-500 text-white font-semibold py-1 px-1 lg:px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           type="button"
         >
           {/* icon back */}
@@ -121,8 +121,8 @@ const CreateBox = () => {
         </button>
       </div>
 
-      <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">Tạo Nguyên Liệu Mới</h2>
+      <div className="w-full max-w-xl bg-white rounded-lg shadow p-2 lg:p-8">
+        <h2 className="text-18px lg:text-3xl font-bold mb-4 lg:mb-6 text-center">Tạo Nguyên Liệu Mới</h2>
 
         <Form
           form={form}

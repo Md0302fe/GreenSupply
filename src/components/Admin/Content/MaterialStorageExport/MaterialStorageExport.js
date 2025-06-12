@@ -189,9 +189,9 @@ const MaterialStorageExport = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-0 lg:p-4">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
-        <h2 className="text-3xl font-bold text-gray-800 text-center my-4">
+        <h2 className="text-[22px] lg:text-3xl font-bold text-gray-800 text-center my-4">
           🏭 {t("materialExport.title")}
         </h2>
 

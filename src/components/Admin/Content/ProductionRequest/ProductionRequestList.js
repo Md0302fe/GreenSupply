@@ -294,6 +294,26 @@ const ProductionRequestList = () => {
     setSearchText("");
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -503,42 +523,47 @@ const ProductionRequestList = () => {
 
   return (
     <div className="production-request-list">
-      <div className="my-6">
-        <div className="absolute">
-          <Button
-            onClick={() => navigate(-1)}
-            type="primary"
-            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+      <div className="flex items-center justify-between my-6">
+        {/* Nút quay lại bên trái */}
+        <button
+          onClick={() => navigate(-1)}
+          type="button"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
-            </svg>
-            {t("common.back")}
-          </Button>
-        </div>
-        <h5 className="content-title font-bold text-2xl text-center">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          <span className="hidden md:inline">{t("common.back")}</span>
+        </button>
+
+        {/* Tiêu đề căn giữa */}
+        <h2 className="text-center font-bold text-[20px] md:text-3xl flex-grow mx-2 mt-1 mb-1">
           {t("productionRequestManagement.title")}
-        </h5>
+        </h2>
+
+        {/* Phần tử trống để cân bằng layout với nút bên trái */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
+
 
       {/* Notifications Tạo Quy Trình */}
       <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <p>{t("notification.after_approve")}</p>
           <p
             className="font-semibold text-black bg-yellow-300 px-2 py-1 rounded-lg cursor-pointer 
-             shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-200 ease-in-out"
+       shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-200 ease-in-out text-center"
             onClick={() => navigate("/system/admin/production-processing")}
           >
             {t("notification.production_queue")}
@@ -546,11 +571,13 @@ const ProductionRequestList = () => {
         </div>
       </div>
 
+
       <Loading isPending={isLoading || fuelLoading}>
         <Table
           columns={columns}
           dataSource={tableData}
           pagination={{ pageSize: 6 }}
+          scroll={{ x: "max-content" }}
         />
       </Loading>
 
@@ -559,7 +586,7 @@ const ProductionRequestList = () => {
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="40%"
+        width={drawerWidth}
       >
         {/* Chế độ XEM CHI TIẾT */}
         {selectedRequest && !isEditMode && (
@@ -644,24 +671,36 @@ const ProductionRequestList = () => {
             </div>
 
             {/* Nút Chỉnh Sửa / Duyệt */}
-            <div className="flex justify-end gap-4 mt-6">
-              <Button
-                type="primary"
-                className="px-6 py-2 text-lg"
-                onClick={handleEdit}
-              >
-                {t("action.edit")}
-              </Button>
-              {selectedRequest.status === "Chờ duyệt" && (
-                <Button
-                  type="default"
-                  className="px-6 py-2 text-lg"
-                  onClick={() => handleApprove(selectedRequest)}
-                >
-                  {t("action.approve")}
-                </Button>
-              )}
-            </div>
+           <div className="flex justify-end gap-4 mt-6 flex-wrap">
+  {/* Nút sửa */}
+  <Button
+    type="primary"
+    className="px-6 py-2 text-lg"
+    onClick={handleEdit}
+  >
+    {t("action.edit")}
+  </Button>
+
+  {/* Nút duyệt nếu đang chờ duyệt */}
+  {selectedRequest.status === "Chờ duyệt" && (
+    <Button
+      type="default"
+      className="px-6 py-2 text-lg"
+      onClick={() => handleApprove(selectedRequest)}
+    >
+      {t("action.approve")}
+    </Button>
+  )}
+
+  {/* Nút đóng */}
+  <button
+    onClick={() => setIsDrawerOpen(false)}
+    className="bg-gray-500 text-white font-bold px-6 py-0.5 text-lg rounded hover:bg-gray-600"
+  >
+    {t("common.close")}
+  </button>
+</div>
+
           </div>
         )}
 

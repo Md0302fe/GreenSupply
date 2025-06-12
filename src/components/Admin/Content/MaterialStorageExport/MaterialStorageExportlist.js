@@ -96,6 +96,26 @@ const MaterialStorageExportList = () => {
     fetchExports();
   }, [debouncedSearch, statusFilter, sortOrder]);
 
+ const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
   const getColumnSearchProps = (dataIndex, placeholder) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -157,9 +177,9 @@ const MaterialStorageExportList = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -401,15 +421,20 @@ const MaterialStorageExportList = () => {
 
   return (
     <div className="material-storage-export-list">
-      <div className="flex items-center justify-between my-6">
+      {/* Tiêu đề và nút quay lại */}
+      <div
+        style={{ marginBottom: 24, marginTop: 24 }}
+        className="flex items-center justify-between"
+      >
+        {/* Nút quay lại bên trái */}
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -421,14 +446,18 @@ const MaterialStorageExportList = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-          {t("common.back")}
+          <span className="hidden md:inline">{t("common.back")}</span>
         </Button>
 
-        <h5 className="text-3xl font-bold text-gray-800 absolute left-1/2 transform -translate-x-1/2">
+        {/* Tiêu đề ở giữa */}
+        <h2 className="text-center font-bold text-[16px] md:text-3xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
           {t("materialExportList.title")}
-        </h5>
-        <div style={{ width: 120 }} />
+        </h2>
+
+        {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
+
       <Loading isPending={loading}>
         <Table
           columns={columns}
@@ -436,78 +465,93 @@ const MaterialStorageExportList = () => {
           rowKey="_id"
           pagination={{ pageSize: 6 }}
           onChange={handleTableChange}
+          scroll={{ x: "max-content" }}
         />
       </Loading>
 
       {/* ✅ Drawer hiển thị chi tiết */}
       <DrawerComponent
-        title={t("materialExportList.detailTitle")}
-        isOpen={isDrawerOpen}
-        onClose={() => {
-          setIsDrawerOpen(false);
-          setSelectedExport(null);
-        }}
-        placement="right"
-        width="40%"
+  title={t("materialExportList.detailTitle")}
+  isOpen={isDrawerOpen}
+  onClose={() => {
+    setIsDrawerOpen(false);
+    setSelectedExport(null);
+  }}
+  placement="right"
+  width={drawerWidth}
+>
+  {selectedExport ? (
+    <Descriptions
+      bordered
+      column={1}
+      labelStyle={{ width: "40%", fontWeight: "600" }}
+      contentStyle={{ width: "60%" }}
+    >
+      <Descriptions.Item label={t("materialExportList.createdBy")}>
+        {selectedExport?.user_id?.full_name || "Không rõ"}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.productionRequest")}>
+        {selectedExport?.production_request_id?.request_name ||
+          t("common.no_data")}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.batchName")}>
+        {selectedExport?.batch_id?.batch_name || t("common.no_data")}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.batchId")}>
+        {selectedExport?.batch_id?.batch_id || t("common.no_data")}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.exportName")}>
+        {selectedExport?.export_name || t("common.no_data")}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.exportType")}>
+        {selectedExport?.type_export || t("common.no_data")}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.status")}>
+        <Tag color={statusColors[selectedExport.status] || "default"}>
+          {t(statusMap[selectedExport.status]) || t("common.no_data")}
+        </Tag>
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.createdDate")}>
+        {new Date(selectedExport.createdAt).toLocaleString()}
+      </Descriptions.Item>
+      <Descriptions.Item label={t("materialExportList.note")}>
+        {selectedExport?.note || t("common.no_data")}
+      </Descriptions.Item>
+    </Descriptions>
+  ) : (
+    <p className="text-center">Đang tải dữ liệu...</p>
+  )}
+
+  {/* Nút phê duyệt và từ chối (nếu trạng thái là "Chờ duyệt") */}
+ <div className="flex flex-row justify-space-between gap-2.5 lg:gap-4 mt-4">
+  {selectedExport?.status === "Chờ duyệt" && (
+    <>
+      <Button
+        type="primary"
+        onClick={handleAccept}
+        className="bg-blue-600 text-white font-bold px-2 lg:px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto"
       >
-        {selectedExport ? (
-          <Descriptions
-            bordered
-            column={1}
-            labelStyle={{ width: "40%", fontWeight: "600" }}
-            contentStyle={{ width: "60%" }}
-          >
-            <Descriptions.Item label={t("materialExportList.createdBy")}>
-              {selectedExport?.user_id?.full_name || "Không rõ"}
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={t("materialExportList.productionRequest")}
-            >
-              {selectedExport?.production_request_id?.request_name ||
-                t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.batchName")}>
-              {selectedExport?.batch_id?.batch_name || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.batchId")}>
-              {selectedExport?.batch_id?.batch_id || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.exportName")}>
-              {selectedExport?.export_name || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.exportType")}>
-              {selectedExport?.type_export || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.status")}>
-              <Tag color={statusColors[selectedExport.status] || "default"}>
-                {t(statusMap[selectedExport.status]) || t("common.no_data")}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.createdDate")}>
-              {new Date(selectedExport.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.note")}>
-              {selectedExport?.note || t("common.no_data")}
-            </Descriptions.Item>
-          </Descriptions>
-        ) : (
-          <p className="text-center">Đang tải dữ liệu...</p>
-        )}
-        {selectedExport?.status === "Chờ duyệt" && (
-          <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-4">
-            <Button danger onClick={handleReject} className="w-full md:w-auto">
-              {t("common.reject")}
-            </Button>
-            <Button
-              type="primary"
-              onClick={handleAccept}
-              className="w-full md:w-auto"
-            >
-              {t("common.approve")}
-            </Button>
-          </div>
-        )}
-      </DrawerComponent>
+        {t("common.approve")}
+      </Button>
+       <Button
+        danger
+        onClick={handleReject}
+        className="bg-red-600 text-red font-bold px-2 lg:px-4 py-2 rounded hover:bg-red-700 w-full md:w-auto"
+      >
+        {t("common.reject")}
+      </Button>
+    </>
+  )}
+  <button
+    onClick={() => setIsDrawerOpen(false)}
+    className="bg-gray-500 text-white font-bold px-2 md:px-4 py-1 rounded hover:bg-gray-600 w-full md:w-auto"
+  >
+    {t("common.close")}
+  </button>
+</div>
+
+</DrawerComponent>
+
 
       {/* messageContainer */}
       <messageContainer

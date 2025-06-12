@@ -146,6 +146,26 @@ const FuelOrderStatus = () => {
       message.error(t("fuelOrderStatus.createFail"));
     }
   };
+ const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -242,7 +262,7 @@ const FuelOrderStatus = () => {
       key: "fuel_name",
     },
     {
-      title: t("fuelOrderStatus.columns.totalPrice"),
+      title: <div className="text-center">{t("fuelOrderStatus.columns.totalPrice")}</div>,
       dataIndex: "total_price",
       key: "total_price",
       align: "center",
@@ -253,7 +273,7 @@ const FuelOrderStatus = () => {
       ),
     },
     {
-      title: t("fuelOrderStatus.columns.status"),
+      title: <div className="text-center">{t("fuelOrderStatus.columns.status")}</div>,
       dataIndex: "status",
       key: "status",
       align: "center",
@@ -274,7 +294,7 @@ const FuelOrderStatus = () => {
       },
     },
     {
-      title: t("fuelOrderStatus.columns.action"),
+      title: <div className="text-center">{t("fuelOrderStatus.columns.action")}</div>,
       key: "action",
       align: "center",
       render: (_, record) => (
@@ -338,51 +358,50 @@ const FuelOrderStatus = () => {
 
   return (
     <div style={{ padding: 0 }}>
-      <div style={{ marginBottom: 24 }}>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: 16 }}
+      {/* Tiêu đề và nút quay lại */}
+      <div
+        style={{ marginBottom: 24, marginTop: 24 }}
+        className="flex items-center justify-between"
+      >
+        {/* Nút quay lại bên trái */}
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
-          <Col>
-            <Button
-              onClick={() => navigate(-1)}
-              type="primary"
-              className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12H3m0 0l6-6m-6 6l6 6"
-                />
-              </svg>
-              {t("fuelOrderStatus.back")}
-            </Button>
-          </Col>
-          <Col>
-            <h2 className="text-4xl font-bold flex-grow text-center mt-1 mb-4">
-              {t("fuelOrderStatus.title")}
-            </h2>
-          </Col>
-          <Col>
-            <Button
-              icon={<DownloadOutlined />}
-              type="primary"
-              onClick={handleExportFileExcel}
-            >
-              {t("export_excel")}
-            </Button>
-          </Col>
-        </Row>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+          </svg>
+          <span className="hidden md:inline">{t("fuelOrderStatus.back")}</span>
+        </Button>
+
+        {/* Tiêu đề ở giữa */}
+        <h2 className="text-center font-bold text-[16px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
+          {t("fuelOrderStatus.title")}
+        </h2>
+
+        {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
+
+      {/* Nút xuất Excel ở góc phải dưới tiêu đề */}
+      <div className="flex justify-end mb-1">
+        <Button
+          icon={<DownloadOutlined />}
+          type="primary"
+          className="bg-blue-600 text-white"
+          onClick={handleExportFileExcel}
+        >
+          {t("export_excel")}
+        </Button>
+      </div>
+
       <div
         style={{
           marginBottom: 24,
@@ -391,12 +410,24 @@ const FuelOrderStatus = () => {
           borderRadius: 8,
         }}
       >
-        <Row justify="space-between" align="middle">
-          <Col>
-            <h3 style={{ marginBottom: 12 }}>
-              {t("fuelOrderStatus.filterLabel")}
-            </h3>
-            <Space>
+        {/* Nút danh sách nằm trên cùng bên phải */}
+        <div className="flex justify-end mb-3">
+          <Button
+            type="primary"
+            className="bg-blue-600"
+            onClick={() =>
+              navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
+            }
+          >
+            {t("fuelOrderStatus.receiptList")}
+          </Button>
+        </div>
+
+        {/* Label + Filter buttons */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="mb-3">{t("fuelOrderStatus.filterLabel")}</h3>
+            <div className="flex flex-col md:flex-row gap-2">
               <Button
                 type={filterType === "all" ? "primary" : "default"}
                 onClick={() => setFilterType("all")}
@@ -415,22 +446,11 @@ const FuelOrderStatus = () => {
               >
                 {t("fuelOrderStatus.supplyOrders")}
               </Button>
-            </Space>
-          </Col>
-
-          <Col>
-            <Button
-              type="primary"
-              className="bg-blue-600"
-              onClick={() =>
-                navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
-              }
-            >
-              {t("fuelOrderStatus.receiptList")}
-            </Button>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        </div>
       </div>
+
 
       <div style={{ background: "#fff", padding: 16, borderRadius: 8 }}>
         <h3 style={{ marginBottom: 12 }}>{t("fuelOrderStatus.orderList")}</h3>
@@ -453,7 +473,7 @@ const FuelOrderStatus = () => {
           setSelectedOrder(null);
         }}
         placement="right"
-        width="30%"
+        width={drawerWidth}
       >
         {selectedOrder ? (
           <Descriptions bordered column={1}>
@@ -506,6 +526,14 @@ const FuelOrderStatus = () => {
             {t("fuelOrderStatus.loading")}
           </p>
         )}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
       </Drawer>
     </div>
   );

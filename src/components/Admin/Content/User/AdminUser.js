@@ -311,6 +311,27 @@ const UserComponent = () => {
     setSearchText("");
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
+
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -411,7 +432,7 @@ const UserComponent = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           {t("user_list.email")}
         </div>
       ),
@@ -465,7 +486,7 @@ const UserComponent = () => {
       ),
       dataIndex: "action",
       render: (text, record) => (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", whiteSpace: "nowrap", minWidth: 140 }}>
           {renderAction(text, record)}
         </div>
       ),
@@ -475,35 +496,43 @@ const UserComponent = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <button
-          onClick={() => navigate(-1)} // Quay lại trang trước đó
-          className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        {/* Header: Nút quay lại + Tiêu đề căn giữa */}
+        <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+          {/* Nút quay lại */}
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          {t("user_list.back")}
-        </button>
-        <div className="flex items-center text-xl font-semibold text-gray-800 mb-4">
-          <FaUser className="text-2xl text-blue-500 mr-2" />{" "}
-          {/* Biểu tượng người dùng */}
-          <h5 className="relative">
-            {t("user_list.title")}
-            <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>{" "}
-            {/* Hiệu ứng gạch dưới */}
-          </h5>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            <span className="hidden md:inline">{t("user_list.back")}</span>
+          </button>
+
+          {/* Tiêu đề trung tâm có icon */}
+          <div className="flex items-center justify-center flex-grow text-gray-800">
+            <FaUser className="text-2xl text-blue-500 mr-2" />
+            <h5 className="relative text-xl font-semibold">
+              {t("user_list.title")}
+              <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
+            </h5>
+          </div>
+
+          {/* Placeholder phải để cân đối (ẩn trên mobile) */}
+          <div className="hidden md:block min-w-[100px]"></div>
         </div>
+
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -523,6 +552,7 @@ const UserComponent = () => {
                 },
               };
             }}
+            scroll={{ x: "max-content" }}
           ></TableUser>
         </div>
       </div>
@@ -533,7 +563,7 @@ const UserComponent = () => {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
-        width="40%"
+        width={drawerWidth}
         forceRender
         style={{ backgroundColor: "#f0f2f5" }} // Thay đổi màu nền
       >
@@ -664,14 +694,26 @@ const UserComponent = () => {
               </div>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ display: "block", borderRadius: "5px" }} // Thêm bo góc
-              >
-                {t("user_list.update")}
-              </Button>
+            <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+              <div className="flex justify-between mt-4">
+                {/* Nút đóng bên phải */}
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="font-bold px-3 py-2 rounded"
+                >
+                  {t("user_list.update")}
+                </Button>
+
+                {/* Nút cập nhật bên trái */}
+                <button
+                  type="button"
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
+                >
+                  {t("common.close")}
+                </button>
+              </div>
             </Form.Item>
           </Form>
         </Loading>

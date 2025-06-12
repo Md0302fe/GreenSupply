@@ -181,23 +181,26 @@ const HistoriesProcess = () => {
       sorter: (a, b) => a?.full_name.length - b?.full_name.length,
     },
     {
-      title: t("histories.field.start"),
+      title: <div className="text-center">{t("histories.field.start")}</div>,
       dataIndex: "start_time",
       key: "start_time",
+      className: "text-center",
       sorter: true,
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
-      title: t("histories.field.end"),
+      title: <div className="text-center">{t("histories.field.end")}</div>,
       dataIndex: "end_time",
       key: "end_time",
+      className: "text-center",
       sorter: true,
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
-      title: t("histories.field.status"),
+      title: <div className="text-center">{t("histories.field.status")}</div>,
       dataIndex: "status",
       key: "status",
+      className: "text-center",
       render: (status) => {
         let color = "green"; // Màu mặc định
         if (status === "Hoàn thành") color = "green"; // Tím
@@ -209,7 +212,7 @@ const HistoriesProcess = () => {
       },
     },
     {
-      title: t("histories.field.action"),
+      title: <div className="text-center">{t("histories.field.action")}</div>,
       key: "action",
       render: (_, record) => (
         <Space>
@@ -229,13 +232,14 @@ const HistoriesProcess = () => {
 
   return (
     <div className="production-processing-list">
-      <h5 className="text-2xl font-bold text-gray-800">{t("histories.title")}</h5>
+      <h5 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4">{t("histories.title")}</h5>
       <Loading isPending={isLoading}>
         <Table
           columns={columns}
           dataSource={tableData}
           pagination={{ pageSize: 6 }}
           onRow={(record, rowIndex) => {}}
+          scroll={{ x: "max-content" }}
         />
       </Loading>
     </div>
