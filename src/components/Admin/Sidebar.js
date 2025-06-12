@@ -28,7 +28,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
+const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar, extraHeader, extraHeaderHome }) => {
   const { t } = useTranslation();
 
   const user = useSelector((state) => state.user);
@@ -42,17 +42,23 @@ const Sidebar = ({ image, collapsed, rtl, toggled, handleToggleSidebar }) => {
         onToggle={handleToggleSidebar}
       >
         <SidebarHeader>
-          <div className="SiderWrapper">
-            {/* title here */}
-            <div className="SidebarHeader-top">
+          <div className="SiderWrapper grid grid-cols-2 items-center justify-between w-full">
+            {/* Logo + Title */}
+            <div className="SidebarHeader-top flex items-center gap-2">
               <div
-                className="SidebarHeader-avatar object-contain"
+                className="SidebarHeader-avatar"
                 style={{ backgroundImage: `url(${logo})` }}
               ></div>
               <span className="SidebarHeader-title">{t("sidebar.adminTitle")}</span>
             </div>
+
+            {/* Language + Home Icon group */}
+            <div className="flex justify-end">
+              {extraHeader?.type === "utility" && extraHeader.content}
+            </div>
           </div>
         </SidebarHeader>
+
 
         <SidebarContent>
           <Menu iconShape="circle">

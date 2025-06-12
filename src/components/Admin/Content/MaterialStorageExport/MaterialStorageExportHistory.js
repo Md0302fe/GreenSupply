@@ -76,14 +76,15 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(data?.requests)
     ? data?.requests?.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        batch_id: batch.material_export_id?.batch_id?.batch_id,
-        batch_name: batch.material_export_id?.batch_id?.batch_name,
-        type_export: batch.material_export_id.type_export,
-        status: batch.material_export_id.status,
-      }))
+      ...batch,
+      key: batch._id,
+      batch_id: batch.material_export_id?.batch_id?.batch_id || "",
+      batch_name: batch.material_export_id?.batch_id?.batch_name || "",
+      type_export: batch.material_export_id?.type_export || "",
+      status: batch.material_export_id?.status || "",
+    }))
     : [];
+
 
   // Fetch : Get User Details
   const fetchGetUserDetails = async ({ storage_export_id, access_token }) => {
@@ -142,6 +143,26 @@ const RawMaterialBatchList = () => {
     clearFilters();
     setSearchText("");
   };
+
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -222,14 +243,16 @@ const RawMaterialBatchList = () => {
       sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
     },
     {
-      title: t("batchHistory.exportType"),
+      title: <div className="text-center">{t("batchHistory.exportType")}</div>,
       dataIndex: "type_export",
       key: "type_export",
+      className: "text-center",
     },
     {
-      title: t("batchHistory.status"),
+      title: <div className="text-center">{t("batchHistory.status")}</div>,
       dataIndex: "status",
       key: "status",
+      className: "text-center",
       filters: Object.keys(statusColors).map((status) => ({
         text: status,
         value: status,
@@ -242,8 +265,9 @@ const RawMaterialBatchList = () => {
       ),
     },
     {
-      title: t("common.action"),
+      title: <div className="text-center">{t("common.action")}</div>,
       key: "action",
+      className: "text-center",
       render: (record) => (
         <Space>
           <Button type="link" onClick={() => handleViewDetail(record)}>
@@ -272,9 +296,7 @@ const RawMaterialBatchList = () => {
   return (
     <div className="raw-material-batch-list">
       <div className="flex justify-between items-center mb-4">
-        <h5 className="text-2xl font-bold text-gray-800">
-          {t("batchHistory.title")}
-        </h5>
+        <h5 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4">{t("batchHistory.title")}</h5>
       </div>
 
       <Loading isPending={isLoading || loadingDetails}>
@@ -292,6 +314,7 @@ const RawMaterialBatchList = () => {
               },
             };
           }}
+         scroll={{ x: "max-content" }}
         ></TableHistories>
       </Loading>
 
@@ -300,11 +323,11 @@ const RawMaterialBatchList = () => {
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="50%"
+        width={drawerWidth}
       >
         <Loading isPending={loadingDetails}>
           {/* Form cập nhật đơn thu Nguyên liệu */}
-          <div className="w-full bg-gray-100 p-6">
+          <div className="w-full bg-gray-100 p-0 lg:p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
               <div className="space-y-4">
                 {/* Tên đơn */}
@@ -367,7 +390,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("common.enterQuantity")}
                     value={stateDetailsBatch?.batch_id?.quantity}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -383,7 +406,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("batchHistory.exportType")}
                     value={stateDetailsBatch?.type_export}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -439,6 +462,14 @@ const RawMaterialBatchList = () => {
             </div>
           </div>
         </Loading>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
       </DrawerComponent>
     </div>
   );
