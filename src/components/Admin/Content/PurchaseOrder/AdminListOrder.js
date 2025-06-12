@@ -842,7 +842,11 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title={t("order.drawer_title")}
+         title={
+    <span className="text-[14px] lg:text-lg font-semibold">
+      {t("order.drawer_title")}
+    </span>
+  }
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -851,7 +855,7 @@ const UserComponent = () => {
       >
         <Loading isPending={isLoadDetails}>
           {/* Form cập nhật đơn thu nguyên liệu */}
-          <div className="w-full bg-gray-100 p-6">
+          <div className="w-full bg-gray-100 p-0 lg:p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-[16px] sm:text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
                 🚀 {t("order.update_title")}

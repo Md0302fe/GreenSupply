@@ -127,10 +127,10 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-      }))
+      ...batch,
+      key: batch._id,
+      fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
+    }))
     : [];
 
   // Search trong bảng
@@ -144,6 +144,26 @@ const RawMaterialBatchList = () => {
     clearFilters();
     setSearchText("");
   };
+
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -220,7 +240,7 @@ const RawMaterialBatchList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "left" }}>
           {t("materialBatch.batchName")}
         </div>
       ),
@@ -456,49 +476,43 @@ const RawMaterialBatchList = () => {
   };
 
   return (
-    <div className="raw-material-batch-list">
-      <div className="flex items-center justify-between mb-4 relative">
-        {/* Nút Quay lại */}
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute left-0 flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          {t("back")}
-        </button>
-
-        {/* Tiêu đề căn giữa */}
-        <h5 className="text-4xl font-bold text-gray-800 text-center flex-1">
-          {t("materialBatch.title")}
-        </h5>
-        {/* Nút tạo ở bên phải */}
+    <div>
+      <div className="raw-material-batch-list">
         <div
-          className="absolute right-0 flex gap-2 mt-2"
-          style={{ top: "65%", transform: "translateY(20%)" }}
-        >
-          {/* <Button
+        style={{ marginBottom: 24, marginTop: 24 }}
+        className="flex items-center justify-between">
+          {/* Nút Quay lại */}
+          <Button
+            onClick={() => navigate(-1)}
             type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
-            onClick={() => navigate("/system/admin/raw-material-batch")}
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
-            Tạo lô bổ sung
-          </Button> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            </svg>
+            <span className="hidden md:inline">{t("fuelStorage.back")}</span>
+          </Button>
+
+          {/* Title căn giữa */}
+          <h5 className="text-center font-bold text-[16px] md:text-2xl flex-grow mx-4">
+            {t("materialBatch.title")}
+          </h5>
+
+          {/* Phần tử trống bên phải để cân bằng */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
+        </div>
+
+        {/* Hàng 2: Nút Tạo */}
+        <div className="flex justify-end">
           <Button
             type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
+            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-2 md:px-4"
             onClick={() => navigate("/system/admin/material-storage-export")}
           >
             {t("materialBatch.createExportOrder")}
@@ -506,13 +520,14 @@ const RawMaterialBatchList = () => {
         </div>
       </div>
       <Loading isPending={loading}>
-        <div className="mt-10">
+        <div className="">
           {" "}
           {/* 👈 thêm margin top ở đây */}
           <Table
             columns={columns}
             dataSource={tableData}
             pagination={{ pageSize: 6 }}
+            scroll={{ x: "max-content" }}
           />
         </div>
       </Loading>
@@ -525,7 +540,7 @@ const RawMaterialBatchList = () => {
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="40%"
+        width={drawerWidth}
       >
         {selectedBatch && (
           <>
@@ -724,17 +739,29 @@ const RawMaterialBatchList = () => {
             )}
 
             {/* Nút chỉnh sửa */}
-            <div className="flex justify-center mt-4">
-              {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" && (
-                <Button
-                  type="primary"
-                  onClick={() => handleEdit(selectedBatch)}
-                  className="bg-blue-600 text-white"
-                >
-                  {t("common.edit")}
-                </Button>
-              )}
-            </div>
+            {/* Nút chỉnh sửa và Đóng */}
+<div className="flex justify-between mt-4 px-4">
+  {/* Nút Chỉnh sửa bên trái */}
+  {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" ? (
+    <Button
+      type="primary"
+      onClick={() => handleEdit(selectedBatch)}
+      className="bg-blue-600 text-white"
+    >
+      {t("common.edit")}
+    </Button>
+  ) : (
+    <div></div> // để giữ khoảng trống cân đối nếu nút chỉnh sửa ẩn
+  )}
+
+  {/* Nút Đóng bên phải */}
+  <button
+    onClick={() => setIsDrawerOpen(false)}
+    className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
+  >
+    Đóng
+  </button>
+</div>
           </>
         )}
       </DrawerComponent>
@@ -752,7 +779,7 @@ const RawMaterialBatchList = () => {
         rtl={false}
         draggable
       />
-    </div>
+    </div >
   );
 };
 

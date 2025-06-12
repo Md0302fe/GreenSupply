@@ -82,10 +82,10 @@ const ProductionRequestList = () => {
 
   const tableData = Array.isArray(data)
     ? data
-        .filter(
-          (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
-        )
-        .map((req) => ({ ...req, key: req._id }))
+      .filter(
+        (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
+      )
+      .map((req) => ({ ...req, key: req._id }))
     : [];
 
   // Search
@@ -99,6 +99,26 @@ const ProductionRequestList = () => {
     clearFilters();
     setSearchText("");
   };
+
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -287,15 +307,16 @@ const ProductionRequestList = () => {
   return (
     <div className="production-request-list">
       <div className="mt-2 mb-2">
-        <div className="absolute">
+        <div className="flex items-center justify-between my-6">
+          {/* Nút quay lại responsive */}
           <Button
             onClick={() => navigate(-1)}
             type="primary"
-            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -307,46 +328,60 @@ const ProductionRequestList = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            {t("common.back")}
+            <span className="hidden md:inline">{t("common.back")}</span>
           </Button>
+
+          {/* Tiêu đề căn giữa */}
+          <h5 className="text-center font-bold text-[18px] md:text-2xl flex-grow mx-4">
+            {t("page.title")}
+          </h5>
+
+          {/* Phần tử trống bên phải để cân bằng layout */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
         </div>
-        <h5 className="content-title font-bold text-2xl text-center">
-          {t("page.title")}
-        </h5>
+
       </div>
       {/* Notifications Tạo Quy Trình */}
-      <p className="flex items-center gap-2">
-        <Trans i18nKey="hint.create_plan_process">
-          + Tạo quy trình
-          <span className="font-medium text-blue-600">(kế hoạch)</span> bằng
-          cách click vào biểu tượng
-        </Trans>
-        <span className="inline-block text-green-600 transition-transform duration-300 group-hover:rotate-180 cursor-pointer">
-          <FaGear />
-        </span>
-      </p>
+      <div className="space-y-2 text-sm">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="">
+            <Trans i18nKey="hint.create_plan_process">
+              + Tạo quy trình
+              <span className="font-medium text-blue-600 ml-1">(kế hoạch)</span> bằng
+              cách click vào biểu tượng
+            </Trans>
+          </p>
+          <span className="text-green-600 inline-block cursor-pointer">
+            <FaGear />
+          </span>
+        </div>
 
-      <p className="flex items-center gap-2">
-        <Trans i18nKey="hint.create_batch_process">
-          + Tạo quy trình
-          <span className="font-medium text-green-600">(tổng hợp)</span> bằng
-          cách chọn vào nút
-        </Trans>
-        <span
-          className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
-          onClick={() =>
-            navigate("/system/admin/production-processing/consolidated-create")
-          }
-        >
-          {t("action.create_batch_process")}
-        </span>
-      </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="">
+            <Trans i18nKey="hint.create_batch_process">
+              + Tạo quy trình
+              <span className="font-medium text-green-600 ml-1">(tổng hợp)</span> bằng
+              cách chọn vào nút
+            </Trans>
+          </p>
+          <button
+            className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
+            onClick={() =>
+              navigate("/system/admin/production-processing/consolidated-create")
+            }
+          >
+            {t("action.create_batch_process")}
+          </button>
+        </div>
+      </div>
+
 
       <Loading isPending={isLoading}>
         <Table
           columns={columns}
           dataSource={tableData}
           pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
         />
       </Loading>
 
@@ -355,7 +390,7 @@ const ProductionRequestList = () => {
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="40%"
+        width={drawerWidth}
       >
         {/* Chế độ XEM CHI TIẾT */}
         {selectedRequest && (
@@ -437,14 +472,23 @@ const ProductionRequestList = () => {
             </div>
             {/* Nếu đã duyệt thì có thể tạo quy trình */}
             {selectedRequest.status === "Đã duyệt" && (
-              <div className="flex justify-center gap-4 mt-6">
+              <div className="flex justify-between items-center gap-4 mt-6">
+                {/* Nút tạo quy trình */}
                 <Button
                   type="primary"
-                  className="px-6 py-2 text-lg"
+                  className="px-4 py-1 text-lg"
                   onClick={() => navigate(`create/${selectedRequest._id}`)}
                 >
                   {t("action.create_process")}
                 </Button>
+
+                {/* Nút đóng */}
+                <button
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
+                >
+                  {t("common.close")}
+                </button>
               </div>
             )}
           </div>

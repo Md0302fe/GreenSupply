@@ -194,9 +194,9 @@ const PackageCategoryList = () => {
     onFilter: (value, record) =>
       record.categories_name
         ? record.categories_name
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
   });
 
@@ -209,7 +209,7 @@ const PackageCategoryList = () => {
       ),
       dataIndex: "categories_name",
       key: "categories_name",
-      align: "center", 
+      align: "center",
       ...getColumnSearchProps("categories_name"),
     },
     {
@@ -220,7 +220,7 @@ const PackageCategoryList = () => {
       ),
       dataIndex: "Descriptions",
       key: "Descriptions",
-      align: "center", 
+      align: "center",
     },
     {
       title: (
@@ -230,8 +230,8 @@ const PackageCategoryList = () => {
       ),
       dataIndex: "quantity",
       key: "quantity",
-      align: "center", 
-      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>, 
+      align: "center",
+      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
       title: (
@@ -241,7 +241,7 @@ const PackageCategoryList = () => {
       ),
       dataIndex: "is_delete",
       key: "is_delete",
-      align: "center", 
+      align: "center",
       filters: [
         { text: "Hoạt động", value: "false" },
         { text: "Ngừng sử dụng", value: "true" },
@@ -249,9 +249,9 @@ const PackageCategoryList = () => {
       onFilter: (value, record) => record.is_delete.toString() === value,
       render: (val) => (
         <div style={{ textAlign: "center", width: "100%" }}>
-        <Tag color={val ? "orange" : "green"}>
-          {val ? "Ngừng sử dụng" : "Hoạt động"}
-        </Tag>
+          <Tag color={val ? "orange" : "green"}>
+            {val ? "Ngừng sử dụng" : "Hoạt động"}
+          </Tag>
         </div>
       ),
     },
@@ -265,36 +265,36 @@ const PackageCategoryList = () => {
       align: "center", // Căn giữa tất cả các cột
       render: (_, record) => (
         <div style={{ textAlign: "center", width: "100%" }}>
-        <Space>
-          <Button
-            type="link"
-            icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
-            disabled={record.is_delete}
-            onClick={() => !record.is_delete && handleViewDetails(record)}
-          />
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ fontSize: 18 }} />}
-            disabled={record.is_delete}
-            title={
-              record.is_delete
-                ? "Không thể chỉnh sửa mục đã ngừng sử dụng"
-                : "Chỉnh sửa"
-            }
-            onClick={() => !record.is_delete && openEditDrawer(record)}
-          />
-          <Button
-            type="link"
-            icon={<DeleteOutlined style={{ fontSize: 18 }} />}
-            disabled={record.is_delete}
-            title={
-              record.is_delete
-                ? "Không thể ngừng sử dụng mục đã ngừng sử dụng"
-                : "Ngừng sử dụng"
-            }
-            onClick={() => !record.is_delete && handleDelete(record._id)}
-          />
-        </Space>
+          <Space>
+            <Button
+              type="link"
+              icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
+              disabled={record.is_delete}
+              onClick={() => !record.is_delete && handleViewDetails(record)}
+            />
+            <Button
+              type="link"
+              icon={<EditOutlined style={{ fontSize: 18 }} />}
+              disabled={record.is_delete}
+              title={
+                record.is_delete
+                  ? "Không thể chỉnh sửa mục đã ngừng sử dụng"
+                  : "Chỉnh sửa"
+              }
+              onClick={() => !record.is_delete && openEditDrawer(record)}
+            />
+            <Button
+              type="link"
+              icon={<DeleteOutlined style={{ fontSize: 18 }} />}
+              disabled={record.is_delete}
+              title={
+                record.is_delete
+                  ? "Không thể ngừng sử dụng mục đã ngừng sử dụng"
+                  : "Ngừng sử dụng"
+              }
+              onClick={() => !record.is_delete && handleDelete(record._id)}
+            />
+          </Space>
         </div>
       ),
     },
@@ -340,34 +340,35 @@ const PackageCategoryList = () => {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mt-6 mb-4">
+        {/* Nút quay lại bên trái */}
         <button
           onClick={() => navigate("/system/admin/feature_material_category")}
-          className="flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           type="button"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
           </svg>
-          Quay lại
+          <span className="hidden md:inline">Quay lại</span>
         </button>
 
-        <h2 className="text-4xl font-bold text-gray-800 flex-1 text-center m-0 mt-2">
+        {/* Tiêu đề căn giữa */}
+        <h2 className="text-center font-bold text-[18px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
           Danh Sách Loại Nguyên Liệu
         </h2>
+
+        {/* Phần tử trống bên phải để cân bằng nút quay lại */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
-      <div className="flex justify-end mb-4">
+
+      <div className="flex justify-end mb-1">
         <Button
           type="primary"
           onClick={() => navigate("/system/admin/box-categories/create")}
@@ -383,6 +384,8 @@ const PackageCategoryList = () => {
         loading={loading}
         rowKey="_id"
         pagination={{ pageSize: 10 }}
+        scroll={{ x: "max-content" }}
+
       />
 
       {/* Drawer xem chi tiết */}
@@ -421,6 +424,14 @@ const PackageCategoryList = () => {
         ) : (
           <p>Đang tải...</p>
         )}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
       </Drawer>
 
       {/* Drawer chỉnh sửa */}

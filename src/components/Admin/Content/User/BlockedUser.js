@@ -473,7 +473,7 @@ const BlockedUserComponent = () => {
       sorter: (a, b) => a?.full_name.length - b?.full_name.length,
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Email</div>,
+      title: <div style={{ textAlign: "left", width: "100%" }}>Email</div>,
       dataIndex: "email",
       key: "email",
       ...getColumnSearchProps("email"),
@@ -594,27 +594,39 @@ const BlockedUserComponent = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-        <button
-          onClick={() => navigate(-1)} // Quay lại trang trước đó
-          className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="flex items-center justify-between mb-4">
+          {/* Nút quay lại */}
+          <button
+            onClick={() => navigate(-1)}
+            type="button"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          {t("blocked_user.back")}
-        </button>
-        <h5 className="content-title">{t("blocked_user.title")}</h5>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            <span className="hidden md:inline">{t("blocked_user.back")}</span>
+          </button>
+
+          {/* Tiêu đề căn giữa */}
+          <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
+            {t("blocked_user.title")}
+          </h2>
+
+          {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
+        </div>
+
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -634,6 +646,7 @@ const BlockedUserComponent = () => {
                 },
               };
             }}
+            scroll={{ x: "max-content" }}
           ></TableUser>
         </div>
       </div>

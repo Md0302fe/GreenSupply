@@ -133,14 +133,16 @@ const ProductionProcessingList = () => {
           >
             Đặt lại
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => clearFilters && confirm()}
-            style={{ padding: 0 }}
-          >
-            Đóng
-          </Button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => clearFilters && confirm()}
+              style={{ padding: 0 }}
+            >
+              Đóng
+            </Button>
+          </div>
         </Space>
       </div>
     ),
@@ -361,7 +363,7 @@ const ProductionProcessingList = () => {
       ...getColumnSearchProps("_id"),
     },
     {
-      title: t("productionProcess.field.production_name"),
+      title: <div className="text-left">{t("productionProcess.field.production_name")}</div>,
       dataIndex: "production_name",
       key: "production_name",
       ...getColumnSearchProps("production_name"),
@@ -426,15 +428,16 @@ const ProductionProcessingList = () => {
       <div className="Main-Content">
         {/* button back & title of page */}
         <div className="my-6">
-          <div className="absolute">
-            <Button
+          <div className="flex items-center justify-between">
+            {/* Nút quay lại responsive */}
+            <button
               onClick={() => navigate(-1)}
-              type="primary"
-              className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+              type="button"
+              className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[32px] md:min-w-[100px]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
+                className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -446,34 +449,37 @@ const ProductionProcessingList = () => {
                   d="M15 12H3m0 0l6-6m-6 6l6 6"
                 />
               </svg>
-              {t("productionProcess.button.back")}
-            </Button>
+              <span className="hidden md:inline">{t("productionProcess.button.back")}</span>
+            </button>
+
+            {/* Tiêu đề căn giữa */}
+            <h5 className="text-center font-bold text-xl md:text-2xl flex-grow mx-2">
+              {t("title.productionList")}
+            </h5>
+
+            {/* Phần tử trống để cân layout */}
+            <div className="min-w-[32px] md:min-w-[100px]"></div>
           </div>
-          <h5 className="content-title font-bold text-2xl text-center">
-            {t("title.productionList")}
-          </h5>
         </div>
 
+
         <div className="content-main-table-user">
-          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-fit">
-            <p>{t("productionProcess.label.processType")}</p>
-            <div className="flex gap-2 mt-2">
+          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">            <p>{t("productionProcess.label.processType")}</p>
+            <div className="flex flex-row gap-2 mt-2">
               <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
-                  type_process === "single"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-slate-500 hover:bg-slate-600"
-                }`}
+                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-slate-500 hover:bg-slate-600"
+                  }`}
                 onClick={() => set_type_process("single")}
               >
                 {t("productionProcess.button.single")}
               </span>
               <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
-                  type_process === "consolidate"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-slate-500 hover:bg-slate-600"
-                }`}
+                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-slate-500 hover:bg-slate-600"
+                  }`}
                 onClick={() => handleLoadConsolidate()}
               >
                 {t("productionProcess.button.consolidated")}
@@ -487,6 +493,7 @@ const ProductionProcessingList = () => {
               isLoading={isLoading}
               data={type_process === "single" ? data : consolidateProcessData}
               columnsExport={columnsExport}
+              scroll={{ x: "max-content" }}
             />
           </Loading>
         </div>
@@ -536,8 +543,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage1_end
                   ? moment(selectedProcess.process_stage1_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
+                    "DD/MM/YYYY HH:mm"
+                  )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -549,8 +556,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage2_end
                   ? moment(selectedProcess.process_stage2_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
+                    "DD/MM/YYYY HH:mm"
+                  )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -562,8 +569,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage3_end
                   ? moment(selectedProcess.process_stage3_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
+                    "DD/MM/YYYY HH:mm"
+                  )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -575,8 +582,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage4_end
                   ? moment(selectedProcess.process_stage4_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
+                    "DD/MM/YYYY HH:mm"
+                  )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -588,8 +595,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage5_end
                   ? moment(selectedProcess.process_stage5_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
+                    "DD/MM/YYYY HH:mm"
+                  )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -601,8 +608,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage6_end
                   ? moment(selectedProcess.process_stage6_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
+                    "DD/MM/YYYY HH:mm"
+                  )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -631,7 +638,16 @@ const ProductionProcessingList = () => {
               {t("productionProcess.button.approve")}
             </Button>
           )}
+          <div className="flex justify-end items-center w-full mr-2 gap-4">
+            <button
+              onClick={() => setIsDrawerOpen(false)}
+              className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
+            >
+              {t("common.close")}
+            </button>
+          </div>
         </Space>
+
       </Drawer>
 
       {/* Drawer Cập Nhật */}

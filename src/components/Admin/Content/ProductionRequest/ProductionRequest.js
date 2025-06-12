@@ -173,12 +173,12 @@ const ProductionRequest = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-4 w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-2 lg:p-4">
+      <div className="flex justify-between items-center mb-2 lg:mb-4 w-full">
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -194,7 +194,7 @@ const ProductionRequest = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-          {t("common.back")}
+           <span className="hidden md:inline">{t("common.back")}</span>
         </Button>
         <Button
           onClick={() => navigate("/system/admin/production-request-list")}
@@ -209,7 +209,7 @@ const ProductionRequest = () => {
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-center mt-2 mb-4 gap-2">
           <GrPlan className="size-6" />
-          <h2 className="text-3xl font-bold text-center">
+          <h2 className="text-24px lg:text-3xl font-bold text-center">
             {t("productionRequest.title")}
           </h2>
         </div>

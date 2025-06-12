@@ -107,9 +107,9 @@ const ProcessDetails = () => {
         className="flex flex-col items-center justify-center"
       >
         <div className="w-full max-w-[1000px] px-4 pb-4 rounded-lg shadow-md bg-green-100">
-          <div className="flex justify-between items-center mb-1">
-            {/* Name & ID */}
-            <div className="w-[80%]">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-1 gap-4">
+            {/* Tên + ID */}
+            <div className="w-full md:w-[80%]">
               <div className="text-lg font-bold text-center rounded p-2 text-green-600">
                 🔖 {dataProcess?.data?.production_name}
               </div>
@@ -120,30 +120,33 @@ const ProcessDetails = () => {
               </div>
             </div>
 
-            {/* Status Process */}
-            <div className="flex flex-col w-[20%] mt-4 items-start justify-start">
-              <span className="text-center font-bold">
+            {/* Trạng thái */}
+            <div className="w-full md:w-[20%]">
+              <span className="text-left font-bold block mb-2">
                 {t("processDetails.label.status")}
               </span>
-              <div className="flex flex-col space-y-2 mt-2">
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-yellow-400 rounded-full mr-2"></div>
+
+              {/* Trạng thái ngang ở mobile, dọc ở desktop */}
+              <div className="flex flex-col items-left md:items-start gap-2 md:space-y-2">
+                <div className="flex items-left">
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full mr-2" />
                   <span>{t("processDetails.status.executing")}</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-gray-400 rounded-full mr-2"></div>
+                <div className="flex items-left">
+                  <div className="w-4 h-4 bg-gray-400 rounded-full mr-2" />
                   <span>{t("processDetails.status.waiting")}</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-400 rounded-full mr-2"></div>
+                <div className="flex items-left">
+                  <div className="w-4 h-4 bg-green-400 rounded-full mr-2" />
                   <span>{t("processDetails.status.done")}</span>
                 </div>
               </div>
             </div>
           </div>
 
+
           {/* Thêm nền trắng cho phần hiển thị thông tin */}
-          <div className="bg-white p-3 rounded-lg shadow-sm">
+          <div className="bg-white p-1 lg:p-3 rounded-lg shadow-sm">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 text-xs">
               <div className="info-box">
                 <p className="text-gray-500 text-xs mb-2">
@@ -174,11 +177,10 @@ const ProcessDetails = () => {
                   🔄 {t("processDetails.info.status")}
                 </p>
                 <span
-                  className={`inline-block text-xs px-1 py-0.5 rounded text-black ${
-                    dataProcess?.data?.status === "Hoàn thành"
+                  className={`inline-block text-xs px-1 py-0.5 rounded text-black ${dataProcess?.data?.status === "Hoàn thành"
                       ? "bg-green-500"
                       : "bg-yellow-200"
-                  }`}
+                    }`}
                 >
                   {dataProcess?.data.status}
                 </span>
@@ -203,7 +205,7 @@ const ProcessDetails = () => {
           </div>
         </div>
         {/* Handle Stage */}
-        <div className="w-full max-w-[1000px] p-4 rounded-lg shadow-md flex flex-col gap-3">
+        <div className="w-full max-w-[1000px] p-0 lg:p-4 mt-3 rounded-lg shadow-md flex flex-col gap-3">
           <StageDetailsComponents
             stage={stage1}
             stageName={t("processDetails.stages.stage1")}
