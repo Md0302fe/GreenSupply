@@ -59,7 +59,7 @@ const ProcessingManagement = () => {
   return (
     <Loading isPending={isLoading}>
       <div className="production-processing-list">
-        <div className="my-6 px-20">
+        <div className="my-6 px-0 md:px-20">
           <div className="flex items-center justify-between my-6">
             {/* Nút quay lại bên trái */}
             <Button

@@ -114,12 +114,12 @@ const DashboardSupplyRequest = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <header className="bg-gradient-to-r from-yellow-500 to-green-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
+      <header className="bg-gradient-to-r from-yellow-500 to-green-500 text-white p-6 rounded mb-4 md:mb-6">
+        <h1 className="text-[18px] md:text-3xl font-bold">{t("dashboard.title")}</h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
         <Card
           onClick={handleNavigateAllOrders}
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
