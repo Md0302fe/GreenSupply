@@ -83,7 +83,7 @@ const App = ({ loginActive }) => {
       <Loading isPending={isLoading}>
         <div>
           {/* Header-App */}
-          <div className="header-container mb-5">
+          <div className="header-container">
             <Header></Header>
 
             {/* <div className="navigation-container">

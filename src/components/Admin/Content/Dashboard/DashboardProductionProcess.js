@@ -4,8 +4,11 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { Column } from "@ant-design/plots";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const DashboardProductionProcess = () => {
+  const { t } = useTranslation();
+
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const userRedux = useSelector((state) => state.user);
@@ -33,7 +36,6 @@ const DashboardProductionProcess = () => {
     setLoading(false);
   };
 
-
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -52,35 +54,79 @@ const DashboardProductionProcess = () => {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+      if (typeof window !== "undefined") {
+        return window.innerWidth < 768;
+      }
+      return false;
+    });
+  
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      handleResize(); // cập nhật ngay khi component mount
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
   const chartData = [
-    { type: "Chờ duyệt", value: dashboardData?.waiting || 0 },
-    { type: "Đang sản xuất", value: dashboardData?.processing || 0 },
-    { type: "Hoàn thành", value: dashboardData?.done || 0 },
+    {
+    status: isMobile ? t("status.pending").replace(" ", "\n") : t("status.pending"),
+    count: dashboardData?.waiting || 0,
+  },
+  {
+    status: isMobile ? t("status.processing").replace(" ", "\n") : t("status.processing"),
+    count: dashboardData?.processing || 0,
+  },
+  {
+    status: isMobile ? t("status.completed").replace(" ", "\n") : t("status.completed"),
+    count: dashboardData?.done || 0,
+  },
   ];
 
   const chartConfig = {
-    data: chartData,
-    xField: "type",
-    yField: "value",
+  data: chartData,
+  xField: "status",
+  yField: "count",
+  color: ({ status }) => {
+    const raw = status.replace("\n", " ");
+    if (raw === "Chờ duyệt") return "#faad14";
+    if (raw === "Đang sản xuất") return "#1890ff";
+    if (raw === "Hoàn thành") return "#52c41a";
+    return "#ccc";
+  },
+  label: {
+    position: "top",
+    style: {
+      fontSize: isMobile ? 10 : 12,
+    },
+  },
+  columnWidthRatio: isMobile ? 0.3 : 0.6,
+  height: isMobile ? 200 : 400,
+  xAxis: {
     label: {
-      position: "top",
-      style: { fill: "#000", fontSize: 14 },
+      autoRotate: false,
+      style: {
+        fill: "#000",
+        fontSize: isMobile ? 10 : 12,
+        wordBreak: "break-word",
+        whiteSpace: "normal",
+        textAlign: "center",
+      },
     },
-    color: ({ type }) => {
-      if (type === "Chờ duyệt") return "#faad14";
-      if (type === "Đang sản xuất") return "#1890ff";
-      if (type === "Hoàn thành") return "#52c41a";
-      return "#ccc";
-    },
+  },
   };
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <header className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">Dashboard Quy Trình Sản Xuất</h1>
+      <header className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded mb-4 md:mb-6">
+        <h1 className="text-[18px] md:text-3xl font-bold">{t("dashboardProduction.title")}</h1>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
         <Card
           loading={loading}
           onClick={() => handleCardClick("Chờ duyệt")}
@@ -89,7 +135,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <span className="flex items-center gap-2 text-gray-600 text-sm">
-                📝 <span>Chờ Duyệt</span>
+                📝 <span>{t("status.pending")}</span>
               </span>
             }
             value={dashboardData?.waiting || 0}
@@ -105,7 +151,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <span className="flex items-center gap-2 text-gray-600 text-sm">
-                ⚙️ <span>Đang Sản Xuất</span>
+                ⚙️ <span>{t("status.processing")}</span>
               </span>
             }
             value={dashboardData?.processing || 0}
@@ -121,7 +167,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <span className="flex items-center gap-2 text-gray-600 text-sm">
-                ✅ <span>Hoàn Thành</span>
+                ✅ <span>{t("status.completed")}</span>
               </span>
             }
             value={dashboardData?.done || 0}
@@ -133,7 +179,7 @@ const DashboardProductionProcess = () => {
       {/* 🔷 Biểu đồ trạng thái quy trình */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">
-          Biểu đồ trạng thái quy trình
+          {t("dashboardProduction.chartTitle")}
         </h2>
         <Column {...chartConfig} />
       </div>

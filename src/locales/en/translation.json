@@ -61,6 +61,8 @@
   "personal_info": "Personal Information",
   "logout": "Logout",
   "account": "Account",
+  "export_excel": "Export Excel",
+  "create_process": "Create process",
   "carousel": {
     "view_more": "View more",
     "title_2": "CAREFUL SELECTION",
@@ -90,7 +92,24 @@
     "cancel": "Cancel",
     "close": "Close",
     "update": "Update",
-    "updating": "Updatting"
+    "updating": "Updatting",
+    "confirm": "Confirm",
+    "no_data": "No data",
+    "back": "Back",
+    "action": "Action",
+    "edit": "Edit",
+    "save": "Save",
+    "backToDetail": "Back to Detail",
+    "approve": "Approve",
+    "reject": "Reject",
+    "unknown": "Unknown",
+    "noNote": "No note available",
+    "viewDetail": "View Detail",
+    "enterQuantity": "Enter quantity...",
+    "enterNote": "Enter note...",
+    "ok": "OK",
+    "reset": "Reset",
+    "notEnded": "Not yet ended"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -201,7 +220,16 @@
     "approve": "Approve",
     "cancelled": "Cancelled",
     "completed": "Completed",
-    "processing": "Processing"
+    "processing": "Processing",
+    "rejected": "Rejected",
+    "failed": "Failed",
+    "disable": "Disable",
+    "imported": "Import completed",
+    "importFailed": "Storage Failed",
+    "preparing": "Preparing",
+    "waitingExport": "Waiting for Export",
+    "exported": "Exported",
+    "in_production": "In Production"
   },
   "navbar": {
     "search_placeholder": "What are you looking for?",
@@ -346,7 +374,31 @@
         "requestsPendingProduction": "Number of Requests Pending Production Process Creation (Daily)",
         "completedProductionProcesses": "Number of Completed Production Processes (Daily)"
       }
-    }
+    },
+    "title_supply_request": "Material Request Dashboard",
+    "total_requests": "Total Requests",
+    "pending": "Pending Approval",
+    "completed": "Completed",
+    "processing_orders": "Orders in Process",
+    "no_processing_orders": "No orders in process",
+    "priority_high": "High Priority",
+    "priority_medium": "Medium Priority",
+    "priority_low": "Low Priority",
+    "recent_orders": "Recent Orders",
+    "filter_day": "By Day",
+    "filter_week": "By Week",
+    "filter_month": "By Month",
+    "table": {
+      "order_id": "Order ID",
+      "request_name": "Request Name",
+      "status": "Status",
+      "quantity": "Quantity",
+      "created_at": "Created At"
+    },
+    "error_fetch_data": "Cannot load dashboard data!",
+    "error_fetch_exception": "Error loading dashboard!",
+    "error_fetch_orders": "Cannot load order list!",
+    "error_fetch_orders_exception": "Error loading order list!"
   },
   "chart": {
     "import": "Import",
@@ -496,5 +548,706 @@
       "title": "Product Order List",
       "description": "Manage the list of product orders"
     }
+  },
+  "user_list": {
+    "title": "User List",
+    "back": "Go back",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "role": "Role",
+    "action": "Actions",
+    "detail": "Details",
+    "update_title": "Account Details",
+    "update": "Update",
+    "created_at": "Created At",
+    "updated_at": "Last Updated",
+    "upload_image": "Upload Image",
+    "review_avatar": "Avatar Preview",
+    "confirm_delete_title": "Delete Account",
+    "confirm_delete_text": "Are you sure you want to delete this account?",
+    "select_role": "Please select a role!",
+    "required_name": "Please enter a name!",
+    "required_email": "Please enter an email!",
+    "required_phone": "Please enter a phone number!"
+  },
+  "blocked_user": {
+    "back": "Go back",
+    "title": "User Account Management",
+    "drawer_title": "Account Details",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "role": "Role",
+    "image": "Image",
+    "upload_image": "Upload Image",
+    "review_avatar": "Avatar Preview",
+    "status": "Status",
+    "action": "Actions",
+    "blocked": "Blocked",
+    "active": "Active",
+    "block": "Block Account",
+    "unblock": "Unblock",
+    "update": "Update",
+    "confirm_block_title": "Confirm Account Block",
+    "confirm_block_text": "Are you sure you want to block this account?",
+    "confirm_unblock_title": "Confirm Account Unblock",
+    "confirm_unblock_text": "Are you sure you want to unblock this account?",
+    "required_name": "Please enter a name!",
+    "required_email": "Please enter an email!",
+    "required_phone": "Please enter a phone number!",
+    "required_role": "Please select a role!"
+  },
+  "harvest": {
+    "back": "Go Back",
+    "title": "Material Supply Request",
+    "form": {
+      "name": "Request Name",
+      "name_placeholder": "Enter request name...",
+      "fuel_type": "Fuel Type",
+      "fuel_type_placeholder": "Select fuel type",
+      "no_data": "No data available",
+      "image": "Image",
+      "image_placeholder": "Upload your image",
+      "quantity": "Total Quantity (Kg)",
+      "quantity_placeholder": "Enter quantity...",
+      "price": "Price per Kg / Unit (VND)",
+      "price_placeholder": "Enter price...",
+      "start_date_placeholder": "Select start date",
+      "end_date_placeholder": "Select end date",
+      "due_date_placeholder": "Select due date",
+      "priority": "Priority Level",
+      "priority_placeholder": "Select priority",
+      "note": "Note",
+      "note_placeholder": "Enter notes...",
+      "total_price": "Total Price"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "actions": {
+      "reset": "Reset",
+      "submit": "Submit Request"
+    },
+    "validation": {
+      "empty_name": "Request name cannot be empty!",
+      "empty_fuel_type": "Fuel type is required!",
+      "empty_image": "Fuel image is required!",
+      "empty_quantity": "Quantity is required!",
+      "empty_price": "Price is required!",
+      "empty_start_date": "Please select a start date!",
+      "invalid_start_date": "Start date must be today or later!",
+      "empty_end_date": "Please select an end date!",
+      "empty_due_date": "Please select a due date!",
+      "invalid_end_date": "End date must be after start date!",
+      "invalid_due_date": "Due date must be after end date!",
+      "empty_priority": "Please select a priority level!"
+    },
+    "success": {
+      "created": "Request created successfully!"
+    }
+  },
+  "order": {
+    "back": "Go Back",
+    "title": "Materials to Import",
+    "drawer_title": "Material Collection Order Details",
+    "update_title": "Update Material Collection Order",
+    "form": {
+      "name": "Order Name",
+      "name_placeholder": "Enter order name...",
+      "fuel_type": "Fuel Type",
+      "fuel_type_placeholder": "Select fuel type",
+      "no_data": "No data available",
+      "image": "Image",
+      "upload": "Upload Image",
+      "quantity": "Total Quantity (Kg)",
+      "quantity_placeholder": "Enter quantity...",
+      "price": "Price per Kg / Unit (VND)",
+      "price_placeholder": "Enter price...",
+      "start_date": "Start Date",
+      "end_date": "End Date",
+      "due_date": "Due Date",
+      "date_placeholder": "Select date",
+      "priority": "Priority",
+      "priority_placeholder": "Select priority",
+      "note": "Note",
+      "note_placeholder": "Enter note...",
+      "total_price": "Total Price:"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "table": {
+      "image": "Product",
+      "request_name": "Request",
+      "quantity_remain": "Remaining",
+      "total_quantity": "Total (Kg)",
+      "start_date": "Start Date",
+      "end_date": "End Date",
+      "status": "Status",
+      "action": "Actions",
+      "no_image": "No Image",
+      "rejected": "Rejected"
+    },
+    "modal": {
+      "delete_title": "Delete Request",
+      "delete_confirm": "Are you sure you want to delete this product?",
+      "update_title": "Confirm Update",
+      "update_confirm": "Are you sure you want to update this order?",
+      "accept_title": "Confirm Approval",
+      "accept_confirm": "Are you sure you want to approve this order?",
+      "cancel_title": "Confirm Cancel",
+      "cancel_confirm": "Are you sure you want to cancel this order?"
+    },
+    "actions": {
+      "update": "Update",
+      "accept": "Approve",
+      "cancel": "Cancel Request"
+    },
+    "toast": {
+      "no_order_selected": "No order selected for cancellation!",
+      "cancel_success": "Order cancelled successfully!",
+      "cancel_failed": "Failed to cancel order!"
+    }
+  },
+  "supplier_dashboard": {
+    "title": "Supplier Order Dashboard",
+    "total_orders": "Total Orders",
+    "pending_orders": "Pending Orders",
+    "approved_orders": "Approved Orders",
+    "request_title": "📥 Fuel Collection Requests",
+    "supply_title": "📦 Fuel Supply Requests",
+    "total": "Total Requests",
+    "status_chart_title": "Order Status Chart",
+    "recent_orders": "Recent Orders",
+    "filter": {
+      "day": "By Day",
+      "week": "By Week",
+      "month": "By Month"
+    }
+  },
+  "table": {
+    "order_id": "Order ID",
+    "type": "Type",
+    "supply_order": "Supply Order",
+    "fuel_request": "Fuel Collection",
+    "supplier": "Supplier",
+    "status": "Status",
+    "quantity": "Quantity",
+    "created_at": "Created At",
+    "request_name": "Request Name",
+    "product_quantity": "Product Quantity (Kg)",
+    "material_quantity": "Material Quantity (Kg)",
+    "production_date": "Start Date",
+    "end_date": "End Date",
+    "actions": "Actions"
+  },
+  "fuel_request": {
+    "back": "Go Back",
+    "title": "Fuel Request Management",
+    "table": {
+      "customer": "Customer",
+      "fuel_type": "Fuel Type",
+      "price": "Price",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "drawer": {
+      "title": "Order Details",
+      "priority": "Priority",
+      "quantity": "Quantity",
+      "total_price": "Total Price",
+      "address": "Address",
+      "status": "Status",
+      "note": "Note",
+      "created_at": "Created At",
+      "updated_at": "Last Updated"
+    },
+    "actions": {
+      "approve": "Approve",
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "approve_success": "Order approved successfully!",
+      "approve_failed": "Order approval failed!",
+      "approve_error": "An error occurred while approving the order!",
+      "cancel_success": "Order cancelled successfully!",
+      "cancel_failed": "Order cancellation failed!",
+      "cancel_error": "An error occurred while cancelling the order!",
+      "complete_success": "Order completed successfully!",
+      "complete_failed": "Order completion failed!",
+      "complete_error": "An error occurred while completing the order!"
+    }
+  },
+  "fuelProvide": {
+    "orderApproved": "Order approved successfully!",
+    "approveFailed": "Failed to approve order!",
+    "errorApproving": "An error occurred while approving the order:",
+    "orderCanceled": "Order canceled successfully!",
+    "cancelFailed": "Failed to cancel order!",
+    "errorCanceling": "An error occurred while canceling the order:",
+    "orderCompleted": "Order completed successfully!",
+    "completeFailed": "Failed to complete order!",
+    "errorCompleting": "An error occurred while completing the order!",
+    "customer": "Customer",
+    "fuelType": "Fuel Type",
+    "price": "Price (VND)",
+    "status": "Status",
+    "pending": "Pending",
+    "approved": "Approved",
+    "canceled": "Canceled",
+    "completed": "Completed",
+    "createdAt": "Created At",
+    "noData": "No data",
+    "invalid": "Invalid",
+    "action": "Action",
+    "back": "Go Back",
+    "title": "Fuel Provide Management",
+    "orderDetail": "Order Details",
+    "quality": "Quality",
+    "quantity": "Quantity",
+    "note": "Note",
+    "noNote": "No note",
+    "totalPrice": "Total Price",
+    "approveOrder": "Approve",
+    "cancelOrder": "Cancel"
+  },
+  "dashboardWarehouse": {
+    "title": "Warehouse Management",
+    "totalReceipts": "Total receipts",
+    "pendingReceipts": "Pending receipts",
+    "approvedReceipts": "Approved receipts",
+    "storageInfo": "Storage Information",
+    "used": "used",
+    "statsChartTitle": "Receipt Statistics",
+    "filter": {
+      "day": "By Day",
+      "week": "By Week",
+      "month": "By Month"
+    },
+    "recentReceipts": "Recent receipts",
+    "columns": {
+      "id": "Receipt ID",
+      "manager": "Manager",
+      "status": "Status",
+      "quantity": "Quantity",
+      "createdAt": "Created At"
+    },
+    "noData": "No data available",
+    "notLoggedIn": "You are not logged in!",
+    "noStorageInfo": "Storage info not found!",
+    "noReceipts": "No receipt data found!",
+    "serverError": "Failed to connect to the server!"
+  },
+  "fuelOrderStatus": {
+    "fetchError": "Failed to fetch order list!",
+    "serverError": "Unable to connect to the server!",
+    "modalTitle": "Confirm Create Storage Receipt",
+    "modalContent": "Are you sure you want to create a storage receipt for this order?",
+    "create": "Create",
+    "cancel": "Cancel",
+    "notLoggedIn": "You are not logged in!",
+    "invalidOrder": "Invalid order data!",
+    "createSuccess": "Storage receipt created successfully!",
+    "createFailPrefix": "Failed:",
+    "createFail": "Error while creating storage receipt!",
+    "search": "Search",
+    "reset": "Reset",
+    "close": "Close",
+    "columns": {
+      "customer": "Customer",
+      "fuelType": "Fuel Type",
+      "totalPrice": "Total Price",
+      "status": "Status",
+      "action": "Action"
+    },
+    "createReceiptBtn": "Create Storage Receipt",
+    "noData": "No data available",
+    "supply": "Supply",
+    "request": "Request",
+    "back": "Go Back",
+    "title": "Manage Orders Waiting for Storage",
+    "filterLabel": "Filter by order type",
+    "allOrders": "All Orders",
+    "requestOrders": "Request Orders",
+    "supplyOrders": "Supply Orders",
+    "receiptList": "Storage Receipt List",
+    "orderList": "Order List",
+    "orderDetail": "Order Details",
+    "note": "Note",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "loading": "Loading data...",
+    "quantity": "Quantity",
+    "price": "Price",
+    "receiptType": "Receipt Type"
+  },
+  "fuelStorage": {
+    "confirmTitle": {
+      "approve": "Confirm approval",
+      "cancel": "Confirm cancellation"
+    },
+    "confirmContent": {
+      "approve": "Are you sure you want to approve this receipt?",
+      "cancel": "Are you sure you want to cancel this receipt?"
+    },
+    "confirm": {
+      "okText": "Confirm",
+      "cancelText": "Cancel"
+    },
+    "updateSuccess": "Status updated successfully: {{status}}",
+    "updateFail": "Failed to update status!",
+    "serverError": "Unable to connect to server!",
+    "noDataToExport": "No data available for export!",
+    "columns": {
+      "manager": "Manager",
+      "receiptType": "Receipt Type",
+      "storage": "Storage",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "quantity": "Quantity",
+      "note": "Note",
+      "action": "Action"
+    },
+    "unknown": "Unknown",
+    "receiptType": {
+      "supply": "Supply",
+      "request": "Request"
+    },
+    "noDataShort": "N/A",
+    "drawerTitle": "Receipt Details",
+    "back": "Back",
+    "title": "Fuel Storage Receipts",
+    "approve": "Approve"
+  },
+  "materialBatch": {
+    "title": "Raw Material Batch Management",
+    "batchId": "Batch ID",
+    "batchName": "Batch Name",
+    "fuelType": "Fuel Type",
+    "quantity": "Quantity (Kg)",
+    "storage": "Storage",
+    "status": "Status",
+    "note": "Note",
+    "createExportOrder": "Create Export Order",
+    "updateTitle": "Update Raw Material Batch",
+    "detailTitle": "Batch Detail",
+    "estimatedProduction": "Estimated Production (Kg)",
+    "requiredMaterialEstimate": "Estimated Required Material (Kg)",
+    "selectFuelType": "Select Fuel Type",
+    "enterEstimatedProduction": "Enter estimated production",
+    "selectStorage": "Select Storage"
+  },
+  "validation": {
+    "requiredBatchId": "Please enter the batch ID",
+    "requiredBatchName": "Please enter the batch name",
+    "requiredFuelType": "Please select a fuel type",
+    "requiredProduction": "Please enter the estimated production!",
+    "requiredStorage": "Please select a storage",
+    "requiredBatch": "Please select a batch",
+    "requiredProductionOrder": "Please select a production request",
+    "requiredExportName": "Please enter the export order name",
+    "planNameRequired": "Please enter plan name",
+    "materialRequired": "Please select material type",
+    "materialQtyRequired": "Please enter material quantity",
+    "lossRequired": "Please enter loss percentage",
+    "priorityRequired": "Please select priority",
+    "productionDateRequired": "Please select production date",
+    "endDateRequired": "Please select end date",
+    "mustBeGreaterThanZero": "Value must be greater than 0",
+    "lossPercentageRange": "Percentage must be between 0 and 100"
+  },
+  "messages": {
+    "notLoggedIn": "You are not logged in.",
+    "userIdNotFound": "User ID not found.",
+    "userFetchFailed": "Could not retrieve user information.",
+    "userFetchError": "Error fetching user information from server.",
+    "dataFetchError": "Error loading data from server.",
+    "userNotFound": "User information not found.",
+    "unknownError": "Unknown error occurred!",
+    "createSuccess": "Order created successfully!",
+    "fetchExportListError": "Failed to load export list!",
+    "connectionError": "Unable to connect to server!",
+    "approveSuccess": "Order approved successfully",
+    "approveError": "Failed to approve order or update status!",
+    "notFound": "Export order not found!",
+    "fetchDetailError": "Failed to retrieve export order details!",
+    "deleteSuccess": "Order deleted successfully",
+    "deleteError": "Failed to delete order",
+    "fetchFuelError": "Error loading material list.",
+    "selectFuelFirst": "Please select material before entering desired output.",
+    "materialOverLimit": "Desired output exceeds current stock. Max output: {{max}} Kg.",
+    "materialStockExceeded": "Entered quantity exceeds available stock ({{available}} Kg).",
+    "createFail": "Failed to create production request!",
+    "submitError": "An error occurred while creating the production request."
+  },
+  "materialExport": {
+    "title": "Create Material Export Order",
+    "createdBy": "Created by:",
+    "selectBatch": "Select Raw Material Batch",
+    "selectBatchPlaceholder": "Choose a batch",
+    "selectProduction": "Select Production Request",
+    "selectProductionPlaceholder": "Choose a production request",
+    "exportName": "Export Order Name",
+    "exportNamePlaceholder": "Enter export order name",
+    "exportType": "Export Type",
+    "productionType": "Production Order",
+    "note": "Note",
+    "notePlaceholder": "Enter note"
+  },
+  "materialExportList": {
+    "title": "Material Export Management",
+    "exportType": "Export Type",
+    "productionRequest": "Production Request",
+    "batch": "Raw Material Batch",
+    "status": "Status",
+    "detailTitle": "Export Order Detail",
+    "createdBy": "Created by",
+    "batchName": "Batch Name",
+    "batchId": "Batch ID",
+    "exportName": "Export Name",
+    "createdDate": "Created Date",
+    "note": "Note"
+  },
+  "batchHistory": {
+    "title": "Batch Export History",
+    "batchId": "Batch ID",
+    "batchName": "Batch Name",
+    "batchNamePlaceholder": "Enter batch name...",
+    "exportType": "Export Type",
+    "status": "Status",
+    "detailTitle": "Raw Material Batch Detail",
+    "requestName": "Request Name",
+    "requestNamePlaceholder": "Enter request name...",
+    "image": "Image",
+    "totalQuantity": "Total Material Quantity (Kg)",
+    "createdDate": "Created Date",
+    "exportDate": "Exported Date",
+    "note": "Note"
+  },
+  "dashboardProduction": {
+    "title": "Production Process Dashboard",
+    "chartTitle": "Process Status Chart"
+  },
+  "productionRequest": {
+    "title": "Create Production Plan",
+    "planList": "Plan List",
+    "name": "Plan Name",
+    "namePlaceholder": "Enter plan name",
+    "material": "Material Type",
+    "selectMaterial": "Select material",
+    "materialQty": "Material Quantity (kg)",
+    "enterMaterialQty": "Enter material quantity",
+    "loss": "Loss Percentage (%)",
+    "enterLoss": "Enter loss percentage",
+    "productQty": "Estimated Product Output (kg)",
+    "priority": "Priority",
+    "selectPriority": "Select priority level",
+    "productionDate": "Production Date",
+    "selectProductionDate": "Select production date",
+    "endDate": "End Date",
+    "note": "Note",
+    "enterNote": "Enter note (optional)"
+  },
+  "priority": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "productionRequestManagement": {
+    "title": "Production Plan List"
+  },
+  "form": {
+    "request_name": "Request Name",
+    "request_type": "Request Type",
+    "material": "Material",
+    "product_quantity": "Product Quantity (Kg)",
+    "material_quantity": "Material Quantity (Kg)",
+    "production_date": "Production Date",
+    "end_date": "End Date",
+    "status": "Status",
+    "note": "Note",
+    "update_title": "Update Request"
+  },
+  "action": {
+    "edit": "Edit",
+    "approve": "Approve",
+    "save": "Save",
+    "cancel": "Cancel",
+    "create_process": "Create Process",
+    "create_batch_process": "Create Batch Process"
+  },
+  "hint": {
+    "create_plan_process": "+ Create a <1>(plan)</1> process by clicking the icon",
+    "create_batch_process": "+ Create a <1>(batch)</1> process by clicking the button"
+  },
+  "modal": {
+    "delete_confirm_title": "Confirm Deletion",
+    "delete_confirm_content": "Are you sure you want to delete this production request?"
+  },
+  "warning": {
+    "over_fuel": "Requested quantity exceeds available material. Max allowed is {{max}} Kg."
+  },
+  "drawer": {
+    "detail_title": "Production Request Details"
+  },
+  "validate": {
+    "request_name": "Please enter request name",
+    "material": "Please select a material",
+    "product_quantity": "Please enter quantity",
+    "production_date": "Please select production date",
+    "end_date": "Please select end date"
+  },
+  "placeholder": {
+    "select_material": "Select material type"
+  },
+  "notification": {
+    "after_approve": "After approval, the requests will be placed in the production queue",
+    "production_queue": "Production Queue"
+  },
+  "page": {
+    "title": "Pending Requests to Process"
+  },
+  "productionProcess": {
+    "title": {
+      "list": "Created Production Processes"
+    },
+    "button": {
+      "back": "Back",
+      "single": "Single Process",
+      "consolidated": "Consolidated Process",
+      "update": "Update",
+      "approve": "Approve",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "label": {
+      "processType": "Process Type"
+    },
+    "confirm": {
+      "approveTitle": "Confirm process approval?",
+      "approveContent": "Are you sure you want to approve this process?"
+    },
+    "message": {
+      "approveSuccess": "Process approved successfully!",
+      "approveFail": "Approval failed, please try again.",
+      "updateSuccess": "Update successful!",
+      "updateFail": "Update failed, please try again.",
+      "onlyPending": "Only processes in 'Pending Approval' status can be updated!"
+    },
+    "drawer": {
+      "detailTitle": "Production Process Details",
+      "editTitle": "Update Production Process"
+    },
+    "form": {
+      "production_name": "Process Name",
+      "start_time": "Start Date",
+      "end_time": "End Date",
+      "note": "Note",
+      "validation": {
+        "required": "Please enter the required information!",
+        "startRequired": "Please select the start date!",
+        "endRequired": "Please select the end date!",
+        "endAfterStart": "End date must be after the start date!"
+      }
+    },
+    "field": {
+      "_id": "Process ID",
+      "production_name": "Process Name",
+      "status": "Status",
+      "start_time": "Start Time",
+      "end_time": "End Time",
+      "note": "Note",
+      "processed_quantity": "Processed Quantity",
+      "waste_quantity": "Waste Quantity",
+      "production_request": "Production Request",
+      "stage1": "Stage 1",
+      "stage2": "Stage 2",
+      "stage3": "Stage 3",
+      "stage4": "Stage 4",
+      "stage5": "Stage 5",
+      "stage6": "Stage 6"
+    }
+  },
+  "processingManagement": {
+    "title": {
+      "executingProcesses": "Executing Production Processes"
+    },
+    "button": {
+      "back": "Back",
+      "single": "Single Process",
+      "consolidated": "Consolidated Process"
+    },
+    "label": {
+      "processType": "Process Type"
+    },
+    "message": {
+      "loadError": "An error occurred while loading process data"
+    }
+  },
+  "histories": {
+    "title": "Process History",
+    "field": {
+      "processCode": "Process Code",
+      "processName": "Process Name",
+      "start": "Start Time",
+      "end": "End Time",
+      "status": "Status",
+      "action": "Action"
+    },
+    "button": {
+      "viewDetails": "View Details"
+    }
+  },
+  "processDetails": {
+    "label": {
+      "status": "Status:"
+    },
+    "status": {
+      "executing": "Executing",
+      "waiting": "Waiting",
+      "done": "Completed"
+    },
+    "info": {
+      "start": "Start Time",
+      "etaEnd": "ETA End Time",
+      "currentStage": "Current Stage",
+      "status": "Status",
+      "assignedUser": "Assigned User",
+      "note": "Note"
+    },
+    "stages": {
+      "stage1": "Ingredient Sorting",
+      "stage2": "Washing and Cleaning",
+      "stage3": "Surface Disinfection",
+      "stage4": "Bio-coating & Drying",
+      "stage5": "Ripening (Temp/Humidity Control)",
+      "stage6": "Final Packaging",
+      "stage7": "Labeling & Traceability"
+    },
+    "message": {
+      "completeSuccess": "Stage marked as complete successfully",
+      "completeError": "An error occurred while completing the stage"
+    }
+  },
+  "stage": {
+    "title": "Stage {{no}}",
+    "field": {
+      "start": "Start Time",
+      "end": "End Time",
+      "status": "Status",
+      "user": "Assigned User",
+      "note": "Note"
+    },
+    "button": {
+      "complete": "Complete"
+    },
+    "empty": "Process not yet executed",
+    "system": "system"
   }
 }

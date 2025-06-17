@@ -43,7 +43,7 @@ root.render(
         </BrowserRouter>
       </PersistGate>
     </Provider>
-    <ReactQueryDevtools initialIsOpen={false} />
+    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </QueryClientProvider>
   // </React.StrictMode>
 );

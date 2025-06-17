@@ -2,8 +2,11 @@ import React, { useMemo } from "react";
 import { Table } from "antd";
 import { Excel } from "antd-table-saveas-excel";
 import Loading from "../../../LoadingComponent/Loading";
+import { useTranslation } from "react-i18next";
 
 const TableHistories = (props) => {
+  const { t } = useTranslation();
+
   const { selectionType = "checkbox" } = props;
   // get Props List
   const { isLoading = false, columns = [], data: dataSource, ...rest } = props;
@@ -43,9 +46,8 @@ const TableHistories = (props) => {
 
   return (
     <Loading isPending={isLoading}>
-      
       {/* <Button type="primary" className="button-exportFile" onClick={handleExportFileExcels}>
-        Xuất file
+        {t('export_excel')}
       </Button> */}
 
       <Table
@@ -61,9 +63,5 @@ const TableHistories = (props) => {
     </Loading>
   );
 };
-
-
-
-
 
 export default TableHistories;

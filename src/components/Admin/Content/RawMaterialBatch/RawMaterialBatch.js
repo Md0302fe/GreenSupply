@@ -209,7 +209,7 @@ const RawMaterialBatch = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-0 lg:p-4">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
         <h2 className="text-2xl font-bold text-center mb-5 text-black">
           Tạo Lô Nguyên Liệu Bổ Sung

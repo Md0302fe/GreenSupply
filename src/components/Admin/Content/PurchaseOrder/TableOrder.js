@@ -2,12 +2,13 @@ import React, { useMemo } from "react";
 import { Button, Table } from "antd";
 import { Excel } from "antd-table-saveas-excel";
 import Loading from "../../../LoadingComponent/Loading";
+import { useTranslation } from "react-i18next";
 
-import {
-  DownloadOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const TableUser = (props) => {
+  const { t } = useTranslation();
+
   const { selectionType = "checkbox" } = props;
   // get Props List
   const { isLoading = false, columns = [], data: dataSource, ...rest } = props;
@@ -60,7 +61,7 @@ const TableUser = (props) => {
           className="bg-blue-600 text-white"
           onClick={handleExportFileExcels}
         >
-          Xuất Excel
+          {t("export_excel")}
         </Button>
       </div>
 

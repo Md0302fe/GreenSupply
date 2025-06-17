@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({ onlyIcon = false }) => {
   const { i18n } = useTranslation();
 
   const toggleLanguage = () => {
@@ -17,11 +17,12 @@ const LanguageSwitcher = () => {
   return (
     <button
       onClick={toggleLanguage}
-      className="px-2 py-1 rounded text-sm bg-gray-200 hover:bg-gray-300 flex items-center gap-2"
+      className={`rounded hover:bg-gray-300 flex items-center transition-all duration-200 ${onlyIcon ? "p-1" : "px-2 py-1 bg-gray-200 text-sm gap-2"
+        }`}
       title="Change language"
     >
       <img src={flagSrc} alt={currentLang} className="w-5 h-5" />
-      <span>{currentLang}</span>
+      {!onlyIcon && <span>{currentLang}</span>}
     </button>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
 import * as FuelSupplyRequestService from "../../../services/HistoryProvideOrderService";
 import { SearchOutlined } from "@ant-design/icons";
@@ -39,6 +39,26 @@ const HistoryProvideOrder = () => {
       { user_id }
     );
   };
+  
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   const { data, isLoading } = useQuery({
     queryKey: ["fuelRequests", user?.id],
@@ -51,8 +71,7 @@ const HistoryProvideOrder = () => {
   };
 
   const getStatusClasses = (status) => {
-    if (status === "Hoàn thành" || status === "Đang xử lý")
-      return "bg-green-100 text-green-800";
+    if (status === "Hoàn thành" || status === "Đang xử lý") return "bg-green-100 text-green-800";
     return "bg-gray-100 text-gray-800";
   };
 
@@ -259,6 +278,7 @@ const HistoryProvideOrder = () => {
             loading={isLoading}
             rowKey={(record) => record._id}
             pagination={{ pageSize: 6 }}
+            scroll={{ x: "max-content" }}
           />
         </div>
       )}
@@ -268,7 +288,7 @@ const HistoryProvideOrder = () => {
         title={t("historyProvideOrder.viewDetail")}
         isOpen={isViewDrawerOpen}
         placement="right"
-        width="40%"
+        width={drawerWidth}
         onClose={() => setIsViewDrawerOpen(false)}
       >
         {viewDetailRequest ? (

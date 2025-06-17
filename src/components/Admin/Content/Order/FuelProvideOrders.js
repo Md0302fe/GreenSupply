@@ -28,14 +28,25 @@ import {
 } from "../../../../services/OrderServices";
 
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FuelProvideManagement = () => {
+  const { t } = useTranslation();
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const navigate = useNavigate();
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Hoàn Thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+  };
 
   const user = useSelector((state) => state.user);
 
@@ -99,13 +110,13 @@ const FuelProvideManagement = () => {
       const response = await handleAcceptProvideOrders(stateDetailsUser._id);
       if (response) {
         setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
-        message.success("Đơn hàng đã được duyệt thành công!");
+        message.success(t("fuelProvide.orderApproved"));
         queryOrder.refetch();
       } else {
-        message.error("Duyệt đơn thất bại!");
+        message.error(t("fuelProvide.approveFailed"));
       }
     } catch (error) {
-      message.error(`Có lỗi xảy ra khi duyệt đơn: ${error.message}`);
+      message.error(`${t("fuelProvide.errorApproving")} ${error.message}`);
     }
   };
 
@@ -114,13 +125,13 @@ const FuelProvideManagement = () => {
       const response = await handleCancelProvideOrders(stateDetailsUser._id);
       if (response) {
         setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
-        message.success("Đơn hàng đã bị hủy thành công!");
+        message.success(t("fuelProvide.orderCanceled"));
         queryOrder.refetch();
       } else {
-        message.error("Hủy đơn thất bại!");
+        message.error(t("fuelProvide.cancelFailed"));
       }
     } catch (error) {
-      message.error(`Có lỗi xảy ra khi hủy đơn: ${error.message}`);
+      message.error(`${t("fuelProvide.errorCanceling")} ${error.message}`);
     }
   };
 
@@ -130,12 +141,12 @@ const FuelProvideManagement = () => {
       const response = await handleCompleteProvideOrders(stateDetailsUser._id);
       if (response) {
         setOrderStatus("Đã hoàn thành"); // Cập nhật trạng thái đơn hàng
-        message.success("Đơn hàng đã được hoàn thành thành công!");
+        message.success(t("fuelProvide.orderCompleted"));
       } else {
-        message.error("Hoàn thành đơn thất bại!");
+        message.error(t("fuelProvide.completeFailed"));
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi hoàn thành đơn!");
+      message.error(t("fuelProvide.errorCompleting"));
     }
   };
 
@@ -273,6 +284,26 @@ const FuelProvideManagement = () => {
     setSearchText("");
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -367,19 +398,19 @@ const FuelProvideManagement = () => {
   // COLUMNS DATA TABLE
   const columns = [
     {
-      title: "Khách Hàng",
+      title: t("fuelProvide.customer"),
       dataIndex: "customerName",
       key: "customerName",
       ...getColumnSearchProps("customerName"),
     },
     {
-      title: "Loại Nguyên Liệu",
+      title: <div className="text-left">{t("fuelProvide.fuelType")}</div>,
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
     },
     {
-      title: "Giá Tiền (vnđ)",
+      title: t("fuelProvide.price"),
       dataIndex: "price",
       key: "price",
       align: "center",
@@ -388,61 +419,67 @@ const FuelProvideManagement = () => {
       render: (price) => `${convertPrice(price)}`,
     },
     {
-      title: "Trạng Thái",
+      title: t("fuelProvide.status"),
       dataIndex: "status",
       key: "status",
       align: "center",
       className: "text-center",
       filters: [
-        {
-          text: "Chờ duyệt",
-          value: "Chờ duyệt",
-        },
-        {
-          text: "Đã duyệt",
-          value: "Đã duyệt",
-        },
-        {
-          text: "Đã hủy",
-          value: "Đã hủy",
-        },
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.approve"), value: "Đã duyệt" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+        { text: t("status.completed"), value: "Hoàn Thành" },
+        { text: t("status.processing"), value: "Đang xử lý" },
+        { text: t("status.failed"), value: "thất bại" },
+        { text: t("status.disable"), value: "Vô hiệu hóa" },
       ],
-      onFilter: (value, record) => record.status.includes(value),
-      filteredValue: defaultStatusFilter ? [defaultStatusFilter] : null,
+      onFilter: (value, record) => record.status?.trim() === value.trim(),
       render: (status) => {
         let color = "";
         switch (status) {
           case "Chờ duyệt":
-            color = "orange"; // Màu cam cho đơn hàng đang xử lý
+            color = "orange";
             break;
           case "Đã duyệt":
-            color = "green"; // Màu xanh lá cho đơn hàng đã duyệt
+            color = "green";
             break;
-          case "Đã hủy":
-            color = "red"; // Màu đỏ cho đơn hàng đã hủy
+          case "Đã huỷ":
+          case "Đã hủy": // đề phòng cả 2 cách viết
+            color = "red";
             break;
-          case "Hoàn thành":
-            color = "blue"; // Thêm màu cho trạng thái "Đã hoàn thành"
+          case "Hoàn Thành":
+            color = "blue";
+            break;
+          case "Đang xử lý":
+            color = "gold";
+            break;
+          case "thất bại":
+            color = "volcano"; // hoặc crimson/firebrick tùy bạn
+            break;
+          case "Vô hiệu hóa":
+            color = "grey"; // hoặc "default"
             break;
           default:
-            color = "default"; // Mặc định nếu trạng thái không khớp
+            color = "default";
         }
-
-        return <Tag color={color}>{status}</Tag>;
+        return (
+          <Tag color={color}>{t(`status.${statusMap[status]}`) || status}</Tag>
+        );
       },
     },
     {
-      title: "Ngày Tạo",
+      title: t("fuelProvide.createdAt"),
       dataIndex: "createdAt",
       align: "center",
       className: "text-center",
       key: "createdAt",
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (createdAt) => {
-        if (!createdAt) return <span>Không có dữ liệu</span>; // Tránh lỗi khi createdAt là null hoặc undefined
+        if (!createdAt) return <span>{t("fuelProvide.noData")}</span>; // Tránh lỗi khi createdAt là null hoặc undefined
 
         const date = new Date(createdAt);
-        if (isNaN(date.getTime())) return <span>Không hợp lệ</span>; // Kiểm tra xem date có hợp lệ không
+        if (isNaN(date.getTime()))
+          return <span>{t("fuelProvide.invalid")}</span>; // Kiểm tra xem date có hợp lệ không
 
         const vietnamTime = new Intl.DateTimeFormat("vi-VN", {
           year: "numeric",
@@ -458,7 +495,7 @@ const FuelProvideManagement = () => {
       },
     },
     {
-      title: "Chức năng",
+      title: t("fuelProvide.action"),
       align: "center",
       className: "text-center",
       dataIndex: "action",
@@ -469,48 +506,36 @@ const FuelProvideManagement = () => {
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
         <div
-          style={{
-            marginBottom: 24,
-            marginTop: 24,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          style={{ marginBottom: 24, marginTop: 24 }}
+          className="flex items-center justify-between"
         >
           {/* Nút quay lại bên trái */}
           <Button
             onClick={() => navigate(-1)}
             type="primary"
-            className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
             </svg>
-            Quay lại
+            <span className="hidden md:inline">{t("fuelProvide.back")}</span>
           </Button>
 
-          <h5 className="text-center font-bold text-2xl mb-0">
-            Quản lý đơn cung cấp nguyên liệu
+
+          {/* Title căn giữa */}
+          <h5 className="text-center font-bold text-[16px] md:text-2xl flex-grow mx-4">
+            {t("fuelProvide.title")}
           </h5>
-          <div style={{ width: 100 }}></div>
-        </div>
 
-        {/* <div className="content-addUser">
-          <Button onClick={showModal}>
-            <BsPersonAdd></BsPersonAdd>
-          </Button>
-        </div> */}
+          {/* Phần tử trống bên phải để cân bằng nút quay lại */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
+        </div>
         <div className="content-main-table-user">
           <TableUser
             // Props List
@@ -525,23 +550,24 @@ const FuelProvideManagement = () => {
                 },
               };
             }}
+            scroll={{ x: "max-content" }}
           ></TableUser>
         </div>
       </div>
 
       {/* DRAWER - Chi Tiết Đơn Hàng */}
       <DrawerComponent
-        title="Chi Tiết Đơn Hàng"
+        title={t("fuelProvide.orderDetail")}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
-        width="35%"
+        width={drawerWidth}
         forceRender
       >
         <Loading isPending={isLoadDetails || isPendingUpDate}>
           <Descriptions bordered column={1} layout="horizontal">
             <Descriptions.Item
-              label="Khách Hàng"
+              label={t("fuelProvide.customer")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
@@ -549,7 +575,7 @@ const FuelProvideManagement = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Loại Nguyên Liệu"
+              label={t("fuelProvide.fuelType")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
@@ -557,7 +583,7 @@ const FuelProvideManagement = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Giá Tiền"
+              label={t("fuelProvide.price")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
@@ -565,7 +591,7 @@ const FuelProvideManagement = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Chất Lượng"
+              label={t("fuelProvide.quality")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
@@ -573,7 +599,7 @@ const FuelProvideManagement = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Số Lượng"
+              label={t("fuelProvide.quantity")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
@@ -581,23 +607,23 @@ const FuelProvideManagement = () => {
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Ghi chú"
+              label={t("fuelProvide.note")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {stateDetailsUser?.note || "Không có"}
+              {stateDetailsUser?.note || t("fuelProvide.noNote")}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Trạng Thái"
+              label={t("fuelProvide.status")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
-              {orderStatus || ""}
+              {t(`status.${statusMap[orderStatus]}`) || orderStatus}
             </Descriptions.Item>
 
             <Descriptions.Item
-              label="Tổng Giá"
+              label={t("fuelProvide.totalPrice")}
               labelStyle={{ width: "40%" }}
               contentStyle={{ width: "60%" }}
             >
@@ -615,14 +641,22 @@ const FuelProvideManagement = () => {
               }}
             >
               <Button type="primary" onClick={handleAcceptProvideOrder}>
-                Duyệt đơn
+                {t("fuelProvide.approveOrder")}
               </Button>
               <Button danger onClick={handleCancelProvideOrder}>
-                Hủy đơn
+                {t("fuelProvide.cancelOrder")}
               </Button>
             </div>
           )}
         </Loading>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
       </DrawerComponent>
     </div>
   );

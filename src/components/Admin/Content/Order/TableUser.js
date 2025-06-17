@@ -3,8 +3,11 @@ import { Button, Table } from "antd";
 import { Excel } from "antd-table-saveas-excel";
 import Loading from "../../../LoadingComponent/Loading";
 import { DownloadOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 const TableUser = (props) => {
+  const { t } = useTranslation();
+
   // get Props List
   const {
     isLoading = false,
@@ -57,7 +60,7 @@ const TableUser = (props) => {
           className="button-exportFile"
           onClick={handleExportFileExcels}
         >
-          Xuất File
+          {t("export_excel")}
         </Button>
       </div>
 

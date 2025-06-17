@@ -19,8 +19,10 @@ import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const BlockedUserComponent = () => {
+  const { t } = useTranslation();
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -35,8 +37,7 @@ const BlockedUserComponent = () => {
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
 
-    const navigate = useNavigate();
-  
+  const navigate = useNavigate();
 
   //  State Details quản lý products khi có req edit
   const [stateDetailsUser, setStateDetailsUser] = useState({
@@ -324,7 +325,11 @@ const BlockedUserComponent = () => {
             }}
           >
             <BiBlock style={{ marginRight: "5px" }} />
-            <span>{record?.is_blocked ? "Bỏ Chặn" : "Chặn Tài Khoản"}</span>
+            <span>
+              {record?.is_blocked
+                ? t("blocked_user.unblock")
+                : t("blocked_user.block")}
+            </span>
           </Button>
         </div>
       </Loading>
@@ -344,10 +349,10 @@ const BlockedUserComponent = () => {
 
   const handleBlockAccount = (accountId) => {
     Modal.confirm({
-      title: "Xác nhận chặn tài khoản",
-      content: "Bạn có chắc chắn muốn chặn tài khoản này không?",
-      okText: "Xác nhận",
-      cancelText: "Hủy",
+      title: t("blocked_user.confirm_block_title"),
+      content: t("blocked_user.confirm_block_text"),
+      okText: t("common.confirm"),
+      cancelText: t("common.cancel"),
       width: 600,
       onOk() {
         handleConfirmBlock(accountId); // Truyền đúng accountId
@@ -461,20 +466,24 @@ const BlockedUserComponent = () => {
 
   const columns = [
     {
-      title: "Tên khách hàng",
+      title: t("blocked_user.name"),
       dataIndex: "full_name",
       key: "full_name",
       ...getColumnSearchProps("full_name"),
       sorter: (a, b) => a?.full_name.length - b?.full_name.length,
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Email</div>,
+      title: <div style={{ textAlign: "left", width: "100%" }}>Email</div>,
       dataIndex: "email",
       key: "email",
       ...getColumnSearchProps("email"),
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Vai trò</div>,
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("blocked_user.role")}
+        </div>
+      ),
       dataIndex: "role",
       key: "role",
       filters: [
@@ -498,17 +507,19 @@ const BlockedUserComponent = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng thái</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("blocked_user.status")}
+        </div>
       ),
       dataIndex: "is_blocked",
       key: "is_blocked",
       filters: [
         {
-          text: "Hoạt động",
+          text: t("blocked_user.active"),
           value: false,
         },
         {
-          text: "Bị chặn",
+          text: t("blocked_user.blocked"),
           value: true,
         },
       ],
@@ -537,7 +548,7 @@ const BlockedUserComponent = () => {
                   minWidth: "80px",
                 }}
               >
-                Bị chặn
+                {t("blocked_user.blocked")}
               </span>
             ) : (
               <span
@@ -562,7 +573,7 @@ const BlockedUserComponent = () => {
                     display: "inline-block",
                   }}
                 ></span>
-                Hoạt động
+                {t("blocked_user.active")}
               </span>
             )}
           </div>
@@ -572,7 +583,9 @@ const BlockedUserComponent = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Chức năng</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("blocked_user.action")}
+        </div>
       ),
       dataIndex: "action",
       render: (role, record) => renderAction(role, record),
@@ -581,27 +594,39 @@ const BlockedUserComponent = () => {
   return (
     <div className="Wrapper-Admin-User">
       <div className="Main-Content">
-      <button
-          onClick={() => navigate(-1)} // Quay lại trang trước đó
-          className="flex mb-2 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="flex items-center justify-between mb-4">
+          {/* Nút quay lại */}
+          <button
+            onClick={() => navigate(-1)}
+            type="button"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          Quay lại
-        </button>
-        <h5 className="content-title">quản lý tài khoản</h5>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            <span className="hidden md:inline">{t("blocked_user.back")}</span>
+          </button>
+
+          {/* Tiêu đề căn giữa */}
+          <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
+            {t("blocked_user.title")}
+          </h2>
+
+          {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
+        </div>
+
         {/* <div className="content-addUser">
           <Button onClick={showModal}>
             <BsPersonAdd></BsPersonAdd>
@@ -621,13 +646,14 @@ const BlockedUserComponent = () => {
                 },
               };
             }}
+            scroll={{ x: "max-content" }}
           ></TableUser>
         </div>
       </div>
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title="Chi Tiết Tài Khoản"
+        title={t("blocked_user.drawer_title")}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -647,40 +673,44 @@ const BlockedUserComponent = () => {
             form={formUpdate}
           >
             <Form.Item
-              label="Tên khách hàng"
+              label={t("blocked_user.name")}
               name="name"
-              rules={[{ required: true, message: "Vui lòng điền tên !" }]}
+              rules={[
+                { required: true, message: t("blocked_user.required_name") },
+              ]}
             >
               <Input
                 value={stateDetailsUser.name}
                 onChange={(event) =>
                   handleOnChangeDetails(event.target.value, "name")
                 }
-                placeholder="Tên khách hàng"
+                placeholder={t("blocked_user.name")}
                 style={{ borderRadius: "5px" }} // Thêm bo góc
               />
             </Form.Item>
 
             <Form.Item
-              label="Email khách hàng"
+              label={t("blocked_user.email")}
               name="email"
-              rules={[{ required: true, message: "Vui lòng điền email !" }]}
+              rules={[
+                { required: true, message: t("blocked_user.required_email") },
+              ]}
             >
               <Input
                 value={stateDetailsUser.email}
                 onChange={(event) =>
                   handleOnChangeDetails(event.target.value, "email")
                 }
-                placeholder="Email khách hàng"
+                placeholder={t("blocked_user.email")}
                 style={{ borderRadius: "5px" }}
               />
             </Form.Item>
 
             <Form.Item
-              label="Số điện thoại"
+              label={t("blocked_user.phone")}
               name="phone"
               rules={[
-                { required: true, message: "Vui lòng điền số điện thoại !" },
+                { required: true, message: t("blocked_user.required_phone") },
               ]}
             >
               <Input
@@ -688,15 +718,17 @@ const BlockedUserComponent = () => {
                 onChange={(event) =>
                   handleOnChangeDetails(event.target.value, "phone")
                 }
-                placeholder="Số điện thoại khách hàng"
+                placeholder={t("blocked_user.phone")}
                 style={{ borderRadius: "5px" }}
               />
             </Form.Item>
 
             <Form.Item
-              label="Vai trò"
+              label={t("blocked_user.role")}
               name="role"
-              rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
+              rules={[
+                { required: true, message: t("blocked_user.required_role") },
+              ]}
             >
               <Select
                 value={"keke"}
@@ -715,7 +747,7 @@ const BlockedUserComponent = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item label="Hình ảnh">
+            <Form.Item label={t("blocked_user.image")}>
               <Upload.Dragger
                 listType="picture"
                 showUploadList={{ showRemoveIcon: true }}
@@ -726,7 +758,7 @@ const BlockedUserComponent = () => {
                 style={{ borderRadius: "5px", borderColor: "#1890ff" }} // Thay đổi màu viền
               >
                 <div className="flex-center-center">
-                  Upload File Image
+                  {t("blocked_user.upload_image")}
                   <BiImageAdd
                     style={{ marginLeft: "10px", fontSize: "20px" }}
                   />
@@ -734,7 +766,7 @@ const BlockedUserComponent = () => {
               </Upload.Dragger>
             </Form.Item>
 
-            <Form.Item label="Review Avatar" name="avatar">
+            <Form.Item label={t("blocked_user.review_avatar")} name="avatar">
               <img
                 src={stateDetailsUser?.avatar}
                 alt="Avatar User"
@@ -752,7 +784,7 @@ const BlockedUserComponent = () => {
                 htmlType="submit"
                 style={{ display: "block", borderRadius: "5px" }} // Thêm bo góc
               >
-                Cập nhật
+                {t("blocked_user.update")}
               </Button>
             </Form.Item>
           </Form>
