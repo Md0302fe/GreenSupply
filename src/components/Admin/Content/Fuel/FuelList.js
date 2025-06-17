@@ -56,7 +56,7 @@ const FuelList = () => {
         setLoading(false);
         return;
       }
-
+      
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/fuel/getAll`
       );
