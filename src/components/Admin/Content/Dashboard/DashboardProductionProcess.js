@@ -54,35 +54,79 @@ const DashboardProductionProcess = () => {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+      if (typeof window !== "undefined") {
+        return window.innerWidth < 768;
+      }
+      return false;
+    });
+  
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      handleResize(); // cập nhật ngay khi component mount
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
   const chartData = [
-    { type: t("status.pending"), value: dashboardData?.waiting || 0 },
-    { type: t("status.processing"), value: dashboardData?.processing || 0 },
-    { type: t("status.completed"), value: dashboardData?.done || 0 },
+    {
+    status: isMobile ? t("status.pending").replace(" ", "\n") : t("status.pending"),
+    count: dashboardData?.waiting || 0,
+  },
+  {
+    status: isMobile ? t("status.processing").replace(" ", "\n") : t("status.processing"),
+    count: dashboardData?.processing || 0,
+  },
+  {
+    status: isMobile ? t("status.completed").replace(" ", "\n") : t("status.completed"),
+    count: dashboardData?.done || 0,
+  },
   ];
 
   const chartConfig = {
-    data: chartData,
-    xField: "type",
-    yField: "value",
+  data: chartData,
+  xField: "status",
+  yField: "count",
+  color: ({ status }) => {
+    const raw = status.replace("\n", " ");
+    if (raw === "Chờ duyệt") return "#faad14";
+    if (raw === "Đang sản xuất") return "#1890ff";
+    if (raw === "Hoàn thành") return "#52c41a";
+    return "#ccc";
+  },
+  label: {
+    position: "top",
+    style: {
+      fontSize: isMobile ? 10 : 12,
+    },
+  },
+  columnWidthRatio: isMobile ? 0.3 : 0.6,
+  height: isMobile ? 200 : 400,
+  xAxis: {
     label: {
-      position: "top",
-      style: { fill: "#000", fontSize: 14 },
+      autoRotate: false,
+      style: {
+        fill: "#000",
+        fontSize: isMobile ? 10 : 12,
+        wordBreak: "break-word",
+        whiteSpace: "normal",
+        textAlign: "center",
+      },
     },
-    color: ({ type }) => {
-      if (type === "Chờ duyệt") return "#faad14";
-      if (type === "Đang sản xuất") return "#1890ff";
-      if (type === "Hoàn thành") return "#52c41a";
-      return "#ccc";
-    },
+  },
   };
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <header className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">{t("dashboardProduction.title")}</h1>
+      <header className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded mb-4 md:mb-6">
+        <h1 className="text-[18px] md:text-3xl font-bold">{t("dashboardProduction.title")}</h1>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
         <Card
           loading={loading}
           onClick={() => handleCardClick("Chờ duyệt")}

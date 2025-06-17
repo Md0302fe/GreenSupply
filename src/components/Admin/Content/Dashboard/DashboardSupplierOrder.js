@@ -82,12 +82,40 @@ const DashboardSupplierOrder = () => {
     navigate(`${route}?status=${encodeURIComponent(status)}`);
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // 🔷 Biểu đồ cột - Trạng thái đơn
   const chartData = [
-    { type: t("status.pending"), value: dashboardData?.pendingRequests || 0 },
-    { type: t("status.approve"), value: dashboardData?.approvedRequests || 0 },
-    { type: t("status.completed"), value: dashboardData?.totalCompleted || 0 },
+    {
+      type: isMobile ? t("status.pending").replace(" ", "\n") : t("status.pending"),
+      value: dashboardData?.pendingRequests || 0,
+    },
+    {
+      type: isMobile ? t("status.approve").replace(" ", "\n") : t("status.approve"),
+      value: dashboardData?.approvedRequests || 0,
+    },
+    {
+      type: isMobile ? t("status.completed").replace(" ", "\n") : t("status.completed"),
+      value: dashboardData?.totalCompleted || 0,
+    },
   ];
+
 
   const chartConfig = {
     data: chartData,
@@ -95,23 +123,44 @@ const DashboardSupplierOrder = () => {
     yField: "value",
     label: {
       position: "top",
-      style: { fill: "#000", fontSize: 14 },
+      style: {
+        fill: "#000",
+        fontSize: isMobile ? 12 : 14,
+      },
     },
     color: ({ type }) => {
-      if (type === "Chờ duyệt") return "#faad14";
-      if (type === "Đã duyệt") return "#52c41a";
-      if (type === "Hoàn thành") return "#1890ff";
+      const raw = type.replace("\n", " ");
+      if (raw === "Chờ duyệt") return "#faad14";
+      if (raw === "Đã duyệt") return "#52c41a";
+      if (raw === "Hoàn thành") return "#1890ff";
       return "#ccc";
     },
+    columnWidthRatio: isMobile ? 0.3 : 0.6,
+    height: isMobile ? 200 : 400,
+    xAxis: {
+      label: {
+        autoRotate: false,
+        style: {
+          fill: "#000",
+          fontSize: isMobile ? 10 : 12,
+          wordBreak: "break-word",
+          whiteSpace: "normal",
+          textAlign: "center",
+        },
+      },
+    },
   };
+
+
+
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <header className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold"> {t("supplier_dashboard.title")}</h1>
+      <header className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-6 rounded mb-4 md:mb-6">
+        <h1 className="text-[20px] md:text-3xl font-bold"> {t("supplier_dashboard.title")}</h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
         <Card>
           <Statistic
             title={t("supplier_dashboard.total_orders")}
@@ -137,7 +186,7 @@ const DashboardSupplierOrder = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 md:mb-6">
         {/* Card 1: Yêu Cầu Thu Nguyên Liệu */}
         <Card
           title={t("supplier_dashboard.request_title")}
@@ -212,8 +261,8 @@ const DashboardSupplierOrder = () => {
       </div>
 
       {/* 🔹 Biểu đồ đơn hàng theo trạng thái */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-4">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
+        <h2 className="text-xl font-semibold mb-2 md:mb-4">
           {t("supplier_dashboard.status_chart_title")}
         </h2>
         <Column {...chartConfig} />
@@ -222,36 +271,34 @@ const DashboardSupplierOrder = () => {
       {/* 🔹 Danh sách đơn hàng gần đây */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         {/* 🔘 Bộ lọc thời gian */}
-        <div className="flex justify-start mb-4 space-x-2">
+        <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`px-4 py-2 rounded-l ${
-              filterType === "day"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("day")}
           >
-            {t("supplier_dashboard.filter.day")}
+            {t("dashboard.filter_day")}
           </button>
+
           <button
-            className={`px-4 py-2 ${
-              filterType === "week"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("week")}
           >
-            {t("supplier_dashboard.filter.week")}
+            {t("dashboard.filter_week")}
           </button>
           <button
-            className={`px-4 py-2 rounded-r ${
-              filterType === "month"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("month")}
           >
-            {t("supplier_dashboard.filter.month")}
+            {t("dashboard.filter_month")}
           </button>
         </div>
         <h2 className="text-xl font-semibold mb-4">
@@ -291,6 +338,7 @@ const DashboardSupplierOrder = () => {
           loading={loading}
           rowKey="_id"
           pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
         />
       </div>
     </div>

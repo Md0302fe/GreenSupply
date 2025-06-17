@@ -299,141 +299,155 @@ const DashboardComponent = () => {
     fetchProductionChartData();
   }, []);
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   if (loading) {
     return <div>{t("historyProvideOrder.loading")}</div>;
   }
 
   return (
     <div className="font-montserrat text-[#000000]">
-      <div className="font-nunito w-full p-4 rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md flex items-center gap-5 mb-4">
-        <div className="info w-[80%] pl-10">
-          <h1 className="text-[28px] font-bold leading-9 mb-3">
+      <div className="font-nunito w-full p-4 rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md flex flex-col md:flex-row items-center gap-5 mb-4">
+        <div className="info w-[100%] md:w-[80%] pl-0 md:pl-10">
+          <h1 className="text:-[20px] md:text-[28px] font-bold leading-9 mb-3">
             {t("dashboard.title")}
           </h1>
-          <h1 className="font-bold text-[#006838] text-[40px] mb-4">
+          <h1 className="font-bold text-[#006838] text-[30px] md:text-[40px] mb-4">
             {t("dashboard.subtitle")}
           </h1>
-          <p className="w-[70%] mb-4">{t("dashboard.description")}</p>
+          <p className="w-[100%] md:w-[70%] mb-4">{t("dashboard.description")}</p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 w-full">
             <button
-              className="bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
+              className="w-full md:w-auto bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
               onClick={() => navigate("/system/admin/C_purchase-order")}
             >
               {t("dashboard.button.createPurchase")}
             </button>
 
             <button
-              className="bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
+              className="w-full md:w-auto bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
               onClick={() => navigate("/system/admin/production-request")}
             >
               {t("dashboard.button.createProduction")}
             </button>
 
             <button
-              className="bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
+              className="w-full md:w-auto bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
               onClick={() => navigate("/system/admin/production-processing")}
             >
               {t("dashboard.button.createProcess")}
             </button>
 
             <button
-              className="bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
+              className="w-full md:w-auto bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
               onClick={() => navigate("/system/admin/material-storage-export")}
             >
               {t("dashboard.button.createExport")}
             </button>
 
             <button
-              className="bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
+              className="w-full md:w-auto bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
               onClick={() => navigate("/system/admin/View-Order-Success")}
             >
               {t("dashboard.button.createImport")}
             </button>
           </div>
+
         </div>
-        <img src={LogoSCM} alt="" className="w-[300px] pr-10" />
+        <img src={LogoSCM} alt="" className="w-[300px]  md:pr-10" />
       </div>
 
       <div className="mb-4">
-        <Swiper
-          slidesPerView={4}
-          spaceBetween={10}
-          navigation={true}
-          modules={[Navigation]}
-          className="dashboardBoxesSlider"
-        >
-          <SwiperSlide>
-            <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-lg border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
-              <RiProductHuntLine className="text-[40px] text-[#312be1d8]" />
-              <div className="info w-[70%]">
-                <h3 className="text-sm mb-2 font-semibold">
-                  {t("dashboard.card.import.title")}
-                </h3>
-                <h1 className="text-lg mb-2 font-bold">{totalReceipts}</h1>
-                <p className="text-xs text-stone-500">{dateRange}</p>
-              </div>
-              <IoStatsChart className="text-[50px] text-[#312be1d8]" />
-            </div>
-          </SwiperSlide>
+        {/* Swiper: chỉ hiện khi md trở lên */}
+        <div className="hidden md:block">
+          <Swiper
+            slidesPerView={4}
+            spaceBetween={10}
+            navigation={true}
+            modules={[Navigation]}
+            className="dashboardBoxesSlider"
+          >
+            {[...Array(4)].map((_, index) => (
+              <SwiperSlide key={index}>{/* Nội dung tương ứng từng thẻ */}</SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
 
-          <SwiperSlide>
-            <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
-              <IoSettingsSharp className="text-[40px] text-[#3872fa]" />
-              <div className="info w-[70%]">
-                <h3 className="text-sm mb-2 font-semibold">
-                  {t("dashboard.card.export.title")}
-                </h3>
-                <h1 className="text-lg mb-2 font-bold">{totalExports}</h1>
-                <p className="text-xs text-stone-500">{dateRange}</p>
-              </div>
-              <RiBarChartGroupedLine className="text-[70px] text-[#3872fa]" />
+        {/* Layout dạng cột cho mobile */}
+        <div className="flex flex-col gap-3 md:hidden">
+          <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-lg border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
+            <RiProductHuntLine className="text-[40px] text-[#312be1d8]" />
+            <div className="info w-[70%]">
+              <h3 className="text-sm mb-2 font-semibold">{t("dashboard.card.import.title")}</h3>
+              <h1 className="text-lg mb-2 font-bold">{totalReceipts}</h1>
+              <p className="text-xs text-stone-500">{dateRange}</p>
             </div>
-          </SwiperSlide>
+            <IoStatsChart className="text-[50px] text-[#312be1d8]" />
+          </div>
 
-          <SwiperSlide>
-            <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
-              <FaChartPie className="text-[40px] text-[#10b981]" />
-              <div className="info w-[70%]">
-                <h3 className="text-sm mb-2 font-semibold">
-                  {t("dashboard.card.batch.title")}
-                </h3>
-                <h1 className="text-lg mb-2 font-bold">{totalBatches}</h1>
-                <p className="text-xs text-stone-500">{dateRange}</p>
-              </div>
-              <RxBarChart className="text-[70px] text-[#10b981]" />
+          <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
+            <IoSettingsSharp className="text-[40px] text-[#3872fa]" />
+            <div className="info w-[70%]">
+              <h3 className="text-sm mb-2 font-semibold">{t("dashboard.card.export.title")}</h3>
+              <h1 className="text-lg mb-2 font-bold">{totalExports}</h1>
+              <p className="text-xs text-stone-500">{dateRange}</p>
             </div>
-          </SwiperSlide>
+            <RiBarChartGroupedLine className="text-[70px] text-[#3872fa]" />
+          </div>
 
-          <SwiperSlide>
-            <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
-              <FcProcess className="text-[40px] text-[#7928ca]" />
-              <div className="info w-[70%]">
-                <h3 className="text-sm mb-2 font-semibold">
-                  {t("dashboard.card.finished.title")}
-                </h3>
-                <h1 className="text-lg mb-2 font-bold">11</h1>
-                <p className="text-xs text-stone-500">
-                  {t("dashboard.card.finished.dateRange")}
-                </p>
-              </div>
-              <IoStatsChart className="text-[50px] text-[#7928ca]" />
+          <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
+            <FaChartPie className="text-[40px] text-[#10b981]" />
+            <div className="info w-[70%]">
+              <h3 className="text-sm mb-2 font-semibold">{t("dashboard.card.batch.title")}</h3>
+              <h1 className="text-lg mb-2 font-bold">{totalBatches}</h1>
+              <p className="text-xs text-stone-500">{dateRange}</p>
             </div>
-          </SwiperSlide>
-        </Swiper>
+            <RxBarChart className="text-[70px] text-[#10b981]" />
+          </div>
+
+          <div className="box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-3">
+            <FcProcess className="text-[40px] text-[#7928ca]" />
+            <div className="info w-[70%]">
+              <h3 className="text-sm mb-2 font-semibold">{t("dashboard.card.finished.title")}</h3>
+              <h1 className="text-lg mb-2 font-bold">11</h1>
+              <p className="text-xs text-stone-500">
+                {t("dashboard.card.finished.dateRange")}
+              </p>
+            </div>
+            <IoStatsChart className="text-[50px] text-[#7928ca]" />
+          </div>
+        </div>
       </div>
 
+
       {/* BIỂU ĐỒ NHẬP/XUẤT KHO */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
         {/* Biểu đồ đường nhập/xuất kho */}
-        <div className="w-1/2 min-h-[420px] overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="w-full md:w-1/2 min-h-[300] md:min-h-[420px] overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
+          <div className="flex items-center gap-4 md:gap-3 mb-3">
             <FaChartLine className="text-[24px]" />
-            <h3 className="text-lg font-semibold text-[#333] mb-0">
+            <h3 className="text-[14px] md:text-lg font-semibold text-[#333] mb-0">
               {t("dashboard.chart.importExport.title")}
             </h3>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
             <LineChart data={stockData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
@@ -449,6 +463,7 @@ const DashboardComponent = () => {
                   top: 5,
                   left: "50%",
                   transform: "translateX(-50%)",
+                  fontSize: "15px",
                 }}
                 formatter={(value) => {
                   if (value === "NhậpKho") return t("chart.import");
@@ -475,14 +490,14 @@ const DashboardComponent = () => {
         </div>
 
         {/* Biểu đồ cột bên phải */}
-        <div className="w-1/2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="w-full md:w-1/2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
+          <div className="flex items-center gap-4 md:gap-3 mb-3">
             <FaChartColumn className="text-[24px]" />
-            <h3 className="text-lg font-semibold text-[#333] mb-0">
+            <h3 className="text-[14px] md:text-lg font-semibold text-[#333] mb-0">
               {t("dashboard.chart.importExport.titleCompleted")}
             </h3>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
             <BarChart data={completedImportExportData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" tickMargin={20} />
@@ -494,6 +509,7 @@ const DashboardComponent = () => {
                   top: 0,
                   left: "50%",
                   transform: "translateX(-50%)",
+                  fontSize: "13px",
                 }}
                 formatter={(value) => {
                   if (value === "NhậpKho") return t("chart.import");
@@ -508,21 +524,24 @@ const DashboardComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-4 mb-4">
-        <div className="w-1/2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
+        {/* Biểu đồ bên trái */}
+        <div className="w-full md:w-1/2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
           <div className="flex items-center gap-3 mb-4">
             <FaChartColumn className="text-[24px]" />
-            <h3 className="text-lg font-semibold text-[#333] mb-0">
+            <h3 className="text-[14px] md:text-lg font-semibold text-[#333] mb-0">
               {t("dashboard.chart.importExport.requestsPendingProduction")}
             </h3>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
             <BarChart data={productionChartData}>
               <CartesianGrid strokeDasharray="2 2" />
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
               <Legend
+                wrapperStyle={{ fontSize: "13px" }}
                 formatter={(value) => {
                   const labelMap = {
                     NhậpKho: t("chart.import"),
@@ -541,56 +560,43 @@ const DashboardComponent = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="w-1/2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
+        {/* Biểu đồ bên phải */}
+        <div className="w-full md:w-1/2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.1)] shadow-md p-4">
           <div className="flex items-center gap-3 mb-4">
             <MdStackedBarChart className="text-[24px]" />
-            <h3 className="text-lg font-semibold text-[#333] mb-0">
+            <h3 className="text-[14px] md:text-lg font-semibold text-[#333] mb-0">
               {t("dashboard.chart.importExport.completedProductionProcesses")}
             </h3>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
             <BarChart
               data={dataProductionStatus}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Legend
-                formatter={(value) => {
-                  const labelMap = {
-                    NhậpKho: t("chart.import"),
-                    XuấtKho: t("chart.export"),
-                    ChờDuyệt: t("chart.pending"),
-                    ĐãDuyệt: t("chart.approved"),
-                    ĐangSảnXuất: t("chart.inProgress"),
-                    HoànThành: t("chart.completed"),
-                  };
-                  return labelMap[value] || value;
-                }}
-              />
-              <Bar
-                dataKey="ĐangSảnXuất"
-                stackId="a"
-                fill="#F6E96B"
-                barSize={25}
-              />
-              <Bar
-                dataKey="HoànThành"
-                stackId="a"
-                fill="#88D66C"
-                barSize={25}
-              />
+              <Bar dataKey="ĐangSảnXuất" stackId="a" fill="#F6E96B" barSize={20} />
+              <Bar dataKey="HoànThành" stackId="a" fill="#88D66C" barSize={20} />
             </BarChart>
           </ResponsiveContainer>
+
+          {/* Custom Legend */}
+          <div className="flex justify-center gap-2 mt-[-4] text-[12px]">
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 bg-[#F6E96B] rounded-sm" />
+              <span className="whitespace-nowrap  text-[#F6E96B]">{t("chart.inProgress")}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 bg-[#88D66C] rounded-sm" />
+              <span className="whitespace-nowrap text-[#88D66C]">{t("chart.completed")}</span>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   );
 };

@@ -158,6 +158,24 @@ const DashboardWarehouse = () => {
     fetchWarehouseData();
   }, [filterType]);
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const fetchStorageById = async (storageId) => {
     try {
       const res = await axios.get(
@@ -175,7 +193,7 @@ const DashboardWarehouse = () => {
   const usagePercent =
     storage.capacity > 0
       ? ((storage.capacity - storage.remaining_capacity) / storage.capacity) *
-        100
+      100
       : 0;
 
   // ✅ Làm tròn số phần trăm hiển thị
@@ -184,40 +202,67 @@ const DashboardWarehouse = () => {
   // ✅ Cấu hình biểu đồ cột cho thống kê đơn nhập kho
   const receiptsChartData = [
     {
-      status: t("supplier_dashboard.total_orders"),
+      status: isMobile
+        ? t("supplier_dashboard.total_orders").replace(" ", "\n")
+        : t("supplier_dashboard.total_orders"),
       count: stats.totalReceipts,
     },
-    { status: t("status.pending"), count: stats.pendingReceipts },
-    { status: t("status.approve"), count: stats.approvedReceipts },
+    {
+      status: isMobile
+        ? t("status.pending").replace(" ", "\n")
+        : t("status.pending"),
+      count: stats.pendingReceipts,
+    },
+    {
+      status: isMobile
+        ? t("status.approve").replace(" ", "\n")
+        : t("status.approve"),
+      count: stats.approvedReceipts,
+    },
   ];
+
 
   const receiptsChartConfig = {
     data: receiptsChartData,
     xField: "status",
     yField: "count",
     color: ({ status }) => {
-      return status === "Đã duyệt"
-        ? "#52c41a"
-        : status === "Chờ duyệt"
-        ? "#faad14"
-        : "#1890ff";
+      const raw = status.replace("\n", " ");
+      if (raw === "Đã duyệt") return "#52c41a";
+      if (raw === "Chờ duyệt") return "#faad14";
+      return "#1890ff";
     },
     label: {
-      position: "top", // ✅ Thay "middle" thành "top" hoặc "bottom"
-      style: { fill: "#FFFFFF", fontSize: 12 },
+      position: "top",
+      style: {
+        fontSize: isMobile ? 10 : 12,
+      },
     },
-    xAxis: { label: { autoHide: true, autoRotate: false } },
+    columnWidthRatio: isMobile ? 0.3 : 0.6,
+    height: isMobile ? 200 : 400,
+    xAxis: {
+      label: {
+        autoRotate: false,
+        style: {
+          fill: "#000",
+          fontSize: isMobile ? 10 : 12,
+          wordBreak: "break-word",
+          whiteSpace: "normal",
+          textAlign: "center",
+        },
+      },
+    },
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* 🟢 Header */}
-      <header className="bg-gradient-to-r from-blue-500 to-teal-500 text-white p-6 shadow-lg mb-6">
-        <h1 className="text-4xl font-bold">{t("dashboardWarehouse.title")}</h1>
+      <header className="bg-gradient-to-r from-blue-500 to-teal-500 text-white p-6 shadow-lg mb-4 md:mb-6">
+        <h1 className="text-[22px] md:text-4xl font-bold">{t("dashboardWarehouse.title")}</h1>
       </header>
 
       {/* 🟢 Thống kê nhanh */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
         <Card>
           <Statistic
             title={t("dashboardWarehouse.totalReceipts")}
@@ -241,7 +286,7 @@ const DashboardWarehouse = () => {
       </div>
 
       {/* 🟢 Thông tin kho */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
         <h2 className="text-xl font-semibold mb-4">
           {t("dashboardWarehouse.storageInfo")}: {storage.name_storage}
         </h2>
@@ -253,7 +298,7 @@ const DashboardWarehouse = () => {
       </div>
 
       {/* 🟢 Biểu đồ cột thống kê đơn nhập kho */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
         <h2 className="text-xl font-semibold mb-4">
           {t("dashboardWarehouse.statsChartTitle")}
         </h2>
@@ -263,36 +308,34 @@ const DashboardWarehouse = () => {
       {/* 🟢 Danh sách đơn nhập kho gần đây */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         {/* Nút chọn lọc theo Ngày / Tuần / Tháng */}
-        <div className="flex justify-start mb-4">
+        <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`px-4 py-2 rounded-l ${
-              filterType === "day"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("day")}
           >
-            {t("dashboardWarehouse.filter.day")}
+            {t("dashboard.filter_day")}
           </button>
+
           <button
-            className={`px-4 py-2 ${
-              filterType === "week"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("week")}
           >
-            {t("dashboardWarehouse.filter.week")}
+            {t("dashboard.filter_week")}
           </button>
           <button
-            className={`px-4 py-2 rounded-r ${
-              filterType === "month"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("month")}
           >
-            {t("dashboardWarehouse.filter.month")}
+            {t("dashboard.filter_month")}
           </button>
         </div>
 
@@ -337,6 +380,7 @@ const DashboardWarehouse = () => {
           loading={loading}
           rowKey="_id"
           pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
         />
       </div>
     </div>
