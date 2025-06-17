@@ -96,7 +96,7 @@ const MaterialStorageExportList = () => {
     fetchExports();
   }, [debouncedSearch, statusFilter, sortOrder]);
 
- const [isMobile, setIsMobile] = useState(() => {
+  const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth < 768;
     }
@@ -277,7 +277,7 @@ const MaterialStorageExportList = () => {
           case "Đã duyệt":
             color = "green";
             break;
-          case "Đã Hủy":
+          case "Đã hủy":
             color = "red";
             break;
           case "Hoàn thành":
@@ -289,12 +289,14 @@ const MaterialStorageExportList = () => {
           default:
             color = "default";
         }
+
         return (
           <div style={{ textAlign: "center" }}>
-            <Tag color={color}>{t(statusMap[status] || status)}</Tag>
+            <Tag color={color}>{t(`status.${statusMap[status] || status}`)}</Tag>
           </div>
         );
-      },
+      }
+
     },
     {
       title: (
@@ -471,86 +473,86 @@ const MaterialStorageExportList = () => {
 
       {/* ✅ Drawer hiển thị chi tiết */}
       <DrawerComponent
-  title={t("materialExportList.detailTitle")}
-  isOpen={isDrawerOpen}
-  onClose={() => {
-    setIsDrawerOpen(false);
-    setSelectedExport(null);
-  }}
-  placement="right"
-  width={drawerWidth}
->
-  {selectedExport ? (
-    <Descriptions
-      bordered
-      column={1}
-      labelStyle={{ width: "40%", fontWeight: "600" }}
-      contentStyle={{ width: "60%" }}
-    >
-      <Descriptions.Item label={t("materialExportList.createdBy")}>
-        {selectedExport?.user_id?.full_name || "Không rõ"}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.productionRequest")}>
-        {selectedExport?.production_request_id?.request_name ||
-          t("common.no_data")}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.batchName")}>
-        {selectedExport?.batch_id?.batch_name || t("common.no_data")}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.batchId")}>
-        {selectedExport?.batch_id?.batch_id || t("common.no_data")}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.exportName")}>
-        {selectedExport?.export_name || t("common.no_data")}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.exportType")}>
-        {selectedExport?.type_export || t("common.no_data")}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.status")}>
-        <Tag color={statusColors[selectedExport.status] || "default"}>
-          {t(statusMap[selectedExport.status]) || t("common.no_data")}
-        </Tag>
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.createdDate")}>
-        {new Date(selectedExport.createdAt).toLocaleString()}
-      </Descriptions.Item>
-      <Descriptions.Item label={t("materialExportList.note")}>
-        {selectedExport?.note || t("common.no_data")}
-      </Descriptions.Item>
-    </Descriptions>
-  ) : (
-    <p className="text-center">Đang tải dữ liệu...</p>
-  )}
-
-  {/* Nút phê duyệt và từ chối (nếu trạng thái là "Chờ duyệt") */}
- <div className="flex flex-row justify-space-between gap-2.5 lg:gap-4 mt-4">
-  {selectedExport?.status === "Chờ duyệt" && (
-    <>
-      <Button
-        type="primary"
-        onClick={handleAccept}
-        className="bg-blue-600 text-white font-bold px-2 lg:px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto"
+        title={t("materialExportList.detailTitle")}
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedExport(null);
+        }}
+        placement="right"
+        width={drawerWidth}
       >
-        {t("common.approve")}
-      </Button>
-       <Button
-        danger
-        onClick={handleReject}
-        className="bg-red-600 text-red font-bold px-2 lg:px-4 py-2 rounded hover:bg-red-700 w-full md:w-auto"
-      >
-        {t("common.reject")}
-      </Button>
-    </>
-  )}
-  <button
-    onClick={() => setIsDrawerOpen(false)}
-    className="bg-gray-500 text-white font-bold px-2 md:px-4 py-1 rounded hover:bg-gray-600 w-full md:w-auto"
-  >
-    {t("common.close")}
-  </button>
-</div>
+        {selectedExport ? (
+          <Descriptions
+            bordered
+            column={1}
+            labelStyle={{ width: "40%", fontWeight: "600" }}
+            contentStyle={{ width: "60%" }}
+          >
+            <Descriptions.Item label={t("materialExportList.createdBy")}>
+              {selectedExport?.user_id?.full_name || "Không rõ"}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.productionRequest")}>
+              {selectedExport?.production_request_id?.request_name ||
+                t("common.no_data")}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.batchName")}>
+              {selectedExport?.batch_id?.batch_name || t("common.no_data")}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.batchId")}>
+              {selectedExport?.batch_id?.batch_id || t("common.no_data")}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.exportName")}>
+              {selectedExport?.export_name || t("common.no_data")}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.exportType")}>
+              {selectedExport?.type_export || t("common.no_data")}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.status")}>
+              <Tag color={statusColors[selectedExport.status] || "default"}>
+                {t(statusMap[selectedExport.status]) || t("common.no_data")}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.createdDate")}>
+              {new Date(selectedExport.createdAt).toLocaleString()}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("materialExportList.note")}>
+              {selectedExport?.note || t("common.no_data")}
+            </Descriptions.Item>
+          </Descriptions>
+        ) : (
+          <p className="text-center">Đang tải dữ liệu...</p>
+        )}
 
-</DrawerComponent>
+        {/* Nút phê duyệt và từ chối (nếu trạng thái là "Chờ duyệt") */}
+        <div className="flex flex-row justify-space-between gap-2.5 lg:gap-4 mt-4">
+          {selectedExport?.status === "Chờ duyệt" && (
+            <>
+              <Button
+                type="primary"
+                onClick={handleAccept}
+                className="bg-blue-600 text-white font-bold px-2 lg:px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto"
+              >
+                {t("common.approve")}
+              </Button>
+              <Button
+                danger
+                onClick={handleReject}
+                className="bg-red-600 text-red font-bold px-2 lg:px-4 py-2 rounded hover:bg-red-700 w-full md:w-auto"
+              >
+                {t("common.reject")}
+              </Button>
+            </>
+          )}
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-2 md:px-4 py-1 rounded hover:bg-gray-600 w-full md:w-auto"
+          >
+            {t("common.close")}
+          </button>
+        </div>
+
+      </DrawerComponent>
 
 
       {/* messageContainer */}

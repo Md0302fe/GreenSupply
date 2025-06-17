@@ -214,7 +214,7 @@ const PackageCategoryList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           Mô Tả
         </div>
       ),
