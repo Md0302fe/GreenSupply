@@ -342,7 +342,7 @@ const ProductionRequestList = () => {
 
       </div>
       {/* Notifications Tạo Quy Trình */}
-      <div className="space-y-2 text-sm">
+      <div className="space-y-2 text-sm my-4">
         <div className="flex flex-wrap items-center gap-2">
           <p className="">
             <Trans i18nKey="hint.create_plan_process">

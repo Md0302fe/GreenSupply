@@ -424,7 +424,7 @@ const MaterialStorageExportList = () => {
       {/* Tiêu đề và nút quay lại */}
       <div
         style={{ marginBottom: 24, marginTop: 24 }}
-        className="flex items-center justify-between"
+        className="flex items-center justify-between my-8"
       >
         {/* Nút quay lại bên trái */}
         <Button
