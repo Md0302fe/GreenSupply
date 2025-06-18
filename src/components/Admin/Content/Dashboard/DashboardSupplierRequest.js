@@ -218,32 +218,29 @@ const DashboardSupplyRequest = () => {
         {/* Bộ lọc thời gian */}
         <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${
-              filterType === "day"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("day")}
           >
             {t("dashboard.filter_day")}
           </button>
 
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${
-              filterType === "week"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("week")}
           >
             {t("dashboard.filter_week")}
           </button>
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${
-              filterType === "month"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("month")}
           >
             {t("dashboard.filter_month")}
@@ -266,19 +263,25 @@ const DashboardSupplyRequest = () => {
               key: "request_name",
             },
             {
-              title: t("dashboard.table.status"),
+              title: <div className="text-center">{t("dashboard.table.status")}</div>,
               dataIndex: "status",
               key: "status",
+              align: "center",
+              className: "text-center",
             },
             {
-              title: t("dashboard.table.quantity"),
+              title: <div className="text-center">{t("dashboard.table.quantity")}</div>,
               dataIndex: "quantity",
               key: "quantity",
+              align: "center",
+              className: "text-center",
             },
             {
-              title: t("dashboard.table.created_at"),
+              title: <div className="text-center">{t("dashboard.table.created_at")}</div>,
               dataIndex: "createdAt",
               key: "createdAt",
+              align: "center",
+              className: "text-center",
               render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
             },
           ]}

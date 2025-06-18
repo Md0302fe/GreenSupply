@@ -351,25 +351,33 @@ const DashboardWarehouse = () => {
               width: 150,
             },
             {
-              title: t("dashboardWarehouse.columns.manager"),
+              title: <div className="text-center">{t("dashboardWarehouse.columns.manager")}</div>,
               dataIndex: ["manager_id", "full_name"],
               key: "manager_id",
+              align: "center",
+              className: "text-center",
             },
             {
-              title: t("dashboardWarehouse.columns.status"),
+              title: <div className="text-center">{t("dashboardWarehouse.columns.status")}</div>,
               dataIndex: "status",
               key: "status",
+              align: "center",
+              className: "text-center",
               render: (status) => t(`status.${statusMap[status]}`) || status,
             },
             {
-              title: t("dashboardWarehouse.columns.quantity"),
+              title: <div className="text-center">{t("dashboardWarehouse.columns.quantity")}</div>,
               dataIndex: "quantity",
               key: "quantity",
+              align: "center",
+              className: "text-center",
             },
             {
-              title: t("dashboardWarehouse.columns.createdAt"),
+              title: <div className="text-center">{t("dashboardWarehouse.columns.createdAt")}</div>,
               dataIndex: "createdAt",
               key: "createdAt",
+              align: "center",
+              className: "text-center",
               render: (date) =>
                 date
                   ? moment(date).format("DD/MM/YYYY HH:mm")

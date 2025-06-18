@@ -13,28 +13,43 @@ const StageComponent = ({
 }) => {
   const { t } = useTranslation();
 
-  const getBackgroundColor = (status) => {
-    switch (status) {
-      case t("processDetails.status.executing"):
+  const statusKeyMap = {
+    "Đang thực hiện": "executing",
+    "Hoàn thành": "done",
+    "Đã hủy": "cancelled",
+    // Nếu API trả key tiếng Anh (executing, done...) thì có thể map ngược lại cũng được
+    "executing": "executing",
+    "done": "done",
+    "cancelled": "cancelled",
+  };
+
+  const statusKey = statusKeyMap[stage?.status];
+
+
+
+  const getBackgroundColor = (statusKey) => {
+    switch (statusKey) {
+      case "executing":
         return "bg-yellow-200";
-      case t("processDetails.status.done"):
+      case "done":
         return "bg-green-200";
-      case "Đã hủy":
+      case "cancelled":
         return "bg-red-200";
       default:
         return "bg-gray-200";
     }
   };
 
+
   return (
     <>
       <div
         className={`
-          ${stage?.status === t("processDetails.status.executing") ? "bg-animated" : ""}
-          w-full max-w-[1000px] rounded-lg shadow-md transition-all duration-300 ease-in-out overflow-hidden flex flex-col relative z-10
-          ${getBackgroundColor(stage?.status)}
-          ${isOpen ? "p-1 lg:p-6 max-h-[500px]" : "px-1 lg:px-4 max-h-[50px]"}
-        `}
+    ${statusKey === "executing" ? "bg-animated" : ""}
+    w-full max-w-[1000px] rounded-lg shadow-md transition-all duration-300 ease-in-out overflow-hidden flex flex-col relative z-10
+    ${getBackgroundColor(statusKey)}
+    ${isOpen ? "p-1 lg:p-6 max-h-[500px]" : "px-1 lg:px-4 max-h-[50px]"}
+  `}
       >
         <div
           className="grid grid-cols-12 items-center cursor-pointer"
@@ -162,11 +177,11 @@ const StageComponent = ({
               </div>
             </>
           ) : (
-          <div className="flex justify-center items-center p-6 min-h-[150px]">
-            <p className="text-gray-500 italic text-sm">
-              ⚠️ {t("stage.empty")}
-            </p>
-          </div>
+            <div className="flex justify-center items-center p-6 min-h-[150px]">
+              <p className="text-gray-500 italic text-sm">
+                ⚠️ {t("stage.empty")}
+              </p>
+            </div>
           )}
         </div>
       </div>
