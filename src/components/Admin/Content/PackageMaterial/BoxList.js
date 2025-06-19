@@ -360,7 +360,7 @@ const BoxList = () => {
             </Button>
           ))}
         </div>
-
+{/* 
         <Button
           type="primary"
           onClick={() => navigate("/system/admin/box-Create")}
@@ -368,7 +368,7 @@ const BoxList = () => {
           style={{ flexShrink: 0 }}
         >
           Tạo Nguyên Liệu
-        </Button>
+        </Button> */}
       </div>
 
       {/* Table */}
