@@ -79,7 +79,7 @@ const AboutSupplyChain = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="max-w-[1450px] mx-auto mt-2 mb-4 p-2 lg:p-4 sm:p-6 rounded-lg">
+    <div className="max-w-[1450px] mx-auto mt-28 mb-4 p-2 lg:p-4 sm:p-6 rounded-lg">
       {/* Phần logo và mô tả */}
       <div className="mx-4 md:mx-10 lg:mx-20">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-center lg:text-left">
