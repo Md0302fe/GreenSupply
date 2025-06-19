@@ -31,6 +31,20 @@ const ProductionRequest = () => {
   const [fuelTypes, setFuelTypes] = useState([]);
   const [fuelLoading, setFuelLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [packagingMaterials, setPackagingMaterials] = useState([]);
+  const [productionDate, setProductionDate] = useState(null);
+
+  const [selectedPackaging, setSelectedPackaging] = useState({
+    vacuumBag: null,
+    carton: null,
+  });
+  const [isProductQuantityCalculated, setIsProductQuantityCalculated] =
+    useState(false);
+  const [productQuantity, setProductQuantity] = useState(0);
+  const [calculatedPackaging, setCalculatedPackaging] = useState({
+    vacuumBag: 0,
+    carton: 0,
+  });
   const user = useSelector((state) => state.user);
   const [selectedFuelAvailable, setSelectedFuelAvailable] = useState(null);
 
@@ -40,7 +54,6 @@ const ProductionRequest = () => {
       try {
         const data = await getAllFuelType();
         console.log("Fuel Data:", data);
-        // Giả sử API trả về dữ liệu dạng { success: true, requests: [...] }
         setFuelTypes(data.requests);
       } catch (error) {
         message.error("Có lỗi xảy ra khi tải danh sách Nguyên liệu.");
@@ -48,43 +61,65 @@ const ProductionRequest = () => {
         setFuelLoading(false);
       }
     };
-    fetchFuelTypes();
-  }, []);
 
-  // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn Nguyên liệu
-  const handleEstimatedProductionChange = (value) => {
-    const selectedFuelId = form.getFieldValue("material");
-    if (!selectedFuelId) {
-      message.warning(
-        "Vui lòng chọn loại Nguyên liệu trước khi nhập sản lượng mong muốn."
-      );
-      form.setFieldsValue({ product_quantity: 1, material_quantity: 1 }); // Reset sản lượng và nguyên liệu
-      return;
-    }
-    if (!value || value < 1) {
-      form.setFieldsValue({ material_quantity: 1 });
-      return;
-    }
-    const required = Math.ceil(value / 0.9);
-    if (selectedFuelId) {
-      const selectedFuel = fuelTypes.find((f) => f._id === selectedFuelId);
-      if (selectedFuel) {
-        const availableFuel = selectedFuel.quantity;
-        if (required > availableFuel) {
-          const maxProduction = Math.floor(availableFuel * 0.9);
-          message.warning(
-            `Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
-          );
-          form.setFieldsValue({
-            product_quantity: maxProduction,
-            material_quantity: Math.ceil(maxProduction / 0.9),
-          });
-          return;
-        }
+    const fetchPackagingMaterials = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/package-material/boxes`
+        );
+        setPackagingMaterials(res.data.data || []);
+      } catch (error) {
+        message.error("Lỗi khi tải danh sách bao bì.");
       }
+    };
+
+    fetchFuelTypes();
+    fetchPackagingMaterials();
+  }, []);
+   
+  
+// hàm tính số lượng túi và thùng carton cần thiết dựa trên sản lượng thành phẩm
+  const handlePackagingSelect = (value, type) => {
+    const selectedMaterial = packagingMaterials.find(
+      (item) => item._id === value
+    );
+
+    setSelectedPackaging((prev) => ({
+      ...prev,
+      [type]: selectedMaterial,
+    }));
+
+    const productKg = form.getFieldValue("product_quantity");
+
+    // Nếu chưa có sản lượng thì không làm gì
+    if (!productKg || !selectedMaterial) return;
+
+    const productGrams = productKg * 1000; // đổi kg → g
+
+    if (type === "vacuumBag") {
+      const vacuumBagRequired = Math.ceil(
+        productGrams / selectedMaterial.capacity
+      );
+      setCalculatedPackaging((prev) => ({
+        ...prev,
+        vacuumBag: vacuumBagRequired,
+      }));
     }
-    form.setFieldsValue({ material_quantity: required });
+
+    if (type === "carton") {
+      const cartonCapacityKg = selectedMaterial.capacity;
+
+      if (!productKg || !cartonCapacityKg) return;
+
+      const cartonRequired = Math.ceil(productKg / cartonCapacityKg);
+
+      setCalculatedPackaging((prev) => ({
+        ...prev,
+        carton: cartonRequired,
+      }));
+    }
   };
+
   const calculateProductQuantity = () => {
     const material_quantity = form.getFieldValue("material_quantity");
     const loss_percentage = form.getFieldValue("loss_percentage");
@@ -107,7 +142,10 @@ const ProductionRequest = () => {
       typeof loss_percentage === "number"
     ) {
       const product_quantity = material_quantity * (1 - loss_percentage / 100);
-      form.setFieldsValue({ product_quantity: Math.floor(product_quantity) });
+      const rounded = Math.floor(product_quantity);
+      form.setFieldsValue({ product_quantity: rounded });
+
+      setIsProductQuantityCalculated(rounded > 0);
     }
   };
 
@@ -116,7 +154,7 @@ const ProductionRequest = () => {
     return current && current < dayjs().startOf("day");
   };
 
-  // Disabled date cho ngày kết thúc: không cho chọn trước ngày sản xuất
+  // Hàm để disable Ngày kết thúc nếu chưa chọn Ngày sản xuất
   const disabledEndDate = (current) => {
     const productionDate = form.getFieldValue("production_date");
     if (!productionDate) {
@@ -125,7 +163,15 @@ const ProductionRequest = () => {
     return current && current.isBefore(productionDate, "day");
   };
 
-  // Sử dụng axios để gửi dữ liệu form sang backend
+  const handleProductQuantityChange = () => {
+    const productQuantity = form.getFieldValue("product_quantity");
+    if (productQuantity > 0) {
+      setIsProductQuantityCalculated(true); // Nếu có sản lượng thành phẩm ước tính, bật các lựa chọn bao bì
+    } else {
+      setIsProductQuantityCalculated(false); // Nếu chưa có sản lượng thành phẩm, tắt các lựa chọn bao bì
+    }
+  };
+
   const onFinish = async (values) => {
     // Chuyển đổi ngày sang ISO string nếu có
     const formattedValues = {
@@ -135,6 +181,12 @@ const ProductionRequest = () => {
         ? values.production_date.toISOString()
         : null,
       end_date: values.end_date ? values.end_date.toISOString() : null,
+      packaging: {
+        vacuumBag: calculatedPackaging.vacuumBag,
+        carton: calculatedPackaging.carton,
+        vacuumBagBoxId: selectedPackaging.vacuumBag?._id,
+        cartonBoxId: selectedPackaging.carton?._id,
+      },
     };
     console.log(formattedValues);
     setSubmitLoading(true);
@@ -210,14 +262,6 @@ const ProductionRequest = () => {
             Lập Kế Hoạch Sản Xuất
           </h2>
         </div>
-
-        {/* {fuelLoading && (
-          <div className="flex justify-center items-center mb-4">
-            <span className="text-lg font-medium text-blue-600">
-              Loading danh sách Nguyên liệu...
-            </span>
-          </div>
-        )} */}
 
         {submitLoading && (
           <div className="flex justify-center items-center mb-4">
@@ -333,7 +377,50 @@ const ProductionRequest = () => {
             />
           </Form.Item>
 
-          {/* Thêm trường Mức độ ưu tiên */}
+          {/* Chọn Bao Bì */}
+          <Form.Item label="Chọn Túi chân không">
+            <Select
+              placeholder="Có sản lượng thành phẩm trước"
+              disabled={!isProductQuantityCalculated}
+              onChange={(value) => handlePackagingSelect(value, "vacuumBag")}
+            >
+              {packagingMaterials
+                .filter((material) => material.type === "túi chân không")
+                .map((material) => (
+                  <Select.Option key={material._id} value={material._id}>
+                    {material.package_material_name} - {material.capacity} g
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Chọn Thùng carton">
+            <Select
+              placeholder="Có sản lượng thành phẩm trước"
+              disabled={!isProductQuantityCalculated}
+              onChange={(value) => handlePackagingSelect(value, "carton")}
+            >
+              {packagingMaterials
+                .filter((material) => material.type === "thùng carton")
+                .map((material) => (
+                  <Select.Option key={material._id} value={material._id}>
+                    {material.package_material_name} - {material.capacity} kg
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+
+          {selectedPackaging.vacuumBag && selectedPackaging.carton && (
+            <div>
+              <p>
+                Số lượng Túi chân không cần dùng:{" "}
+                {calculatedPackaging.vacuumBag} Túi
+              </p>
+              <p>
+                Số lượng Thùng carton cần dùng: {calculatedPackaging.carton}{" "}
+                Thùng
+              </p>
+            </div>
+          )}
           <Form.Item
             label="Mức độ ưu tiên"
             name="priority"
@@ -341,17 +428,12 @@ const ProductionRequest = () => {
               { required: true, message: "Vui lòng chọn mức độ ưu tiên" },
             ]}
           >
-            <Select
-              placeholder="Chọn mức độ ưu tiên"
-              className="rounded border-gray-300"
-            >
+            <Select placeholder="Chọn mức độ ưu tiên">
               <Select.Option value={3}>Cao</Select.Option>
               <Select.Option value={2}>Trung bình</Select.Option>
               <Select.Option value={1}>Thấp</Select.Option>
             </Select>
           </Form.Item>
-
-          {/* Ngày sản xuất */}
           <Form.Item
             label="Ngày sản xuất"
             name="production_date"
@@ -361,37 +443,28 @@ const ProductionRequest = () => {
               style={{ width: "100%" }}
               format="DD/MM/YYYY"
               placeholder="Chọn ngày sản xuất"
-              className="rounded border-gray-300"
               disabledDate={disabledProductionDate}
+              onChange={(date) => {
+                setProductionDate(date);
+                form.setFieldsValue({ production_date: date });
+              }}
             />
           </Form.Item>
-
-          {/* Ngày kết thúc chỉ cho phép chọn khi đã chọn ngày sản xuất */}
           <Form.Item
             label="Ngày kết thúc"
             name="end_date"
             rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
           >
-            <Form.Item noStyle dependencies={["production_date"]}>
-              {({ getFieldValue }) => (
-                <DatePicker
-                  style={{ width: "100%" }}
-                  format="DD/MM/YYYY"
-                  placeholder={
-                    !getFieldValue("production_date")
-                      ? "Vui lòng chọn ngày sản xuất trước"
-                      : "Chọn ngày kết thúc"
-                  }
-                  className="rounded border-gray-300"
-                  disabled={!getFieldValue("production_date")} // disable if no production_date
-                  disabledDate={disabledEndDate} // Custom function for disabled date
-                  onChange={(date) => form.setFieldsValue({ end_date: date })} // Set end_date value on change
-                />
-              )}
-            </Form.Item>
+            <DatePicker
+              style={{ width: "100%" }}
+              format="DD/MM/YYYY"
+              placeholder="Chọn ngày kết thúc"
+              disabledDate={disabledEndDate}
+              disabled={!productionDate} 
+              onChange={(date) => form.setFieldsValue({ end_date: date })}
+            />
           </Form.Item>
 
-          {/* Trường ẩn request_type có giá trị cứng "Đơn sản xuất" */}
           <Form.Item
             name="request_type"
             initialValue="Đơn sản xuất"
@@ -399,15 +472,9 @@ const ProductionRequest = () => {
           >
             <Input />
           </Form.Item>
-
           <Form.Item label="Ghi chú" name="note">
-            <Input.TextArea
-              rows={4}
-              placeholder="Nhập ghi chú (nếu có)"
-              className="rounded border-gray-300"
-            />
+            <Input.TextArea rows={4} placeholder="Nhập ghi chú (nếu có)" />
           </Form.Item>
-
           <Form.Item>
             <Button type="primary" htmlType="submit" className="w-full py-2">
               Xác nhận
