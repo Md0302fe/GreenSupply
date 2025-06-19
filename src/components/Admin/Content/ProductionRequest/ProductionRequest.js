@@ -34,6 +34,20 @@ const ProductionRequest = () => {
   const [fuelTypes, setFuelTypes] = useState([]);
   const [fuelLoading, setFuelLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [packagingMaterials, setPackagingMaterials] = useState([]);
+  const [productionDate, setProductionDate] = useState(null);
+
+  const [selectedPackaging, setSelectedPackaging] = useState({
+    vacuumBag: null,
+    carton: null,
+  });
+  const [isProductQuantityCalculated, setIsProductQuantityCalculated] =
+    useState(false);
+  const [productQuantity, setProductQuantity] = useState(0);
+  const [calculatedPackaging, setCalculatedPackaging] = useState({
+    vacuumBag: 0,
+    carton: 0,
+  });
   const user = useSelector((state) => state.user);
   const [selectedFuelAvailable, setSelectedFuelAvailable] = useState(null);
 
@@ -43,7 +57,6 @@ const ProductionRequest = () => {
       try {
         const data = await getAllFuelType();
         console.log("Fuel Data:", data);
-        // Giả sử API trả về dữ liệu dạng { success: true, requests: [...] }
         setFuelTypes(data.requests);
       } catch (error) {
         message.error(t("messages.fetchFuelError"));
@@ -51,9 +64,21 @@ const ProductionRequest = () => {
         setFuelLoading(false);
       }
     };
-    fetchFuelTypes();
-  }, []);
 
+    const fetchPackagingMaterials = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/package-material/boxes`
+        );
+        setPackagingMaterials(res.data.data || []);
+      } catch (error) {
+        message.error("Lỗi khi tải danh sách bao bì.");
+        }
+    };
+
+    fetchFuelTypes();
+    fetchPackagingMaterials();
+  }, []);
   // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn Nguyên liệu
   const handleEstimatedProductionChange = (value) => {
     const selectedFuelId = form.getFieldValue("material");
@@ -83,9 +108,52 @@ const ProductionRequest = () => {
           return;
         }
       }
-    }
-    form.setFieldsValue({ material_quantity: required });
+    };
   };
+   
+  
+// hàm tính số lượng túi và thùng carton cần thiết dựa trên sản lượng thành phẩm
+  const handlePackagingSelect = (value, type) => {
+    const selectedMaterial = packagingMaterials.find(
+      (item) => item._id === value
+    );
+
+    setSelectedPackaging((prev) => ({
+      ...prev,
+      [type]: selectedMaterial,
+    }));
+
+    const productKg = form.getFieldValue("product_quantity");
+
+    // Nếu chưa có sản lượng thì không làm gì
+    if (!productKg || !selectedMaterial) return;
+
+    const productGrams = productKg * 1000; // đổi kg → g
+
+    if (type === "vacuumBag") {
+      const vacuumBagRequired = Math.ceil(
+        productGrams / selectedMaterial.capacity
+      );
+      setCalculatedPackaging((prev) => ({
+        ...prev,
+        vacuumBag: vacuumBagRequired,
+      }));
+    }
+
+    if (type === "carton") {
+      const cartonCapacityKg = selectedMaterial.capacity;
+
+      if (!productKg || !cartonCapacityKg) return;
+
+      const cartonRequired = Math.ceil(productKg / cartonCapacityKg);
+
+      setCalculatedPackaging((prev) => ({
+        ...prev,
+        carton: cartonRequired,
+      }));
+    }
+  };
+
   const calculateProductQuantity = () => {
     const material_quantity = form.getFieldValue("material_quantity");
     const loss_percentage = form.getFieldValue("loss_percentage");
@@ -110,7 +178,10 @@ const ProductionRequest = () => {
       typeof loss_percentage === "number"
     ) {
       const product_quantity = material_quantity * (1 - loss_percentage / 100);
-      form.setFieldsValue({ product_quantity: Math.floor(product_quantity) });
+      const rounded = Math.floor(product_quantity);
+      form.setFieldsValue({ product_quantity: rounded });
+
+      setIsProductQuantityCalculated(rounded > 0);
     }
   };
 
@@ -119,7 +190,7 @@ const ProductionRequest = () => {
     return current && current < dayjs().startOf("day");
   };
 
-  // Disabled date cho ngày kết thúc: không cho chọn trước ngày sản xuất
+  // Hàm để disable Ngày kết thúc nếu chưa chọn Ngày sản xuất
   const disabledEndDate = (current) => {
     const productionDate = form.getFieldValue("production_date");
     if (!productionDate) {
@@ -128,7 +199,15 @@ const ProductionRequest = () => {
     return current && current.isBefore(productionDate, "day");
   };
 
-  // Sử dụng axios để gửi dữ liệu form sang backend
+  const handleProductQuantityChange = () => {
+    const productQuantity = form.getFieldValue("product_quantity");
+    if (productQuantity > 0) {
+      setIsProductQuantityCalculated(true); // Nếu có sản lượng thành phẩm ước tính, bật các lựa chọn bao bì
+    } else {
+      setIsProductQuantityCalculated(false); // Nếu chưa có sản lượng thành phẩm, tắt các lựa chọn bao bì
+    }
+  };
+
   const onFinish = async (values) => {
     // Chuyển đổi ngày sang ISO string nếu có
     const formattedValues = {
@@ -138,6 +217,12 @@ const ProductionRequest = () => {
         ? values.production_date.toISOString()
         : null,
       end_date: values.end_date ? values.end_date.toISOString() : null,
+      packaging: {
+        vacuumBag: calculatedPackaging.vacuumBag,
+        carton: calculatedPackaging.carton,
+        vacuumBagBoxId: selectedPackaging.vacuumBag?._id,
+        cartonBoxId: selectedPackaging.carton?._id,
+      },
     };
     console.log(formattedValues);
     setSubmitLoading(true);
@@ -213,14 +298,6 @@ const ProductionRequest = () => {
             {t("productionRequest.title")}
           </h2>
         </div>
-
-        {/* {fuelLoading && (
-          <div className="flex justify-center items-center mb-4">
-            <span className="text-lg font-medium text-blue-600">
-              Loading danh sách Nguyên liệu...
-            </span>
-          </div>
-        )} */}
 
         {submitLoading && (
           <div className="flex justify-center items-center mb-4">
@@ -338,7 +415,50 @@ const ProductionRequest = () => {
             />
           </Form.Item>
 
-          {/* Thêm trường Mức độ ưu tiên */}
+          {/* Chọn Bao Bì */}
+          <Form.Item label="Chọn Túi chân không">
+            <Select
+              placeholder="Có sản lượng thành phẩm trước"
+              disabled={!isProductQuantityCalculated}
+              onChange={(value) => handlePackagingSelect(value, "vacuumBag")}
+            >
+              {packagingMaterials
+                .filter((material) => material.type === "túi chân không")
+                .map((material) => (
+                  <Select.Option key={material._id} value={material._id}>
+                    {material.package_material_name} - {material.capacity} g
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Chọn Thùng carton">
+            <Select
+              placeholder="Có sản lượng thành phẩm trước"
+              disabled={!isProductQuantityCalculated}
+              onChange={(value) => handlePackagingSelect(value, "carton")}
+            >
+              {packagingMaterials
+                .filter((material) => material.type === "thùng carton")
+                .map((material) => (
+                  <Select.Option key={material._id} value={material._id}>
+                    {material.package_material_name} - {material.capacity} kg
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+
+          {selectedPackaging.vacuumBag && selectedPackaging.carton && (
+            <div>
+              <p>
+                Số lượng Túi chân không cần dùng:{" "}
+                {calculatedPackaging.vacuumBag} Túi
+              </p>
+              <p>
+                Số lượng Thùng carton cần dùng: {calculatedPackaging.carton}{" "}
+                Thùng
+              </p>
+            </div>
+          )}
           <Form.Item
             label={t("productionRequest.priority")}
             name="priority"
@@ -355,8 +475,6 @@ const ProductionRequest = () => {
               <Select.Option value={1}>{t("priority.low")}</Select.Option>
             </Select>
           </Form.Item>
-
-          {/* Ngày sản xuất */}
           <Form.Item
             label={t("productionRequest.productionDate")}
             name="production_date"
@@ -373,10 +491,12 @@ const ProductionRequest = () => {
               placeholder={t("productionRequest.selectProductionDate")}
               className="rounded border-gray-300"
               disabledDate={disabledProductionDate}
+              onChange={(date) => {
+                setProductionDate(date);
+                form.setFieldsValue({ production_date: date });
+              }}
             />
           </Form.Item>
-
-          {/* Ngày kết thúc chỉ cho phép chọn khi đã chọn ngày sản xuất */}
           <Form.Item
             label={t("productionRequest.endDate")}
             name="end_date"
@@ -403,7 +523,6 @@ const ProductionRequest = () => {
             </Form.Item>
           </Form.Item>
 
-          {/* Trường ẩn request_type có giá trị cứng "Đơn sản xuất" */}
           <Form.Item
             name="request_type"
             initialValue="Đơn sản xuất"
@@ -419,7 +538,6 @@ const ProductionRequest = () => {
               className="rounded border-gray-300"
             />
           </Form.Item>
-
           <Form.Item>
             <Button type="primary" htmlType="submit" className="w-full py-2">
               {t("common.confirm")}

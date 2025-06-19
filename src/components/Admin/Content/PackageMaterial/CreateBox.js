@@ -1,3 +1,4 @@
+// frontend/CreateBox.js
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Select, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -28,7 +29,6 @@ const CreateBox = () => {
     fetchCategories();
   }, []);
 
-  // Chuyển file thành base64
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -51,6 +51,8 @@ const CreateBox = () => {
         quantity: Number(values.quantity),
         package_material_categories: values.package_material_categories,
         package_img,
+        type: values.type,
+        capacity: values.capacity,
       };
 
       const res = await axios.post(
@@ -62,36 +64,18 @@ const CreateBox = () => {
       );
 
       if (res.data.success) {
-        message.success("Tạo thùng thành công!");
+        message.success("Tạo nguyên vật liệu thành công!");
         navigate("/system/admin/box-list", {
-          state: { categoryId: values.package_material_categories },
+          state: { categoryId: values.package_material_categories }, // ⬅️ điều hướng có categoryId
         });
       } else {
-        message.error("Tạo thất bại");
+        message.error("Tạo nguyên vật liệu thất bại");
       }
     } catch {
       message.error("Lỗi kết nối server");
     } finally {
       setLoading(false);
     }
-  };
-
-  const uploadProps = {
-    beforeUpload: (file) => {
-      const isValidType =
-        file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/jpg";
-      if (!isValidType) {
-        message.error("Bạn chỉ có thể tải lên file JPG/PNG!");
-        return Upload.LIST_IGNORE;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error("Ảnh phải nhỏ hơn 2MB!");
-        return Upload.LIST_IGNORE;
-      }
-      return true;
-    },
-    maxCount: 1,
   };
 
   return (
@@ -102,21 +86,6 @@ const CreateBox = () => {
           className="flex items-center bg-blue-500 text-white font-semibold py-1 px-1 lg:px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           type="button"
         >
-          {/* icon back */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
           Quay lại
         </button>
       </div>
@@ -124,22 +93,28 @@ const CreateBox = () => {
       <div className="w-full max-w-xl bg-white rounded-lg shadow p-2 lg:p-8">
         <h2 className="text-18px lg:text-3xl font-bold mb-4 lg:mb-6 text-center">Tạo Nguyên Liệu Mới</h2>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={{ package_img: [] }}
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
             label="Tên Nguyên liệu"
             name="package_material_name"
             rules={[{ required: true, message: "Vui lòng nhập tên nguyên liệu" }]}
           >
-            <Input placeholder="Nhập tên thùng" size="large" />
+            <Input placeholder="Nhập tên nguyên liệu" size="large" />
           </Form.Item>
 
           <Form.Item
             label="Loại Nguyên Liệu"
+            name="type"
+            rules={[{ required: true, message: "Vui lòng chọn loại nguyên liệu" }]}
+          >
+            <Select placeholder="Chọn loại nguyên liệu" size="large" showSearch>
+              <Option value="túi chân không">Túi chân không</Option>
+              <Option value="thùng carton">Thùng carton</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Chọn loại bao bì"
             name="package_material_categories"
             rules={[{ required: true, message: "Vui lòng chọn loại nguyên liệu" }]}
           >
@@ -161,13 +136,21 @@ const CreateBox = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ảnh Thùng"
+            label="Dung Tích (Túi: g, Thùng: kg)"
+            name="capacity"
+            rules={[{ required: true, message: "Vui lòng nhập dung tích" }]}
+          >
+            <Input type="number" min={0} placeholder="Nhập dung tích" size="large" />
+          </Form.Item>
+
+          <Form.Item
+            label="Ảnh Nguyên Liệu"
             name="package_img"
             valuePropName="fileList"
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
             rules={[{ required: true, message: "Vui lòng chọn ảnh nguyên liệu" }]}
           >
-            <Upload {...uploadProps} listType="picture">
+            <Upload listType="picture">
               <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
             </Upload>
           </Form.Item>
