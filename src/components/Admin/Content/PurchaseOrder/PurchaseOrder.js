@@ -347,7 +347,7 @@ const HarvestRequestPage = () => {
                   {fuel_types && fuel_types.length > 0 ? (
                     fuel_types.map((fuel) => (
                       <option key={fuel._id} value={fuel._id}>
-                        {fuel.fuel_type_id.type_name}
+                        {fuel?.fuel_type_id?.type_name}
                       </option>
                     ))
                   ) : (

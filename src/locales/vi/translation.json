@@ -1223,12 +1223,12 @@
     },
     "stages": {
       "stage1": "Phân loại nguyên liệu",
-      "stage2": "Rửa và làm sạch",
-      "stage3": "Khử trùng/diệt khuẩn bề mặt",
-      "stage4": "Phủ màng sinh học & làm khô",
-      "stage5": "Ủ chín (kiểm soát nhiệt độ/độ ẩm)",
-      "stage6": "Đóng gói thành phẩm",
-      "stage7": "Ghi nhãn & truy xuất nguồn gốc"
+      "stage2": "Rửa – gọt vỏ - tách hạt – cắt lát",
+      "stage3": "Chần để ức chế enzyme",
+      "stage4": "Điều vị (ngâm đường/muối)",
+      "stage5": "Sấy (máy sấy lạnh hoặc đối lưu)",
+      "stage6": "Làm nguội – đóng gói – dán nhãn",
+      "stage7": "Bảo quản lạnh"
     },
     "message": {
       "completeSuccess": "Xác nhận hoàn thành stage thành công",
