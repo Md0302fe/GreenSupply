@@ -21,7 +21,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
-  const [role_check, setRoleCheck] = useState(false);
+  const [role_check, setRoleCheck] = useState(true);
   const [gender, setGender] = useState("");
   const [resendTimer, setResendTimer] = useState(0); // Thời gian chờ (giây)
 
@@ -292,7 +292,7 @@ const Register = () => {
             </div>
 
             {/* 7. Is supplier */}
-            <div className="">
+            {/* <div className="">
               <input
                 type={"checkbox"}
                 className="mr-2"
@@ -303,7 +303,7 @@ const Register = () => {
               <label htmlFor="roleCheck">
                 {t("supplier_check")}
               </label>
-            </div>
+            </div> */}
 
             {/* Error */}
             <div

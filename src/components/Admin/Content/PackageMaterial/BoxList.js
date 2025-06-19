@@ -1,4 +1,6 @@
+// (Phần import giữ nguyên)
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Image,
   Table,
@@ -11,7 +13,9 @@ import {
   Form,
   Input,
 } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -26,13 +30,22 @@ const BoxList = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
+  const [base64Image, setBase64Image] = useState("");
   const [form] = Form.useForm();
+  const location = useLocation();
+
 
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Fetch Categories
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
   const fetchCategories = async () => {
     try {
       const res = await axios.get(
@@ -46,7 +59,6 @@ const BoxList = () => {
     }
   };
 
-  // Fetch Boxes based on selected category
   const fetchBoxes = async (categoryId) => {
     setLoading(true);
     try {
@@ -59,11 +71,10 @@ const BoxList = () => {
         `${process.env.REACT_APP_API_URL}/package-material/boxes?category_id=${categoryId}`
       );
       if (res.data.success) {
-        // Sắp xếp các thùng theo ngày tạo, đơn mới nhất lên đầu
         const sortedBoxes = res.data.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        setBoxes(sortedBoxes); // Cập nhật boxes sau khi sắp xếp
+        setBoxes(sortedBoxes);
       } else {
         setBoxes([]);
         message.error("Không thể lấy danh sách thùng.");
@@ -80,21 +91,22 @@ const BoxList = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    if (categories.length > 0 && !selectedCategory) {
-      const firstCategoryId = categories[0]._id;
-      setSelectedCategory(firstCategoryId);
-      fetchBoxes(firstCategoryId);
-    }
-  }, [categories]);
+ useEffect(() => {
+  if (categories.length > 0) {
+    const categoryFromState = location.state?.categoryId;
+    const defaultCategoryId = categoryFromState || categories[0]._id;
 
-  // Handle View Details
+    setSelectedCategory(defaultCategoryId);
+    fetchBoxes(defaultCategoryId);
+  }
+}, [categories, location.state]);
+
+
   const handleViewDetails = (box) => {
     setSelectedBox(box);
     setIsDrawerOpen(true);
   };
 
-  // Handle Delete Box
   const handleDelete = (id) => {
     Modal.confirm({
       title: "Xác nhận xoá",
@@ -125,17 +137,16 @@ const BoxList = () => {
     });
   };
 
-  // Open Edit Drawer
   const openEditDrawer = (box) => {
     form.setFieldsValue({
       package_material_name: box.package_material_name,
       quantity: box.quantity,
     });
+    setBase64Image("");
     setSelectedBox(box);
     setIsEditDrawerOpen(true);
   };
 
-  // Handle Update Box
   const handleUpdate = async () => {
     try {
       const values = await form.validateFields();
@@ -143,6 +154,10 @@ const BoxList = () => {
         package_material_name: values.package_material_name,
         quantity: Number(values.quantity),
       };
+
+      if (base64Image) {
+        payload.package_img = base64Image;
+      }
 
       const res = await axios.put(
         `${process.env.REACT_APP_API_URL}/package-material/boxes/${selectedBox._id}`,
@@ -168,11 +183,7 @@ const BoxList = () => {
 
   const columns = [
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Ảnh
-        </div>
-      ),
+      title: <div style={{ textAlign: "center", width: "100%" }}>Ảnh</div>,
       dataIndex: "package_img",
       key: "package_img",
       align: "center",
@@ -206,11 +217,7 @@ const BoxList = () => {
       render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Số lượng
-        </div>
-      ),
+      title: <div style={{ textAlign: "center", width: "100%" }}>Số lượng</div>,
       dataIndex: "quantity",
       key: "quantity",
       align: "center",
@@ -218,24 +225,35 @@ const BoxList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Trạng Thái
+        <div style={{ textAlign: "center", width: "100%" }}>Dung tích</div>
+      ),
+      dataIndex: "capacity",
+      key: "capacity",
+      align: "center",
+      render: (_, record) => (
+        <div style={{ textAlign: "center" }}>
+          {record.capacity} {record.type === "túi chân không" ? "g" : "Kg"}
         </div>
+      ),
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
       ),
       dataIndex: "is_delete",
       key: "is_delete",
       align: "center",
       render: (val) => (
         <div style={{ textAlign: "center", width: "100%" }}>
-          <Tag color={val ? "red" : "green"}>{val ? "Đã xóa" : "Hoạt động"}</Tag>
+          <Tag color={val ? "red" : "green"}>
+            {val ? "Đã xóa" : "Hoạt động"}
+          </Tag>
         </div>
       ),
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Hành động
-        </div>
+        <div style={{ textAlign: "center", width: "100%" }}>Hành động</div>
       ),
       key: "action",
       align: "center",
@@ -249,7 +267,11 @@ const BoxList = () => {
             <Space>
               <Button
                 type="link"
-                icon={<HiOutlineDocumentSearch style={{ fontSize: 20, ...iconStyle }} />}
+                icon={
+                  <HiOutlineDocumentSearch
+                    style={{ fontSize: 20, ...iconStyle }}
+                  />
+                }
                 onClick={() => !disabled && handleViewDetails(record)}
                 disabled={disabled}
               />
@@ -261,7 +283,11 @@ const BoxList = () => {
               />
               <Button
                 type="link"
-                icon={<DeleteOutlined style={{ fontSize: 18, color: disabled ? "gray" : "red" }} />}
+                icon={
+                  <DeleteOutlined
+                    style={{ fontSize: 18, color: disabled ? "gray" : "red" }}
+                  />
+                }
                 onClick={() => !disabled && handleDelete(record._id)}
                 disabled={disabled}
               />
@@ -274,14 +300,11 @@ const BoxList = () => {
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
-    if (categoryId) {
-      fetchBoxes(categoryId);
-    } else {
-      setBoxes([]);
-    }
+    fetchBoxes(categoryId);
   };
 
   return (
+    <>
     <div className="p-6">
       {/* Header with back button, centered title */}
       <div className="flex items-center justify-between mb-5">
@@ -337,6 +360,16 @@ const BoxList = () => {
             </Button>
           ))}
         </div>
+{/* 
+        <Button
+          type="primary"
+          onClick={() => navigate("/system/admin/box-Create")}
+          className="shadow-md whitespace-nowrap"
+          style={{ flexShrink: 0 }}
+        >
+          Tạo Nguyên Liệu
+        </Button> */}
+      </div>
 
       {/* Table */}
       <Table
@@ -348,7 +381,6 @@ const BoxList = () => {
         scroll={{ x: "max-content" }}
       />
 
-      {/* Drawer xem chi tiết */}
       <Drawer
         title="Chi tiết thùng"
         open={isDrawerOpen}
@@ -368,6 +400,9 @@ const BoxList = () => {
                 {selectedBox.is_delete ? "Đã xóa" : "Hoạt động"}
               </Tag>
             </Descriptions.Item>
+            <Descriptions.Item label="Dung tích (g)">
+              {selectedBox.capacity} kg
+            </Descriptions.Item>
             <Descriptions.Item label="Ngày tạo">
               {new Date(selectedBox.createdAt).toLocaleString()}
             </Descriptions.Item>
@@ -386,11 +421,13 @@ const BoxList = () => {
         </div>
       </Drawer>
 
-      {/* Drawer cập nhật */}
       <Drawer
         title="Cập nhật thùng"
         open={isEditDrawerOpen}
-        onClose={() => setIsEditDrawerOpen(false)}
+        onClose={() => {
+          setIsEditDrawerOpen(false);
+          setBase64Image(""); // ✅ Reset ảnh khi đóng
+        }}
         width={400}
       >
         <Form form={form} layout="vertical" onFinish={handleUpdate}>
@@ -401,6 +438,7 @@ const BoxList = () => {
           >
             <Input />
           </Form.Item>
+
           <Form.Item
             label="Số lượng"
             name="quantity"
@@ -408,6 +446,67 @@ const BoxList = () => {
           >
             <Input type="number" min={0} />
           </Form.Item>
+          {/* 
+          <Form.Item label="Ảnh mới">
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  const base64 = await getBase64(file);
+                  setBase64Image(base64);
+                }
+              }}
+            />
+          </Form.Item> */}
+
+          <Form.Item label="Ảnh mới">
+            <Upload
+              accept="image/*"
+              beforeUpload={() => false}
+              maxCount={1}
+              listType="picture"
+              fileList={
+                base64Image
+                  ? [
+                      {
+                        uid: "-1",
+                        name: "Ảnh đã chọn",
+                        status: "done",
+                        url: base64Image,
+                      },
+                    ]
+                  : []
+              }
+              onChange={async ({ fileList }) => {
+                const latestFile = fileList[fileList.length - 1];
+                if (latestFile?.originFileObj) {
+                  const base64 = await getBase64(latestFile.originFileObj);
+                  setBase64Image(base64);
+                }
+              }}
+              onRemove={() => {
+                setBase64Image("");
+                return true;
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+            </Upload>
+          </Form.Item>
+
+          {base64Image && (
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <Image
+                src={base64Image}
+                alt="preview"
+                width={100}
+                style={{ objectFit: "cover", borderRadius: 4 }}
+              />
+              <p>Ảnh mới sẽ được cập nhật</p>
+            </div>
+          )}
+
           <div className="flex justify-end">
             <Button onClick={() => setIsEditDrawerOpen(false)} className="mr-2">
               Hủy
@@ -418,7 +517,7 @@ const BoxList = () => {
           </div>
         </Form>
       </Drawer>
-    </div>
+    </>
   );
 };
 
