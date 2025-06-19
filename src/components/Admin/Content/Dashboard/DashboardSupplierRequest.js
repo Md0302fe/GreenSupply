@@ -5,8 +5,10 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Table } from "antd";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 const DashboardSupplyRequest = () => {
+  const { t } = useTranslation();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const userRedux = useSelector((state) => state.user);
@@ -32,11 +34,11 @@ const DashboardSupplyRequest = () => {
       if (res.data.status === "SUCCESS") {
         setDashboardData(res.data.data);
       } else {
-        message.error("Không thể tải dữ liệu dashboard!");
+        message.error(t("dashboard.error_fetch_data"));
       }
     } catch (error) {
       console.error("❌ Lỗi khi gọi API:", error);
-      message.error("Lỗi khi tải dashboard!");
+      message.error(t("dashboard.error_fetch_exception"));
     }
     setLoading(false);
   };
@@ -53,11 +55,11 @@ const DashboardSupplyRequest = () => {
       if (res.data.status === "SUCCESS") {
         setAllOrders(res.data.data.data || []);
       } else {
-        message.error("Không thể tải danh sách đơn hàng!");
+        message.error(t("dashboard.error_fetch_orders"));
       }
     } catch (err) {
       console.error("Lỗi khi fetch đơn hàng:", err);
-      message.error("Lỗi khi tải danh sách đơn hàng!");
+      message.error(t("dashboard.error_fetch_orders_exception"));
     }
   };
 
@@ -112,19 +114,20 @@ const DashboardSupplyRequest = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <header className="bg-gradient-to-r from-yellow-500 to-green-500 text-white p-6 rounded mb-6">
-        <h1 className="text-3xl font-bold">
-          Dashboard Yêu Cầu Thu Nguyên Liệu
-        </h1>
+      <header className="bg-gradient-to-r from-yellow-500 to-green-500 text-white p-6 rounded mb-4 md:mb-6">
+        <h1 className="text-[18px] md:text-3xl font-bold">{t("dashboard.title")}</h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
         <Card
           onClick={handleNavigateAllOrders}
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
-          <Statistic title="Tổng Yêu Cầu" value={dashboardData?.total || 0} />
+          <Statistic
+            title={t("dashboard.total_requests")}
+            value={dashboardData?.total || 0}
+          />
         </Card>
 
         <Card
@@ -132,7 +135,7 @@ const DashboardSupplyRequest = () => {
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
           <Statistic
-            title="Chờ Duyệt"
+            title={t("dashboard.pending")}
             value={dashboardData?.pending || 0}
             valueStyle={{ color: "#faad14" }}
           />
@@ -142,7 +145,7 @@ const DashboardSupplyRequest = () => {
           className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
           <Statistic
-            title="Hoàn Thành"
+            title={t("dashboard.completed")}
             value={dashboardData?.completed || 0}
             valueStyle={{ color: "#1890ff" }}
           />
@@ -151,9 +154,11 @@ const DashboardSupplyRequest = () => {
 
       {/* 🔹 Đơn Đang Xử Lý */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Đơn Hàng Đang Xử Lý</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t("dashboard.processing_orders")}
+        </h2>
         {dashboardData?.processingList?.length === 0 && (
-          <p className="text-gray-500">Không có đơn đang xử lý</p>
+          <p className="text-gray-500">{t("dashboard.no_processing_orders")}</p>
         )}
 
         <div className="space-y-4">
@@ -173,24 +178,26 @@ const DashboardSupplyRequest = () => {
 
               {/* Tên + Progress */}
               <div className="flex-1">
-                <div className="text-base font-semibold text-gray-800 mb-1">
-                  {item.name} -{" "}
+                <div className="flex flex-wrap items-center gap-1 mb-1 text-base font-semibold text-gray-800">
+                  <span>{item.name}</span>
+
                   {item.priority === 1 && (
                     <span className="text-red-600 bg-red-100 px-2 py-0.5 rounded-full text-xs">
-                      Ưu tiên cao
+                      {t("dashboard.priority_high")}
                     </span>
                   )}
                   {item.priority === 2 && (
                     <span className="text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded-full text-xs">
-                      Trung bình
+                      {t("dashboard.priority_medium")}
                     </span>
                   )}
                   {item.priority === 3 && (
                     <span className="text-green-600 bg-green-100 px-2 py-0.5 rounded-full text-xs">
-                      Thấp
+                      {t("dashboard.priority_low")}
                     </span>
                   )}
                 </div>
+
                 <Progress
                   percent={item.progress || 0}
                   status="active"
@@ -209,60 +216,79 @@ const DashboardSupplyRequest = () => {
       {/* 🔹 Danh sách đơn hàng gần đây theo thời gian */}
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         {/* Bộ lọc thời gian */}
-        <div className="flex justify-start mb-4 space-x-2">
+        <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`px-4 py-2 rounded-l ${
-              filterType === "day"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("day")}
           >
-            Theo Ngày
+            {t("dashboard.filter_day")}
           </button>
+
           <button
-            className={`px-4 py-2 ${
-              filterType === "week"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("week")}
           >
-            Theo Tuần
+            {t("dashboard.filter_week")}
           </button>
           <button
-            className={`px-4 py-2 rounded-r ${
-              filterType === "month"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+              }`}
             onClick={() => setFilterType("month")}
           >
-            Theo Tháng
+            {t("dashboard.filter_month")}
           </button>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4">Đơn hàng gần đây</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {t("dashboard.recent_orders")}
+        </h2>
         <Table
           columns={[
-            { title: "Mã Đơn", dataIndex: "_id", key: "_id" },
             {
-              title: "Tên đơn",
+              title: t("dashboard.table.order_id"),
+              dataIndex: "_id",
+              key: "_id",
+            },
+            {
+              title: t("dashboard.table.request_name"),
               dataIndex: "request_name",
               key: "request_name",
             },
-            { title: "Trạng thái", dataIndex: "status", key: "status" },
-            { title: "Số lượng", dataIndex: "quantity", key: "quantity" },
             {
-              title: "Ngày tạo",
+              title: <div className="text-center">{t("dashboard.table.status")}</div>,
+              dataIndex: "status",
+              key: "status",
+              align: "center",
+              className: "text-center",
+            },
+            {
+              title: <div className="text-center">{t("dashboard.table.quantity")}</div>,
+              dataIndex: "quantity",
+              key: "quantity",
+              align: "center",
+              className: "text-center",
+            },
+            {
+              title: <div className="text-center">{t("dashboard.table.created_at")}</div>,
               dataIndex: "createdAt",
               key: "createdAt",
+              align: "center",
+              className: "text-center",
               render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
             },
           ]}
           dataSource={filteredOrders}
           rowKey="_id"
           pagination={{ pageSize: 5 }}
+          scroll={{ x: "max-content" }}
         />
       </div>
     </div>

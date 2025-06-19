@@ -21,6 +21,7 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { useLocation } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { VscRequestChanges } from "react-icons/vsc";
+import { useTranslation } from "react-i18next";
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
@@ -30,6 +31,8 @@ const statusColors = {
 };
 
 const RawMaterialBatchList = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [fuel_managements, set_fuel_managements] = useState([]);
@@ -54,7 +57,12 @@ const RawMaterialBatchList = () => {
   const searchInput = useRef(null);
 
   const location = useLocation();
-
+  const statusMap = {
+    "Đang chuẩn bị": "status.preparing",
+    "Chờ xuất kho": "status.waitingExport",
+    "Đã xuất kho": "status.exported",
+    "Hủy bỏ": "status.cancelled",
+  };
   const handleCreateExportOrder = (batchId) => {
     navigate(`/system/admin/material-storage-export?id=${batchId}`);
   };
@@ -119,10 +127,10 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-      }))
+      ...batch,
+      key: batch._id,
+      fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
+    }))
     : [];
 
   // Search trong bảng
@@ -136,6 +144,26 @@ const RawMaterialBatchList = () => {
     clearFilters();
     setSearchText("");
   };
+
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -163,14 +191,14 @@ const RawMaterialBatchList = () => {
             size="small"
             style={{ width: 70 }}
           >
-            Tìm
+            Search
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{ width: 70 }}
           >
-            Đặt lại
+            Reset
           </Button>
           <Button
             type="link"
@@ -178,7 +206,7 @@ const RawMaterialBatchList = () => {
             onClick={() => confirm()}
             style={{ padding: 0 }}
           >
-            Đóng
+            Close
           </Button>
         </Space>
       </div>
@@ -202,14 +230,20 @@ const RawMaterialBatchList = () => {
   });
   const columns = [
     {
-      title: <div style={{ textAlign: "center" }}>Mã lô</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("materialBatch.batchId")}</div>
+      ),
       dataIndex: "batch_id",
       key: "batch_id",
       align: "center",
       ...getColumnSearchProps("batch_id"),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Tên lô</div>,
+      title: (
+        <div style={{ textAlign: "left" }}>
+          {t("materialBatch.batchName")}
+        </div>
+      ),
       dataIndex: "batch_name",
       key: "batch_name",
       align: "center",
@@ -217,14 +251,18 @@ const RawMaterialBatchList = () => {
       sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Loại nguyên liệu</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("materialBatch.fuelType")}</div>
+      ),
       dataIndex: "fuel_name",
       key: "fuel_name",
       align: "center",
       render: (text) => <div style={{}}>{text}</div>,
     },
     {
-      title: <div style={{ textAlign: "center" }}>Số lượng (Kg)</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("materialBatch.quantity")}</div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       align: "center",
@@ -232,7 +270,9 @@ const RawMaterialBatchList = () => {
       render: (val) => <div style={{ textAlign: "center" }}>{val} Kg</div>,
     },
     {
-      title: <div style={{ textAlign: "center" }}>Kho lưu trữ</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("materialBatch.storage")}</div>
+      ),
       dataIndex: "name_storage",
       key: "name_storage",
       align: "center",
@@ -243,23 +283,27 @@ const RawMaterialBatchList = () => {
       ),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Trạng thái</div>,
+      title: (
+        <div style={{ textAlign: "center" }}>{t("materialBatch.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       align: "center",
       filters: Object.keys(statusColors).map((status) => ({
-        text: status,
+        text: t(statusMap[status]),
         value: status,
       })),
       onFilter: (value, record) => record.status === value,
       render: (stt) => (
         <div style={{ textAlign: "center" }}>
-          <Tag color={statusColors[stt] || "default"}>{stt}</Tag>
+          <Tag color={statusColors[stt] || "default"}>
+            {t(statusMap[stt] || stt)}
+          </Tag>
         </div>
       ),
     },
     {
-      title: <div style={{ textAlign: "center" }}>Hành động</div>,
+      title: <div style={{ textAlign: "center" }}>{t("common.action")}</div>,
       key: "action",
       align: "center",
       render: (record) => (
@@ -432,74 +476,71 @@ const RawMaterialBatchList = () => {
   };
 
   return (
-    <div className="raw-material-batch-list">
-      <div className="flex items-center justify-between mb-4 relative">
-        {/* Nút Quay lại */}
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute left-0 flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          Quay lại
-        </button>
-
-        {/* Tiêu đề căn giữa */}
-        <h5 className="text-4xl font-bold text-gray-800 text-center flex-1">
-          Quản lý Lô Nguyên Liệu
-        </h5>
-        {/* Nút tạo ở bên phải */}
+    <div>
+      <div className="raw-material-batch-list">
         <div
-          className="absolute right-0 flex gap-2 mt-2"
-          style={{ top: "65%", transform: "translateY(20%)" }}
-        >
-          {/* <Button
+        style={{ marginBottom: 24, marginTop: 24 }}
+        className="flex items-center justify-between">
+          {/* Nút Quay lại */}
+          <Button
+            onClick={() => navigate(-1)}
             type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
-            onClick={() => navigate("/system/admin/raw-material-batch")}
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
-            Tạo lô bổ sung
-          </Button> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            </svg>
+            <span className="hidden md:inline">{t("fuelStorage.back")}</span>
+          </Button>
+
+          {/* Title căn giữa */}
+          <h5 className="text-center font-bold text-[16px] md:text-2xl flex-grow mx-4">
+            {t("materialBatch.title")}
+          </h5>
+
+          {/* Phần tử trống bên phải để cân bằng */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
+        </div>
+
+        {/* Hàng 2: Nút Tạo */}
+        <div className="flex justify-end">
           <Button
             type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-4"
+            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-2 md:px-4"
             onClick={() => navigate("/system/admin/material-storage-export")}
           >
-            Tạo đơn xuất kho
+            {t("materialBatch.createExportOrder")}
           </Button>
         </div>
       </div>
       <Loading isPending={loading}>
-        <div className="mt-10">
+        <div className="">
           {" "}
           {/* 👈 thêm margin top ở đây */}
           <Table
             columns={columns}
             dataSource={tableData}
             pagination={{ pageSize: 6 }}
+            scroll={{ x: "max-content" }}
           />
         </div>
       </Loading>
       <DrawerComponent
         title={
-          isEditMode ? "Cập nhật Lô Nguyên Liệu" : "Chi tiết Lô Nguyên Liệu"
+          isEditMode
+            ? t("materialBatch.updateTitle")
+            : t("materialBatch.detailTitle")
         }
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
-        width="40%"
+        width={drawerWidth}
       >
         {selectedBatch && (
           <>
@@ -521,19 +562,27 @@ const RawMaterialBatchList = () => {
                 >
                   {/* Mã Lô - Disabled vì không cần chỉnh sửa */}
                   <Form.Item
-                    label="Mã Lô"
+                    label={t("materialBatch.batchId")}
                     name="batch_id"
-                    rules={[{ required: true, message: "Vui lòng nhập mã lô" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: t("validation.requiredBatchId"),
+                      },
+                    ]}
                   >
                     <Input disabled />
                   </Form.Item>
 
                   {/* Tên Lô */}
                   <Form.Item
-                    label="Tên Lô"
+                    label={t("materialBatch.batchName")}
                     name="batch_name"
                     rules={[
-                      { required: true, message: "Vui lòng nhập tên lô" },
+                      {
+                        required: true,
+                        message: t("validation.requiredBatchName"),
+                      },
                     ]}
                   >
                     <Input />
@@ -541,17 +590,17 @@ const RawMaterialBatchList = () => {
 
                   {/* Loại Nguyên Liệu */}
                   <Form.Item
-                    label="Loại Nguyên Liệu"
+                    label={t("materialBatch.fuelType")}
                     name="fuel_type_id"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng chọn loại nguyên liệu",
+                        message: t("validation.requiredFuelType"),
                       },
                     ]}
                   >
                     <Select
-                      placeholder="Chọn loại Nguyên liệu"
+                      placeholder={t("materialBatch.selectFuelType")}
                       className="rounded border-gray-300"
                       onChange={handleFuelTypeChange}
                     >
@@ -563,33 +612,24 @@ const RawMaterialBatchList = () => {
                           </Select.Option>
                         ))}
                     </Select>
-                    {/* <Select placeholder="Chọn loại nguyên liệu" onChange={handleFuelTypeChange}>
-                      {fuelBatchs?.map((fuel) => (
-                        // <Select.Option key={fuel._id} value={fuel?.fuel_type_id?._id}>
-                        //   {fuel?.fuel_type_id?.fuel_type_id?.type_name} (
-                        //   {fuel.quantity} Kg)
-                        // </Select.Option>
-                        
-                      ))}
-                    </Select> */}
                     {console.log("Fuel Batchs: ", fuelBatchs)}
                   </Form.Item>
 
                   {/* Nhập số lượng */}
                   <Form.Item
-                    label="Sản lượng mong muốn (Kg)"
+                    label={t("materialBatch.estimatedProduction")}
                     name="quantity"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập sản lượng mong muốn!",
+                        message: t("validation.requiredProductionOrder"),
                       },
                     ]}
                   >
                     <InputNumber
                       min={null}
                       className="w-full rounded border-gray-300"
-                      placeholder="Nhập sản lượng mong muốn"
+                      placeholder={t("materialBatch.enterEstimatedProduction")}
                       onChange={handleEstimatedProductionChange}
                       onKeyDown={handleKeyDown}
                       onBlur={() => {
@@ -602,7 +642,9 @@ const RawMaterialBatchList = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item label="Số lượng nguyên liệu cần thiết ước tính (Kg)">
+                  <Form.Item
+                    label={t("materialBatch.requiredMaterialEstimate")}
+                  >
                     <InputNumber
                       disabled
                       className="w-full rounded border-gray-300 bg-gray-50"
@@ -612,14 +654,17 @@ const RawMaterialBatchList = () => {
 
                   {/* Kho Lưu Trữ */}
                   <Form.Item
-                    label="Kho Lưu Trữ"
+                    label={t("materialBatch.storage")}
                     name="storage_id"
                     rules={[
-                      { required: true, message: "Vui lòng chọn kho lưu trữ" },
+                      {
+                        required: true,
+                        message: t("validation.requiredStorage"),
+                      },
                     ]}
                   >
                     <Select
-                      placeholder="Chọn kho lưu trữ"
+                      placeholder={t("materialBatch.selectStorage")}
                       onChange={handleChangeStorage}
                       value={storageId || storages[0]?._id}
                     >
@@ -632,12 +677,12 @@ const RawMaterialBatchList = () => {
                   </Form.Item>
 
                   {/* Trạng Thái */}
-                  <Form.Item label="Trạng Thái" name="status">
+                  <Form.Item label={t("materialBatch.status")} name="status">
                     <Input value={selectedBatch?.status} disabled />
                   </Form.Item>
 
                   {/* Ghi chú */}
-                  <Form.Item label="Ghi chú" name="note">
+                  <Form.Item label={t("materialBatch.note")} name="note">
                     <Input.TextArea rows={4} />
                   </Form.Item>
 
@@ -649,60 +694,74 @@ const RawMaterialBatchList = () => {
                       }}
                       type="default"
                     >
-                      Quay lại chi tiết
+                      {t("common.backToDetail")}
                     </Button>
                     <Button
                       onClick={handleSaveUpdate} // Gọi hàm lưu dữ liệu khi bấm Lưu
                       type="primary"
                     >
-                      Lưu
+                      {t("common.save")}
                     </Button>
-                    <Button onClick={handleCloseDrawer}>Đóng</Button>
+                    <Button onClick={handleCloseDrawer}>
+                      {t("common.close")}
+                    </Button>
                   </div>
                 </Form>
               </>
             ) : (
               <Descriptions bordered column={1}>
-                <Descriptions.Item label="Mã Lô">
+                <Descriptions.Item label={t("materialBatch.batchId")}>
                   {selectedBatch.batch_id}
                 </Descriptions.Item>
-                <Descriptions.Item label="Tên Lô">
+                <Descriptions.Item label={t("materialBatch.batchName")}>
                   {selectedBatch.batch_name}
                 </Descriptions.Item>
-                <Descriptions.Item label="Loại Nguyên Liệu">
+                <Descriptions.Item label={t("materialBatch.fuelType")}>
                   {selectedBatch?.fuel_type_id?.fuel_type_id?.type_name ||
                     "N/A"}
                 </Descriptions.Item>
-                <Descriptions.Item label="Số Lượng (Kg)">
+                <Descriptions.Item label={t("materialBatch.quantity")}>
                   {selectedBatch.quantity}
                 </Descriptions.Item>
-                <Descriptions.Item label="Kho Lưu Trữ">
+                <Descriptions.Item label={t("materialBatch.storage")}>
                   {selectedBatch.fuel_type_id?.storage_id?.name_storage ||
-                    "Không có"}
+                    "N/A"}
                 </Descriptions.Item>
-                <Descriptions.Item label="Ghi chú">
-                  {selectedBatch.note || "Không có"}
+                <Descriptions.Item label={t("materialBatch.note")}>
+                  {selectedBatch.note || "N/A"}
                 </Descriptions.Item>
-                <Descriptions.Item label="Trạng Thái">
+                <Descriptions.Item label={t("materialBatch.status")}>
                   <Tag color={statusColors[selectedBatch.status]}>
-                    {selectedBatch.status}
+                    {t(statusMap[selectedBatch.status] || selectedBatch.status)}
                   </Tag>
                 </Descriptions.Item>
               </Descriptions>
             )}
 
             {/* Nút chỉnh sửa */}
-            <div className="flex justify-center mt-4">
-              {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" && (
-                <Button
-                  type="primary"
-                  onClick={() => handleEdit(selectedBatch)}
-                  className="bg-blue-600 text-white"
-                >
-                  Chỉnh sửa
-                </Button>
-              )}
-            </div>
+            {/* Nút chỉnh sửa và Đóng */}
+<div className="flex justify-between mt-4 px-4">
+  {/* Nút Chỉnh sửa bên trái */}
+  {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" ? (
+    <Button
+      type="primary"
+      onClick={() => handleEdit(selectedBatch)}
+      className="bg-blue-600 text-white"
+    >
+      {t("common.edit")}
+    </Button>
+  ) : (
+    <div></div> // để giữ khoảng trống cân đối nếu nút chỉnh sửa ẩn
+  )}
+
+  {/* Nút Đóng bên phải */}
+  <button
+    onClick={() => setIsDrawerOpen(false)}
+    className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
+  >
+    Đóng
+  </button>
+</div>
           </>
         )}
       </DrawerComponent>
@@ -720,7 +779,7 @@ const RawMaterialBatchList = () => {
         rtl={false}
         draggable
       />
-    </div>
+    </div >
   );
 };
 

@@ -31,10 +31,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import TableProcess from "../../components/Admin/Content/Order/TableUser";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const { TextArea } = Input;
 
 const ProductionProcessingList = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [filters, setFilters] = useState({
@@ -59,7 +62,18 @@ const ProductionProcessingList = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [type_process, set_type_process] = useState("single");
   const searchInput = useRef(null);
-
+  const statusMap = {
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
+    "Hoàn thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+    "Nhập kho thành công": "imported",
+    "Đang sản xuất": "in_production",
+  };
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -119,14 +133,16 @@ const ProductionProcessingList = () => {
           >
             Đặt lại
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => clearFilters && confirm()}
-            style={{ padding: 0 }}
-          >
-            Đóng
-          </Button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => clearFilters && confirm()}
+              style={{ padding: 0 }}
+            >
+              Đóng
+            </Button>
+          </div>
         </Space>
       </div>
     ),
@@ -171,16 +187,16 @@ const ProductionProcessingList = () => {
 
   const location = useLocation();
 
-  const statusFilters = React.useMemo(() => {
+  const statusFilters = useMemo(() => {
     const statuses = new Set();
     data?.forEach((item) => {
       if (item.status) statuses.add(item.status);
     });
     return Array.from(statuses).map((status) => ({
-      text: status,
+      text: t(`status.${statusMap[status]}`) || status,
       value: status,
     }));
-  }, [data]);
+  }, [data, t]);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -306,8 +322,8 @@ const ProductionProcessingList = () => {
   // Xử lý duyệt đơn
   const handleApprove = async () => {
     Modal.confirm({
-      title: "Xác nhận duyệt quy trình?",
-      content: "Bạn có chắc muốn duyệt quy trình này không?",
+      title: t("confirm.approveTitle"),
+      content: t("confirm.approveContent"),
       onOk: async () => {
         try {
           // approve single process
@@ -317,7 +333,7 @@ const ProductionProcessingList = () => {
               id: selectedProcess._id,
               token: access_token,
             });
-            message.success("Duyệt quy trình thành công!");
+            message.success(t("message.approveSuccess"));
             setIsDrawerOpen(false);
             refetch();
           }
@@ -328,12 +344,12 @@ const ProductionProcessingList = () => {
               id: selectedProcess._id,
               token: access_token,
             });
-            message.success("Duyệt quy trình tổng hợp thành công!");
+            message.success("Duyệt quy trình thành công!");
             setIsDrawerOpen(false);
             refetch();
           }
         } catch (error) {
-          message.error("Duyệt thất bại, vui lòng thử lại.");
+          message.error(t("message.approveFail"));
         }
       },
     });
@@ -341,19 +357,19 @@ const ProductionProcessingList = () => {
 
   const columns = [
     {
-      title: "Mã quy trình",
+      title: t("productionProcess.field._id"),
       dataIndex: "_id",
       key: "_id",
       ...getColumnSearchProps("_id"),
     },
     {
-      title: "Tên quy trình",
+      title: <div className="text-left">{t("productionProcess.field.production_name")}</div>,
       dataIndex: "production_name",
       key: "production_name",
       ...getColumnSearchProps("production_name"),
     },
     {
-      title: "Bắt đầu",
+      title: t("productionProcess.field.start_time"),
       dataIndex: "start_time",
       key: "start_time",
       className: "text-center",
@@ -361,7 +377,7 @@ const ProductionProcessingList = () => {
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
-      title: "Kết thúc",
+      title: t("productionProcess.field.end_time"),
       dataIndex: "end_time",
       key: "end_time",
       className: "text-center",
@@ -369,7 +385,7 @@ const ProductionProcessingList = () => {
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
-      title: "Trạng thái",
+      title: t("productionProcess.field.status"),
       dataIndex: "status",
       key: "status",
       className: "text-center",
@@ -386,13 +402,13 @@ const ProductionProcessingList = () => {
 
         return (
           <Tag color={color} style={{ fontWeight: 600 }}>
-            {status}
+            {t(`status.${statusMap[status]}`) || status}
           </Tag>
         );
       },
     },
     {
-      title: "Hành động",
+      title: t("common.action"),
       key: "action",
       className: "text-center",
       render: (_, record) => (
@@ -412,15 +428,16 @@ const ProductionProcessingList = () => {
       <div className="Main-Content">
         {/* button back & title of page */}
         <div className="my-6">
-          <div className="absolute">
-            <Button
+          <div className="flex items-center justify-between">
+            {/* Nút quay lại responsive */}
+            <button
               onClick={() => navigate(-1)}
-              type="primary"
-              className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+              type="button"
+              className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[32px] md:min-w-[100px]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
+                className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -432,47 +449,51 @@ const ProductionProcessingList = () => {
                   d="M15 12H3m0 0l6-6m-6 6l6 6"
                 />
               </svg>
-              Quay lại
-            </Button>
+              <span className="hidden md:inline">{t("productionProcess.button.back")}</span>
+            </button>
+
+            {/* Tiêu đề căn giữa */}
+            <h5 className="text-center font-bold text-xl md:text-2xl flex-grow mx-2">
+              {t("title.productionList")}
+            </h5>
+
+            {/* Phần tử trống để cân layout */}
+            <div className="min-w-[32px] md:min-w-[100px]"></div>
           </div>
-          <h5 className="content-title font-bold text-2xl text-center">
-            Các Quy Trình Đã Tạo
-          </h5>
         </div>
 
+
         <div className="content-main-table-user">
-          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-fit">
-            <p>Phân loại quy trình</p>
-            <div className="flex gap-2 mt-2">
+          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">            <p>{t("productionProcess.label.processType")}</p>
+            <div className="flex flex-row gap-2 mt-2">
               <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
-                  type_process === "single"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-slate-500 hover:bg-slate-600"
-                }`}
+                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-slate-500 hover:bg-slate-600"
+                  }`}
                 onClick={() => set_type_process("single")}
               >
-                Quy trình đơn
+                {t("productionProcess.button.single")}
               </span>
               <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${
-                  type_process === "consolidate"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-slate-500 hover:bg-slate-600"
-                }`}
+                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-slate-500 hover:bg-slate-600"
+                  }`}
                 onClick={() => handleLoadConsolidate()}
               >
-                Quy trình tổng hợp
+                {t("productionProcess.button.consolidated")}
               </span>
             </div>
           </div>
-          
+
           <Loading isPending={isLoading}>
             <TableProcess
               columns={columns}
               isLoading={isLoading}
               data={type_process === "single" ? data : consolidateProcessData}
               columnsExport={columnsExport}
+              scroll={{ x: "max-content" }}
             />
           </Loading>
         </div>
@@ -480,114 +501,116 @@ const ProductionProcessingList = () => {
 
       {/* Drawer Chi Tiết */}
       <Drawer
-        title="Chi tiết quy trình sản xuất"
+        title={t("productionProcess.drawer.detailTitle")}
         width={600}
         onClose={() => setIsDrawerOpen(false)}
         open={isDrawerOpen}
       >
         {selectedProcess && (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Mã quy trình">
+            <Descriptions.Item label={t("productionProcess.field._id")}>
               {selectedProcess._id}
             </Descriptions.Item>
-            <Descriptions.Item label="Tên quy trình">
+            <Descriptions.Item
+              label={t("productionProcess.field.production_name")}
+            >
               {selectedProcess.production_name ||
                 selectedProcess.production_request_id.request_name}
             </Descriptions.Item>
-            <Descriptions.Item label="Trạng thái">
-              {selectedProcess.status}
+            <Descriptions.Item label={t("productionProcess.field.status")}>
+              {t(`status.${statusMap[selectedProcess.status]}`)}
             </Descriptions.Item>
-            <Descriptions.Item label="Thời gian bắt đầu">
+            <Descriptions.Item label={t("productionProcess.field.start_time")}>
               {selectedProcess.start_time
                 ? moment(selectedProcess.start_time).format("DD/MM/YYYY HH:mm")
-                : "Chưa có"}
+                : t("common.unknown")}
             </Descriptions.Item>
-            <Descriptions.Item label="Thời gian kết thúc">
+            <Descriptions.Item label={t("productionProcess.field.end_time")}>
               {selectedProcess.end_time
                 ? moment(selectedProcess.end_time).format("DD/MM/YYYY HH:mm")
-                : "Chưa có"}
+                : t("common.unknown")}
             </Descriptions.Item>
-            <Descriptions.Item label="Ghi chú">
+            <Descriptions.Item label={t("productionProcess.field.note")}>
               {selectedProcess.note || "Không có"}
             </Descriptions.Item>
 
             {/* Hiển thị thời gian của từng giai đoạn nếu có */}
             {selectedProcess.process_stage1_start && (
-              <Descriptions.Item label="Giai đoạn 1">
+              <Descriptions.Item label={t("productionProcess.field.stage1")}>
                 {moment(selectedProcess.process_stage1_start).format(
                   "DD/MM/YYYY HH:mm"
                 )}{" "}
                 -{" "}
                 {selectedProcess.process_stage1_end
                   ? moment(selectedProcess.process_stage1_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : "Chưa kết thúc"}
+                    "DD/MM/YYYY HH:mm"
+                  )
+                  : t("common.notEnded")}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage2_start && (
-              <Descriptions.Item label="Giai đoạn 2">
+              <Descriptions.Item label={t("productionProcess.field.stage2")}>
                 {moment(selectedProcess.process_stage2_start).format(
                   "DD/MM/YYYY HH:mm"
                 )}{" "}
                 -{" "}
                 {selectedProcess.process_stage2_end
                   ? moment(selectedProcess.process_stage2_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : "Chưa kết thúc"}
+                    "DD/MM/YYYY HH:mm"
+                  )
+                  : t("common.notEnded")}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage3_start && (
-              <Descriptions.Item label="Giai đoạn 3">
+              <Descriptions.Item label={t("productionProcess.field.stage3")}>
                 {moment(selectedProcess.process_stage3_start).format(
                   "DD/MM/YYYY HH:mm"
                 )}{" "}
                 -{" "}
                 {selectedProcess.process_stage3_end
                   ? moment(selectedProcess.process_stage3_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : "Chưa kết thúc"}
+                    "DD/MM/YYYY HH:mm"
+                  )
+                  : t("common.notEnded")}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage4_start && (
-              <Descriptions.Item label="Giai đoạn 4">
+              <Descriptions.Item label={t("productionProcess.field.stage4")}>
                 {moment(selectedProcess.process_stage4_start).format(
                   "DD/MM/YYYY HH:mm"
                 )}{" "}
                 -{" "}
                 {selectedProcess.process_stage4_end
                   ? moment(selectedProcess.process_stage4_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : "Chưa kết thúc"}
+                    "DD/MM/YYYY HH:mm"
+                  )
+                  : t("common.notEnded")}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage5_start && (
-              <Descriptions.Item label="Giai đoạn 5">
+              <Descriptions.Item label={t("productionProcess.field.stage5")}>
                 {moment(selectedProcess.process_stage5_start).format(
                   "DD/MM/YYYY HH:mm"
                 )}{" "}
                 -{" "}
                 {selectedProcess.process_stage5_end
                   ? moment(selectedProcess.process_stage5_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : "Chưa kết thúc"}
+                    "DD/MM/YYYY HH:mm"
+                  )
+                  : t("common.notEnded")}
               </Descriptions.Item>
             )}
             {selectedProcess.process_stage6_start && (
-              <Descriptions.Item label="Giai đoạn 6">
+              <Descriptions.Item label={t("productionProcess.field.stage6")}>
                 {moment(selectedProcess.process_stage6_start).format(
                   "DD/MM/YYYY HH:mm"
                 )}{" "}
                 -{" "}
                 {selectedProcess.process_stage6_end
                   ? moment(selectedProcess.process_stage6_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : "Chưa kết thúc"}
+                    "DD/MM/YYYY HH:mm"
+                  )
+                  : t("common.notEnded")}
               </Descriptions.Item>
             )}
           </Descriptions>
@@ -601,7 +624,7 @@ const ProductionProcessingList = () => {
               onClick={handleOpenEditDrawer}
               style={{ flex: 1 }}
             >
-              Cập nhật
+              {t("productionProcess.button.update")}
             </Button>
           )}
 
@@ -612,22 +635,31 @@ const ProductionProcessingList = () => {
               onClick={handleApprove}
               style={{ flex: 1 }}
             >
-              Duyệt
+              {t("productionProcess.button.approve")}
             </Button>
           )}
+          <div className="flex justify-end items-center w-full mr-2 gap-4">
+            <button
+              onClick={() => setIsDrawerOpen(false)}
+              className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
+            >
+              {t("common.close")}
+            </button>
+          </div>
         </Space>
+
       </Drawer>
 
       {/* Drawer Cập Nhật */}
       <Drawer
-        title="Cập nhật quy trình sản xuất"
+        title={t("productionProcess.drawer.editTitle")}
         width={500}
         onClose={() => setIsEditModalOpen(false)}
         open={isEditModalOpen}
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            label="Tên quy trình"
+            label={t("productionProcess.field.production_name")}
             name="production_name"
             rules={[
               { required: true, message: "Vui lòng nhập tên quy trình!" },
@@ -637,7 +669,7 @@ const ProductionProcessingList = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày bắt đầu"
+            label={t("productionProcess.field.start_time")}
             name="start_time"
             rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
           >
@@ -653,7 +685,7 @@ const ProductionProcessingList = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày kết thúc"
+            label={t("productionProcess.field.end_time")}
             name="end_time"
             dependencies={["start_time"]}
             rules={[
@@ -685,14 +717,16 @@ const ProductionProcessingList = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Ghi chú" name="note">
+          <Form.Item label={t("productionProcess.field.note")} name="note">
             <TextArea rows={3} />
           </Form.Item>
           <Space>
             <Button type="primary" onClick={handleUpdate}>
-              Lưu
+              {t("action.save")}
             </Button>
-            <Button onClick={() => setIsEditModalOpen(false)}>Hủy</Button>
+            <Button onClick={() => setIsEditModalOpen(false)}>
+              {t("action.cancel")}
+            </Button>
           </Space>
         </Form>
       </Drawer>

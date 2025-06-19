@@ -101,10 +101,10 @@ const CreateFuel = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-2 lg:p-6">
      
   {/* Nút quay lại - đặt riêng, full width, căn trái */}
-  <div className="w-full mb-4">
+  <div className="w-full mb-2 lg:mb-4">
     <div className="max-w-xl ml-0">
       <button
         onClick={() => navigate(-1)}
@@ -131,8 +131,8 @@ const CreateFuel = () => {
   </div>
 
 
-      <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">
+      <div className="w-full max-w-xl bg-white rounded-lg shadow p-2 lg:p-8">
+        <h2 className="text-[20px] lg:text-3xl font-bold mt-3 mb-4 lg:mb-6 text-center">
           Tạo Loại Nguyên liệu Mới
         </h2>
 

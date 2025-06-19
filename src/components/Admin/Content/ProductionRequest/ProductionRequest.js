@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
 import { GrPlan } from "react-icons/gr";
+import { useTranslation } from "react-i18next";
 
 // Hàm gọi API danh sách Nguyên liệu sử dụng axios
 export const getAllFuelType = async () => {
@@ -26,6 +27,8 @@ export const getAllFuelType = async () => {
 };
 
 const ProductionRequest = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [fuelTypes, setFuelTypes] = useState([]);
@@ -56,7 +59,7 @@ const ProductionRequest = () => {
         console.log("Fuel Data:", data);
         setFuelTypes(data.requests);
       } catch (error) {
-        message.error("Có lỗi xảy ra khi tải danh sách Nguyên liệu.");
+        message.error(t("messages.fetchFuelError"));
       } finally {
         setFuelLoading(false);
       }
@@ -70,12 +73,43 @@ const ProductionRequest = () => {
         setPackagingMaterials(res.data.data || []);
       } catch (error) {
         message.error("Lỗi khi tải danh sách bao bì.");
-      }
+        }
     };
 
     fetchFuelTypes();
     fetchPackagingMaterials();
   }, []);
+  // Khi người dùng nhập sản lượng mong muốn, tính số lượng cần thiết ước tính và kiểm tra giới hạn Nguyên liệu
+  const handleEstimatedProductionChange = (value) => {
+    const selectedFuelId = form.getFieldValue("material");
+    if (!selectedFuelId) {
+      message.warning(t("messages.selectFuelFirst"));
+      form.setFieldsValue({ product_quantity: 1, material_quantity: 1 }); // Reset sản lượng và nguyên liệu
+      return;
+    }
+    if (!value || value < 1) {
+      form.setFieldsValue({ material_quantity: 1 });
+      return;
+    }
+    const required = Math.ceil(value / 0.9);
+    if (selectedFuelId) {
+      const selectedFuel = fuelTypes.find((f) => f._id === selectedFuelId);
+      if (selectedFuel) {
+        const availableFuel = selectedFuel.quantity;
+        if (required > availableFuel) {
+          const maxProduction = Math.floor(availableFuel * 0.9);
+          message.warning(
+            t("messages.materialOverLimit", { max: maxProduction })
+          );
+          form.setFieldsValue({
+            product_quantity: maxProduction,
+            material_quantity: Math.ceil(maxProduction / 0.9),
+          });
+          return;
+        }
+      }
+    };
+  };
    
   
 // hàm tính số lượng túi và thùng carton cần thiết dựa trên sản lượng thành phẩm
@@ -130,7 +164,9 @@ const ProductionRequest = () => {
     ) {
       if (material_quantity > selectedFuelAvailable) {
         message.warning(
-          `Số lượng nguyên liệu vượt quá số lượng tồn kho hiện tại (${selectedFuelAvailable} Kg).`
+          t("messages.materialStockExceeded", {
+            available: selectedFuelAvailable,
+          })
         );
         form.setFieldsValue({ material_quantity: selectedFuelAvailable });
         return;
@@ -198,7 +234,7 @@ const ProductionRequest = () => {
       });
 
       if (response.statusCode === 200) {
-        message.success("Tạo Production Request thành công!");
+        message.success(t("messages.createSuccess"));
 
         // 2. Sau khi tạo đơn, gọi lại API để lấy dữ liệu kho mới
         const updatedFuelData = await axios.get(
@@ -211,23 +247,23 @@ const ProductionRequest = () => {
         // Reset form sau khi thành công
         form.resetFields();
       } else {
-        message.error("Tạo Production Request thất bại!");
+        message.error(t("messages.createFail"));
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      message.error("Có lỗi xảy ra khi tạo Production Request.");
+      message.error(t("messages.submitError"));
     } finally {
       setSubmitLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-4 w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-2 lg:p-4">
+      <div className="flex justify-between items-center mb-2 lg:mb-4 w-full">
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -243,7 +279,7 @@ const ProductionRequest = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-          Quay lại
+           <span className="hidden md:inline">{t("common.back")}</span>
         </Button>
         <Button
           onClick={() => navigate("/system/admin/production-request-list")}
@@ -251,15 +287,15 @@ const ProductionRequest = () => {
           className="flex items-center border border-gray-400 text-gray-700 font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
         >
           <span className="border-b border-black border-solid">
-            Danh sách kế hoạch
+            {t("productionRequest.planList")}
           </span>
         </Button>
       </div>
       <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-center mt-2 mb-4 gap-2">
           <GrPlan className="size-6" />
-          <h2 className="text-3xl font-bold text-center">
-            Lập Kế Hoạch Sản Xuất
+          <h2 className="text-24px lg:text-3xl font-bold text-center">
+            {t("productionRequest.title")}
           </h2>
         </div>
 
@@ -273,12 +309,14 @@ const ProductionRequest = () => {
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label="Tên kế hoạch"
+            label={t("productionRequest.name")}
             name="request_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên kế hoạch" }]}
+            rules={[
+              { required: true, message: t("validation.planNameRequired") },
+            ]}
           >
             <Input
-              placeholder="Nhập tên kế hoạch"
+              placeholder={t("productionRequest.namePlaceholder")}
               maxLength={100}
               className="rounded border-gray-300"
             />
@@ -287,15 +325,15 @@ const ProductionRequest = () => {
           {/* Chọn Loại Nguyên liệu và nhập Sản lượng mong muốn cùng hàng */}
           <div className="flex flex-col md:flex-row md:space-x-4">
             <Form.Item
-              label="Loại Nguyên liệu"
+              label={t("productionRequest.material")}
               name="material"
               rules={[
-                { required: true, message: "Vui lòng chọn Loại Nguyên liệu" },
+                { required: true, message: t("validation.materialRequired") },
               ]}
               className="flex-1"
             >
               <Select
-                placeholder="Chọn Loại Nguyên liệu"
+                placeholder={t("productionRequest.selectMaterial")}
                 className="rounded border-gray-300"
                 onChange={(value) => {
                   const selectedFuel = fuelTypes.find((f) => f._id === value);
@@ -321,24 +359,24 @@ const ProductionRequest = () => {
             </Form.Item>
 
             <Form.Item
-              label="Số lượng nguyên liệu (kg)"
+              label={t("productionRequest.materialQty")}
               name="material_quantity"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập số lượng nguyên liệu",
+                  message: t("validation.materialQtyRequired"),
                 },
                 {
                   type: "number",
                   min: 1,
-                  message: "Giá trị phải lớn hơn 0",
+                  message: t("validation.mustBeGreaterThanZero"),
                 },
               ]}
             >
               <InputNumber
                 min={1}
                 className="w-full rounded border-gray-300"
-                placeholder="Nhập số lượng nguyên liệu"
+                placeholder={t("productionRequest.enterMaterialQty")}
                 onChange={calculateProductQuantity}
               />
             </Form.Item>
@@ -346,15 +384,15 @@ const ProductionRequest = () => {
 
           {/* Hiển thị Số lượng nguyên liệu cần thiết ước tính (tính tự động) */}
           <Form.Item
-            label="Tỷ lệ hao hụt (%)"
+            label={t("productionRequest.loss")}
             name="loss_percentage"
             rules={[
-              { required: true, message: "Vui lòng nhập tỷ lệ hao hụt" },
+              { required: true, message: t("validation.lossRequired") },
               {
                 type: "number",
                 min: 0,
                 max: 100,
-                message: "Phần trăm phải từ 0 đến 100",
+                message: t("validation.lossPercentageRange"),
               },
             ]}
           >
@@ -362,13 +400,13 @@ const ProductionRequest = () => {
               min={0}
               max={100}
               className="w-full rounded border-gray-300"
-              placeholder="Nhập tỷ lệ hao hụt"
+              placeholder={t("productionRequest.enterLoss")}
               onChange={calculateProductQuantity}
             />
           </Form.Item>
 
           <Form.Item
-            label="Sản lượng thành phẩm ước tính (kg)"
+            label={t("productionRequest.productQty")}
             name="product_quantity"
           >
             <InputNumber
@@ -422,27 +460,36 @@ const ProductionRequest = () => {
             </div>
           )}
           <Form.Item
-            label="Mức độ ưu tiên"
+            label={t("productionRequest.priority")}
             name="priority"
             rules={[
-              { required: true, message: "Vui lòng chọn mức độ ưu tiên" },
+              { required: true, message: t("validation.priorityRequired") },
             ]}
           >
-            <Select placeholder="Chọn mức độ ưu tiên">
-              <Select.Option value={3}>Cao</Select.Option>
-              <Select.Option value={2}>Trung bình</Select.Option>
-              <Select.Option value={1}>Thấp</Select.Option>
+            <Select
+              placeholder={t("productionRequest.selectPriority")}
+              className="rounded border-gray-300"
+            >
+              <Select.Option value={3}>{t("priority.high")}</Select.Option>
+              <Select.Option value={2}>{t("priority.medium")}</Select.Option>
+              <Select.Option value={1}>{t("priority.low")}</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item
-            label="Ngày sản xuất"
+            label={t("productionRequest.productionDate")}
             name="production_date"
-            rules={[{ required: true, message: "Vui lòng chọn ngày sản xuất" }]}
+            rules={[
+              {
+                required: true,
+                message: t("validation.productionDateRequired"),
+              },
+            ]}
           >
             <DatePicker
               style={{ width: "100%" }}
               format="DD/MM/YYYY"
-              placeholder="Chọn ngày sản xuất"
+              placeholder={t("productionRequest.selectProductionDate")}
+              className="rounded border-gray-300"
               disabledDate={disabledProductionDate}
               onChange={(date) => {
                 setProductionDate(date);
@@ -451,18 +498,29 @@ const ProductionRequest = () => {
             />
           </Form.Item>
           <Form.Item
-            label="Ngày kết thúc"
+            label={t("productionRequest.endDate")}
             name="end_date"
-            rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
+            rules={[
+              { required: true, message: t("validation.endDateRequired") },
+            ]}
           >
-            <DatePicker
-              style={{ width: "100%" }}
-              format="DD/MM/YYYY"
-              placeholder="Chọn ngày kết thúc"
-              disabledDate={disabledEndDate}
-              disabled={!productionDate} 
-              onChange={(date) => form.setFieldsValue({ end_date: date })}
-            />
+            <Form.Item noStyle dependencies={["production_date"]}>
+              {({ getFieldValue }) => (
+                <DatePicker
+                  style={{ width: "100%" }}
+                  format="DD/MM/YYYY"
+                  placeholder={
+                    !getFieldValue("production_date")
+                      ? t("productionRequest.selectProductionDateFirst")
+                      : t("productionRequest.selectEndDate")
+                  }
+                  className="rounded border-gray-300"
+                  disabled={!getFieldValue("production_date")} // disable if no production_date
+                  disabledDate={disabledEndDate} // Custom function for disabled date
+                  onChange={(date) => form.setFieldsValue({ end_date: date })} // Set end_date value on change
+                />
+              )}
+            </Form.Item>
           </Form.Item>
 
           <Form.Item
@@ -472,12 +530,17 @@ const ProductionRequest = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Ghi chú" name="note">
-            <Input.TextArea rows={4} placeholder="Nhập ghi chú (nếu có)" />
+
+          <Form.Item label={t("productionRequest.note")} name="note">
+            <Input.TextArea
+              rows={4}
+              placeholder={t("productionRequest.enterNote")}
+              className="rounded border-gray-300"
+            />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" className="w-full py-2">
-              Xác nhận
+              {t("common.confirm")}
             </Button>
           </Form.Item>
         </Form>

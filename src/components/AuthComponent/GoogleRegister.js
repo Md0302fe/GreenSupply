@@ -14,7 +14,7 @@ const GoogleRegister = () => {
   const user = location.state?.user;
   const [phone, setPhone] = useState("");
   const [birth_day, setBirthday] = useState("");
-  const [role_check, setRoleCheck] = useState(false);
+  const [role_check, setRoleCheck] = useState(true);
   const [gender, setGender] = useState("");
 
   // validate

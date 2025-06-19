@@ -304,39 +304,51 @@ const BoxList = () => {
   };
 
   return (
+    <>
     <div className="p-6">
-      <div className="flex items-center mb-5">
+      {/* Header with back button, centered title */}
+      <div className="flex items-center justify-between mb-5">
+        {/* Nút quay lại bên trái */}
         <button
           onClick={() => navigate("/system/admin/feature_material_category")}
-          className="flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
           type="button"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
           </svg>
-          Quay lại
+          <span className="hidden md:inline">Quay lại</span>
         </button>
-        <h2 className="text-4xl font-bold flex-grow text-center mt-2">
+
+        {/* Tiêu đề căn giữa */}
+        <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
           Danh sách Nguyên Liệu Theo Loại
         </h2>
+
+        {/* Phần tử trống bên phải để cân bằng nút bên trái */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
 
+
+      {/* Nút nhóm categories + nút tạo thùng */}
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-        <div
-          className="flex flex-wrap gap-2"
-          style={{ maxWidth: "calc(100% - 140px)" }}
-        >
+        {/* Nút tạo nguyên liệu */}
+          <Button
+            type="primary"
+            onClick={() => navigate("/system/admin/box-Create")}
+            className="shadow-md whitespace-nowrap"
+          >
+            Tạo Nguyên Liệu
+          </Button>
+      </div>
+        {/* Các button danh mục */}
+        <div className="flex flex-wrap gap-2 grow" style={{ minWidth: 0 }}>
           {categories.map((cat) => (
             <Button
               key={cat._id}
@@ -359,12 +371,14 @@ const BoxList = () => {
         </Button>
       </div>
 
+      {/* Table */}
       <Table
         dataSource={boxes}
         columns={columns}
         loading={loading}
         rowKey="_id"
         pagination={{ pageSize: 10 }}
+        scroll={{ x: "max-content" }}
       />
 
       <Drawer
@@ -397,6 +411,14 @@ const BoxList = () => {
             </Descriptions.Item>
           </Descriptions>
         )}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
       </Drawer>
 
       <Drawer
@@ -495,7 +517,7 @@ const BoxList = () => {
           </div>
         </Form>
       </Drawer>
-    </div>
+    </>
   );
 };
 

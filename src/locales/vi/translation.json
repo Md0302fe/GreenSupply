@@ -58,6 +58,8 @@
   "personal_info": "Thông tin cá nhân",
   "logout": "Đăng xuất",
   "account": "Tài khoản",
+  "export_excel": "Xuất Excel",
+  "create_process": "Tạo quy trình",
   "carousel": {
     "view_more": "Xem thêm",
     "title_2": "TUYỂN CHỌN KỸ CÀNG",
@@ -87,7 +89,24 @@
     "cancel": "Hủy",
     "close": "Đóng",
     "update": "Cập nhật",
-    "updating": "Đang cập nhật"
+    "updating": "Đang cập nhật",
+    "confirm": "Xác nhận",
+    "no_data": "Không có",
+    "back": "Quay lại",
+    "action": "Hành động",
+    "edit": "Chỉnh sửa",
+    "save": "Lưu",
+    "backToDetail": "Quay lại chi tiết",
+    "approve": "Duyệt đơn",
+    "reject": "Hủy yêu cầu",
+    "unknown": "Không rõ",
+    "noNote": "Không có ghi chú",
+    "viewDetail": "Xem chi tiết",
+    "enterQuantity": "Nhập số lượng...",
+    "enterNote": "Nhập ghi chú...",
+    "ok": "Đồng ý",
+    "reset": "Đặt lại",
+    "notEnded": "Chưa kết thúc"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -136,7 +155,13 @@
     "order_history": "Lịch sử đơn",
     "history_harvest": "L.s Đơn yêu cầu thu nguyên liệu",
     "history_provide": "L.s Đơn cung cấp nguyên liệu",
-    "track_shipment": "Theo dõi lô hàng"
+    "track_shipment": "Theo dõi lô hàng",
+    "adminTitle": "QUẢN TRỊ",
+    "dashboard": "Bảng điều khiển",
+    "schedule": "Lên lịch",
+    "marketAnalysis": "Phân tích thị trường",
+    "supplierConnect": "Kết nối nhà cung cấp",
+    "footer": "minhduc.lmd Dev"
   },
   "harvestRequest": {
     "title": "ĐƠN YÊU CẦU THU NGUYÊN LIỆU",
@@ -192,7 +217,16 @@
     "approve": "Đã duyệt",
     "cancelled": "Đã hủy",
     "completed": "Hoàn Thành",
-    "processing": "Đang xử lý"
+    "processing": "Đang xử lý",
+    "rejected": "Từ chối",
+    "failed": "Thất bại",
+    "disable": "Vô hiệu hóa",
+    "imported": "Nhập kho thành công",
+    "importFailed": "Nhập kho thất bại",
+    "preparing": "Đang chuẩn bị",
+    "waitingExport": "Chờ xuất kho",
+    "exported": "Đã xuất kho",
+    "in_production": "Đang sản xuất"
   },
   "navbar": {
     "search_placeholder": "Bạn đang tìm kiếm gì?",
@@ -303,5 +337,917 @@
     "statusLabel": "Trạng thái",
     "completed": "Hoàn thành",
     "viewRequestDetails": "Xem chi tiết yêu cầu"
+  },
+  "dashboard": {
+    "title": "Tổng Quan Hệ Thống",
+    "subtitle": "GreenSupply🌿",
+    "description": "Đây là trang Dashboard dành cho quản trị viên của hệ thống GreenSupply, nơi bạn có thể theo dõi và quản lý các chỉ số quan trọng trong quy trình sản xuất, tồn kho và phân phối xoài.",
+    "button": {
+      "createPurchase": "Tạo yêu cầu cung cấp",
+      "createProduction": "Tạo yêu cầu sản xuất",
+      "createProcess": "Tạo quy trình sản xuất",
+      "createExport": "Tạo yêu cầu xuất kho",
+      "createImport": "Tạo yêu cầu nhập kho"
+    },
+    "card": {
+      "import": {
+        "title": "Yêu cầu nhập kho"
+      },
+      "export": {
+        "title": "Yêu cầu xuất kho"
+      },
+      "batch": {
+        "title": "Số lượng lô nguyên liệu"
+      },
+      "finished": {
+        "title": "Số lượng lô thành phẩm",
+        "dateRange": "Từ 1 tháng 1 - 25 tháng 3"
+      }
+    },
+    "chart": {
+      "importExport": {
+        "title": "Số Lượng Yêu Cầu Nhập/Xuất Kho (Theo Ngày)",
+        "titleCompleted": "Số Lượng Yêu Cầu Nhập/Xuất Kho đã hoàn thành (Theo Ngày)",
+        "requestsPendingProduction": "Số Lượng Yêu Cầu Chờ Tạo Quy Trình Sản Xuất (Theo Ngày)",
+        "completedProductionProcesses": "Số Lượng Quy Trình Sản Xuất Đã Hoàn Thành (Theo Ngày)"
+      }
+    },
+    "title_supply_request": "Dashboard Yêu Cầu Thu Nguyên Liệu",
+    "total_requests": "Tổng Yêu Cầu",
+    "pending": "Chờ Duyệt",
+    "completed": "Hoàn Thành",
+    "processing_orders": "Đơn Hàng Đang Xử Lý",
+    "no_processing_orders": "Không có đơn đang xử lý",
+    "priority_high": "Ưu tiên cao",
+    "priority_medium": "Trung bình",
+    "priority_low": "Thấp",
+    "recent_orders": "Đơn hàng gần đây",
+    "filter_day": "Theo Ngày",
+    "filter_week": "Theo Tuần",
+    "filter_month": "Theo Tháng",
+    "table": {
+      "order_id": "Mã Đơn",
+      "request_name": "Tên đơn",
+      "status": "Trạng thái",
+      "quantity": "Số lượng",
+      "created_at": "Ngày tạo"
+    },
+    "error_fetch_data": "Không thể tải dữ liệu dashboard!",
+    "error_fetch_exception": "Lỗi khi tải dashboard!",
+    "error_fetch_orders": "Không thể tải danh sách đơn hàng!",
+    "error_fetch_orders_exception": "Lỗi khi tải danh sách đơn hàng!"
+  },
+  "chart": {
+    "import": "Nhập kho",
+    "export": "Xuất kho",
+    "pending": "Chờ Duyệt",
+    "approved": "Đã Duyệt",
+    "inProgress": "Đang Sản Xuất",
+    "completed": "Hoàn Thành"
+  },
+  "userManagement": {
+    "title": "Quản lý người dùng",
+    "manageUsers": {
+      "title": "Quản lý người dùng",
+      "description": "Quản lý thông tin người dùng"
+    },
+    "manageAccounts": {
+      "title": "Quản lý tài khoản",
+      "description": "Quản lý thông tin tài khoản"
+    }
+  },
+  "purchaseRequest": {
+    "title": "Quản Lý Nguyên Liệu Cần Nhập",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin phân tích quản lý nguyên liệu cần nhập"
+    },
+    "create": {
+      "title": "Tạo yêu cầu",
+      "description": "Tạo yêu cầu nhập nguyên liệu mới"
+    },
+    "manage": {
+      "title": "Quản lý yêu cầu",
+      "description": "Quản lý thông tin, các yêu cầu nhập nguyên liệu đã tạo"
+    },
+    "completed": {
+      "title": "Hoàn thành",
+      "description": "Các yêu cầu nhập nguyên liệu đã hoàn thành"
+    }
+  },
+  "supplierRequest": {
+    "title": "Quản Lý Yêu Cầu Supplier",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin toàn yêu cầu supplier"
+    },
+    "collectList": {
+      "title": "D.sách yêu cầu thu nguyên liệu",
+      "description": "Quản lý danh sách các yêu cầu thu nguyên liệu"
+    },
+    "provideList": {
+      "title": "D.sách yêu cầu cung cấp nguyên liệu",
+      "description": "Quản lý danh sách các yêu cầu cung cấp nguyên liệu"
+    },
+    "receipt": {
+      "title": "Tạo yêu cầu nhập kho",
+      "description": "Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+    }
+  },
+  "warehouse": {
+    "title": "Quản Lý Kho",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Quản lý thông tin tổng quát kho"
+    },
+    "createReceipt": {
+      "title": "Tạo yêu cầu nhập kho",
+      "description": "Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
+    },
+    "receiptList": {
+      "title": "D.sách đơn nhập kho",
+      "description": "Quản lý danh sách các yêu cầu (chờ) nhập kho"
+    },
+    "rawMaterialBatch": {
+      "title": "Lô nguyên liệu thô",
+      "description": "Quản lý thông tin các lô nguyên liệu thô , cần cho khâu sản xuất"
+    },
+    "createExport": {
+      "title": "Tạo đơn xuất kho",
+      "description": "Quản lý danh sách các đơn (chờ) xuất kho"
+    },
+    "exportList": {
+      "title": "Danh sách đơn xuất kho",
+      "description": "Quản lý danh sách đơn xuất kho"
+    },
+    "exportHistory": {
+      "title": "Lịch sử đơn xuất kho",
+      "description": "Quản lý lịch sử đơn xuất kho"
+    }
+  },
+  "material": {
+    "title": "Quản Lý Nguyên Vật Liệu",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin Nguyên Liệu"
+    },
+    "create": {
+      "title": "Tạo nguyên liệu mới",
+      "description": "Tạo thông tin cho nguyên liệu mới"
+    },
+    "list": {
+      "title": "Danh sách loại nguyên liệu",
+      "description": "Quản lý danh sách các loại nguyên liệu"
+    },
+    "type": {
+      "title": "Quản lý Loại nguyên vật liệu",
+      "description": "Quản lý danh sách các loại nguyên liệu"
+    },
+    "manage": {
+      "title": "Quản lý nguyên vật liệu",
+      "description": "Quản lý danh sách các loại nguyên liệu"
+    }
+  },
+  "production": {
+    "title": "Quản Lý Yêu Cầu Sản Xuất",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Thông tin toàn bộ đơn quy trình"
+    },
+    "create": {
+      "title": "Lập kế hoạch sản xuất",
+      "description": "Tạo mới yêu cầu sản xuất (đơn thể) - Quy trình sản xuất"
+    },
+    "requestList": {
+      "title": "D.sách kế hoạch sản xuất",
+      "description": "Quản lý danh sách kế hoạch sản xuất"
+    },
+    "waitingList": {
+      "title": "Danh sách chờ",
+      "description": "Quản lý các kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
+    },
+    "createdProcesses": {
+      "title": "Danh sách quy trình đã tạo",
+      "description": "Q.lý danh sách quy trình đã tạo"
+    },
+    "executing": {
+      "title": "Quy trình",
+      "description": "Quản lý danh sách quy trình đang thực thi"
+    },
+    "history": {
+      "title": "Lịch Sử Quy Trình",
+      "description": "Quản lý danh sách quy trình đã hoàn thành"
+    }
+  },
+  "customerOrders": {
+    "title": "Quản Lý Yêu Cầu Khách Hàng",
+    "productOrderList": {
+      "title": "D.sách đơn đặt hàng sản phẩm",
+      "description": "Quản lý danh sách đơn đặt hàng sản phẩm"
+    }
+  },
+  "user_list": {
+    "title": "Danh sách người dùng",
+    "back": "Quay lại",
+    "name": "Tên khách hàng",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "role": "Vai trò",
+    "action": "Chức năng",
+    "detail": "Chi tiết",
+    "update_title": "Chi Tiết Tài Khoản",
+    "update": "Cập nhật",
+    "created_at": "Ngày tạo",
+    "updated_at": "Cập nhật gần nhất",
+    "upload_image": "Tải ảnh lên",
+    "review_avatar": "Xem trước ảnh",
+    "confirm_delete_title": "Xóa Tài Khoản",
+    "confirm_delete_text": "Bạn có chắc muốn xóa tài khoản không?",
+    "select_role": "Vui lòng chọn vai trò!",
+    "required_name": "Vui lòng điền tên!",
+    "required_email": "Vui lòng điền email!",
+    "required_phone": "Vui lòng điền số điện thoại!"
+  },
+  "blocked_user": {
+    "back": "Quay lại",
+    "title": "Quản lý tài khoản",
+    "drawer_title": "Chi Tiết Tài Khoản",
+    "name": "Tên khách hàng",
+    "email": "Email khách hàng",
+    "phone": "Số điện thoại",
+    "role": "Vai trò",
+    "image": "Hình ảnh",
+    "upload_image": "Tải ảnh lên",
+    "review_avatar": "Xem trước ảnh",
+    "status": "Trạng thái",
+    "action": "Chức năng",
+    "blocked": "Bị chặn",
+    "active": "Hoạt động",
+    "block": "Chặn Tài Khoản",
+    "unblock": "Bỏ Chặn",
+    "update": "Cập nhật",
+    "confirm_block_title": "Xác nhận chặn tài khoản",
+    "confirm_block_text": "Bạn có chắc chắn muốn chặn tài khoản này không?",
+    "confirm_unblock_title": "Xác nhận gỡ chặn tài khoản",
+    "confirm_unblock_text": "Bạn có chắc chắn muốn gỡ chặn tài khoản này không?",
+    "required_name": "Vui lòng điền tên!",
+    "required_email": "Vui lòng điền email!",
+    "required_phone": "Vui lòng điền số điện thoại!",
+    "required_role": "Vui lòng chọn vai trò!"
+  },
+  "harvest": {
+    "back": "Quay lại",
+    "title": "Đơn Yêu Cầu Cung Cấp Nguyên Liệu",
+    "form": {
+      "name": "Tên đơn",
+      "name_placeholder": "Tên đơn yêu cầu cung cấp...",
+      "fuel_type": "Loại Nguyên liệu cần thu",
+      "fuel_type_placeholder": "Chọn loại Nguyên liệu",
+      "no_data": "Không có dữ liệu",
+      "image": "Hình ảnh",
+      "image_placeholder": "Tải ảnh lên",
+      "quantity": "Tổng số lượng cần thu (Kg)",
+      "quantity_placeholder": "Nhập số lượng...",
+      "price": "Giá trên mỗi Kg / Đơn vị (VND)",
+      "price_placeholder": "Nhập giá...",
+      "start_date_placeholder": "Chọn ngày bắt đầu nhận đơn",
+      "end_date_placeholder": "Chọn ngày kết thúc nhận đơn",
+      "due_date_placeholder": "Chọn hạn chót hoàn thành đơn",
+      "priority": "Mức độ ưu tiên",
+      "priority_placeholder": "Chọn mức độ ưu tiên",
+      "note": "Ghi chú",
+      "note_placeholder": "Nhập ghi chú...",
+      "total_price": "Tổng giá"
+    },
+    "priority": {
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp"
+    },
+    "actions": {
+      "reset": "Làm mới",
+      "submit": "Gửi Yêu Cầu"
+    },
+    "validation": {
+      "empty_name": "Tên đơn hàng không được để trống!",
+      "empty_fuel_type": "Loại Nguyên liệu không được để trống!",
+      "empty_image": "Hình ảnh Nguyên liệu không được để trống!",
+      "empty_quantity": "Tổng sl Nguyên liệu cần thu không được để trống!",
+      "empty_price": "Giá Nguyên liệu không được để trống!",
+      "empty_start_date": "Vui lòng chọn ngày bắt đầu nhận đơn!",
+      "invalid_start_date": "Ngày bắt đầu nhận đơn phải từ hôm nay trở đi!",
+      "empty_end_date": "Vui lòng chọn ngày kết thúc nhận đơn!",
+      "empty_due_date": "Vui lòng chọn hạn chót hoàn thành đơn!",
+      "invalid_end_date": "Ngày kết thúc nhận đơn phải sau ngày bắt đầu!",
+      "invalid_due_date": "Hạn chót hoàn thành đơn phải sau ngày kết thúc nhận đơn!",
+      "empty_priority": "Vui lòng chọn mức độ ưu tiên!"
+    },
+    "success": {
+      "created": "Tạo yêu cầu thu hàng thành công!"
+    }
+  },
+  "order": {
+    "back": "Quay lại",
+    "title": "các nguyên liệu cần nhập",
+    "drawer_title": "Chi Tiết Đơn Thu Nguyên liệu",
+    "update_title": "Cập Nhật Đơn Thu Nguyên liệu",
+    "form": {
+      "name": "Tên Đơn",
+      "name_placeholder": "Tên đơn thu Nguyên liệu...",
+      "fuel_type": "Loại Nguyên liệu cần thu",
+      "fuel_type_placeholder": "Chọn loại Nguyên liệu",
+      "no_data": "Không có dữ liệu",
+      "image": "Hình ảnh",
+      "upload": "Tải ảnh lên",
+      "quantity": "Tổng số lượng cần thu (Kg)",
+      "quantity_placeholder": "Nhập số lượng...",
+      "price": "Giá trên mỗi Kg / Đơn vị (VND)",
+      "price_placeholder": "Nhập giá...",
+      "start_date": "Ngày bắt đầu nhận đơn",
+      "end_date": "Ngày kết thúc nhận đơn",
+      "due_date": "Hạn chót hoàn thành đơn",
+      "date_placeholder": "Chọn ngày",
+      "priority": "Mức độ ưu tiên",
+      "priority_placeholder": "Chọn mức độ ưu tiên",
+      "note": "Ghi chú",
+      "note_placeholder": "Nhập ghi chú...",
+      "total_price": "Tổng giá:"
+    },
+    "priority": {
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp"
+    },
+    "table": {
+      "image": "Mặt hàng",
+      "request_name": "Yêu cầu",
+      "quantity_remain": "Tiến độ còn thu",
+      "total_quantity": "Tổng thu (Kg)",
+      "start_date": "Ngày bắt đầu nhận đơn",
+      "end_date": "Ngày kết thúc đơn",
+      "status": "Trạng thái",
+      "action": "Hành động",
+      "no_image": "Không có ảnh"
+    },
+    "modal": {
+      "delete_title": "Xóa yêu cầu",
+      "delete_confirm": "Bạn có chắc muốn xóa sản phẩm không ?",
+      "update_title": "Xác nhận cập nhật đơn hàng",
+      "update_confirm": "Bạn có chắc chắn muốn cập nhật thông tin đơn hàng không?",
+      "accept_title": "Xác nhận đơn hàng",
+      "accept_confirm": "Bạn có chắc chắn muốn Duyệt đơn hàng không?",
+      "cancel_title": "Xác nhận hủy cập nhật",
+      "cancel_confirm": "Bạn có chắc chắn muốn hủy cập nhật đơn hàng không?"
+    },
+    "actions": {
+      "update": "Cập Nhật",
+      "accept": "Duyệt đơn",
+      "cancel": "Hủy yêu cầu"
+    },
+    "toast": {
+      "no_order_selected": "Không có đơn hàng nào được chọn để hủy!",
+      "cancel_success": "Đã hủy đơn hàng!",
+      "cancel_failed": "Hủy đơn hàng thất bại!"
+    }
+  },
+  "supplier_dashboard": {
+    "title": "Dashboard Đơn Hàng Nhà Cung Cấp",
+    "total_orders": "Tổng Đơn",
+    "pending_orders": "Đơn Chờ Duyệt",
+    "approved_orders": "Đơn Đã Duyệt",
+    "request_title": "📥 Yêu Cầu Thu Nguyên Liệu",
+    "supply_title": "📦 Yêu Cầu Cung Cấp Nguyên Liệu",
+    "total": "Tổng số đơn",
+    "status_chart_title": "Biểu đồ trạng thái đơn",
+    "recent_orders": "Đơn hàng gần đây",
+    "filter": {
+      "day": "Theo Ngày",
+      "week": "Theo Tuần",
+      "month": "Theo Tháng"
+    }
+  },
+  "table": {
+    "order_id": "Mã Đơn",
+    "type": "Loại",
+    "supply_order": "Đơn Cung Cấp",
+    "fuel_request": "Yêu Cầu Thu Hàng",
+    "supplier": "Nhà cung cấp",
+    "status": "Trạng thái",
+    "quantity": "Số lượng",
+    "created_at": "Ngày tạo",
+    "request_name": "Tên đơn",
+    "product_quantity": "K.l Thành phẩm (Kg)",
+    "material_quantity": "K.l Nguyên liệu (Kg)",
+    "production_date": "Ngày bắt đầu",
+    "end_date": "Ngày kết thúc",
+    "actions": "Hành động"
+  },
+  "fuel_request": {
+    "back": "Quay lại",
+    "title": "Quản lý đơn yêu cầu thu nguyên liệu",
+    "table": {
+      "customer": "Khách Hàng",
+      "fuel_type": "Loại Nguyên Liệu",
+      "price": "Giá Tiền",
+      "status": "Trạng Thái",
+      "actions": "Chức năng"
+    },
+    "drawer": {
+      "title": "Chi Tiết Đơn Hàng",
+      "priority": "Mức độ ưu tiên",
+      "quantity": "Số Lượng",
+      "total_price": "Tổng Giá",
+      "address": "Địa chỉ",
+      "status": "Trạng Thái",
+      "note": "Ghi chú",
+      "created_at": "Ngày tạo",
+      "updated_at": "Cập nhật gần nhất"
+    },
+    "actions": {
+      "approve": "Duyệt đơn",
+      "cancel": "Hủy đơn"
+    },
+    "toast": {
+      "approve_success": "Đơn hàng đã được duyệt thành công!",
+      "approve_failed": "Duyệt đơn thất bại!",
+      "approve_error": "Có lỗi xảy ra khi duyệt đơn!",
+      "cancel_success": "Đơn hàng đã bị hủy thành công!",
+      "cancel_failed": "Hủy đơn thất bại!",
+      "cancel_error": "Có lỗi xảy ra khi hủy đơn!",
+      "complete_success": "Đơn hàng đã được hoàn thành thành công!",
+      "complete_failed": "Hoàn thành đơn thất bại!",
+      "complete_error": "Có lỗi xảy ra khi hoàn thành đơn!"
+    }
+  },
+  "fuelProvide": {
+    "orderApproved": "Đơn hàng đã được duyệt thành công!",
+    "approveFailed": "Duyệt đơn thất bại!",
+    "errorApproving": "Có lỗi xảy ra khi duyệt đơn:",
+    "orderCanceled": "Đơn hàng đã bị hủy thành công!",
+    "cancelFailed": "Hủy đơn thất bại!",
+    "errorCanceling": "Có lỗi xảy ra khi hủy đơn:",
+    "orderCompleted": "Đơn hàng đã được hoàn thành thành công!",
+    "completeFailed": "Hoàn thành đơn thất bại!",
+    "errorCompleting": "Có lỗi xảy ra khi hoàn thành đơn!",
+    "customer": "Khách Hàng",
+    "fuelType": "Loại Nguyên Liệu",
+    "price": "Giá Tiền (vnđ)",
+    "status": "Trạng Thái",
+    "pending": "Chờ duyệt",
+    "approved": "Đã duyệt",
+    "canceled": "Đã hủy",
+    "completed": "Hoàn thành",
+    "createdAt": "Ngày Tạo",
+    "noData": "Không có dữ liệu",
+    "invalid": "Không hợp lệ",
+    "action": "Chức năng",
+    "back": "Quay lại",
+    "title": "Quản lý đơn cung cấp nguyên liệu",
+    "orderDetail": "Chi Tiết Đơn Hàng",
+    "quality": "Chất Lượng",
+    "quantity": "Số Lượng",
+    "note": "Ghi chú",
+    "noNote": "Không có",
+    "totalPrice": "Tổng Giá",
+    "approveOrder": "Duyệt đơn",
+    "cancelOrder": "Hủy đơn"
+  },
+  "dashboardWarehouse": {
+    "title": "Quản Lý Kho",
+    "totalReceipts": "Tổng đơn nhập kho",
+    "pendingReceipts": "Đơn Chờ Duyệt",
+    "approvedReceipts": "Đơn Đã Duyệt",
+    "storageInfo": "Thông tin kho",
+    "used": "đã sử dụng",
+    "statsChartTitle": "Thống kê đơn nhập kho",
+    "filter": {
+      "day": "Theo Ngày",
+      "week": "Theo Tuần",
+      "month": "Theo Tháng"
+    },
+    "recentReceipts": "Đơn nhập kho",
+    "columns": {
+      "id": "Mã đơn",
+      "manager": "Người quản lý",
+      "status": "Trạng thái",
+      "quantity": "Số lượng",
+      "createdAt": "Ngày nhập"
+    },
+    "noData": "Không có dữ liệu",
+    "notLoggedIn": "Bạn chưa đăng nhập!",
+    "noStorageInfo": "Không tìm thấy thông tin kho!",
+    "noReceipts": "Không có dữ liệu đơn nhập kho!",
+    "serverError": "Không thể kết nối đến server!"
+  },
+  "fuelOrderStatus": {
+    "fetchError": "Lỗi khi lấy danh sách đơn hàng!",
+    "serverError": "Không thể kết nối đến server!",
+    "modalTitle": "Xác nhận tạo đơn nhập kho",
+    "modalContent": "Bạn có chắc chắn muốn tạo đơn nhập kho cho đơn hàng này không?",
+    "create": "Tạo đơn",
+    "cancel": "Hủy",
+    "notLoggedIn": "Bạn chưa đăng nhập!",
+    "invalidOrder": "Dữ liệu đơn hàng không hợp lệ!",
+    "createSuccess": "Tạo đơn nhập kho thành công!",
+    "createFailPrefix": "Thất bại:",
+    "createFail": "Lỗi khi tạo đơn nhập kho!",
+    "search": "Tìm",
+    "reset": "Reset",
+    "close": "Đóng",
+    "columns": {
+      "customer": "Khách Hàng",
+      "fuelType": "Loại Nguyên liệu",
+      "totalPrice": "Tổng Giá",
+      "status": "Trạng Thái",
+      "action": "Chức năng"
+    },
+    "createReceiptBtn": "Tạo Đơn Nhập Kho",
+    "noData": "Không có dữ liệu",
+    "supply": "Cung cấp",
+    "request": "Thu hàng",
+    "back": "Quay lại",
+    "title": "Quản lý Đơn Hàng Chờ Nhập Kho",
+    "filterLabel": "Lọc theo loại đơn",
+    "allOrders": "Tất cả đơn",
+    "requestOrders": "Đơn thu hàng",
+    "supplyOrders": "Đơn cung cấp",
+    "receiptList": "Danh sách Đơn Nhập Kho",
+    "orderList": "Danh sách đơn hàng",
+    "orderDetail": "Chi tiết Đơn Hàng",
+    "note": "Ghi Chú",
+    "createdAt": "Ngày Tạo",
+    "updatedAt": "Cập Nhật",
+    "loading": "Đang tải dữ liệu...",
+    "quantity": "Số Lượng",
+    "price": "Giá Tiền",
+    "receiptType": "Loại Đơn Hàng"
+  },
+  "fuelStorage": {
+    "confirmTitle": {
+      "approve": "Xác nhận duyệt đơn",
+      "cancel": "Xác nhận hủy đơn"
+    },
+    "confirmContent": {
+      "approve": "Bạn có chắc chắn muốn duyệt đơn này không?",
+      "cancel": "Bạn có chắc chắn muốn hủy đơn này không?"
+    },
+    "confirm": {
+      "okText": "Đồng ý",
+      "cancelText": "Hủy"
+    },
+    "updateSuccess": "Cập nhật trạng thái thành công: {{status}}",
+    "updateFail": "Cập nhật trạng thái thất bại!",
+    "serverError": "Không thể kết nối đến máy chủ!",
+    "noDataToExport": "Không có dữ liệu để xuất!",
+    "columns": {
+      "manager": "Người Quản Lý",
+      "receiptType": "Loại Đơn Hàng",
+      "storage": "Kho",
+      "status": "Trạng Thái",
+      "createdAt": "Ngày Nhập Kho",
+      "updatedAt": "Ngày Cập Nhật",
+      "quantity": "Số lượng",
+      "note": "Ghi chú",
+      "action": "Thao tác"
+    },
+    "unknown": "Không xác định",
+    "receiptType": {
+      "supply": "Cung cấp",
+      "request": "Thu hàng"
+    },
+    "noDataShort": "Không có",
+    "drawerTitle": "Chi tiết đơn nhập kho",
+    "back": "Quay lại",
+    "title": "Danh sách Đơn Nhập Kho",
+    "approve": "Duyệt"
+  },
+  "materialBatch": {
+    "title": "Quản lý Lô Nguyên Liệu",
+    "batchId": "Mã lô",
+    "batchName": "Tên lô",
+    "fuelType": "Loại nguyên liệu",
+    "quantity": "Số lượng (Kg)",
+    "storage": "Kho lưu trữ",
+    "status": "Trạng thái",
+    "note": "Ghi chú",
+    "createExportOrder": "Tạo đơn xuất kho",
+    "updateTitle": "Cập nhật Lô Nguyên Liệu",
+    "detailTitle": "Chi tiết Lô Nguyên Liệu",
+    "estimatedProduction": "Sản lượng mong muốn (Kg)",
+    "requiredMaterialEstimate": "Số lượng nguyên liệu cần thiết ước tính (Kg)",
+    "selectFuelType": "Chọn loại Nguyên liệu",
+    "enterEstimatedProduction": "Nhập sản lượng mong muốn",
+    "selectStorage": "Chọn kho lưu trữ"
+  },
+  "validation": {
+    "requiredBatchId": "Vui lòng nhập mã lô",
+    "requiredBatchName": "Vui lòng nhập tên lô",
+    "requiredFuelType": "Vui lòng chọn loại nguyên liệu",
+    "requiredProduction": "Vui lòng nhập sản lượng mong muốn!",
+    "requiredStorage": "Vui lòng chọn kho lưu trữ",
+    "requiredBatch": "Vui lòng chọn lô nguyên liệu",
+    "requiredProductionOrder": "Vui lòng chọn đơn sản xuất",
+    "requiredExportName": "Vui lòng nhập tên đơn xuất kho",
+    "planNameRequired": "Vui lòng nhập tên kế hoạch",
+    "materialRequired": "Vui lòng chọn Loại Nguyên liệu",
+    "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
+    "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
+    "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+    "productionDateRequired": "Vui lòng chọn ngày sản xuất",
+    "endDateRequired": "Vui lòng chọn ngày kết thúc",
+    "mustBeGreaterThanZero": "Giá trị phải lớn hơn 0",
+    "lossPercentageRange": "Phần trăm phải từ 0 đến 100"
+  },
+  "messages": {
+    "notLoggedIn": "Bạn chưa đăng nhập.",
+    "userIdNotFound": "Không tìm thấy ID người dùng.",
+    "userFetchFailed": "Không thể lấy thông tin người dùng.",
+    "userFetchError": "Lỗi khi lấy thông tin người dùng từ server.",
+    "dataFetchError": "Lỗi khi tải dữ liệu từ server.",
+    "userNotFound": "Không tìm thấy thông tin người dùng.",
+    "unknownError": "Lỗi không xác định!",
+    "createSuccess": "Tạo đơn thành công!",
+    "fetchExportListError": "Lỗi khi lấy danh sách đơn xuất kho!",
+    "connectionError": "Không thể kết nối đến server!",
+    "approveSuccess": "Duyệt đơn thành công",
+    "approveError": "Lỗi khi duyệt đơn hoặc cập nhật trạng thái!",
+    "notFound": "Không tìm thấy đơn xuất kho!",
+    "fetchDetailError": "Lỗi khi lấy chi tiết đơn xuất kho!",
+    "deleteSuccess": "Xóa đơn thành công",
+    "deleteError": "Xóa đơn thất bại",
+    "fetchFuelError": "Có lỗi xảy ra khi tải danh sách Nguyên liệu.",
+    "selectFuelFirst": "Vui lòng chọn loại Nguyên liệu trước khi nhập sản lượng mong muốn.",
+    "materialOverLimit": "Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là {{max}} Kg.",
+    "materialStockExceeded": "Số lượng nguyên liệu vượt quá số lượng tồn kho hiện tại ({{available}} Kg).",
+    "createFail": "Tạo Production Request thất bại!",
+    "submitError": "Có lỗi xảy ra khi tạo Production Request."
+  },
+  "materialExport": {
+    "title": "Tạo Đơn Xuất Kho",
+    "createdBy": "Người tạo đơn:",
+    "selectBatch": "Chọn Lô nguyên liệu",
+    "selectBatchPlaceholder": "Chọn lô nguyên liệu",
+    "selectProduction": "Chọn Đơn sản xuất",
+    "selectProductionPlaceholder": "Chọn đơn sản xuất",
+    "exportName": "Tên đơn xuất kho",
+    "exportNamePlaceholder": "Nhập tên đơn xuất kho",
+    "exportType": "Loại đơn",
+    "productionType": "Đơn sản xuất",
+    "note": "Ghi chú",
+    "notePlaceholder": "Nhập ghi chú"
+  },
+  "materialExportList": {
+    "title": "Quản lý Đơn Xuất Kho",
+    "exportType": "Loại Xuất Kho",
+    "productionRequest": "Đơn sản xuất",
+    "batch": "Lô nguyên liệu",
+    "status": "Trạng thái",
+    "detailTitle": "Chi tiết Đơn Xuất Kho",
+    "createdBy": "Người tạo đơn",
+    "batchName": "Tên lô",
+    "batchId": "Mã lô",
+    "exportName": "Tên Xuất Kho",
+    "createdDate": "Ngày tạo đơn",
+    "note": "Ghi chú"
+  },
+  "batchHistory": {
+    "title": "Lịch Sử Xuất Lô",
+    "batchId": "Mã lô",
+    "batchName": "Tên lô",
+    "batchNamePlaceholder": "Nhập tên lô...",
+    "exportType": "Loại xuất kho",
+    "status": "Trạng thái",
+    "detailTitle": "Chi tiết Lô Nguyên Liệu",
+    "requestName": "Tên Yêu Cầu",
+    "requestNamePlaceholder": "Nhập tên yêu cầu...",
+    "image": "Hình ảnh",
+    "totalQuantity": "Tổng số lượng nguyên liệu (Kg)",
+    "createdDate": "Ngày Tạo Lô",
+    "exportDate": "Ngày Xuất Lô",
+    "note": "Ghi chú"
+  },
+  "dashboardProduction": {
+    "title": "Dashboard Quy Trình Sản Xuất",
+    "chartTitle": "Biểu đồ trạng thái quy trình"
+  },
+  "productionRequest": {
+    "title": "Lập Kế Hoạch Sản Xuất",
+    "planList": "Danh sách kế hoạch",
+    "name": "Tên kế hoạch",
+    "namePlaceholder": "Nhập tên kế hoạch",
+    "material": "Loại Nguyên liệu",
+    "selectMaterial": "Chọn Loại Nguyên liệu",
+    "materialQty": "Số lượng nguyên liệu (kg)",
+    "enterMaterialQty": "Nhập số lượng nguyên liệu",
+    "loss": "Tỷ lệ hao hụt (%)",
+    "enterLoss": "Nhập tỷ lệ hao hụt",
+    "productQty": "Sản lượng thành phẩm ước tính (kg)",
+    "priority": "Mức độ ưu tiên",
+    "selectPriority": "Chọn mức độ ưu tiên",
+    "productionDate": "Ngày sản xuất",
+    "selectProductionDate": "Chọn ngày sản xuất",
+    "endDate": "Ngày kết thúc",
+    "note": "Ghi chú",
+    "enterNote": "Nhập ghi chú (nếu có)"
+  },
+  "priority": {
+    "high": "Cao",
+    "medium": "Trung bình",
+    "low": "Thấp"
+  },
+  "productionRequestManagement": {
+    "title": "Danh sách kế hoạch sản xuất"
+  },
+  "form": {
+    "request_name": "Tên đơn",
+    "request_type": "Loại đơn",
+    "material": "Nguyên liệu",
+    "product_quantity": "Thành phẩm (Kg)",
+    "material_quantity": "Nguyên liệu (Kg)",
+    "production_date": "Ngày sản xuất",
+    "end_date": "Ngày kết thúc",
+    "status": "Trạng thái",
+    "note": "Ghi chú",
+    "update_title": "Cập nhật đơn"
+  },
+  "action": {
+    "edit": "Chỉnh sửa",
+    "approve": "Duyệt",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "create_process": "Tạo quy trình",
+    "create_batch_process": "Tạo Quy Trình Tổng Hợp"
+  },
+  "hint": {
+    "create_plan_process": "+ Tạo quy trình <1>(kế hoạch)</1> bằng cách click vào biểu tượng",
+    "create_batch_process": "+ Tạo quy trình <1>(tổng hợp)</1> bằng cách chọn vào nút"
+  },
+  "modal": {
+    "delete_confirm_title": "Xác nhận xóa",
+    "delete_confirm_content": "Bạn có chắc chắn muốn xóa đơn sản xuất này?"
+  },
+  "warning": {
+    "over_fuel": "Sản lượng mong muốn vượt quá số Nguyên liệu. Sản lượng tối đa là {{max}} Kg."
+  },
+  "drawer": {
+    "detail_title": "Chi tiết đơn sản xuất"
+  },
+  "validate": {
+    "request_name": "Vui lòng nhập tên đơn",
+    "material": "Vui lòng chọn Nguyên liệu",
+    "product_quantity": "Vui lòng nhập số lượng",
+    "production_date": "Vui lòng chọn ngày sản xuất",
+    "end_date": "Vui lòng chọn ngày kết thúc"
+  },
+  "placeholder": {
+    "select_material": "Chọn loại Nguyên liệu"
+  },
+  "notification": {
+    "after_approve": "Sau khi Duyệt các kế hoạch / các kế hoạch sẽ được đưa vào hàng chờ sản xuất",
+    "production_queue": "Hàng Chờ Sản Xuất"
+  },
+  "page": {
+    "title": "Danh Sách Kế Hoạch Chờ Tạo Quy Trình"
+  },
+  "instruction": {
+    "create_plan_process": "+ Tạo quy trình <1>(kế hoạch)</1> bằng cách click vào biểu tượng <3></3>",
+    "create_batch_process": "+ Tạo quy trình <1>(tổng hợp)</1> bằng cách chọn vào nút <3>{{buttonLabel}}</3>"
+  },
+  "productionProcess": {
+    "title": {
+      "list": "Các Quy Trình Đã Tạo"
+    },
+    "button": {
+      "back": "Quay lại",
+      "single": "Quy trình đơn",
+      "consolidated": "Quy trình tổng hợp",
+      "update": "Cập nhật",
+      "approve": "Duyệt",
+      "save": "Lưu",
+      "cancel": "Hủy"
+    },
+    "label": {
+      "processType": "Phân loại quy trình"
+    },
+    "confirm": {
+      "approveTitle": "Xác nhận duyệt quy trình?",
+      "approveContent": "Bạn có chắc muốn duyệt quy trình này không?"
+    },
+    "message": {
+      "approveSuccess": "Duyệt quy trình thành công!",
+      "approveFail": "Duyệt thất bại, vui lòng thử lại.",
+      "updateSuccess": "Cập nhật thành công!",
+      "updateFail": "Cập nhật thất bại, vui lòng thử lại.",
+      "onlyPending": "Chỉ có thể cập nhật đơn ở trạng thái 'Chờ duyệt'!"
+    },
+    "drawer": {
+      "detailTitle": "Chi tiết quy trình sản xuất",
+      "editTitle": "Cập nhật quy trình sản xuất"
+    },
+    "form": {
+      "production_name": "Tên quy trình",
+      "start_time": "Ngày bắt đầu",
+      "end_time": "Ngày kết thúc",
+      "note": "Ghi chú",
+      "validation": {
+        "required": "Vui lòng nhập thông tin!",
+        "startRequired": "Vui lòng chọn ngày bắt đầu!",
+        "endRequired": "Vui lòng chọn ngày kết thúc!",
+        "endAfterStart": "Ngày kết thúc phải sau ngày bắt đầu!"
+      }
+    },
+    "field": {
+      "_id": "Mã quy trình",
+      "production_name": "Tên quy trình",
+      "status": "Trạng thái",
+      "start_time": "Thời gian bắt đầu",
+      "end_time": "Thời gian kết thúc",
+      "note": "Ghi chú",
+      "processed_quantity": "Đã xử lý",
+      "waste_quantity": "Hao hụt",
+      "production_request": "Yêu cầu sản xuất",
+      "stage1": "Giai đoạn 1",
+      "stage2": "Giai đoạn 2",
+      "stage3": "Giai đoạn 3",
+      "stage4": "Giai đoạn 4",
+      "stage5": "Giai đoạn 5",
+      "stage6": "Giai đoạn 6"
+    }
+  },
+  "processingManagement": {
+    "title": {
+      "executingProcesses": "Quy Trình Đang Thực Thi"
+    },
+    "button": {
+      "back": "Quay lại",
+      "single": "Quy trình đơn",
+      "consolidated": "Quy trình tổng hợp"
+    },
+    "label": {
+      "processType": "Phân loại quy trình"
+    },
+    "message": {
+      "loadError": "Có lỗi trong quá trình tải dữ liệu quy trình"
+    }
+  },
+  "histories": {
+    "title": "Lịch Sử Quy Trình",
+    "field": {
+      "processCode": "Mã quy trình",
+      "processName": "Tên quy trình",
+      "start": "Bắt đầu",
+      "end": "Kết thúc",
+      "status": "Trạng thái",
+      "action": "Hành động"
+    },
+    "button": {
+      "viewDetails": "Xem chi tiết"
+    }
+  },
+  "processDetails": {
+    "label": {
+      "status": "Trạng thái:"
+    },
+    "status": {
+      "executing": "Đang thực thi",
+      "waiting": "Đợi thực thi",
+      "done": "Đã hoàn thành"
+    },
+    "info": {
+      "start": "Thời gian bắt đầu",
+      "etaEnd": "Dự kiến kết thúc",
+      "currentStage": "Giai đoạn hiện tại",
+      "status": "Trạng thái",
+      "assignedUser": "Người phụ trách",
+      "note": "Ghi chú"
+    },
+    "stages": {
+      "stage1": "Phân loại nguyên liệu",
+      "stage2": "Rửa và làm sạch",
+      "stage3": "Khử trùng/diệt khuẩn bề mặt",
+      "stage4": "Phủ màng sinh học & làm khô",
+      "stage5": "Ủ chín (kiểm soát nhiệt độ/độ ẩm)",
+      "stage6": "Đóng gói thành phẩm",
+      "stage7": "Ghi nhãn & truy xuất nguồn gốc"
+    },
+    "message": {
+      "completeSuccess": "Xác nhận hoàn thành stage thành công",
+      "completeError": "Hệ thống gặp lỗi trong quá trình hoàn thành quá trình"
+    }
+  },
+  "stage": {
+    "title": "Giai đoạn {{no}}",
+    "field": {
+      "start": "Thời gian bắt đầu",
+      "end": "Thời gian kết thúc",
+      "status": "Trạng thái",
+      "user": "Người phụ trách",
+      "note": "Ghi chú"
+    },
+    "button": {
+      "complete": "Hoàn thành"
+    },
+    "empty": "Quy trình chưa thực thi",
+    "system": "hệ thống"
   }
 }

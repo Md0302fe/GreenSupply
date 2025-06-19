@@ -31,7 +31,6 @@ const Footer = () => {
           <h1 className="text-xl md:text-3xl font-bold mb-4">
             {t("slogan")}
           </h1>
-          <div className="w-[90%] md:w-[60rem] h-[3px] bg-[#FFD412] mb-4 rounded-full"></div>
 
           {/* Intro Button */}
           <div className="mt-4 -md:mt-[32px]">

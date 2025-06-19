@@ -24,8 +24,11 @@ import { toast } from "react-toastify";
 import { Tooltip } from "antd";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FuelList = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [fuels, setFuels] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -269,7 +272,7 @@ const FuelList = () => {
   const columns = [
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           Tên Loại Nguyên liệu
         </div>
       ),
@@ -278,10 +281,10 @@ const FuelList = () => {
       key: "type_name",
       ...getColumnSearchProps("type_name"),
       sorter: (a, b) => a.type_name.localeCompare(b.type_name),
-      align: "center",
+      // align: "center",
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Mô Tả</div>,
+      title: <div style={{ textAlign: "left", width: "100%" }}>Mô Tả</div>,
 
       dataIndex: "description",
       key: "description",
@@ -349,41 +352,43 @@ const FuelList = () => {
 
   return (
     <div className="fuel-list">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mt-6 mb-4">
+        {/* Nút quay lại bên trái */}
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
           </svg>
-          Quay lại
+          <span className="hidden md:inline">Quay lại</span>
         </Button>
-        <h2 className="text-center text-4xl flex-1 font-bold text-gray-800 mt-2">
+
+        {/* Tiêu đề căn giữa */}
+        <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
           Danh Sách Loại Nguyên Liệu
         </h2>
+
+        {/* Phần tử trống bên phải để cân bằng nút quay lại */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
+
       <div className="flex justify-end">
         <Button
           type="primary"
-          className="mb-4 mt-4"
+          className="mb-1"
           icon={<DownloadOutlined />}
           onClick={handleExportFileExcel}
           style={{ backgroundColor: "#1e90ff", borderColor: "#1e90ff" }}
         >
-          Xuất File
+          {t("export_excel")}
         </Button>
       </div>
       <Table
@@ -394,6 +399,7 @@ const FuelList = () => {
         loading={loading}
         rowKey="_id"
         pagination={{ pageSize: 10 }}
+        scroll={{ x: "max-content" }}
       />
 
       <Drawer
@@ -435,6 +441,14 @@ const FuelList = () => {
         ) : (
           <p>Đang tải dữ liệu...</p>
         )}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
       </Drawer>
 
       <Drawer

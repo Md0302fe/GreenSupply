@@ -247,29 +247,44 @@ const ProductionProcessForm = () => {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-2 w-full">
+    <div className="flex flex-col items-center justify-center bg-gray-100 p-0 lg:p-4">
+      <div className="flex justify-between items-center mb-2 w-full p-4">
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
           </svg>
-          Quay lại
+          <span className="hidden md:inline">Quay lại</span>
         </Button>
         <Button
           onClick={() => navigate("/system/admin/production-processing-list")}
@@ -281,14 +296,14 @@ const ProductionProcessForm = () => {
           </span>
         </Button>
       </div>
-      <div className="max-w-4xl w-[800px] mx-auto bg-white p-6 rounded shadow">
+      <div className="max-w-4xl w-full mx-auto bg-white p-2 lg:p-6 rounded shadow">
         <h2 className="text-2xl font-semibold mb-4 text-center">
           Tạo Quy Trình Sản Xuất Tổng Hợp
         </h2>
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 lg:gap-6">
             {/* Cột trái: Kế hoạch sản xuất */}
-            <div className="mb-4">
+            <div className="mb-0 lg:mb-4">
               <Form.Item
                 name="production_request_id"
                 label="Chọn kế hoạch cho quy trình"
@@ -340,14 +355,13 @@ const ProductionProcessForm = () => {
                           setSelectedBatch(batch);
                           setDrawerVisible(true);
                         }}
-                        className={`cursor-pointer border-2 p-2 rounded shadow transition-all hover:shadow-md ${
-                          batch.status === "Đã xuất kho"
+                        className={`cursor-pointer border-2 p-2 rounded shadow transition-all hover:shadow-md ${batch.status === "Đã xuất kho"
                             ? "border-green-500"
                             : batch.status === "Đang chuẩn bị" ||
                               batch.status === "Chờ xuất kho"
-                            ? "border-yellow-500"
-                            : "border-gray-300"
-                        }`}
+                              ? "border-yellow-500"
+                              : "border-gray-300"
+                          }`}
                       >
                         {/* infomation batchs */}
                         <div className="flex">
@@ -401,7 +415,7 @@ const ProductionProcessForm = () => {
           )}
 
           {/* Extra Consolidated Information */}
-          <div className="flex justify-between icon-next">
+          <div className="flex flex-col lg:flex-row justify-between icon-next">
             <Form.Item
               name="total_raw_material"
               label="Tổng K.lg nguyên liệu (Kg)"
@@ -493,7 +507,7 @@ const ProductionProcessForm = () => {
           placement="right"
           onClose={() => setDrawerVisible(false)}
           open={drawerVisible}
-          width={"40%"}
+          width={drawerWidth}
         >
           {selectedBatch ? (
             <Descriptions
@@ -503,7 +517,7 @@ const ProductionProcessForm = () => {
               labelStyle={{
                 fontWeight: 600,
                 backgroundColor: "#f5f5f5",
-                width: 180,
+                width: 100,
               }}
               contentStyle={{ backgroundColor: "#ffffff" }}
             >
@@ -539,9 +553,18 @@ const ProductionProcessForm = () => {
                 </>
               )}
             </Descriptions>
+            
           ) : (
             <p>Đang tải...</p>
           )}
+          <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setDrawerVisible(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Đóng
+          </button>
+        </div>
         </Drawer>
       </div>
     </div>

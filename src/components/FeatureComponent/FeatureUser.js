@@ -4,15 +4,17 @@ import { FaUser } from "react-icons/fa";
 
 import mng_user from "../../assets/Feature_user/mng_user.jpg";
 import mng_account from "../../assets/Feature_user/mng_account.jpg";
+import { useTranslation } from "react-i18next";
 
 const UserComponent = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center space-y-8 px-4 py-8 max-w-7xl mx-auto">
       {/* Title Section */}
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaUser className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản lý người dùng
+          {t("userManagement.title")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
@@ -22,16 +24,16 @@ const UserComponent = () => {
         {/* Card 1 */}
         <Card
           link="/system/admin/manage-users"
-          title="Quản lý người dùng"
-          description="Quản lý thông tin người dùng"
+          title={t("userManagement.manageUsers.title")}
+          description={t("userManagement.manageUsers.description")}
           image={mng_user}
         />
 
         {/* Card 2 */}
         <Card
           link="/system/admin/manage-blocked-users"
-          title="Quản lý tài khoản"
-          description="Quản lý thông tin tài khoản"
+          title={t("userManagement.manageAccounts.title")}
+          description={t("userManagement.manageAccounts.description")}
           image={mng_account}
         />
       </div>
