@@ -81,12 +81,14 @@ const ProcessDetails = () => {
 
   // Handle finish stage => next stage for process
   const handleComplete = async (data) => {
-    const { noStage, stage_id } = data;
+    const { noStage, stage_id, dataUpdate } = data;
+
     const response = await ProductionsProcessServices.handleFinishStage({
       process_id,
       noStage,
       process_type: dataProcess?.data?.process_type,
       stage_id,
+      dataUpdate,
       access_token: user?.access_token,
     });
     if (response?.data?.success) {
@@ -106,7 +108,7 @@ const ProcessDetails = () => {
         id="processBox"
         className="flex flex-col items-center justify-center"
       >
-        <div className="w-full max-w-[1000px] px-4 pb-4 rounded-lg shadow-md bg-green-100">
+        <div className="w-full max-w-[1000px] p-3 rounded-lg shadow-md bg-green-100">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-1 gap-4">
             {/* Tên + ID */}
             <div className="w-full md:w-[80%]">
@@ -144,9 +146,8 @@ const ProcessDetails = () => {
             </div>
           </div>
 
-
           {/* Thêm nền trắng cho phần hiển thị thông tin */}
-          <div className="bg-white p-1 lg:p-3 rounded-lg shadow-sm">
+          <div className="bg-white p-3 lg:p-4 rounded-lg shadow-sm">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 text-xs">
               <div className="info-box">
                 <p className="text-gray-500 text-xs mb-2">
@@ -177,10 +178,11 @@ const ProcessDetails = () => {
                   🔄 {t("processDetails.info.status")}
                 </p>
                 <span
-                  className={`inline-block text-xs px-1 py-0.5 rounded text-black ${dataProcess?.data?.status === "Hoàn thành"
+                  className={`inline-block text-xs px-1 py-0.5 rounded text-black ${
+                    dataProcess?.data?.status === "Hoàn thành"
                       ? "bg-green-500"
                       : "bg-yellow-200"
-                    }`}
+                  }`}
                 >
                   {dataProcess?.data.status}
                 </span>
@@ -213,6 +215,12 @@ const ProcessDetails = () => {
             isOpen={activeStage === 1}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 1 ? null : 1)}
+            // props tổng số lượng nguyên liệu thô đề xuất
+            data={{
+              quantity:
+                dataProcess?.data?.production_request_id?.material_quantity,
+                dataStage: dataStage?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage2}
@@ -221,6 +229,8 @@ const ProcessDetails = () => {
             isOpen={activeStage === 2}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 2 ? null : 2)}
+            // props tổng số lượng nguyên liệu thô sau phân loại (after stage1)
+            data={{ dataStage: dataStage?.data }}
           />
           <StageDetailsComponents
             stage={stage3}
@@ -229,6 +239,8 @@ const ProcessDetails = () => {
             isOpen={activeStage === 3}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 3 ? null : 3)}
+            // props tổng số lượng nguyên liệu thô sau rọt - gửa - tách hạt - cắt lát (after stage2)
+            data={{ dataStage: dataStage?.data }}
           />
           <StageDetailsComponents
             stage={stage4}
@@ -237,6 +249,8 @@ const ProcessDetails = () => {
             isOpen={activeStage === 4}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 4 ? null : 4)}
+            // props tổng số lượng nguyên liệu thô sau chần (after stage3)
+            data={{ dataStage: dataStage?.data }}
           />
           <StageDetailsComponents
             stage={stage5}
@@ -245,6 +259,8 @@ const ProcessDetails = () => {
             isOpen={activeStage === 5}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 5 ? null : 5)}
+            // props tổng số lượng nguyên liệu thô sau điều vị ngâm (after stage4)
+            data={{ dataStage: dataStage?.data }}
           />
           <StageDetailsComponents
             stage={stage6}
@@ -253,6 +269,8 @@ const ProcessDetails = () => {
             isOpen={activeStage === 6}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 6 ? null : 6)}
+            // props tổng số lượng nguyên liệu thô sau sấy (after stage5)
+            data={{ dataStage: dataStage?.data }}
           />
           <StageDetailsComponents
             stage={stage7}
@@ -261,6 +279,7 @@ const ProcessDetails = () => {
             isOpen={activeStage === 7}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 7 ? null : 7)}
+            data={{ dataStage: dataStage?.data }}
           />
         </div>
       </div>

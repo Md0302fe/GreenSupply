@@ -39,7 +39,7 @@ const RawMaterialBatchList = () => {
     "Đã duyệt": "approve",
     "Đã huỷ": "cancelled",
     "Đã hủy": "cancelled",
-    "Hoàn Thành": "completed",
+    "Hoàn thành": "completed",
     "Đang xử lý": "processing",
     "thất bại": "failed",
     "Vô hiệu hóa": "disable",
@@ -253,16 +253,19 @@ const RawMaterialBatchList = () => {
       dataIndex: "status",
       key: "status",
       className: "text-center",
-      filters: Object.keys(statusColors).map((status) => ({
-        text: status,
-        value: status,
-      })),
-      render: (stt) => (
-        <Tag color={statusColors[stt] || "default"}>
-          {" "}
-          {t(statusMap[stt] || stt)}
-        </Tag>
-      ),
+      filters: Object.keys(statusColors).map((status) => {
+        const key = statusMap[status];
+        return {
+          text: key ? t(`status.${key}`) : status,
+          value: status,
+        };
+      }),
+      render: (stt) => {
+        const key = statusMap[stt];
+        const translated = key ? t(`status.${key}`) : stt;
+        return <Tag color={statusColors[stt] || "default"}>{translated}</Tag>;
+      }
+
     },
     {
       title: <div className="text-center">{t("common.action")}</div>,
@@ -314,7 +317,7 @@ const RawMaterialBatchList = () => {
               },
             };
           }}
-         scroll={{ x: "max-content" }}
+          scroll={{ x: "max-content" }}
         ></TableHistories>
       </Loading>
 

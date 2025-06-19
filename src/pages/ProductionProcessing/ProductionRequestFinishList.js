@@ -35,7 +35,7 @@ const statusColors = {
 const ProductionRequestList = () => {
   const { t } = useTranslation();
   const statusMap = {
-    "Đã duyệt": "approved",
+    "Đã duyệt": "approve",
     "Đang sản xuất": "in_production",
     "Đã Hoàn Thành": "completed",
     "Đang xử lý": "processing",
