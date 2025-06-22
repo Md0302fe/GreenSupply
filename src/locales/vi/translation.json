@@ -1249,5 +1249,46 @@
     },
     "empty": "Quy trình chưa thực thi",
     "system": "hệ thống"
+  },
+  "finishedProductList": {
+    "title": "Danh sách thành phẩm",
+    "searchPlaceholder": "Tìm kiếm theo tên hoặc mã sản phẩm",
+    "searchButton": "Tìm kiếm",
+    "selectMaterialType": "Chọn loại vật liệu",
+    "loading": "Đang tải dữ liệu...",
+    "productCode": "Mã sản phẩm",
+    "importDate": "Ngày nhập kho",
+    "status": "Trạng thái",
+    "modalTitle": "Thông tin chi tiết sản phẩm",
+    "orderInfo": "Thông tin đơn hàng",
+    "productName": "Tên sản phẩm",
+    "productionDate": "Ngày sản xuất",
+    "expirationDate": "Ngày hết hạn",
+    "materialType": "Loại nguyên liệu",
+    "stockQuantity": "Số lượng tồn kho",
+    "productionRequestDetail": "Chi tiết yêu cầu sản xuất",
+    "productionId": "Mã yêu cầu sản xuất",
+    "requestName": "Tên yêu cầu",
+    "requestType": "Loại yêu cầu",
+    "materialQuantity": "Số lượng nguyên liệu",
+    "lossPercentage": "Tỷ lệ hao hụt",
+    "productQuantity": "Số lượng thành phẩm",
+    "priority": "Ưu tiên",
+    "packagingInfo": "Thông tin bao bì",
+    "vacuumBag": "Hút chân không",
+    "cartonBox": "Thùng carton",
+    "noDetail": "Không có thông tin chi tiết",
+    "unknown": "Không rõ",
+    "fetchError": "Lỗi khi tải danh sách thành phẩm",
+    "detailError": "Lỗi khi lấy thông tin chi tiết sản phẩm",
+    "unit": {
+      "bag": "túi",
+      "carton": "thùng"
+    },
+    "statuses": {
+      "còn hạn": "Còn hạn",
+      "sắp hết hạn": "Sắp hết hạn",
+      "hết hạn": "Hết hạn"
+    }
   }
 }

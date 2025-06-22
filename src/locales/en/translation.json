@@ -1249,5 +1249,46 @@
     },
     "empty": "Process not yet executed",
     "system": "system"
+  },
+  "finishedProductList": {
+    "title": "Finished Products List",
+    "searchPlaceholder": "Search by name or product code",
+    "searchButton": "Search",
+    "selectMaterialType": "Select material type",
+    "loading": "Loading data...",
+    "productCode": "Product Code",
+    "importDate": "Import Date",
+    "status": "Status",
+    "modalTitle": "Product Detail Information",
+    "orderInfo": "Order Information",
+    "productName": "Product Name",
+    "productionDate": "Production Date",
+    "expirationDate": "Expiration Date",
+    "materialType": "Material Type",
+    "stockQuantity": "Stock Quantity",
+    "productionRequestDetail": "Production Request Details",
+    "productionId": "Production Request ID",
+    "requestName": "Request Name",
+    "requestType": "Request Type",
+    "materialQuantity": "Material Quantity",
+    "lossPercentage": "Loss Percentage",
+    "productQuantity": "Product Quantity",
+    "priority": "Priority",
+    "packagingInfo": "Packaging Information",
+    "vacuumBag": "Vacuum Bag",
+    "cartonBox": "Carton Box",
+    "noDetail": "No detailed information",
+    "unknown": "Unknown",
+    "fetchError": "Failed to load finished product list",
+    "detailError": "Failed to fetch product detail",
+    "unit": {
+      "bag": "bag(s)",
+      "carton": "carton(s)"
+    },
+    "statuses": {
+      "còn hạn": "Valid",
+      "sắp hết hạn": "Expiring Soon",
+      "hết hạn": "Expired"
+    }
   }
 }
