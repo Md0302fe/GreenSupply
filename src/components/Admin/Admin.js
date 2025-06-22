@@ -4,7 +4,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 // icons libraries
 import { CgBell } from "react-icons/cg";
-import { FaGear, FaUserGear, FaClipboard, FaLemon, FaFileInvoice } from "react-icons/fa6";
+import {
+  FaGear,
+  FaUserGear,
+  FaClipboard,
+  FaLemon,
+  FaFileInvoice,
+  FaCubes,
+} from "react-icons/fa6";
 import { FaHockeyPuck, FaShoppingCart } from "react-icons/fa";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { MdDashboardCustomize } from "react-icons/md";
@@ -14,7 +21,6 @@ import Sidebar from "./Sidebar";
 
 import "./Admin.scss";
 import "react-pro-sidebar/dist/css/styles.css";
-
 
 import { useEffect } from "react";
 
@@ -73,6 +79,12 @@ const Admin = (props) => {
       href: "feature_product_orders",
     },
     {
+      icon: <FaCubes className="text-2xl" />,
+      label: "finished_product",
+      text: "Quản lý thành phẩm",
+      href: "feature_finished_product",
+    },
+    {
       icon: <CgBell className="text-2xl" />,
       label: "notifications",
       text: "Thông báo",
@@ -104,10 +116,11 @@ const Admin = (props) => {
     return navigationsData.map(({ icon, label, href, text }, index) => (
       <div
         key={index}
-        className={`relative group flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 ${toggleIcons === label
-          ? "bg-gray-100 text-blue-500"
-          : "bg-black hover:bg-gray-100"
-          }`}
+        className={`relative group flex flex-col justify-center items-center gap-4 cursor-pointer rounded-[50%] p-2 transition-all duration-200 ${
+          toggleIcons === label
+            ? "bg-gray-100 text-blue-500"
+            : "bg-black hover:bg-gray-100"
+        }`}
         onClick={() => handleToggle(label, href)}
       >
         <button className="flex justify-center items-center">{icon}</button>
@@ -121,7 +134,11 @@ const Admin = (props) => {
   return (
     <div className="admin-container min-h-screen overflow-y-auto">
       {/* Admin-Sidebar */}
-      <div className={`admin-sidebar min-h-screen ${!collapsed && isMobile ? "mobile-visible" : ""}`}>
+      <div
+        className={`admin-sidebar min-h-screen ${
+          !collapsed && isMobile ? "mobile-visible" : ""
+        }`}
+      >
         <Sidebar
           collapsed={collapsed}
           toggled={!collapsed && isMobile}
@@ -144,12 +161,8 @@ const Admin = (props) => {
               </div>
             ) : null,
           }}
-
         />
-
-
       </div>
-
 
       <div className="admin-content w-full overflow-x-hidden">
         {/* Top Navigation Bar */}

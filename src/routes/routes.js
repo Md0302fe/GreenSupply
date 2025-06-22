@@ -54,6 +54,7 @@ import FeatureMaterial from "../components/FeatureComponent/FeatureMaterial";
 import FeatureOrdersSuppier from "../components/FeatureComponent/FeatureOrdersSuppier";
 import FeatureProductProcess from "../components/FeatureComponent/FeatureProductProcess";
 import FeaturePurchaseOrder from "../components/FeatureComponent/FeaturePurchaseOrder";
+import FeatureFinishedProduct from "../components/FeatureComponent/FeatureFinishedProduct";
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
 import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
@@ -76,6 +77,7 @@ import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
 
 import DashboardProductionProcess from "../components/Admin/Content/Dashboard/DashboardProductionProcess";
 import DashboardSupplyRequest from "../components/Admin/Content/Dashboard/DashboardSupplierRequest";
+import FinishedProductList from "../components/Admin/Content/FinishedProduct/FinishedProductList";
 const Router = () => {
   return (
     <>
@@ -148,7 +150,9 @@ const Router = () => {
           <Route path="box-list" element={<BoxList />} />
           <Route path="box-Create" element={<CreateBox />} />
 
-
+          {/* Finished product */}
+          <Route path="feature_finished_product" element={<FeatureFinishedProduct />} />
+          <Route path="finished_product_list" element={<FinishedProductList />} />
 
           {/* Production Process Management */}
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
