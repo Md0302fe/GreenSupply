@@ -34,7 +34,6 @@ const BoxList = () => {
   const [form] = Form.useForm();
   const location = useLocation();
 
-
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
@@ -91,16 +90,15 @@ const BoxList = () => {
     fetchCategories();
   }, []);
 
- useEffect(() => {
-  if (categories.length > 0) {
-    const categoryFromState = location.state?.categoryId;
-    const defaultCategoryId = categoryFromState || categories[0]._id;
+  useEffect(() => {
+    if (categories.length > 0) {
+      const categoryFromState = location.state?.categoryId;
+      const defaultCategoryId = categoryFromState || categories[0]._id;
 
-    setSelectedCategory(defaultCategoryId);
-    fetchBoxes(defaultCategoryId);
-  }
-}, [categories, location.state]);
-
+      setSelectedCategory(defaultCategoryId);
+      fetchBoxes(defaultCategoryId);
+    }
+  }, [categories, location.state]);
 
   const handleViewDetails = (box) => {
     setSelectedBox(box);
@@ -238,6 +236,32 @@ const BoxList = () => {
     },
     {
       title: (
+        <div style={{ textAlign: "center", width: "100%" }}>Size Bao Bì</div>
+      ),
+      dataIndex: "size_label",
+      key: "size_label",
+      align: "center",
+      render: (value) => (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          <Tag
+            color={
+              value === "Size S"
+                ? "green"
+                : value === "Size M"
+                ? "blue"
+                : value === "Size L"
+                ? "orange"
+                : "default"
+            }
+          >
+            {value}
+          </Tag>
+        </div>
+      ),
+    },
+
+    {
+      title: (
         <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
       ),
       dataIndex: "is_delete",
@@ -305,48 +329,52 @@ const BoxList = () => {
 
   return (
     <>
-    <div className="p-6">
-      {/* Header with back button, centered title */}
-      <div className="flex items-center justify-between mb-5">
-        {/* Nút quay lại bên trái */}
-        <button
-          onClick={() => navigate("/system/admin/feature_material_category")}
-          type="button"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+      <div className="p-6">
+        {/* Header with back button, centered title */}
+        <div className="flex items-center justify-between mb-5">
+          {/* Nút quay lại bên trái */}
+          <button
+            onClick={() => navigate("/system/admin/feature_material_category")}
+            type="button"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
-          </svg>
-          <span className="hidden md:inline">Quay lại</span>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            <span className="hidden md:inline">Quay lại</span>
+          </button>
 
-        {/* Tiêu đề căn giữa */}
-        <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
-          Danh sách Nguyên Liệu Theo Loại
-        </h2>
+          {/* Tiêu đề căn giữa */}
+          <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
+            Danh sách Nguyên Liệu Theo Loại
+          </h2>
 
-        {/* Phần tử trống bên phải để cân bằng nút bên trái */}
-        <div className="min-w-[20px] md:min-w-[100px]"></div>
-      </div>
+          {/* Phần tử trống bên phải để cân bằng nút bên trái */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
+        </div>
 
-
-      {/* Nút nhóm categories + nút tạo thùng */}
-      <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-        {/* Nút tạo nguyên liệu */}
+        {/* Nút nhóm categories + nút tạo thùng */}
+        <div className="w-full flex justify-end mb-4">
           <Button
             type="primary"
             onClick={() => navigate("/system/admin/box-Create")}
-            className="shadow-md whitespace-nowrap"
+            className="shadow-md"
           >
-            Tạo Nguyên Liệu
+            + Tạo Nguyên Liệu
           </Button>
-      </div>
+        </div>
+        
         {/* Các button danh mục */}
         <div className="flex flex-wrap gap-2 grow" style={{ minWidth: 0 }}>
           {categories.map((cat) => (
@@ -360,7 +388,7 @@ const BoxList = () => {
             </Button>
           ))}
         </div>
-{/* 
+        {/* 
         <Button
           type="primary"
           onClick={() => navigate("/system/admin/box-Create")}
@@ -400,9 +428,21 @@ const BoxList = () => {
                 {selectedBox.is_delete ? "Đã xóa" : "Hoạt động"}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Dung tích (g)">
-              {selectedBox.capacity} kg
+            <Descriptions.Item label="Dung tích">
+              {selectedBox.capacity}{" "}
+              {selectedBox.type === "túi chân không" ? "g" : "kg"}
             </Descriptions.Item>
+
+            <Descriptions.Item label="Size Bao Bì">
+              {selectedBox.size_category === "nhỏ"
+                ? "Size S"
+                : selectedBox.size_category === "trung bình"
+                ? "Size M"
+                : selectedBox.size_category === "lớn"
+                ? "Size L"
+                : "Không rõ"}
+            </Descriptions.Item>
+
             <Descriptions.Item label="Ngày tạo">
               {new Date(selectedBox.createdAt).toLocaleString()}
             </Descriptions.Item>
