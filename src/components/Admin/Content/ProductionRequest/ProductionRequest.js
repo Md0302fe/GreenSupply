@@ -73,7 +73,7 @@ const ProductionRequest = () => {
         setPackagingMaterials(res.data.data || []);
       } catch (error) {
         message.error("Lỗi khi tải danh sách bao bì.");
-        }
+      }
     };
 
     fetchFuelTypes();
@@ -108,51 +108,114 @@ const ProductionRequest = () => {
           return;
         }
       }
-    };
+    }
   };
-   
-  
-// hàm tính số lượng túi và thùng carton cần thiết dựa trên sản lượng thành phẩm
-  const handlePackagingSelect = (value, type) => {
-    const selectedMaterial = packagingMaterials.find(
-      (item) => item._id === value
-    );
+
+  const getSizeLabel = (sizeCategory) => {
+    if (sizeCategory === "nhỏ") return "S";
+    if (sizeCategory === "trung bình") return "M";
+    if (sizeCategory === "lớn") return "L";
+    return "-";
+  };
+
+  // hàm tính số lượng túi và thùng carton cần thiết dựa trên sản lượng thành phẩm
+const handlePackagingSelect = (value, type) => {
+  const selectedMaterial = packagingMaterials.find(
+    (item) => item._id === value
+  );
+  const productKg = form.getFieldValue("product_quantity");
+  if (!productKg || !selectedMaterial) return;
+
+  const productGrams = productKg * 1000;
+  let requiredQty = 0;
+  const fieldName = type === "vacuumBag" ? "vacuumBagSelect" : "cartonSelect";
+
+  // ✅ Gán value vào Form để Form.Item tự nhận biết lựa chọn
+  form.setFieldValue(fieldName, value);
+
+  if (type === "vacuumBag") {
+    // ✅ Tính số túi = (kg * 1000) / dung tích gói mỗi túi
+    requiredQty = Math.ceil(productGrams / selectedMaterial.capacity);
+  }
+
+  if (type === "carton") {
+    const vacuumBag = selectedPackaging.vacuumBag;
+    const vacuumBagCount = calculatedPackaging.vacuumBag;
+
+    if (
+      !vacuumBag ||
+      !vacuumBagCount ||
+      !vacuumBag.dimensions ||
+      !selectedMaterial.dimensions
+    ) {
+      form.setFields([
+        {
+          name: fieldName,
+          errors: ["Cần chọn Túi chân không trước để tính được số thùng."],
+        },
+      ]);
+      return;
+    }
+
+    // ✅ Tính thể tích mỗi túi
+    const bagVolume =
+      vacuumBag.dimensions.length *
+      vacuumBag.dimensions.width *
+      (vacuumBag.dimensions.height || 1);
+
+    const totalBagVolume = vacuumBagCount * bagVolume;
+
+    // ✅ Tính thể tích mỗi thùng
+    const boxVolume =
+      selectedMaterial.dimensions.length *
+      selectedMaterial.dimensions.width *
+      selectedMaterial.dimensions.height;
+
+    // ✅ Số thùng = tổng thể tích túi / thể tích thùng
+    requiredQty = Math.ceil(totalBagVolume / boxVolume);
+  }
+
+  // ❌ Nếu không đủ số lượng → hiển thị lỗi ngay dưới ô Select
+  if (selectedMaterial.quantity < requiredQty) {
+    form.setFields([
+      {
+        name: fieldName,
+        errors: [
+          `${
+            type === "vacuumBag" ? "Túi chân không" : "Thùng carton"
+          } không đủ trong kho. Cần ${requiredQty}, hiện còn ${
+            selectedMaterial.quantity
+          }.`,
+        ],
+      },
+    ]);
 
     setSelectedPackaging((prev) => ({
       ...prev,
       [type]: selectedMaterial,
     }));
 
-    const productKg = form.getFieldValue("product_quantity");
+    setCalculatedPackaging((prev) => ({
+      ...prev,
+      [type]: requiredQty,
+    }));
 
-    // Nếu chưa có sản lượng thì không làm gì
-    if (!productKg || !selectedMaterial) return;
+    return;
+  }
 
-    const productGrams = productKg * 1000; // đổi kg → g
+  // ✅ Nếu đủ, clear lỗi (nếu có)
+  form.setFields([{ name: fieldName, errors: [] }]);
 
-    if (type === "vacuumBag") {
-      const vacuumBagRequired = Math.ceil(
-        productGrams / selectedMaterial.capacity
-      );
-      setCalculatedPackaging((prev) => ({
-        ...prev,
-        vacuumBag: vacuumBagRequired,
-      }));
-    }
+  setSelectedPackaging((prev) => ({
+    ...prev,
+    [type]: selectedMaterial,
+  }));
 
-    if (type === "carton") {
-      const cartonCapacityKg = selectedMaterial.capacity;
-
-      if (!productKg || !cartonCapacityKg) return;
-
-      const cartonRequired = Math.ceil(productKg / cartonCapacityKg);
-
-      setCalculatedPackaging((prev) => ({
-        ...prev,
-        carton: cartonRequired,
-      }));
-    }
-  };
+  setCalculatedPackaging((prev) => ({
+    ...prev,
+    [type]: requiredQty,
+  }));
+};
 
   const calculateProductQuantity = () => {
     const material_quantity = form.getFieldValue("material_quantity");
@@ -209,6 +272,18 @@ const ProductionRequest = () => {
   };
 
   const onFinish = async (values) => {
+    const allFieldsError = form.getFieldsError();
+    const hasErrors = allFieldsError.some((field) => field.errors.length > 0);
+
+    if (hasErrors) {
+      message.error(
+        "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận."
+      );
+      return;
+    }
+
+    // ... phần xử lý tạo request giữ nguyên
+
     // Chuyển đổi ngày sang ISO string nếu có
     const formattedValues = {
       ...values,
@@ -263,7 +338,7 @@ const ProductionRequest = () => {
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +354,7 @@ const ProductionRequest = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-           <span className="hidden md:inline">{t("common.back")}</span>
+          <span className="hidden md:inline">{t("common.back")}</span>
         </Button>
         <Button
           onClick={() => navigate("/system/admin/production-request-list")}
@@ -416,7 +491,7 @@ const ProductionRequest = () => {
           </Form.Item>
 
           {/* Chọn Bao Bì */}
-          <Form.Item label="Chọn Túi chân không">
+          <Form.Item label="Chọn Túi chân không" name="vacuumBagSelect">
             <Select
               placeholder="Có sản lượng thành phẩm trước"
               disabled={!isProductQuantityCalculated}
@@ -426,12 +501,14 @@ const ProductionRequest = () => {
                 .filter((material) => material.type === "túi chân không")
                 .map((material) => (
                   <Select.Option key={material._id} value={material._id}>
-                    {material.package_material_name} - {material.capacity} g
+                    {material.package_material_name} - {material.capacity}g
+                    (Size {getSizeLabel(material.size_category)})
                   </Select.Option>
                 ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Chọn Thùng carton">
+
+          <Form.Item label="Chọn Thùng carton" name="cartonSelect">
             <Select
               placeholder="Có sản lượng thành phẩm trước"
               disabled={!isProductQuantityCalculated}
@@ -441,7 +518,8 @@ const ProductionRequest = () => {
                 .filter((material) => material.type === "thùng carton")
                 .map((material) => (
                   <Select.Option key={material._id} value={material._id}>
-                    {material.package_material_name} - {material.capacity} kg
+                    {material.package_material_name} - {material.capacity}kg
+                    (Size {getSizeLabel(material.size_category)})
                   </Select.Option>
                 ))}
             </Select>
@@ -450,11 +528,11 @@ const ProductionRequest = () => {
           {selectedPackaging.vacuumBag && selectedPackaging.carton && (
             <div>
               <p>
-                Số lượng Túi chân không cần dùng:{" "}
+                Số lượng Túi chân không gợi ý:{" "}
                 {calculatedPackaging.vacuumBag} Túi
               </p>
               <p>
-                Số lượng Thùng carton cần dùng: {calculatedPackaging.carton}{" "}
+                Số lượng Thùng carton gợi ý: {calculatedPackaging.carton}{" "}
                 Thùng
               </p>
             </div>
