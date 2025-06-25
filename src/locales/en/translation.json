@@ -887,22 +887,12 @@
     "receiptType": "Receipt Type"
   },
   "fuelStorage": {
-    "confirmTitle": {
-      "approve": "Confirm approval",
-      "cancel": "Confirm cancellation"
-    },
-    "confirmContent": {
-      "approve": "Are you sure you want to approve this receipt?",
-      "cancel": "Are you sure you want to cancel this receipt?"
-    },
-    "confirm": {
-      "okText": "Confirm",
-      "cancelText": "Cancel"
-    },
-    "updateSuccess": "Status updated successfully: {{status}}",
-    "updateFail": "Failed to update status!",
-    "serverError": "Unable to connect to server!",
-    "noDataToExport": "No data available for export!",
+    "back": "Go Back",
+    "title": "Fuel Storage Receipts List",
+    "export_excel": "Export Excel",
+    "noDataToExport": "No data to export!",
+    "noDataShort": "No data",
+    "unknown": "Unknown",
     "columns": {
       "manager": "Manager",
       "receiptType": "Receipt Type",
@@ -914,16 +904,41 @@
       "note": "Note",
       "action": "Action"
     },
-    "unknown": "Unknown",
-    "receiptType": {
-      "supply": "Supply",
-      "request": "Request"
+    "filters": {
+      "receiptTypeTitle": "Filter by Receipt Type"
     },
-    "noDataShort": "N/A",
+    "receiptType": {
+      "raw": "Raw Material",
+      "product": "Finished Product",
+      "supply": "Supply",
+      "request": "Collection",
+      "unknown": "Unknown"
+    },
     "drawerTitle": "Receipt Details",
-    "back": "Back",
-    "title": "Fuel Storage Receipts",
-    "approve": "Approve"
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "imported": "Imported",
+      "importFailed": "Import Failed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "confirmTitle": {
+      "approve": "Confirm Import",
+      "cancel": "Confirm Cancel"
+    },
+    "confirmContent": {
+      "approve": "Are you sure you want to approve and import this receipt?",
+      "cancel": "Are you sure you want to cancel this receipt?"
+    },
+    "confirm": {
+      "okText": "Confirm",
+      "cancelText": "Cancel"
+    },
+    "updateSuccess": "Updated status successfully: {{status}}",
+    "updateFail": "Failed to update status!",
+    "serverError": "Unable to connect to the server!",
+    "approve": "Approve Import"
   },
   "materialBatch": {
     "title": "Raw Material Batch Management",

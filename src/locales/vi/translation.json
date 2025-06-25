@@ -883,43 +883,58 @@
     "receiptType": "Loại Đơn Hàng"
   },
   "fuelStorage": {
-    "confirmTitle": {
-      "approve": "Xác nhận duyệt đơn",
-      "cancel": "Xác nhận hủy đơn"
-    },
-    "confirmContent": {
-      "approve": "Bạn có chắc chắn muốn duyệt đơn này không?",
-      "cancel": "Bạn có chắc chắn muốn hủy đơn này không?"
-    },
-    "confirm": {
-      "okText": "Đồng ý",
-      "cancelText": "Hủy"
-    },
-    "updateSuccess": "Cập nhật trạng thái thành công: {{status}}",
-    "updateFail": "Cập nhật trạng thái thất bại!",
-    "serverError": "Không thể kết nối đến máy chủ!",
+    "back": "Quay lại",
+    "title": "Danh sách đơn nhập kho",
+    "export_excel": "Xuất Excel",
     "noDataToExport": "Không có dữ liệu để xuất!",
+    "noDataShort": "Không có dữ liệu",
+    "unknown": "Không xác định",
+    "filters": {
+      "receiptTypeTitle": "Lọc theo loại hàng"
+    },
+    "receiptType": {
+      "raw": "Nguyên liệu",
+      "product": "Thành phẩm",
+      "supply": "Cung cấp",
+      "request": "Thu hàng",
+      "unknown": "Không xác định"
+    },
     "columns": {
-      "manager": "Người Quản Lý",
-      "receiptType": "Loại Đơn Hàng",
+      "manager": "Người quản lý",
+      "receiptType": "Loại đơn hàng",
       "storage": "Kho",
-      "status": "Trạng Thái",
-      "createdAt": "Ngày Nhập Kho",
-      "updatedAt": "Ngày Cập Nhật",
+      "status": "Trạng thái",
+      "createdAt": "Ngày tạo",
+      "updatedAt": "Ngày cập nhật",
       "quantity": "Số lượng",
       "note": "Ghi chú",
       "action": "Thao tác"
     },
-    "unknown": "Không xác định",
-    "receiptType": {
-      "supply": "Cung cấp",
-      "request": "Thu hàng"
-    },
-    "noDataShort": "Không có",
     "drawerTitle": "Chi tiết đơn nhập kho",
-    "back": "Quay lại",
-    "title": "Danh sách Đơn Nhập Kho",
-    "approve": "Duyệt"
+    "status": {
+      "pending": "Chờ duyệt",
+      "processing": "Đang xử lý",
+      "imported": "Nhập kho thành công",
+      "importFailed": "Nhập kho thất bại",
+      "cancelled": "Đã huỷ",
+      "completed": "Hoàn thành"
+    },
+    "confirmTitle": {
+      "approve": "Xác nhận nhập kho",
+      "cancel": "Xác nhận huỷ đơn"
+    },
+    "confirmContent": {
+      "approve": "Bạn có chắc chắn muốn duyệt và nhập kho đơn này?",
+      "cancel": "Bạn có chắc chắn muốn huỷ đơn này?"
+    },
+    "confirm": {
+      "okText": "Xác nhận",
+      "cancelText": "Huỷ"
+    },
+    "updateSuccess": "Cập nhật trạng thái thành công: {{status}}",
+    "updateFail": "Cập nhật trạng thái thất bại!",
+    "serverError": "Không thể kết nối tới máy chủ!",
+    "approve": "Duyệt nhập kho"
   },
   "materialBatch": {
     "title": "Quản lý Lô Nguyên Liệu",

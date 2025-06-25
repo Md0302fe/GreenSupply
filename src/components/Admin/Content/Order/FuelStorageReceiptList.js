@@ -95,7 +95,6 @@ const FuelStorageReceiptList = () => {
     }
   }, [location.search]);
 
-
   useEffect(() => {
     fetchReceipts();
   }, [debouncedSearch, statusFilterVal, sortOrder, receiptTypeFilter]);
@@ -316,16 +315,22 @@ const FuelStorageReceiptList = () => {
       render: (_, record) => {
         if (record.receipt_type === "1") {
           if (record.receipt_request_id) {
-            return <Tag color="green">Thu hàng</Tag>;
+            return (
+              <Tag color="green">{t("fuelStorage.receiptType.request")}</Tag>
+            );
           }
           if (record.receipt_supply_id) {
-            return <Tag color="blue">Cung cấp</Tag>;
+            return (
+              <Tag color="blue">{t("fuelStorage.receiptType.supply")}</Tag>
+            );
           }
-          return <Tag color="default">Nguyên liệu</Tag>; // fallback
+          return <Tag color="default">{t("fuelStorage.receiptType.raw")}</Tag>;
         } else if (record.receipt_type === "2") {
-          return <Tag color="purple">Thành phẩm</Tag>;
+          return (
+            <Tag color="purple">{t("fuelStorage.receiptType.product")}</Tag>
+          );
         } else {
-          return <Tag color="gray">Không xác định</Tag>;
+          return <Tag color="gray">{t("fuelStorage.receiptType.unknown")}</Tag>;
         }
       },
     },
@@ -458,19 +463,21 @@ const FuelStorageReceiptList = () => {
         {/* Label + Filter buttons */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h3 className="mb-3">Lọc theo loại hàng</h3>
+            <h3 className="mb-3">
+              {t("fuelStorage.filters.receiptTypeTitle")}
+            </h3>
             <div className="flex flex-col md:flex-row gap-2">
               <Button
                 type={receiptTypeFilter === "1" ? "primary" : "default"}
                 onClick={() => setReceiptTypeFilter("1")}
               >
-                Nguyên liệu
+                {t("fuelStorage.receiptType.raw")}
               </Button>
               <Button
                 type={receiptTypeFilter === "2" ? "primary" : "default"}
                 onClick={() => setReceiptTypeFilter("2")}
               >
-                Thành phẩm
+                {t("fuelStorage.receiptType.product")}
               </Button>
             </div>
           </div>
@@ -549,21 +556,22 @@ const FuelStorageReceiptList = () => {
                   {t("fuelStorage.columns.status")}
                 </div>
                 <div className="col-span-6 p-3 border border-gray-300">
-                  <Tag
-                    color={
-                      selectedReceipt.status === t("fuelStorage.status.pending")
-                        ? "gold"
-                        : selectedReceipt.status ===
-                          t("fuelStorage.status.completed")
-                        ? "blue"
-                        : selectedReceipt.status ===
-                          t("fuelStorage.status.cancelled")
-                        ? "red"
-                        : "default"
-                    }
-                  >
-                    {selectedReceipt.status}
-                  </Tag>
+                  {(() => {
+                    const statusKey = statusMap[selectedReceipt.status];
+                    const statusColors = {
+                      pending: "gold",
+                      processing: "orange",
+                      imported: "blue",
+                      importFailed: "volcano",
+                      cancelled: "red",
+                    };
+
+                    return (
+                      <Tag color={statusColors[statusKey] || "default"}>
+                        {t(`status.${statusKey}`) || selectedReceipt.status}
+                      </Tag>
+                    );
+                  })()}
                 </div>
 
                 {/* Ngày Nhập Kho */}
@@ -639,12 +647,14 @@ const FuelStorageReceiptList = () => {
                 onClick={() => setIsDrawerOpen(false)}
                 className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
               >
-                Đóng
+                {t("common.close")}
               </button>
             </div>
           </div>
         ) : (
-          <p className="text-center text-gray-500">Đang tải chi tiết...</p>
+          <p className="text-center text-gray-500">
+            {t("fuelStorage.loadingDetails")}
+          </p>
         )}
       </DrawerComponent>
     </div>
