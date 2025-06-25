@@ -30,6 +30,7 @@ const ProcessDetails = () => {
   const [dataProcess, setDataProcess] = useState();
   const [dataStage, setDataStage] = useState();
   const [activeStage, setActiveStage] = useState(null); // stage nào đang mở
+  const [rawMaterialFromRequest, setRawMaterialFromRequest] = useState(0);
 
   const [stage1, setStage1] = useState();
   const [stage2, setStage2] = useState();
@@ -76,20 +77,33 @@ const ProcessDetails = () => {
       setStage5(dataStage?.data[4] || []);
       setStage6(dataStage?.data[5] || []);
       setStage7(dataStage?.data[6] || []);
+
+      // set quantity following type of process
+      if (dataProcess?.data?.process_type === "consolidated_processes") {
+        setRawMaterialFromRequest(dataProcess?.data?.total_raw_material);
+      } else {
+        setRawMaterialFromRequest(
+          dataProcess?.data?.production_request_id?.material_quantity
+        );
+      }
     }
   }, [dataStage]);
 
   // Handle finish stage => next stage for process
   const handleComplete = async (data) => {
     const { noStage, stage_id, dataUpdate } = data;
+    // Handle đảm bảo dữ liệu từ data đã có
+    if (!dataProcess?.data) {
+      message.warning("Dữ liệu của quy trình không hợp lệ");
+    }
 
     const response = await ProductionsProcessServices.handleFinishStage({
-      process_id,
-      noStage,
-      process_type: dataProcess?.data?.process_type,
-      stage_id,
-      dataUpdate,
-      access_token: user?.access_token,
+      process_id, // id của quy trình
+      noStage, // số giai đoạn
+      process_type: dataProcess?.data?.process_type, // loại quy trình
+      stage_id, // id của stage nhằm tìm ra và cập nhật process-status
+      dataUpdate, // dữ liệu cập nhật
+      access_token: user?.access_token, // token của người thực thi chức năng
     });
     if (response?.data?.success) {
       // reload quy trình
@@ -217,9 +231,9 @@ const ProcessDetails = () => {
             onToggle={() => setActiveStage(activeStage === 1 ? null : 1)}
             // props tổng số lượng nguyên liệu thô đề xuất
             data={{
-              quantity:
-                dataProcess?.data?.production_request_id?.material_quantity,
-                dataStage: dataStage?.data,
+              quantity: rawMaterialFromRequest,
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
             }}
           />
           <StageDetailsComponents
@@ -230,7 +244,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 2 ? null : 2)}
             // props tổng số lượng nguyên liệu thô sau phân loại (after stage1)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage3}
@@ -240,7 +257,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 3 ? null : 3)}
             // props tổng số lượng nguyên liệu thô sau rọt - gửa - tách hạt - cắt lát (after stage2)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage4}
@@ -250,7 +270,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 4 ? null : 4)}
             // props tổng số lượng nguyên liệu thô sau chần (after stage3)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage5}
@@ -260,7 +283,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 5 ? null : 5)}
             // props tổng số lượng nguyên liệu thô sau điều vị ngâm (after stage4)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage6}
@@ -270,7 +296,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 6 ? null : 6)}
             // props tổng số lượng nguyên liệu thô sau sấy (after stage5)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage7}
@@ -279,7 +308,10 @@ const ProcessDetails = () => {
             isOpen={activeStage === 7}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 7 ? null : 7)}
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
         </div>
       </div>

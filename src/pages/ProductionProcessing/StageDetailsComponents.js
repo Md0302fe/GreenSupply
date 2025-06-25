@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { converDateString } from "../../ultils";
-import "./process.css";
+import { converDateString, convertDateStringV1 } from "../../ultils";
 import { useTranslation } from "react-i18next";
-import { json, useParams } from "react-router-dom";
+import { Modal, Input, Select, Form, message } from "antd";
+import "./process.css";
+
+import product_carton_img from "../../assets/Feature_warehouse/prouct_carton_img.jpg";
+import { isEmpty } from "lodash";
 
 const StageComponent = ({
   stage,
@@ -14,8 +17,55 @@ const StageComponent = ({
   data,
 }) => {
   const { t } = useTranslation();
-  const { quantity, dataStage } = data;
+  const [form] = Form.useForm();
+  const { quantity, dataStage, dataProcess } = data;
   const [prevDataStage, setPrevDataStage] = useState();
+  const [isCheckProduct, setIsCheckProduct] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isExistedProduct, setIsExistedProduct] = useState(false);
+
+  const [dataConsolidate, setDataConsolidate] = useState(
+    dataProcess?.production_request_id || []
+  );
+  const [processType, setProcessType] = useState("");
+
+  const date = new Date();
+
+  // Data Product
+  const [dataProduct, setDataProduct] = useState({
+    name: "", // tên sản phẩm
+    masanpham: "", // mã sản phẩm
+    image: product_carton_img, // hình ảnh sản phẩm
+    description: "", // mô tả của sản phẩm
+    quantity: "", // khối lượng tịnh
+    raw_material_type: "",
+    created_date: "", // ngày tạo
+    expiration_date: "", // ngày hết hạng
+    certifications: "", // chứng chỉ
+    origin_production_request_id: "", // mã yêu cầu
+    // data material package
+    numberOfVacuum: "",
+    numberOfBag: "",
+    nameOfVacuum: "",
+    nameOfBag: "",
+  });
+
+  // Data Request
+  const [dataRequest, setDataRequest] = useState({
+    requestName: "", // tên kế hoạch
+    requestCode: "", // mã kế hoạch
+    requestType: "", // loại kế hoạch
+    raw_material_quantity: "", // số lượng nguyên liệu thô
+    loss_percentage: "", // ước tính % hao hụt
+    product_quantity: "", // khối lượng thành phẩm đầu ra (kg)
+    cteated_request: "", // ngày tạo kế hoạch
+    end_date_request: "", // ngày kết thúc kế hoạch
+    product_code: "", // mã thành phẩm
+  });
+
+  // formData Product
+  const [formData, setFormData] = useState({});
+  const { Option } = Select;
 
   // dataUpdateStage1
   const [dataUpdateStage1, setDataUpdateStage1] = useState({
@@ -55,7 +105,7 @@ const StageComponent = ({
 
   // dataUpdateStage6
   const [dataUpdateStage6, setDataUpdateStage6] = useState({
-    finalQuantityProduction: dataStage?.finalQuantityProduction,
+    finalQuantityProduction: dataProcess?.finalQuantityProduction,
     totalVacum: 0,
     totalBag: 0,
     currentQuantity: 0,
@@ -67,36 +117,100 @@ const StageComponent = ({
       dataStage &&
       JSON.stringify(dataStage) !== JSON.stringify(prevDataStage)
     ) {
+      // set type của quy trình
+      setProcessType(dataProcess?.process_type);
+
+      // prepare data for stage 1
       setDataUpdateStage1({
         ...dataStage[0],
         currentQuantity: dataStage[0]?.lastQuantityStage1,
       });
+      // prepare data for stage 2
       setDataUpdateStage2({
         ...dataStage[1],
         currentQuantity: dataStage[1]?.lastQuantityStage2,
       });
-      // setDataUpdateStage2({...dataStage[2], });
+
+      // prepare data for stage 4
       setDataUpdateStage4({
         ...dataStage[3],
         currentQuantity: dataStage[3]?.lastQuantityStage4,
-        curentSoakingTime: dataStage[3]?.curentSoakingTime,
-        currentSolutionConcentration:
-          dataStage[3]?.currentSolutionConcentration,
-        currentMoistureBeforeDrying: dataStage[3]?.currentMoistureBeforeDrying,
+        curentSoakingTime: dataStage[3]?.soakingTime,
+        currentSolutionConcentration: dataStage[3]?.solutionConcentration,
+        currentMoistureBeforeDrying: dataStage[3]?.moistureBeforeDrying,
       });
+
+      // prepare data for stage 5
       setDataUpdateStage5({
         ...dataStage[4],
         currentQuantity: dataStage[4]?.lastQuantityStage5,
       });
+
+      // prepare data for stage 6
       setDataUpdateStage6({
         ...dataStage[5],
         currentQuantity: dataStage[5]?.lastQuantityStage6,
         currentDryingTime: dataStage[5]?.dryingTime || 0,
+        totalVacum: dataProcess?.production_request_id?.packaging?.vacuumBag,
+        totalBag: dataProcess?.production_request_id?.packaging?.carton,
+        finalQuantityProduction: dataProcess?.finalQuantityProduction,
       });
+
+      if (dataStage[5] && dataStage[5]?.status === "Hoàn thành") {
+        setIsExistedProduct(true);
+      }
+
       // setDataUpdateStage2({...dataStage[6], });
       setPrevDataStage(dataStage);
+      setDataConsolidate(dataProcess?.production_request_id);
+
+      // set 1 số thông số trước của sản phẩm
+      // const created_date = new Date(); // Ngày tạo = hôm nay
+      // const expiration_date = new Date(created_date);
+      // expiration_date.setMonth(expiration_date.getMonth() + 5); // Cộng thêm 5 tháng
+      // nếu 'quy trình tổng hợp' và ngược lại 'quy trình đơn'
+      // if (processType === "single_processes") {
+      //   setDataProduct((prev) => ({
+      //     ...prev,
+      //     masanpham: dataProcess?.production_request_id?.production_id, // get product code from production request plan
+      //     raw_material_type:
+      //       dataProcess?.production_request_id?.material?.fuel_type_id
+      //         ?.type_name, // tên nguyên liệu
+      //     created_date: convertDateStringV1(created_date), // ngày tạo hàng
+      //     expiration_date: convertDateStringV1(expiration_date), // ngày hết hạn
+      //     origin_production_request_id: dataProcess?.production_request_id?._id,
+      //     // data package
+      //     numberOfVacuum:
+      //       dataProcess?.production_request_id?.packaging?.vacuumBag,
+      //     numberOfBag: dataProcess?.production_request_id?.packaging?.carton,
+      //     nameOfVacuum:
+      //       dataProcess?.production_request_id?.packaging?.vacuumBagBoxId
+      //         ?.package_material_name,
+      //     nameOfBag:
+      //       dataProcess?.production_request_id?.packaging?.cartonBoxId
+      //         ?.package_material_name,
+      //   }));
+      //   // set thông tin của kế hoạch vào state
+      //   setDataRequest((prev) => ({
+      //     ...prev,
+      //     requestName: dataProcess?.production_request_id?.request_name, // tên kế hoạch
+      //     requestCode: dataProcess?.production_request_id?._id, // mã kế hoạch
+      //     requestType: dataProcess?.production_request_id?.request_type, // loại kế hoạch
+      //     raw_material_type:
+      //       dataProcess?.production_request_id?.material?.fuel_type_id
+      //         ?.type_name, // tên nguyên liệu cần cho quy trình
+      //     raw_material_quantity:
+      //       dataProcess?.production_request_id?.material_quantity, // số lượng nguyên liệu thô
+      //     loss_percentage: dataProcess?.production_request_id?.loss_percentage, // ước tính % hao hụt
+      //     product_quantity:
+      //       dataProcess?.production_request_id?.product_quantity, // khối lượng thành phẩm đầu ra (kg)
+      //     cteated_request: dataProcess?.production_request_id?.createdAt, // ngày tạo kế hoạch
+      //     end_date_request: dataProcess?.production_request_id?.end_date, // ngày kết thúc kế hoạch
+      //     product_code: dataProcess?.production_request_id?.production_id, // mã sản phẩm
+      //   }));
+      // }
     }
-  }, [dataStage]);
+  }, [dataStage, dataProcess]);
 
   const getDataUpdateByStage = () => {
     switch (parseInt(noStage)) {
@@ -124,12 +238,6 @@ const StageComponent = ({
     done: "done",
     cancelled: "cancelled",
   };
-
-  console.log("check 1", dataUpdateStage1);
-  console.log("check 2", dataUpdateStage2);
-  console.log("check 4", dataUpdateStage4);
-  console.log("check 5", dataUpdateStage5);
-  console.log("check 6", dataUpdateStage6);
 
   const statusKey = statusKeyMap[stage?.status];
 
@@ -191,8 +299,12 @@ const StageComponent = ({
           <input
             type="number"
             id="id1"
-            value={dataUpdateStage1?.lastQuantityStage1 || ""}
-            disabled={!!dataUpdateStage1?.currentQuantity > 0}
+            value={
+              parseInt(dataUpdateStage1?.lastQuantityStage1) === 0
+                ? undefined
+                : dataUpdateStage1?.lastQuantityStage1
+            }
+            disabled={dataUpdateStage1?.currentQuantity > 0}
             onChange={(e) => {
               const inputValue = parseFloat(e.target.value) || 0;
               setDataUpdateStage1({
@@ -241,8 +353,12 @@ const StageComponent = ({
           <input
             type="number"
             id="id2"
-            value={dataUpdateStage2?.lastQuantityStage2 || ""}
-            disabled={!!dataUpdateStage2?.currentQuantity > 0}
+            value={
+              parseInt(dataUpdateStage2?.lastQuantityStage2) === 0
+                ? undefined
+                : dataUpdateStage2?.lastQuantityStage2
+            }
+            disabled={dataUpdateStage2?.currentQuantity > 0}
             onChange={(e) => {
               const inputValue = parseFloat(e.target.value) || 0;
               const baseQuantity =
@@ -304,8 +420,12 @@ const StageComponent = ({
           <input
             type="number"
             id="id4"
-            value={dataUpdateStage4?.lastQuantityStage4 || ""}
-            disabled={!!dataUpdateStage4?.currentQuantity > 0}
+            value={
+              parseInt(dataUpdateStage4?.lastQuantityStage4) === 0
+                ? undefined
+                : dataUpdateStage4?.lastQuantityStage4
+            }
+            disabled={dataUpdateStage4?.currentQuantity > 0}
             onChange={(e) => {
               const inputValue = parseFloat(e.target.value) || 0;
               const baseQuantity = parseFloat(quantity) || 1; // quantity: khối lượng ban đầu hoặc từ stage trước
@@ -340,8 +460,12 @@ const StageComponent = ({
           <input
             type="text"
             id="id1"
-            value={dataUpdateStage4?.moistureBeforeDrying || ""}
-            disabled={!!dataUpdateStage4?.currentMoistureBeforeDrying > 0}
+            value={
+              parseInt(dataUpdateStage4?.solutionConcentration) === 0
+                ? undefined
+                : dataUpdateStage4?.solutionConcentration
+            }
+            disabled={dataUpdateStage4?.currentSolutionConcentration > 0}
             onChange={(e) => {
               setDataUpdateStage4((prev) => ({
                 ...prev,
@@ -364,8 +488,12 @@ const StageComponent = ({
           <input
             type="number"
             id="id1"
-            value={dataUpdateStage4?.soakingTime || ""}
-            disabled={!!dataUpdateStage4?.soakingTime > 0}
+            value={
+              parseInt(dataUpdateStage4?.soakingTime) === 0
+                ? undefined
+                : dataUpdateStage4?.soakingTime
+            }
+            disabled={dataUpdateStage4?.soakingTime > 0}
             onChange={(e) => {
               setDataUpdateStage4((prev) => ({
                 ...prev,
@@ -388,6 +516,12 @@ const StageComponent = ({
           <input
             type="number"
             id="id1"
+            value={
+              parseInt(dataUpdateStage4?.moistureBeforeDrying) === 0
+                ? undefined
+                : dataUpdateStage4?.moistureBeforeDrying
+            }
+            disabled={dataUpdateStage4?.currentMoistureBeforeDrying > 0}
             onChange={(e) => {
               setDataUpdateStage4((prev) => ({
                 ...prev,
@@ -417,8 +551,12 @@ const StageComponent = ({
           <input
             type="text"
             id="id1"
-            value={dataUpdateStage5?.currentQuantity}
-            disabled={!dataUpdateStage5?.currentQuantity > 0}
+            value={
+              parseInt(dataUpdateStage5?.lastQuantityStage5) === 0
+                ? undefined
+                : dataUpdateStage5?.lastQuantityStage5
+            }
+            disabled={dataUpdateStage5?.currentQuantity > 0}
             onChange={(e) => {
               setDataUpdateStage5((prev) => ({
                 ...prev,
@@ -461,8 +599,12 @@ const StageComponent = ({
           <input
             type="number"
             id="id1"
-            value={dataUpdateStage6?.finalQuantityProduction || ""}
-            disabled={!!dataUpdateStage6?.currentDryingTime > 0}
+            value={
+              parseInt(dataUpdateStage6?.dryingTime) === 0
+                ? undefined
+                : dataUpdateStage6?.dryingTime
+            }
+            disabled={dataUpdateStage6?.currentDryingTime > 0}
             onChange={(e) => {
               setDataUpdateStage5((prev) => ({
                 ...prev,
@@ -480,62 +622,106 @@ const StageComponent = ({
   // renderNoStage6
   const renderNoStage6 = () => {
     return (
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        {/* Nồng độ dung dịch */}
-        <div className="info-box flex flex-col items-start text-left">
-          <label
-            htmlFor="id1"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            ⚖️K.lg sau làm nguội (kg Thành Phẩm)
-          </label>
-          <input
-            type="text"
-            id="id1"
-            value={dataUpdateStage6?.finalQuantityProduction}
-            disabled={!dataUpdateStage6?.currentQuantity > 0}
-            onChange={(e) => {
-              setDataUpdateStage6((prev) => ({
-                ...prev,
-                finalQuantityProduction: e.target.value,
-              }));
-            }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            placeholder="K.lg sau làm nguội (kg Thành Phẩm)"
-          />
-        </div>
-        {/* Thời gian ngâm */}
-        <div className="info-box flex flex-col items-start text-left">
-          <label
-            htmlFor="id2"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            💨Số lượng túi (cái)
-          </label>
-          <div
-            id="id2"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            {`${dataUpdateStage1.lossPercentStage1}`}
+      <>
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          {/* Nồng độ dung dịch */}
+          <div className="info-box flex flex-col items-start text-left">
+            <label
+              htmlFor="id1"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              ⚖️K.lg sau làm nguội (kg Thành Phẩm)
+            </label>
+            <input
+              type="text"
+              id="id1"
+              value={
+                parseInt(dataUpdateStage6?.finalQuantityProduction) === 0
+                  ? undefined
+                  : dataUpdateStage6?.finalQuantityProduction
+              }
+              disabled={dataProcess?.finalQuantityProduction > 0}
+              onChange={(e) => {
+                setDataUpdateStage6((prev) => ({
+                  ...prev,
+                  finalQuantityProduction: e.target.value,
+                }));
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              placeholder="K.lg sau làm nguội (kg Thành Phẩm)"
+            />
           </div>
-        </div>
 
-        {/* Thời gian ngâm */}
-        <div className="info-box flex flex-col items-start text-left">
-          <label
-            htmlFor="id2"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            📦Số lượng thùng (cái)
-          </label>
-          <div
-            id="id2"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            {`${dataUpdateStage1.lossPercentStage1}`}
-          </div>
+          {processType === "single_processes" && (
+            <>
+              <div className="info-box flex flex-col items-start text-left">
+                <label
+                  htmlFor="id2"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  💨Số lượng túi (cái)
+                </label>
+                <div
+                  id="id2"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {`${dataUpdateStage6?.totalVacum}`}
+                </div>
+              </div>
+              {/* Số lượng thùng cần dùng - đối với quy trình đơn */}
+              <div className="info-box flex flex-col items-start text-left">
+                <label
+                  htmlFor="id2"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  📦Số lượng thùng (cái)
+                </label>
+                <div
+                  id="id2"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {`${dataUpdateStage6?.totalBag}`}
+                </div>
+              </div>
+            </>
+          )}
+          {/* Form Product Data */}
+          {renderProductFormData()}
         </div>
-      </div>
+        {/* data product || nếu là 1 array thì foreach ra data*/}
+        {processType === "single_processes" ? (
+          ""
+        ) : (
+          // trường hợp là 1 array các yêu cầu - thành phẩm
+          <div className="flex flex-wrap gap-3">
+            {dataConsolidate &&
+              dataConsolidate?.map((item, index) => (
+                <div
+                  key={index}
+                  className="min-w-52 h-32 bg-cover bg-center rounded-lg shadow-md cursor-pointer transform transition duration-300 hover:scale-105"
+                  style={{ backgroundImage: `url(${product_carton_img})` }}
+                  onClick={() => {
+                    setDataRequest(item);
+                    setDataProduct(item);
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <div className="bg-black bg-opacity-50 text-white h-full w-full flex flex-col justify-center items-center rounded-lg px-2">
+                    <p className="text-sm text-white font-semibold">
+                      Mã SP: {item?.production_id}
+                    </p>
+                    <p className="text-sm text-white">
+                      Khối lượng: {item?.product_quantity}
+                    </p>
+                    <p className="text-xs text-white mt-1 italic">
+                      Xem Thành Phẩm
+                    </p>
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+      </>
     );
   };
 
@@ -559,6 +745,223 @@ const StageComponent = ({
           {stage?.status}
         </span>
       </div>
+    );
+  };
+
+  const handleSaveCheckProduct = () => {
+    const requiredFields = {
+      name: "Tên sản phẩm",
+      quantity: "Khối lượng tịnh",
+    };
+
+    const missingFields = Object.entries(requiredFields).filter(
+      ([key]) =>
+        dataProduct[key] === "" ||
+        dataProduct[key] === null ||
+        dataProduct[key] === undefined
+    );
+
+    // kiểm tra - thông báo khi không đủ thông tin
+    if (missingFields.length > 0) {
+      const firstMissing = missingFields[0][1];
+      message.error(`Vui lòng nhập ${firstMissing}`);
+      return;
+    }
+    setIsCheckProduct(true);
+    setIsModalVisible(false);
+  };
+
+  // Render data of product
+  const renderProductFormData = () => {
+    if (!dataProduct)
+      return message.warning("Dữ liệu sản phẩm hiện không sẳn có");
+
+    // set 1 số thông số trước của sản phẩm
+    const created_date = new Date(); // Ngày tạo = hôm nay
+    const expiration_date = new Date(created_date);
+    expiration_date.setMonth(expiration_date.getMonth() + 5); // Cộng thêm 5 tháng
+
+    const product = {
+      ...dataProduct,
+      masanpham: dataProduct?._id, // get product code from production request plan
+      raw_material_type: dataProduct?.material?.fuel_type_id?.type_name, // tên nguyên liệu
+      created_date: convertDateStringV1(created_date), // ngày tạo hàng
+      expiration_date: convertDateStringV1(expiration_date), // ngày hết hạn
+      origin_production_request_id: dataProduct?._id,
+      // data package
+      numberOfVacuum: dataProduct?.packaging?.vacuumBag,
+      numberOfBag: dataProduct?.packaging?.carton,
+      nameOfVacuum:
+        dataProduct?.packaging?.vacuumBagBoxId?.package_material_name,
+      nameOfBag: dataProduct?.packaging?.cartonBoxId?.package_material_name,
+    };
+
+    return (
+      <Modal
+        title={
+          <span
+            style={{
+              fontSize: "24px",
+              fontWeight: "bold",
+              position: "relative",
+              top: "10px",
+            }}
+          ></span>
+        }
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        onOk={() => handleSaveCheckProduct()} // hàm lưu dữ liệu
+        width={800}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* THÔNG TIN SẢN PHẨM */}
+          <Form form={form} layout="vertical">
+            <div className="space-y-4">
+              <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
+                Thông tin sản phẩm
+              </h3>
+
+              {/* Mã kế hoạch */}
+              <Form.Item>
+                <Input
+                  readOnly
+                  value={`Mã kế hoạch : ${product?.origin_production_request_id}`}
+                />
+              </Form.Item>
+
+              {/* Mã thành phẩm */}
+              <Form.Item>
+                <Input
+                  readOnly
+                  placeholder={t("finishedProductList.productCode")}
+                  value={`Mã thành phẩm : ${product.masanpham}`}
+                />
+              </Form.Item>
+
+              {/* Tên sản phẩm (cho nhập + required) */}
+              {/* <Form.Item
+                name="name"
+                rules={[
+                  { required: true, message: "Vui lòng nhập tên sản phẩm" },
+                ]}
+              >
+                <Input
+                  placeholder={t("finishedProductList.productName")}
+                  value={product.name}
+                  onChange={(e) =>
+                    setDataProduct({ ...product, name: e.target.value })
+                  }
+                />
+              </Form.Item> */}
+
+              {/* Khối lượng tịnh (cho nhập + required) */}
+              <Form.Item>
+                <Input
+                  readOnly
+                  placeholder="Khối lượng thành phẩm"
+                  value={`Thành phẩm : ${product?.product_quantity}`}
+                />
+              </Form.Item>
+
+              {/* Ngày tạo sản phẩm */}
+              <Form.Item>
+                <Input
+                  readOnly
+                  className="w-full"
+                  placeholder={t("finishedProductList.productionDate")}
+                  value={`Ngày tạo : ${product?.created_date}`}
+                />
+              </Form.Item>
+
+              {/* Ngày hết hạn */}
+              <Form.Item>
+                <Input
+                  readOnly
+                  className="w-full"
+                  placeholder={t("finishedProductList.expirationDate")}
+                  value={`Ngày hết hạn : ${product?.expiration_date}`}
+                />
+              </Form.Item>
+
+              {/* Loại nguyên liệu */}
+              <Form.Item>
+                <Input
+                  readOnly
+                  placeholder={t("finishedProductList.materialType")}
+                  value={`Nguyên liệu : ${product?.raw_material_type}`}
+                />
+              </Form.Item>
+            </div>
+          </Form>
+
+          {/* CHI TIẾT YÊU CẦU SẢN XUẤT */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
+              Chi tiết kế hoạch sản xuất
+            </h3>
+            {/* mã kế hoạch */}
+            <Input
+              placeholder={t("finishedProductList.productionId")}
+              value={`Mã kế hoạch : ${product?.origin_production_request_id}`}
+            />
+
+            {/* Mã thành phẩm */}
+            <Input
+              placeholder={t("finishedProductList.productCode")}
+              value={`Mã thành phẩm : ${product.masanpham}`}
+            />
+
+            <Input
+              placeholder={t("finishedProductList.requestName")}
+              value={`${dataProduct?.request_name}`}
+            />
+
+            <Input
+              type="text"
+              placeholder={t("finishedProductList.productQuantity")}
+              value={`Khối lượng thành phẩm ước tính : ${dataProduct?.product_quantity} (kg)`}
+            />
+
+            <Input
+              placeholder={t("finishedProductList.requestType")}
+              value={dataProduct?.request_type}
+            />
+
+            <Input
+              type="text"
+              placeholder={t("finishedProductList.lossPercentage")}
+              value={`Ước tính hao hụt : ${dataProduct?.loss_percentage}%`}
+            />
+
+            <Input
+              type="text"
+              placeholder={t("finishedProductList.materialQuantity")}
+              value={`Nguyên liệu : ${product?.raw_material_type} - ${dataProduct?.material_quantity} (kg)`}
+            />
+          </div>
+
+          {/* CHI PHÍ / BAO BÌ */}
+          <div className="md:col-span-2 space-y-4">
+            <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
+              {t("finishedProductList.packagingInfo")}
+            </h3>
+
+            {/* Túi Chân Không */}
+            <Input
+              type="text"
+              placeholder="Túi Chân Không"
+              value={`${product?.nameOfVacuum} - Số lượng : ${product?.numberOfVacuum}`}
+            />
+
+            {/* Thùng carton */}
+            <Input
+              type="text"
+              placeholder="Thùng carton"
+              value={`${product?.nameOfBag} - Số lượng : ${product?.numberOfBag}`}
+            />
+          </div>
+        </div>
+      </Modal>
     );
   };
 
@@ -675,7 +1078,7 @@ const StageComponent = ({
               </div>
 
               {/* Box confirm infomation each stage */}
-              <div className="flex flex-col gap-3 mt-3">
+              <div className="flex flex-col gap-2 mt-2">
                 {/* Infomation Render Following NoStage */}
                 {renderInfomation()}
 
@@ -683,7 +1086,7 @@ const StageComponent = ({
                 <div className="flex gap-4">
                   {/* Ghi chú */}
                   <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-[85%] col-span-2 sm:col-span-2 md:col-span-3">
-                    <p className="text-gray-500 text-xs mb-2">
+                    <p className="text-gray-500 text-xs ">
                       📝 {t("stage.field.note")}
                     </p>
                     <p className="font-medium text-gray-800 text-sm">
@@ -694,7 +1097,12 @@ const StageComponent = ({
                   {stage?.status === t("processDetails.status.executing") && (
                     <div className="info-box flex justify-end items-end">
                       <button
-                        className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+                        className="bg-gradient-to-r from-green-500 to-green-600 
+             text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md 
+             transition duration-300 ease-in-out transform 
+             hover:scale-105 hover:from-green-600 hover:to-green-700
+             disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:from-green-500 disabled:hover:to-green-600"
+                        disabled={!isCheckProduct}
                         onClick={() =>
                           handleComplete({
                             noStage,
@@ -718,6 +1126,7 @@ const StageComponent = ({
             </div>
           )}
         </div>
+        {/*  */}
       </div>
     </>
   );
