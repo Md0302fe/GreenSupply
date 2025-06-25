@@ -41,7 +41,7 @@ const FuelStorageReceiptList = () => {
   const [sortOrder] = useState("desc");
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [showStatusFilter, setShowStatusFilter] = useState(false);
-  const [receiptTypeFilter, setReceiptTypeFilter] = useState("");
+  const [receiptTypeFilter, setReceiptTypeFilter] = useState("1");
   const [originalReceipts, setOriginalReceipts] = useState([]);
   const [showTypeFilter, setShowTypeFilter] = useState(false);
 
@@ -69,13 +69,14 @@ const FuelStorageReceiptList = () => {
             search: debouncedSearch,
             status: statusFilterVal,
             sortOrder,
+            receipt_type: receiptTypeFilter,
           },
         }
       );
       if (response.data.success) {
         const rawData = response.data.data;
         setOriginalReceipts(rawData);
-        applyFilters(rawData);
+        setReceipts(rawData); // Không cần applyFilters nếu đã lọc server-side
       } else {
         message.error("Lỗi khi lấy danh sách đơn nhập kho!");
       }
@@ -94,45 +95,21 @@ const FuelStorageReceiptList = () => {
     }
   }, [location.search]);
 
-  const applyFilters = (data) => {
-    let filtered = [...data];
-
-    // Lọc theo loại đơn hàng
-    if (receiptTypeFilter === "supply") {
-      filtered = filtered.filter((item) => item.receipt_supply_id);
-    } else if (receiptTypeFilter === "request") {
-      filtered = filtered.filter((item) => item.receipt_request_id);
-    }
-
-    // Lọc theo trạng thái (đã có)
-    if (statusFilterVal) {
-      filtered = filtered.filter((item) => item.status === statusFilterVal);
-    }
-
-    // Lọc theo người quản lý (đã có)
-    if (debouncedSearch) {
-      filtered = filtered.filter((item) =>
-        item.manager_id?.full_name
-          ?.toLowerCase()
-          .includes(debouncedSearch.toLowerCase())
-      );
-    }
-
-    setReceipts(filtered);
-  };
 
   useEffect(() => {
-    applyFilters(originalReceipts);
-  }, [receiptTypeFilter, statusFilterVal, debouncedSearch]);
+    fetchReceipts();
+  }, [debouncedSearch, statusFilterVal, sortOrder, receiptTypeFilter]);
 
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
       title: t(
-        `fuelStorage.confirmTitle.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmTitle.${
+          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       content: t(
-        `fuelStorage.confirmContent.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmContent.${
+          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       okText: t("fuelStorage.confirm.okText"),
@@ -224,9 +201,9 @@ const FuelStorageReceiptList = () => {
     onFilter: (value, record) =>
       record.manager_id?.full_name
         ? record.manager_id.full_name
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase())
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -271,10 +248,6 @@ const FuelStorageReceiptList = () => {
     debounceFn();
     return () => debounceFn.cancel();
   }, [searchText]);
-
-  useEffect(() => {
-    fetchReceipts();
-  }, [debouncedSearch, statusFilterVal, sortOrder]);
 
   const handleExportFileExcel = () => {
     if (!receipts.length) {
@@ -323,7 +296,9 @@ const FuelStorageReceiptList = () => {
 
   const columns = [
     {
-      title: <div className="text-center">{t("fuelStorage.columns.manager")}</div>,
+      title: (
+        <div className="text-center">{t("fuelStorage.columns.manager")}</div>
+      ),
       dataIndex: ["manager_id", "full_name"],
       key: "manager_id",
       className: "text-center",
@@ -331,26 +306,42 @@ const FuelStorageReceiptList = () => {
         record.manager_id?.full_name || t("fuelStorage.unknown"),
     },
     {
-      title: <div className="text-center">{t("fuelStorage.columns.receiptType")}</div>,
+      title: (
+        <div className="text-center">
+          {t("fuelStorage.columns.receiptType")}
+        </div>
+      ),
       key: "receipt_type",
       className: "text-center",
-      render: (_, record) => (
-        <Tag color={record.receipt_supply_id ? "blue" : "green"}>
-          {record.receipt_supply_id
-            ? t("fuelStorage.receiptType.supply")
-            : t("fuelStorage.receiptType.request")}
-        </Tag>
-      ),
+      render: (_, record) => {
+        if (record.receipt_type === "1") {
+          if (record.receipt_request_id) {
+            return <Tag color="green">Thu hàng</Tag>;
+          }
+          if (record.receipt_supply_id) {
+            return <Tag color="blue">Cung cấp</Tag>;
+          }
+          return <Tag color="default">Nguyên liệu</Tag>; // fallback
+        } else if (record.receipt_type === "2") {
+          return <Tag color="purple">Thành phẩm</Tag>;
+        } else {
+          return <Tag color="gray">Không xác định</Tag>;
+        }
+      },
     },
     {
-      title: <div className="text-center">{t("fuelStorage.columns.storage")}</div>,
+      title: (
+        <div className="text-center">{t("fuelStorage.columns.storage")}</div>
+      ),
       dataIndex: ["storage_id", "name_storage"],
       key: "storage_id",
       className: "text-center",
       render: (text) => text || t("fuelStorage.noDataShort"),
     },
     {
-      title: <div className="text-center">{t("fuelStorage.columns.status")}</div>,
+      title: (
+        <div className="text-center">{t("fuelStorage.columns.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       className: "text-center",
@@ -364,19 +355,25 @@ const FuelStorageReceiptList = () => {
           cancelled: "red",
         };
         return (
-          <Tag color={statusColors[statusKey] || "default"}>{t(`status.${statusKey}`) || statusKey}</Tag>
+          <Tag color={statusColors[statusKey] || "default"}>
+            {t(`status.${statusKey}`) || statusKey}
+          </Tag>
         );
       },
     },
     {
-      title: <div className="text-center">{t("fuelStorage.columns.createdAt")}</div>,
+      title: (
+        <div className="text-center">{t("fuelStorage.columns.createdAt")}</div>
+      ),
       dataIndex: "createdAt",
       className: "text-center",
       render: (date) =>
         date ? converDateString(date) : t("fuelStorage.noDataShort"),
     },
     {
-      title: <div className="text-center">{t("fuelStorage.columns.updatedAt")}</div>,
+      title: (
+        <div className="text-center">{t("fuelStorage.columns.updatedAt")}</div>
+      ),
       dataIndex: "updatedAt",
       className: "text-center",
       render: (date) =>
@@ -420,11 +417,15 @@ const FuelStorageReceiptList = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
           </svg>
           <span className="hidden md:inline">{t("fuelStorage.back")}</span>
         </Button>
-
 
         {/* Title căn giữa */}
         <h5 className="text-center font-bold text-[16px] md:text-2xl flex-grow mx-4">
@@ -446,7 +447,35 @@ const FuelStorageReceiptList = () => {
           {t("export_excel")}
         </Button>
       </div>
-
+      <div
+        style={{
+          marginBottom: 24,
+          background: "#fafafa",
+          padding: 16,
+          borderRadius: 8,
+        }}
+      >
+        {/* Label + Filter buttons */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="mb-3">Lọc theo loại hàng</h3>
+            <div className="flex flex-col md:flex-row gap-2">
+              <Button
+                type={receiptTypeFilter === "1" ? "primary" : "default"}
+                onClick={() => setReceiptTypeFilter("1")}
+              >
+                Nguyên liệu
+              </Button>
+              <Button
+                type={receiptTypeFilter === "2" ? "primary" : "default"}
+                onClick={() => setReceiptTypeFilter("2")}
+              >
+                Thành phẩm
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
       <Table
         columns={columns}
         dataSource={receipts}
@@ -526,11 +555,11 @@ const FuelStorageReceiptList = () => {
                         ? "gold"
                         : selectedReceipt.status ===
                           t("fuelStorage.status.completed")
-                          ? "blue"
-                          : selectedReceipt.status ===
-                            t("fuelStorage.status.cancelled")
-                            ? "red"
-                            : "default"
+                        ? "blue"
+                        : selectedReceipt.status ===
+                          t("fuelStorage.status.cancelled")
+                        ? "red"
+                        : "default"
                     }
                   >
                     {selectedReceipt.status}
@@ -557,7 +586,7 @@ const FuelStorageReceiptList = () => {
 
                 {/* Ghi chú */}
                 {selectedReceipt.receipt_request_id?.note ||
-                  selectedReceipt.receipt_supply_id?.note ? (
+                selectedReceipt.receipt_supply_id?.note ? (
                   <>
                     <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
                       {t("fuelStorage.columns.note")}
@@ -600,6 +629,7 @@ const FuelStorageReceiptList = () => {
                 disabled={
                   loading ||
                   selectedReceipt.status === "Đã huỷ" ||
+                  selectedReceipt.status === "Nhập kho thành công" ||
                   selectedReceipt.status === "Đã duyệt"
                 }
               >
@@ -612,7 +642,6 @@ const FuelStorageReceiptList = () => {
                 Đóng
               </button>
             </div>
-
           </div>
         ) : (
           <p className="text-center text-gray-500">Đang tải chi tiết...</p>
