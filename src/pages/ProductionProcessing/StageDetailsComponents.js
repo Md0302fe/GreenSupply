@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { converDateString, convertDateStringV1 } from "../../ultils";
 import { useTranslation } from "react-i18next";
+import React, { useEffect, useState } from "react";
 import { Modal, Input, Select, Form, message } from "antd";
+import { converDateString, convertDateStringV1 } from "../../ultils";
 import "./process.css";
 
 import product_carton_img from "../../assets/Feature_warehouse/prouct_carton_img.jpg";
-import { isEmpty } from "lodash";
 
 const StageComponent = ({
   stage,
-  noStage,
   isOpen,
+  noStage,
   onToggle,
   stageName,
   handleComplete,
@@ -29,8 +28,6 @@ const StageComponent = ({
   );
   const [processType, setProcessType] = useState("");
 
-  const date = new Date();
-
   // Data Product
   const [dataProduct, setDataProduct] = useState({
     name: "", // tên sản phẩm
@@ -43,11 +40,10 @@ const StageComponent = ({
     expiration_date: "", // ngày hết hạng
     certifications: "", // chứng chỉ
     origin_production_request_id: "", // mã yêu cầu
-    // data material package
-    numberOfVacuum: "",
-    numberOfBag: "",
-    nameOfVacuum: "",
-    nameOfBag: "",
+    numberOfVacuum: "", // số lượng túi chân không
+    numberOfBag: "", // số lượng thùng carton
+    nameOfVacuum: "", // tên loại túi chân không
+    nameOfBag: "", // tên loại thùng carton
   });
 
   // Data Request
@@ -62,10 +58,6 @@ const StageComponent = ({
     end_date_request: "", // ngày kết thúc kế hoạch
     product_code: "", // mã thành phẩm
   });
-
-  // formData Product
-  const [formData, setFormData] = useState({});
-  const { Option } = Select;
 
   // dataUpdateStage1
   const [dataUpdateStage1, setDataUpdateStage1] = useState({
@@ -87,7 +79,6 @@ const StageComponent = ({
     solutionConcentration: 0,
     soakingTime: 0,
     moistureBeforeDrying: 0,
-
     currentQuantity: 0,
     currentSolutionConcentration: 0,
     curentSoakingTime: 0,
@@ -160,55 +151,9 @@ const StageComponent = ({
         setIsExistedProduct(true);
       }
 
-      // setDataUpdateStage2({...dataStage[6], });
       setPrevDataStage(dataStage);
       setDataConsolidate(dataProcess?.production_request_id);
-
-      // set 1 số thông số trước của sản phẩm
-      // const created_date = new Date(); // Ngày tạo = hôm nay
-      // const expiration_date = new Date(created_date);
-      // expiration_date.setMonth(expiration_date.getMonth() + 5); // Cộng thêm 5 tháng
-      // nếu 'quy trình tổng hợp' và ngược lại 'quy trình đơn'
-      // if (processType === "single_processes") {
-      //   setDataProduct((prev) => ({
-      //     ...prev,
-      //     masanpham: dataProcess?.production_request_id?.production_id, // get product code from production request plan
-      //     raw_material_type:
-      //       dataProcess?.production_request_id?.material?.fuel_type_id
-      //         ?.type_name, // tên nguyên liệu
-      //     created_date: convertDateStringV1(created_date), // ngày tạo hàng
-      //     expiration_date: convertDateStringV1(expiration_date), // ngày hết hạn
-      //     origin_production_request_id: dataProcess?.production_request_id?._id,
-      //     // data package
-      //     numberOfVacuum:
-      //       dataProcess?.production_request_id?.packaging?.vacuumBag,
-      //     numberOfBag: dataProcess?.production_request_id?.packaging?.carton,
-      //     nameOfVacuum:
-      //       dataProcess?.production_request_id?.packaging?.vacuumBagBoxId
-      //         ?.package_material_name,
-      //     nameOfBag:
-      //       dataProcess?.production_request_id?.packaging?.cartonBoxId
-      //         ?.package_material_name,
-      //   }));
-      //   // set thông tin của kế hoạch vào state
-      //   setDataRequest((prev) => ({
-      //     ...prev,
-      //     requestName: dataProcess?.production_request_id?.request_name, // tên kế hoạch
-      //     requestCode: dataProcess?.production_request_id?._id, // mã kế hoạch
-      //     requestType: dataProcess?.production_request_id?.request_type, // loại kế hoạch
-      //     raw_material_type:
-      //       dataProcess?.production_request_id?.material?.fuel_type_id
-      //         ?.type_name, // tên nguyên liệu cần cho quy trình
-      //     raw_material_quantity:
-      //       dataProcess?.production_request_id?.material_quantity, // số lượng nguyên liệu thô
-      //     loss_percentage: dataProcess?.production_request_id?.loss_percentage, // ước tính % hao hụt
-      //     product_quantity:
-      //       dataProcess?.production_request_id?.product_quantity, // khối lượng thành phẩm đầu ra (kg)
-      //     cteated_request: dataProcess?.production_request_id?.createdAt, // ngày tạo kế hoạch
-      //     end_date_request: dataProcess?.production_request_id?.end_date, // ngày kết thúc kế hoạch
-      //     product_code: dataProcess?.production_request_id?.production_id, // mã sản phẩm
-      //   }));
-      // }
+      setDataProduct(dataProcess?.production_request_id);
     }
   }, [dataStage, dataProcess]);
 
@@ -690,7 +635,25 @@ const StageComponent = ({
         </div>
         {/* data product || nếu là 1 array thì foreach ra data*/}
         {processType === "single_processes" ? (
-          ""
+          <div className="flex flex-wrap gap-3">
+            <div
+              className="min-w-52 h-32 bg-cover bg-center rounded-lg shadow-md cursor-pointer transform transition duration-300 hover:scale-105"
+              style={{ backgroundImage: `url(${product_carton_img})` }}
+              onClick={() => {
+                setIsModalVisible(true);
+              }}
+            >
+              <div className="bg-black bg-opacity-50 text-white h-full w-full flex flex-col justify-center items-center rounded-lg px-2">
+                <p className="text-sm text-white font-semibold">
+                  Mã SP: {dataProduct?.production_id}
+                </p>
+                <p className="text-sm text-white">
+                  Khối lượng: {dataProduct?.product_quantity}
+                </p>
+                <p className="text-xs text-white mt-1 italic">Xem Thành Phẩm</p>
+              </div>
+            </div>
+          </div>
         ) : (
           // trường hợp là 1 array các yêu cầu - thành phẩm
           <div className="flex flex-wrap gap-3">

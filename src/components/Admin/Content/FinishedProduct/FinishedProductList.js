@@ -18,7 +18,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import * as ProductServices from "../../../../services/ProductServices";
 import { useTranslation } from "react-i18next";
-import default_image from "../../../../assets/Feature_materials_category/mng_addnew_mango.jpg";
+import default_image from "../../../../assets/Feature_warehouse/prouct_carton_img.jpg";
 
 const FinishedProductList = () => {
   const { t } = useTranslation();
@@ -178,7 +178,7 @@ const FinishedProductList = () => {
               className="border rounded-xl p-2 cursor-pointer text-center bg-white shadow-md"
             >
               <img
-                src={item.image || default_image}
+                src={default_image}
                 alt={item.name}
                 className="w-full h-24 object-contain mb-2"
               />

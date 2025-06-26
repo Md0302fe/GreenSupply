@@ -66,6 +66,7 @@ const ProcessDetails = () => {
     queryKey: ["both_process_details", process_id],
     queryFn: fetchBothDetails,
     retry: 0,
+    staleTime: 0, // <- luôn coi là stale, refetch luôn lấy mới
   });
 
   useEffect(() => {
@@ -162,61 +163,104 @@ const ProcessDetails = () => {
 
           {/* Thêm nền trắng cho phần hiển thị thông tin */}
           <div className="bg-white p-3 lg:p-4 rounded-lg shadow-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-2 mb-2">
+              {/* Start Time */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   📅 {t("processDetails.info.start")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {convertDateStringV1(dataProcess?.data?.start_time)}
                 </p>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* End Time */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   📅 {t("processDetails.info.etaEnd")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {convertDateStringV1(dataProcess?.data?.end_time)}
                 </p>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* Current Stage */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   ⏳ {t("processDetails.info.currentStage")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {dataProcess?.data?.current_stage}
                 </p>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* Status */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   🔄 {t("processDetails.info.status")}
                 </p>
                 <span
-                  className={`inline-block text-xs px-1 py-0.5 rounded text-black ${
+                  className={`inline-block text-xs font-semibold px-2 py-0.5 rounded ${
                     dataProcess?.data?.status === "Hoàn thành"
-                      ? "bg-green-500"
-                      : "bg-yellow-200"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
                   }`}
                 >
-                  {dataProcess?.data.status}
+                  {dataProcess?.data?.status}
                 </span>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* Assigned User */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   👤 {t("processDetails.info.assignedUser")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {/* {dataProcess?.user_id?.name || "Chưa gán"} */}
+                  {dataProcess?.user_id?.name || "Chưa gán"}
                 </p>
               </div>
-              <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
-                <p className="text-gray-500 text-xs mb-2">
-                  📝 {t("processDetails.info.note")}
+
+              {/* Nguyên liệu */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
+                  🍋 Nguyên liệu
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.data?.note}
+                  {
+                    dataProcess?.data?.production_request_id?.material
+                      ?.fuel_type_id?.type_name
+                  }
                 </p>
               </div>
+
+              {/* Khối lượng nguyên liệu */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
+                  ⚖️ Khối lượng nguyên liệu
+                </p>
+                <p className="font-medium text-gray-800 text-sm">
+                  {dataProcess?.data?.production_request_id?.material_quantity}
+                </p>
+              </div>
+
+              {/* Khối lượng thành phẩm */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
+                  ⚖️ Khối lượng thành phẩm
+                </p>
+                <p className="font-medium text-gray-800 text-sm">
+                  {dataProcess?.data?.production_request_id?.product_quantity}
+                </p>
+              </div>
+            </div>
+            {/* Note box */}
+            <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
+              <p className="text-gray-500 text-xs mb-2 font-bold">
+                📝 {t("processDetails.info.note")}
+              </p>
+              <p className="font-medium text-gray-800 text-sm">
+                {dataProcess?.data?.note}
+              </p>
             </div>
           </div>
         </div>
