@@ -432,22 +432,22 @@
     },
     "completed": {
       "title": "Hoàn thành",
-      "description": "Các yêu cầu nhập nguyên liệu đã hoàn thành"
+      "description": "D.sách yêu cầu nhập nguyên liệu đã hoàn thành"
     }
   },
   "supplierRequest": {
-    "title": "Quản Lý Yêu Cầu Supplier",
+    "title": "Quản Lý Yêu Cầu Nhà Cung Cấp",
     "dashboard": {
       "title": "Dashboard",
       "description": "Thông tin toàn yêu cầu supplier"
     },
     "collectList": {
       "title": "D.sách yêu cầu thu nguyên liệu",
-      "description": "Quản lý danh sách các yêu cầu thu nguyên liệu"
+      "description": "Quản lý danh sách yêu cầu thu nguyên liệu"
     },
     "provideList": {
       "title": "D.sách yêu cầu cung cấp nguyên liệu",
-      "description": "Quản lý danh sách các yêu cầu cung cấp nguyên liệu"
+      "description": "Quản lý danh sách yêu cầu cung cấp nguyên liệu"
     },
     "receipt": {
       "title": "Tạo yêu cầu nhập kho",
@@ -460,21 +460,21 @@
       "title": "Dashboard",
       "description": "Quản lý thông tin tổng quát kho"
     },
-    "createReceipt": {
-      "title": "Tạo yêu cầu nhập kho",
+    "receiptRequestList": {
+      "title": "Quản lý yêu cầu nhập kho",
       "description": "Quản lý danh sách hàng đã về kho và tạo yêu cầu nhập kho"
     },
     "receiptList": {
       "title": "D.sách đơn nhập kho",
-      "description": "Quản lý danh sách các yêu cầu (chờ) nhập kho"
+      "description": "Quản lý danh sách yêu cầu (chờ) nhập kho"
     },
     "rawMaterialBatch": {
       "title": "Lô nguyên liệu thô",
-      "description": "Quản lý thông tin các lô nguyên liệu thô , cần cho khâu sản xuất"
+      "description": "Quản lý thông tin lô nguyên liệu thô , cần cho khâu sản xuất"
     },
     "createExport": {
       "title": "Tạo đơn xuất kho",
-      "description": "Quản lý danh sách các đơn (chờ) xuất kho"
+      "description": "Quản lý danh sách đơn (chờ) xuất kho"
     },
     "exportList": {
       "title": "Danh sách đơn xuất kho",
@@ -486,26 +486,26 @@
     }
   },
   "material": {
-    "title": "Quản Lý Nguyên Vật Liệu",
+    "title": "Quản lý nguyên vật liệu",
     "dashboard": {
       "title": "Dashboard",
-      "description": "Thông tin Nguyên Liệu"
+      "description": "Thông tin nguyên liệu"
     },
     "create": {
       "title": "Tạo nguyên liệu mới",
       "description": "Tạo thông tin cho nguyên liệu mới"
     },
     "list": {
-      "title": "Danh sách loại nguyên liệu",
-      "description": "Quản lý danh sách các loại nguyên liệu"
+      "title": "Danh sách nguyên liệu",
+      "description": "Quản lý danh sách nguyên liệu"
     },
     "type": {
-      "title": "Quản lý Loại nguyên vật liệu",
-      "description": "Quản lý danh sách các loại nguyên liệu"
+      "title": "Quản lý loại vật liệu",
+      "description": "Quản lý danh sách loại vật liệu"
     },
     "manage": {
-      "title": "Quản lý nguyên vật liệu",
-      "description": "Quản lý danh sách các loại nguyên liệu"
+      "title": "Quản lý vật liệu",
+      "description": "Quản lý danh sách vật liệu"
     }
   },
   "production": {
@@ -524,7 +524,7 @@
     },
     "waitingList": {
       "title": "Danh sách chờ",
-      "description": "Quản lý các kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
+      "description": "Quản lý kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
     },
     "createdProcesses": {
       "title": "Danh sách quy trình đã tạo",
@@ -648,7 +648,7 @@
   },
   "order": {
     "back": "Quay lại",
-    "title": "các nguyên liệu cần nhập",
+    "title": "Nguyên liệu cần nhập",
     "drawer_title": "Chi Tiết Đơn Thu Nguyên liệu",
     "update_title": "Cập Nhật Đơn Thu Nguyên liệu",
     "form": {
@@ -744,10 +744,11 @@
   },
   "fuel_request": {
     "back": "Quay lại",
-    "title": "Quản lý đơn yêu cầu thu nguyên liệu",
+    "title": "Danh sách yêu cầu thu nguyên liệu",
     "table": {
       "customer": "Khách Hàng",
       "fuel_type": "Loại Nguyên Liệu",
+      "request_name": "Yêu cầu",
       "price": "Giá Tiền",
       "status": "Trạng Thái",
       "actions": "Chức năng"
@@ -791,7 +792,7 @@
     "errorCompleting": "Có lỗi xảy ra khi hoàn thành đơn!",
     "customer": "Khách Hàng",
     "fuelType": "Loại Nguyên Liệu",
-    "price": "Giá Tiền (vnđ)",
+    "price": "Giá Tiền (Vnđ)",
     "status": "Trạng Thái",
     "pending": "Chờ duyệt",
     "approved": "Đã duyệt",
@@ -802,7 +803,7 @@
     "invalid": "Không hợp lệ",
     "action": "Chức năng",
     "back": "Quay lại",
-    "title": "Quản lý đơn cung cấp nguyên liệu",
+    "title": "Danh sách đơn cung cấp nguyên liệu",
     "orderDetail": "Chi Tiết Đơn Hàng",
     "quality": "Chất Lượng",
     "quantity": "Số Lượng",
@@ -866,7 +867,7 @@
     "supply": "Cung cấp",
     "request": "Thu hàng",
     "back": "Quay lại",
-    "title": "Quản lý Đơn Hàng Chờ Nhập Kho",
+    "title": "Quản lý yêu cầu nhập kho",
     "filterLabel": "Lọc theo loại đơn",
     "allOrders": "Tất cả đơn",
     "requestOrders": "Đơn thu hàng",
@@ -937,7 +938,7 @@
     "approve": "Duyệt nhập kho"
   },
   "materialBatch": {
-    "title": "Quản lý Lô Nguyên Liệu",
+    "title": "Quản lý lô nguyên liệu",
     "batchId": "Mã lô",
     "batchName": "Tên lô",
     "fuelType": "Loại nguyên liệu",
@@ -1012,21 +1013,21 @@
     "notePlaceholder": "Nhập ghi chú"
   },
   "materialExportList": {
-    "title": "Quản lý Đơn Xuất Kho",
-    "exportType": "Loại Xuất Kho",
+    "title": "Quản lý Đơn xuất kho",
+    "exportType": "Loại xuất kho",
     "productionRequest": "Đơn sản xuất",
     "batch": "Lô nguyên liệu",
     "status": "Trạng thái",
-    "detailTitle": "Chi tiết Đơn Xuất Kho",
+    "detailTitle": "Chi tiết đơn xuất kho",
     "createdBy": "Người tạo đơn",
     "batchName": "Tên lô",
     "batchId": "Mã lô",
-    "exportName": "Tên Xuất Kho",
+    "exportName": "Tên xuất kho",
     "createdDate": "Ngày tạo đơn",
     "note": "Ghi chú"
   },
   "batchHistory": {
-    "title": "Lịch Sử Xuất Lô",
+    "title": "Lịch sử xuất lô",
     "batchId": "Mã lô",
     "batchName": "Tên lô",
     "batchNamePlaceholder": "Nhập tên lô...",
@@ -1042,16 +1043,16 @@
     "note": "Ghi chú"
   },
   "dashboardProduction": {
-    "title": "Dashboard Quy Trình Sản Xuất",
+    "title": "Dashboard quy trình sản xuất",
     "chartTitle": "Biểu đồ trạng thái quy trình"
   },
   "productionRequest": {
-    "title": "Lập Kế Hoạch Sản Xuất",
+    "title": "Lập kế hoạch sản xuất",
     "planList": "Danh sách kế hoạch",
     "name": "Tên kế hoạch",
     "namePlaceholder": "Nhập tên kế hoạch",
-    "material": "Loại Nguyên liệu",
-    "selectMaterial": "Chọn Loại Nguyên liệu",
+    "material": "Loại nguyên liệu",
+    "selectMaterial": "Chọn loại nguyên liệu",
     "materialQty": "Số lượng nguyên liệu (kg)",
     "enterMaterialQty": "Nhập số lượng nguyên liệu",
     "loss": "Tỷ lệ hao hụt (%)",
@@ -1118,8 +1119,8 @@
     "select_material": "Chọn loại Nguyên liệu"
   },
   "notification": {
-    "after_approve": "Sau khi Duyệt các kế hoạch / các kế hoạch sẽ được đưa vào hàng chờ sản xuất",
-    "production_queue": "Hàng Chờ Sản Xuất"
+    "after_approve": "Sau khi Duyệt kế hoạch / Kế hoạch sẽ được đưa vào hàng chờ sản xuất",
+    "production_queue": "Hàng chờ sản xuất"
   },
   "page": {
     "title": "Danh Sách Kế Hoạch Chờ Tạo Quy Trình"
@@ -1130,7 +1131,7 @@
   },
   "productionProcess": {
     "title": {
-      "list": "Các Quy Trình Đã Tạo"
+      "list": "Quy Trình Đã Tạo"
     },
     "button": {
       "back": "Quay lại",

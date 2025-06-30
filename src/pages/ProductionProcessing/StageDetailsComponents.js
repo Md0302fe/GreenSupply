@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import { Modal, Input, Select, Form, message } from "antd";
 import { converDateString, convertDateStringV1 } from "../../ultils";
+import * as ProductionRequestServices from "../../services/ProductServices";
+
 import "./process.css";
 
 import product_carton_img from "../../assets/Feature_warehouse/prouct_carton_img.jpg";
@@ -21,12 +23,13 @@ const StageComponent = ({
   const [prevDataStage, setPrevDataStage] = useState();
   const [isCheckProduct, setIsCheckProduct] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isExistedProduct, setIsExistedProduct] = useState(false);
 
   const [dataConsolidate, setDataConsolidate] = useState(
     dataProcess?.production_request_id || []
   );
   const [processType, setProcessType] = useState("");
+
+  console.log("processType ", processType)
 
   // Data Product
   const [dataProduct, setDataProduct] = useState({
@@ -147,15 +150,32 @@ const StageComponent = ({
         finalQuantityProduction: dataProcess?.finalQuantityProduction,
       });
 
-      if (dataStage[5] && dataStage[5]?.status === "Hoàn thành") {
-        setIsExistedProduct(true);
-      }
-
       setPrevDataStage(dataStage);
       setDataConsolidate(dataProcess?.production_request_id);
       setDataProduct(dataProcess?.production_request_id);
     }
   }, [dataStage, dataProcess]);
+
+  // handle stage = 7
+  // useEffect(() => {
+  //   const fetchProductDetails = async () => {
+  //     if (dataProcess) {
+  //       if (parseInt(dataProcess?.current_stage) === 7) {
+  //         const productCode = dataProcess?.production_request_id?.production_id;
+  //         // Call API GET DATA PRODUCT
+  //         const dataDetailsProduct =
+  //           await ProductionRequestServices.getProductDetails(productCode);
+  //         // if existed product
+  //         if (dataDetailsProduct) {
+  //           // get first record
+  //           setProductData(dataDetailsProduct[0]);
+  //           // Nếu đã save kho thì auto call API cập nhật stage cuối cùng
+  //         }
+  //       }
+  //     }
+  //   };
+  //   fetchProductDetails();
+  // }, [dataProcess]);
 
   const getDataUpdateByStage = () => {
     switch (parseInt(noStage)) {
@@ -169,6 +189,8 @@ const StageComponent = ({
         return dataUpdateStage5;
       case 6:
         return dataUpdateStage6;
+      case 7:
+        return {};
       default:
         return null;
     }
@@ -243,6 +265,7 @@ const StageComponent = ({
           </label>
           <input
             type="number"
+            min="0"
             id="id1"
             value={
               parseInt(dataUpdateStage1?.lastQuantityStage1) === 0
@@ -297,6 +320,7 @@ const StageComponent = ({
           </label>
           <input
             type="number"
+            min="0"
             id="id2"
             value={
               parseInt(dataUpdateStage2?.lastQuantityStage2) === 0
@@ -364,6 +388,7 @@ const StageComponent = ({
           </label>
           <input
             type="number"
+            min="0"
             id="id4"
             value={
               parseInt(dataUpdateStage4?.lastQuantityStage4) === 0
@@ -432,6 +457,7 @@ const StageComponent = ({
           </label>
           <input
             type="number"
+            min="0"
             id="id1"
             value={
               parseInt(dataUpdateStage4?.soakingTime) === 0
@@ -460,6 +486,7 @@ const StageComponent = ({
           </label>
           <input
             type="number"
+            min="0"
             id="id1"
             value={
               parseInt(dataUpdateStage4?.moistureBeforeDrying) === 0
@@ -543,6 +570,7 @@ const StageComponent = ({
           </label>
           <input
             type="number"
+            min="0"
             id="id1"
             value={
               parseInt(dataUpdateStage6?.dryingTime) === 0
@@ -657,7 +685,7 @@ const StageComponent = ({
         ) : (
           // trường hợp là 1 array các yêu cầu - thành phẩm
           <div className="flex flex-wrap gap-3">
-            {dataConsolidate &&
+            {processType === "consolidated_processes" && dataConsolidate &&
               dataConsolidate?.map((item, index) => (
                 <div
                   key={index}
@@ -734,6 +762,7 @@ const StageComponent = ({
     setIsModalVisible(false);
   };
 
+  console.log("dataProduct ,", dataProduct);
   // Render data of product
   const renderProductFormData = () => {
     if (!dataProduct)
@@ -746,7 +775,7 @@ const StageComponent = ({
 
     const product = {
       ...dataProduct,
-      masanpham: dataProduct?._id, // get product code from production request plan
+      masanpham: dataProduct?.production_id, // get product code from production request plan
       raw_material_type: dataProduct?.material?.fuel_type_id?.type_name, // tên nguyên liệu
       created_date: convertDateStringV1(created_date), // ngày tạo hàng
       expiration_date: convertDateStringV1(expiration_date), // ngày hết hạn
@@ -1065,7 +1094,10 @@ const StageComponent = ({
              transition duration-300 ease-in-out transform 
              hover:scale-105 hover:from-green-600 hover:to-green-700
              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:from-green-500 disabled:hover:to-green-600"
-                        disabled={!isCheckProduct}
+                        disabled={
+                          !isCheckProduct ||
+                          parseInt(dataProcess?.current_stage) === 7
+                        }
                         onClick={() =>
                           handleComplete({
                             noStage,

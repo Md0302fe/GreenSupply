@@ -146,7 +146,7 @@ const FuelOrderStatus = () => {
       message.error(t("fuelOrderStatus.createFail"));
     }
   };
- const [isMobile, setIsMobile] = useState(() => {
+  const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth < 768;
     }
@@ -262,7 +262,11 @@ const FuelOrderStatus = () => {
       key: "fuel_name",
     },
     {
-      title: <div className="text-center">{t("fuelOrderStatus.columns.totalPrice")}</div>,
+      title: (
+        <div className="text-center">
+          {t("fuelOrderStatus.columns.totalPrice")}
+        </div>
+      ),
       dataIndex: "total_price",
       key: "total_price",
       align: "center",
@@ -273,7 +277,9 @@ const FuelOrderStatus = () => {
       ),
     },
     {
-      title: <div className="text-center">{t("fuelOrderStatus.columns.status")}</div>,
+      title: (
+        <div className="text-center">{t("fuelOrderStatus.columns.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       align: "center",
@@ -294,7 +300,9 @@ const FuelOrderStatus = () => {
       },
     },
     {
-      title: <div className="text-center">{t("fuelOrderStatus.columns.action")}</div>,
+      title: (
+        <div className="text-center">{t("fuelOrderStatus.columns.action")}</div>
+      ),
       key: "action",
       align: "center",
       render: (_, record) => (
@@ -357,7 +365,7 @@ const FuelOrderStatus = () => {
   };
 
   return (
-    <div style={{ padding: 0 }}>
+    <div className="md:px-8">
       {/* Tiêu đề và nút quay lại */}
       <div
         style={{ marginBottom: 24, marginTop: 24 }}
@@ -367,7 +375,7 @@ const FuelOrderStatus = () => {
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -376,18 +384,61 @@ const FuelOrderStatus = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
           </svg>
           <span className="hidden md:inline">{t("fuelOrderStatus.back")}</span>
         </Button>
 
         {/* Tiêu đề ở giữa */}
-        <h2 className="text-center font-bold text-[16px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
+        <h2 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
           {t("fuelOrderStatus.title")}
         </h2>
 
         {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
         <div className="min-w-[20px] md:min-w-[100px]"></div>
+      </div>
+
+      {/* Label + Filter buttons */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex">
+          <div className="flex flex-col md:flex-row gap-2">
+            <Button
+              type={filterType === "all" ? "primary" : "default"}
+              onClick={() => setFilterType("all")}
+            >
+              {t("fuelOrderStatus.allOrders")}
+            </Button>
+            <Button
+              type={filterType === "fuelRequests" ? "primary" : "default"}
+              onClick={() => setFilterType("fuelRequests")}
+            >
+              {t("fuelOrderStatus.requestOrders")}
+            </Button>
+            <Button
+              type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
+              onClick={() => setFilterType("fuelSupplyOrders")}
+            >
+              {t("fuelOrderStatus.supplyOrders")}
+            </Button>
+          </div>
+          {/* Nút danh sách nằm trên cùng bên phải */}
+        </div>
+        <div className="flex justify-end mb-3">
+          <Button
+            type="primary"
+            className="bg-blue-600"
+            onClick={() =>
+              navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
+            }
+          >
+            {t("fuelOrderStatus.receiptList")}
+          </Button>
+        </div>
       </div>
 
       {/* Nút xuất Excel ở góc phải dưới tiêu đề */}
@@ -401,56 +452,6 @@ const FuelOrderStatus = () => {
           {t("export_excel")}
         </Button>
       </div>
-
-      <div
-        style={{
-          marginBottom: 24,
-          background: "#fafafa",
-          padding: 16,
-          borderRadius: 8,
-        }}
-      >
-        {/* Nút danh sách nằm trên cùng bên phải */}
-        <div className="flex justify-end mb-3">
-          <Button
-            type="primary"
-            className="bg-blue-600"
-            onClick={() =>
-              navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
-            }
-          >
-            {t("fuelOrderStatus.receiptList")}
-          </Button>
-        </div>
-
-        {/* Label + Filter buttons */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h3 className="mb-3">{t("fuelOrderStatus.filterLabel")}</h3>
-            <div className="flex flex-col md:flex-row gap-2">
-              <Button
-                type={filterType === "all" ? "primary" : "default"}
-                onClick={() => setFilterType("all")}
-              >
-                {t("fuelOrderStatus.allOrders")}
-              </Button>
-              <Button
-                type={filterType === "fuelRequests" ? "primary" : "default"}
-                onClick={() => setFilterType("fuelRequests")}
-              >
-                {t("fuelOrderStatus.requestOrders")}
-              </Button>
-              <Button
-                type={filterType === "fuelSupplyOrders" ? "primary" : "default"}
-                onClick={() => setFilterType("fuelSupplyOrders")}
-              >
-                {t("fuelOrderStatus.supplyOrders")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
 
       <div style={{ background: "#fff", padding: 16, borderRadius: 8 }}>
         <h3 style={{ marginBottom: 12 }}>{t("fuelOrderStatus.orderList")}</h3>

@@ -333,12 +333,12 @@ const handlePackagingSelect = (value, type) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-2 lg:p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-2 lg:mb-4 w-full">
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -12,15 +12,21 @@ import {
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { EditOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { VscPackage } from "react-icons/vsc";
+
 import { useSelector } from "react-redux";
 import { Modal } from "antd";
 import _ from "lodash";
 
 const PackageCategoryList = () => {
-  const [categories, setCategories] = useState([]);  // Dữ liệu gốc
-  const [filteredCategories, setFilteredCategories] = useState([]);  // Dữ liệu đã lọc
+  const [categories, setCategories] = useState([]); // Dữ liệu gốc
+  const [filteredCategories, setFilteredCategories] = useState([]); // Dữ liệu đã lọc
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -47,7 +53,7 @@ const PackageCategoryList = () => {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setCategories(sortedCategories);
-        setFilteredCategories(sortedCategories);  // Cập nhật filteredCategories khi tải dữ liệu
+        setFilteredCategories(sortedCategories); // Cập nhật filteredCategories khi tải dữ liệu
       } else {
         message.error("Không thể lấy danh sách loại Nguyên Liệu.");
       }
@@ -87,7 +93,7 @@ const PackageCategoryList = () => {
       if (res.data.success) {
         message.success("Cập nhật thành công!");
         setIsEditDrawerOpen(false);
-        fetchCategories();  // Tải lại dữ liệu sau khi chỉnh sửa
+        fetchCategories(); // Tải lại dữ liệu sau khi chỉnh sửa
       } else {
         message.error("Cập nhật thất bại!");
       }
@@ -117,7 +123,7 @@ const PackageCategoryList = () => {
 
           if (res.data.success) {
             message.success("Đã ngừng sử dụng thành công.");
-            fetchCategories();  // Tải lại danh sách sau khi xóa
+            fetchCategories(); // Tải lại danh sách sau khi xóa
           } else {
             message.error("Thao tác thất bại.");
           }
@@ -139,9 +145,9 @@ const PackageCategoryList = () => {
 
   const handleReset = (clearFilters) => {
     clearFilters();
-    setSearchText("");  // Reset lại tìm kiếm
-    setDebouncedSearch("");  // Reset lại debounced search
-    setFilteredCategories(categories);  // Reset lại danh sách về gốc
+    setSearchText(""); // Reset lại tìm kiếm
+    setDebouncedSearch(""); // Reset lại debounced search
+    setFilteredCategories(categories); // Reset lại danh sách về gốc
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -194,16 +200,16 @@ const PackageCategoryList = () => {
     onFilter: (value, record) =>
       record.categories_name
         ? record.categories_name
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase())
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : false,
   });
 
   const columns = [
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           Tên Loại Vật Liệu
         </div>
       ),
@@ -213,20 +219,14 @@ const PackageCategoryList = () => {
       ...getColumnSearchProps("categories_name"),
     },
     {
-      title: (
-        <div style={{ textAlign: "left", width: "100%" }}>
-          Mô Tả
-        </div>
-      ),
+      title: <div style={{ textAlign: "left", width: "100%" }}>Mô Tả</div>,
       dataIndex: "Descriptions",
       key: "Descriptions",
       align: "center",
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Số Lượng Tổng
-        </div>
+        <div style={{ textAlign: "center", width: "100%" }}>Số Lượng Tổng</div>
       ),
       dataIndex: "quantity",
       key: "quantity",
@@ -235,9 +235,7 @@ const PackageCategoryList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Trạng Thái
-        </div>
+        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
       ),
       dataIndex: "is_delete",
       key: "is_delete",
@@ -257,9 +255,7 @@ const PackageCategoryList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          Hành Động
-        </div>
+        <div style={{ textAlign: "center", width: "100%" }}>Hành Động</div>
       ),
       key: "action",
       align: "center", // Căn giữa tất cả các cột
@@ -335,17 +331,17 @@ const PackageCategoryList = () => {
   };
 
   useEffect(() => {
-    applyFilters(categories);  // Lọc lại dữ liệu khi có thay đổi
+    applyFilters(categories); // Lọc lại dữ liệu khi có thay đổi
   }, [debouncedSearch, statusFilterVal, categories]);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mt-6 mb-4">
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-2">
         {/* Nút quay lại bên trái */}
         <button
           onClick={() => navigate("/system/admin/feature_material_category")}
           type="button"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -354,15 +350,23 @@ const PackageCategoryList = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
           </svg>
           <span className="hidden md:inline">Quay lại</span>
         </button>
 
         {/* Tiêu đề căn giữa */}
-        <h2 className="text-center font-bold text-[18px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
-          Danh Sách Loại Nguyên Liệu
-        </h2>
+        <div className="flex items-center justify-center gap-2">
+          <VscPackage className="size-8"></VscPackage>
+          <h2 className="text-center font-bold text-[18px] md:text-2xl flex-grow text-gray-800">
+            Danh Sách loại vật Liệu
+          </h2>
+        </div>
 
         {/* Phần tử trống bên phải để cân bằng nút quay lại */}
         <div className="min-w-[20px] md:min-w-[100px]"></div>
@@ -372,7 +376,7 @@ const PackageCategoryList = () => {
         <Button
           type="primary"
           onClick={() => navigate("/system/admin/box-categories/create")}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow mb-2"
         >
           + Tạo loại Vật Liệu
         </Button>
@@ -385,7 +389,6 @@ const PackageCategoryList = () => {
         rowKey="_id"
         pagination={{ pageSize: 10 }}
         scroll={{ x: "max-content" }}
-
       />
 
       {/* Drawer xem chi tiết */}
@@ -454,7 +457,9 @@ const PackageCategoryList = () => {
           <Form.Item
             label="Tên loại thùng"
             name="categories_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên loại thùng" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập tên loại thùng" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -464,7 +469,10 @@ const PackageCategoryList = () => {
           </Form.Item>
 
           <div className="flex justify-end">
-            <Button onClick={() => setIsEditDrawerOpen(false)} style={{ marginRight: 8 }}>
+            <Button
+              onClick={() => setIsEditDrawerOpen(false)}
+              style={{ marginRight: 8 }}
+            >
               Hủy
             </Button>
             <Button type="primary" htmlType="submit">

@@ -24,6 +24,8 @@ import { useNavigate } from "react-router-dom";
 import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
+import { GoPackageDependencies } from "react-icons/go";
+
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -403,7 +405,7 @@ const FuelStorageReceiptList = () => {
   ];
 
   return (
-    <div className="fuel-storage-receipt-list">
+    <div className="fuel-storage-receipt-list md:px-8">
       {/* Tiêu đề */}
       <div
         style={{ marginBottom: 24, marginTop: 24 }}
@@ -413,7 +415,7 @@ const FuelStorageReceiptList = () => {
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -433,7 +435,8 @@ const FuelStorageReceiptList = () => {
         </Button>
 
         {/* Title căn giữa */}
-        <h5 className="text-center font-bold text-[16px] md:text-2xl flex-grow mx-4">
+        <h5 className="text-center flex items-center justify-center gap-2 font-bold text-2xl md:text-2xl flex-grow mx-4 text-gray-800">
+          <GoPackageDependencies></GoPackageDependencies>
           {t("fuelStorage.title")}
         </h5>
 
@@ -441,17 +444,6 @@ const FuelStorageReceiptList = () => {
         <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
 
-      {/* Nút Xuất Excel */}
-      <div className="flex justify-end mb-1">
-        <Button
-          icon={<DownloadOutlined />}
-          type="primary"
-          className="bg-blue-600 text-white"
-          onClick={handleExportFileExcel}
-        >
-          {t("export_excel")}
-        </Button>
-      </div>
       <div
         style={{
           marginBottom: 24,
@@ -463,9 +455,6 @@ const FuelStorageReceiptList = () => {
         {/* Label + Filter buttons */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h3 className="mb-3">
-              {t("fuelStorage.filters.receiptTypeTitle")}
-            </h3>
             <div className="flex flex-col md:flex-row gap-2">
               <Button
                 type={receiptTypeFilter === "1" ? "primary" : "default"}
@@ -482,6 +471,18 @@ const FuelStorageReceiptList = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Nút Xuất Excel */}
+      <div className="flex justify-end mb-1">
+        <Button
+          icon={<DownloadOutlined />}
+          type="primary"
+          className="bg-blue-600 text-white"
+          onClick={handleExportFileExcel}
+        >
+          {t("export_excel")}
+        </Button>
       </div>
       <Table
         columns={columns}

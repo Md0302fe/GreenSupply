@@ -223,7 +223,7 @@ const FuelList = () => {
         text
       ),
   });
-  console.log("fuels => ", fuels);
+
   // Handle export to Excel
   const handleExportFileExcel = () => {
     if (!fuels.length) {
@@ -284,7 +284,7 @@ const FuelList = () => {
       // align: "center",
     },
     {
-      title: <div style={{ textAlign: "left", width: "100%" }}>Mô Tả</div>,
+      title: <div style={{ textAlign: "left",}}>Mô Tả</div>,
 
       dataIndex: "description",
       key: "description",
@@ -351,13 +351,13 @@ const FuelList = () => {
   ];
 
   return (
-    <div className="fuel-list">
+    <div className="fuel-list px-8">
       <div className="flex items-center justify-between mt-6 mb-4">
         {/* Nút quay lại bên trái */}
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -372,7 +372,7 @@ const FuelList = () => {
         </Button>
 
         {/* Tiêu đề căn giữa */}
-        <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
+        <h2 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
           Danh Sách Loại Nguyên Liệu
         </h2>
 
@@ -380,7 +380,7 @@ const FuelList = () => {
         <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2">
         <Button
           type="primary"
           className="mb-1"

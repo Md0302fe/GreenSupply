@@ -106,3 +106,18 @@ export const getProductionChartData = async ({ access_token }) => {
   );
   return res.data;
 };
+
+// get product by id
+
+export const getProductById = async ({ access_token }) => {
+  const res = await axiosJWT.get(
+    `${process.env.REACT_APP_API_URL}/product-request/getProductionChartData`,
+    {
+      headers: {
+        token: `Bearer ${access_token}`,
+      },
+    }
+  );
+  return res.data;
+};
+
