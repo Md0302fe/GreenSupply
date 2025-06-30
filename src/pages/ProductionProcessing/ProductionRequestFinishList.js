@@ -10,6 +10,8 @@ import { convertDateStringV1 } from "../../ultils";
 import Loading from "../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../components/DrawerComponent/DrawerComponent";
 import * as ProductionRequestServices from "../../services/ProductionRequestServices";
+import { FcTodoList } from "react-icons/fc";
+
 import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -82,10 +84,10 @@ const ProductionRequestList = () => {
 
   const tableData = Array.isArray(data)
     ? data
-      .filter(
-        (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
-      )
-      .map((req) => ({ ...req, key: req._id }))
+        .filter(
+          (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
+        )
+        .map((req) => ({ ...req, key: req._id }))
     : [];
 
   // Search
@@ -305,14 +307,14 @@ const ProductionRequestList = () => {
   };
 
   return (
-    <div className="production-request-list">
+    <div className="production-request-list px-8">
       <div className="mt-2 mb-2">
         <div className="flex items-center justify-between my-6">
           {/* Nút quay lại responsive */}
           <Button
             onClick={() => navigate(-1)}
             type="primary"
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -332,22 +334,22 @@ const ProductionRequestList = () => {
           </Button>
 
           {/* Tiêu đề căn giữa */}
-          <h5 className="text-center font-bold text-[18px] md:text-2xl flex-grow mx-4">
+          <h5 className="text-center flex items-center justify-center gap-2 font-bold text-[18px] md:text-2xl flex-grow mx-4">
+            <FcTodoList></FcTodoList>
             {t("page.title")}
           </h5>
 
           {/* Phần tử trống bên phải để cân bằng layout */}
           <div className="min-w-[20px] md:min-w-[100px]"></div>
         </div>
-
       </div>
       {/* Notifications Tạo Quy Trình */}
-      <div className="space-y-2 text-sm my-4">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="space-y-2 text-sm my-4 ">
+        <div className="flex flex-wrap items-center gap-2 ">
           <p className="">
             <Trans i18nKey="hint.create_plan_process">
               + Tạo quy trình
-              <span className="font-medium text-blue-600 ml-1">(kế hoạch)</span> bằng
+              <span className="font-medium text-blue-600 ml-1">(đơn)</span> bằng
               cách click vào biểu tượng
             </Trans>
           </p>
@@ -360,21 +362,24 @@ const ProductionRequestList = () => {
           <p className="">
             <Trans i18nKey="hint.create_batch_process">
               + Tạo quy trình
-              <span className="font-medium text-green-600 ml-1">(tổng hợp)</span> bằng
-              cách chọn vào nút
+              <span className="font-medium text-green-600 ml-1">
+                (tổng hợp)
+              </span>{" "}
+              bằng cách chọn vào nút
             </Trans>
           </p>
           <button
             className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
             onClick={() =>
-              navigate("/system/admin/production-processing/consolidated-create")
+              navigate(
+                "/system/admin/production-processing/consolidated-create"
+              )
             }
           >
             {t("action.create_batch_process")}
           </button>
         </div>
       </div>
-
 
       <Loading isPending={isLoading}>
         <Table

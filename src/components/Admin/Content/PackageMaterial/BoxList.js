@@ -16,7 +16,9 @@ import {
 import { Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { VscPackage } from "react-icons/vsc";
 import axios from "axios";
+
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -108,7 +110,7 @@ const BoxList = () => {
   const handleDelete = (id) => {
     Modal.confirm({
       title: "Xác nhận xoá",
-      content: "Bạn có chắc chắn muốn xoá nguyên liệu này không?",
+      content: "Bạn có chắc chắn muốn xoá vật liệu này không?",
       okText: "Xoá",
       cancelText: "Huỷ",
       okType: "danger",
@@ -329,14 +331,14 @@ const BoxList = () => {
 
   return (
     <>
-      <div className="p-6">
+      <div className="p-8">
         {/* Header with back button, centered title */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-2">
           {/* Nút quay lại bên trái */}
           <button
             onClick={() => navigate("/system/admin/feature_material_category")}
             type="button"
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -355,10 +357,12 @@ const BoxList = () => {
             <span className="hidden md:inline">Quay lại</span>
           </button>
 
-          {/* Tiêu đề căn giữa */}
-          <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
-            Danh sách Nguyên Liệu Theo Loại
-          </h2>
+          <div className="flex items-center justify-center gap-2">
+            <VscPackage className="size-8"></VscPackage>
+            <h2 className="text-center font-bold text-[18px] md:text-2xl flex-grow text-gray-800">
+              Danh sách vật liệu theo loại
+            </h2>
+          </div>
 
           {/* Phần tử trống bên phải để cân bằng nút bên trái */}
           <div className="min-w-[20px] md:min-w-[100px]"></div>
@@ -371,10 +375,10 @@ const BoxList = () => {
             onClick={() => navigate("/system/admin/box-Create")}
             className="shadow-md"
           >
-            + Tạo Nguyên Liệu
+            + Tạo vật liệu mới
           </Button>
         </div>
-        
+
         {/* Các button danh mục */}
         <div className="flex flex-wrap gap-2 grow" style={{ minWidth: 0 }}>
           {categories.map((cat) => (

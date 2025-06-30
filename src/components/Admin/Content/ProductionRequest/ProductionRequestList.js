@@ -23,6 +23,7 @@ import { convertDateStringV1 } from "../../../../ultils";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
+import { VscChecklist } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -400,15 +401,7 @@ const ProductionRequestList = () => {
       ...getColumnSearchProps("request_name"),
       sorter: (a, b) => a.request_name.localeCompare(b.request_name),
     },
-    {
-      title: <div className="text-center">{t("table.product_quantity")}</div>,
-      dataIndex: "product_quantity",
-      key: "product_quantity",
-      align: "center",
-      className: "text-center",
-      sorter: (a, b) => a.product_quantity - b.product_quantity,
-      render: (val) => `${val}`,
-    },
+
     {
       title: <div className="text-center">{t("table.material_quantity")}</div>,
       dataIndex: "material_quantity",
@@ -417,6 +410,15 @@ const ProductionRequestList = () => {
       className: "text-center",
       sorter: (a, b) => a.material_quantity - b.material_quantity,
       render: (val) => `${val} `,
+    },
+    {
+      title: <div className="text-center">{t("table.product_quantity")}</div>,
+      dataIndex: "product_quantity",
+      key: "product_quantity",
+      align: "center",
+      className: "text-center",
+      sorter: (a, b) => a.product_quantity - b.product_quantity,
+      render: (val) => `${val}`,
     },
     {
       title: <div className="text-center">{t("table.production_date")}</div>,
@@ -521,6 +523,8 @@ const ProductionRequestList = () => {
     setIsEditMode(false);
   };
 
+  console.log("selectedRequest => ", selectedRequest);
+
   return (
     <div className="production-request-list">
       <div className="flex items-center justify-between my-6">
@@ -528,7 +532,7 @@ const ProductionRequestList = () => {
         <button
           onClick={() => navigate(-1)}
           type="button"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -548,7 +552,8 @@ const ProductionRequestList = () => {
         </button>
 
         {/* Tiêu đề căn giữa */}
-        <h2 className="text-center font-bold text-[20px] md:text-3xl flex-grow mx-2 mt-1 mb-1">
+        <h2 className="flex items-center justify-center text-center gap-2 font-bold text-[20px] md:text-2xl flex-grow mx-2 mt-1 mb-1 text-gray-800">
+          <VscChecklist></VscChecklist>
           {t("productionRequestManagement.title")}
         </h2>
 
@@ -556,13 +561,12 @@ const ProductionRequestList = () => {
         <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
 
-
       {/* Notifications Tạo Quy Trình */}
-      <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2">
+      <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <p>{t("notification.after_approve")}</p>
           <p
-            className="font-semibold text-black bg-yellow-300 px-2 py-1 rounded-lg cursor-pointer 
+            className="font-semibold text-black bg-yellow-300 px-2 py-2 rounded-lg cursor-pointer 
        shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-200 ease-in-out text-center"
             onClick={() => navigate("/system/admin/production-processing")}
           >
@@ -570,7 +574,6 @@ const ProductionRequestList = () => {
           </p>
         </div>
       </div>
-
 
       <Loading isPending={isLoading || fuelLoading}>
         <Table
@@ -671,36 +674,35 @@ const ProductionRequestList = () => {
             </div>
 
             {/* Nút Chỉnh Sửa / Duyệt */}
-           <div className="flex justify-end gap-4 mt-6 flex-wrap">
-  {/* Nút sửa */}
-  <Button
-    type="primary"
-    className="px-6 py-2 text-lg"
-    onClick={handleEdit}
-  >
-    {t("action.edit")}
-  </Button>
+            <div className="flex justify-end gap-4 mt-6 flex-wrap">
+              {/* Nút sửa */}
+              <Button
+                type="primary"
+                className="px-6 py-2 text-lg"
+                onClick={handleEdit}
+              >
+                {t("action.edit")}
+              </Button>
 
-  {/* Nút duyệt nếu đang chờ duyệt */}
-  {selectedRequest.status === "Chờ duyệt" && (
-    <Button
-      type="default"
-      className="px-6 py-2 text-lg"
-      onClick={() => handleApprove(selectedRequest)}
-    >
-      {t("action.approve")}
-    </Button>
-  )}
+              {/* Nút duyệt nếu đang chờ duyệt */}
+              {selectedRequest.status === "Chờ duyệt" && (
+                <Button
+                  type="default"
+                  className="px-6 py-2 text-lg"
+                  onClick={() => handleApprove(selectedRequest)}
+                >
+                  {t("action.approve")}
+                </Button>
+              )}
 
-  {/* Nút đóng */}
-  <button
-    onClick={() => setIsDrawerOpen(false)}
-    className="bg-gray-500 text-white font-bold px-6 py-0.5 text-lg rounded hover:bg-gray-600"
-  >
-    {t("common.close")}
-  </button>
-</div>
-
+              {/* Nút đóng */}
+              <button
+                onClick={() => setIsDrawerOpen(false)}
+                className="bg-gray-500 text-white font-bold px-6 py-0.5 text-lg rounded hover:bg-gray-600"
+              >
+                {t("common.close")}
+              </button>
+            </div>
           </div>
         )}
 

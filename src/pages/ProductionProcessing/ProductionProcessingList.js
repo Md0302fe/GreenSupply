@@ -18,6 +18,10 @@ import { CheckCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
+
+import { FaGear } from "react-icons/fa6";
+import { FaGears } from "react-icons/fa6";
+
 import {
   getAllProductionProcessing,
   approveProductionProcessing,
@@ -133,7 +137,7 @@ const ProductionProcessingList = () => {
           >
             Đặt lại
           </Button>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               type="link"
               size="small"
@@ -357,13 +361,17 @@ const ProductionProcessingList = () => {
 
   const columns = [
     {
-      title: t("productionProcess.field._id"),
+      title: <div className="left">{t("productionProcess.field._id")}</div>,
       dataIndex: "_id",
       key: "_id",
       ...getColumnSearchProps("_id"),
     },
     {
-      title: <div className="text-left">{t("productionProcess.field.production_name")}</div>,
+      title: (
+        <div className="text-left">
+          {t("productionProcess.field.production_name")}
+        </div>
+      ),
       dataIndex: "production_name",
       key: "production_name",
       ...getColumnSearchProps("production_name"),
@@ -425,7 +433,7 @@ const ProductionProcessingList = () => {
 
   return (
     <div className="production-processing-list">
-      <div className="Main-Content">
+      <div className="Main-Content px-8">
         {/* button back & title of page */}
         <div className="my-6">
           <div className="flex items-center justify-between">
@@ -433,7 +441,7 @@ const ProductionProcessingList = () => {
             <button
               onClick={() => navigate(-1)}
               type="button"
-              className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[32px] md:min-w-[100px]"
+              className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[32px] md:min-w-[100px]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -449,12 +457,14 @@ const ProductionProcessingList = () => {
                   d="M15 12H3m0 0l6-6m-6 6l6 6"
                 />
               </svg>
-              <span className="hidden md:inline">{t("productionProcess.button.back")}</span>
+              <span className="hidden md:inline">
+                {t("productionProcess.button.back")}
+              </span>
             </button>
 
             {/* Tiêu đề căn giữa */}
-            <h5 className="text-center font-bold text-xl md:text-2xl flex-grow mx-2">
-              {t("title.productionList")}
+            <h5 className="text-center font-bold text-xl md:text-2xl flex-grow mx-2 text-gray-800">
+              {t("production.createdProcesses.title")}
             </h5>
 
             {/* Phần tử trống để cân layout */}
@@ -462,28 +472,50 @@ const ProductionProcessingList = () => {
           </div>
         </div>
 
-
         <div className="content-main-table-user">
-          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">            <p>{t("productionProcess.label.processType")}</p>
-            <div className="flex flex-row gap-2 mt-2">
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
-                onClick={() => set_type_process("single")}
-              >
-                {t("productionProcess.button.single")}
-              </span>
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
-                onClick={() => handleLoadConsolidate()}
-              >
-                {t("productionProcess.button.consolidated")}
-              </span>
+          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">
+            <div>
+              <div className="inline-flex bg-gray-100 rounded-xl p-1 gap-1">
+                <button
+                  className={`
+              inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+              text-sm font-medium transition-all duration-300
+              ${
+                type_process === "single"
+                  ? "bg-white text-green-600 shadow-sm transform scale-105"
+                  : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+              }
+            `}
+                  onClick={() => set_type_process("single")}
+                >
+                  <FaGear
+                    className={`text-base ${
+                      type_process === "single" ? "text-green-500" : ""
+                    }`}
+                  />
+                  <span>{t("productionProcess.button.single")}</span>
+                </button>
+
+                <button
+                  className={`
+              inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+              text-sm font-medium transition-all duration-300
+              ${
+                type_process === "consolidate"
+                  ? "bg-white text-green-600 shadow-sm transform scale-105"
+                  : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+              }
+            `}
+                  onClick={() => handleLoadConsolidate()}
+                >
+                  <FaGears
+                    className={`text-base ${
+                      type_process === "consolidate" ? "text-green-500" : ""
+                    }`}
+                  />
+                  <span>{t("productionProcess.button.consolidated")}</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -543,8 +575,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage1_end
                   ? moment(selectedProcess.process_stage1_end).format(
-                    "DD/MM/YYYY HH:mm"
-                  )
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -556,8 +588,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage2_end
                   ? moment(selectedProcess.process_stage2_end).format(
-                    "DD/MM/YYYY HH:mm"
-                  )
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -569,8 +601,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage3_end
                   ? moment(selectedProcess.process_stage3_end).format(
-                    "DD/MM/YYYY HH:mm"
-                  )
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -582,8 +614,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage4_end
                   ? moment(selectedProcess.process_stage4_end).format(
-                    "DD/MM/YYYY HH:mm"
-                  )
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -595,8 +627,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage5_end
                   ? moment(selectedProcess.process_stage5_end).format(
-                    "DD/MM/YYYY HH:mm"
-                  )
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -608,8 +640,8 @@ const ProductionProcessingList = () => {
                 -{" "}
                 {selectedProcess.process_stage6_end
                   ? moment(selectedProcess.process_stage6_end).format(
-                    "DD/MM/YYYY HH:mm"
-                  )
+                      "DD/MM/YYYY HH:mm"
+                    )
                   : t("common.notEnded")}
               </Descriptions.Item>
             )}
@@ -647,7 +679,6 @@ const ProductionProcessingList = () => {
             </button>
           </div>
         </Space>
-
       </Drawer>
 
       {/* Drawer Cập Nhật */}

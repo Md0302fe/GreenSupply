@@ -331,7 +331,6 @@ const UserComponent = () => {
 
   const drawerWidth = isMobile ? "100%" : "40%";
 
-
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -424,7 +423,11 @@ const UserComponent = () => {
   });
   const columns = [
     {
-      title: t("user_list.name"),
+      title: (
+        <div style={{ textAlign: "left", width: "100%" }}>
+          {t("user_list.name")}
+        </div>
+      ),
       dataIndex: "full_name",
       key: "full_name",
       ...getColumnSearchProps("full_name"),
@@ -486,7 +489,13 @@ const UserComponent = () => {
       ),
       dataIndex: "action",
       render: (text, record) => (
-        <div style={{ display: "flex", justifyContent: "center", whiteSpace: "nowrap", minWidth: 140 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            whiteSpace: "nowrap",
+          }}
+        >
           {renderAction(text, record)}
         </div>
       ),
@@ -495,13 +504,13 @@ const UserComponent = () => {
   ];
   return (
     <div className="Wrapper-Admin-User">
-      <div className="Main-Content">
+      <div className="Main-Content py-8 md:p-6 lg:p-6">
         {/* Header: Nút quay lại + Tiêu đề căn giữa */}
-        <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+        <div className="flex items-center justify-between flex-wrap gap-2 md:mb-16 mt-4">
           {/* Nút quay lại */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -522,8 +531,8 @@ const UserComponent = () => {
 
           {/* Tiêu đề trung tâm có icon */}
           <div className="flex items-center justify-center flex-grow text-gray-800">
-            <FaUser className="text-2xl text-blue-500 mr-2" />
-            <h5 className="relative text-xl font-semibold">
+            <FaUser className="text-2xl text-black mr-2" />
+            <h5 className="relative text-2xl font-semibold">
               {t("user_list.title")}
               <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
             </h5>

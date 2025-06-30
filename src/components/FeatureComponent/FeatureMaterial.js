@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 import mng_mango from "../../assets/Feature_materials_category/mng_mango.png";
 import mng_addnew_mango from "../../assets/Feature_materials_category/mng_addnew_mango.jpg";
-import mng_mango_list from "../../assets/Feature_materials_category/mng_mango_list.jpg";
+import mng_mango_list from "../../assets/Feature_materials_category/RawMaterialMangoList.jpg";
 import mngo_mango_VatLieu from "../../assets/Feature_materials_category/mngo_LoaiVatLieu.jpg";
 import mngo_mango_NguyenVatLieu from "../../assets/Feature_materials_category/mngo_NguyenVatLieu.jpg";
 
@@ -45,16 +45,16 @@ const UserComponent = () => {
           image={mng_mango_list}
         />
         <Card
-          link="/system/admin/box-categories/list"
-          title={t("material.type.title")}
-          description={t("material.type.description")}
-          image={mngo_mango_VatLieu}
-        />
-        <Card
           link="/system/admin/box-list"
           title={t("material.manage.title")}
           description={t("material.manage.description")}
           image={mngo_mango_NguyenVatLieu}
+        />
+        <Card
+          link="/system/admin/box-categories/list"
+          title={t("material.type.title")}
+          description={t("material.type.description")}
+          image={mngo_mango_VatLieu}
         />
       </div>
     </div>

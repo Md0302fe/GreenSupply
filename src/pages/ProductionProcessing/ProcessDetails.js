@@ -115,6 +115,7 @@ const ProcessDetails = () => {
       message.error(t("processDetails.message.completeError"));
       await refetch();
     }
+    await refetch();
   };
 
   return (
@@ -344,7 +345,7 @@ const ProcessDetails = () => {
               dataStage: dataStage?.data,
               dataProcess: dataProcess?.data,
             }}
-          />
+          />  
           <StageDetailsComponents
             stage={stage7}
             noStage="7"
