@@ -18,7 +18,6 @@ import { MdDashboardCustomize } from "react-icons/md";
 import { CubeIcon } from "@heroicons/react/24/outline";
 import { GrStorage } from "react-icons/gr";
 
-
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 import Sidebar from "./Sidebar";
 
@@ -140,7 +139,7 @@ const Admin = (props) => {
   return (
     <div className="admin-container min-h-screen overflow-y-auto">
       {/* Admin-Sidebar */}
-      <div
+      {/* <div
         className={`admin-sidebar min-h-screen ${
           !collapsed && isMobile ? "mobile-visible" : ""
         }`}
@@ -153,10 +152,7 @@ const Admin = (props) => {
             type: "utility",
             content: isMobile ? (
               <div className="flex items-center gap-3">
-                {/* Language Switcher: chỉ icon */}
                 <LanguageSwitcher onlyIcon />
-
-                {/* Home Icon */}
                 <div
                   className="cursor-pointer hover:text-blue-500"
                   onClick={() => navigate("/home")}
@@ -168,7 +164,7 @@ const Admin = (props) => {
             ) : null,
           }}
         />
-      </div>
+      </div> */}
 
       <div className="admin-content w-full overflow-x-hidden">
         {/* Top Navigation Bar */}

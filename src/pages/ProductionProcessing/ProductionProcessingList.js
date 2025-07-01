@@ -15,6 +15,8 @@ import "./Order.scss";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { CheckCircleOutlined, EditOutlined } from "@ant-design/icons";
+import { BsBuildingFillGear } from "react-icons/bs";
+
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
@@ -463,7 +465,8 @@ const ProductionProcessingList = () => {
             </button>
 
             {/* Tiêu đề căn giữa */}
-            <h5 className="text-center font-bold text-xl md:text-2xl flex-grow mx-2 text-gray-800">
+            <h5 className="flex justify-center items-center gap-2 text-center font-bold text-xl md:text-2xl flex-grow mx-2 text-gray-800">
+              <BsBuildingFillGear></BsBuildingFillGear>
               {t("production.createdProcesses.title")}
             </h5>
 

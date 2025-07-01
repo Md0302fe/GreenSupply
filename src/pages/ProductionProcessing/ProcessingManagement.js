@@ -12,6 +12,9 @@ import { useNavigate } from "react-router-dom";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
 
+import { FaGear } from "react-icons/fa6";
+import { FaGears } from "react-icons/fa6";
+
 const ProcessingManagement = () => {
   const { t } = useTranslation();
 
@@ -58,8 +61,8 @@ const ProcessingManagement = () => {
 
   return (
     <Loading isPending={isLoading}>
-      <div className="production-processing-list">
-        <div className="my-6 px-0 md:px-20">
+      <div className="production-processing-list px-8">
+        <div className="my-6 px-6">
           <div className="flex items-center justify-between my-6">
             {/* Nút quay lại bên trái */}
             <Button
@@ -74,46 +77,72 @@ const ProcessingManagement = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12H3m0 0l6-6m-6 6l6 6"
+                />
               </svg>
-              <span className="hidden md:inline">{t("processingManagement.button.back")}</span>
+              <span className="hidden md:inline">
+                {t("processingManagement.button.back")}
+              </span>
             </Button>
 
             {/* Tiêu đề ở giữa */}
-            <h5 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4 flex items-center justify-center gap-2">
-              <Cog6ToothIcon className="w-6 h-6 md:w-8 md:h-8 animate-spin text-gray-600" />
+            <h5 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4 flex items-center justify-center gap-2 text-gray-800">
+              <Cog6ToothIcon className="w-6 h-6 md:w-8 md:h-8 animate-spin text-gray-800" />
               {t("processingManagement.title.executingProcesses")}
             </h5>
 
             {/* Phần tử trống bên phải để cân bằng */}
             <div className="min-w-[20px] md:min-w-[100px]"></div>
           </div>
-
         </div>
 
         {/* type of process */}
-        <div className="px-0 lg:px-20">
-          <div className="p-1 lg:p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-fit">
-            <p>{t("processingManagement.label.processType")}</p>
-            <div className="flex gap-2 mt-2">
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
+        <div className="px-6">
+          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">
+            <div className="inline-flex bg-gray-100 rounded-xl p-1 gap-1 mt-2">
+              <button
+                className={`
+        inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+        text-sm font-medium transition-all duration-300
+        ${
+          type_process === "single"
+            ? "bg-white text-green-600 shadow-sm transform scale-105"
+            : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+        }
+      `}
                 onClick={handleSingleLoadData}
               >
-                {t("processingManagement.button.single")}
-              </span>
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
+                <FaGear
+                  className={`text-base ${
+                    type_process === "single" ? "text-green-500" : ""
                   }`}
-                onClick={() => handleLoadConsolidate()}
+                />
+                <span>{t("processingManagement.button.single")}</span>
+              </button>
+
+              <button
+                className={`
+        inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+        text-sm font-medium transition-all duration-300
+        ${
+          type_process === "consolidate"
+            ? "bg-white text-green-600 shadow-sm transform scale-105"
+            : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+        }
+      `}
+                onClick={handleLoadConsolidate}
               >
-                {t("processingManagement.button.consolidated")}
-              </span>
+                <FaGears
+                  className={`text-base ${
+                    type_process === "consolidate" ? "text-green-500" : ""
+                  }`}
+                />
+                <span>{t("processingManagement.button.consolidated")}</span>
+              </button>
             </div>
           </div>
         </div>

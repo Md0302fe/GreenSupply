@@ -509,14 +509,14 @@
     }
   },
   "production": {
-    "title": "Quản Lý Yêu Cầu Sản Xuất",
+    "title": "Quản lý sản xuất",
     "dashboard": {
       "title": "Dashboard",
       "description": "Thông tin toàn bộ đơn quy trình"
     },
     "create": {
       "title": "Lập kế hoạch sản xuất",
-      "description": "Tạo mới yêu cầu sản xuất (đơn thể) - Quy trình sản xuất"
+      "description": "Tạo mới sản xuất (đơn thể) - Quy trình sản xuất"
     },
     "requestList": {
       "title": "D.sách kế hoạch sản xuất",
@@ -527,7 +527,7 @@
       "description": "Quản lý kế hoạch đang trong quá trình chờ tạo quy trình sản xuất"
     },
     "createdProcesses": {
-      "title": "Danh sách quy trình đã tạo",
+      "title": "D.sách quy trình đã tạo",
       "description": "Q.lý danh sách quy trình đã tạo"
     },
     "executing": {
@@ -535,7 +535,7 @@
       "description": "Quản lý danh sách quy trình đang thực thi"
     },
     "history": {
-      "title": "Lịch Sử Quy Trình",
+      "title": "Lịch sử quy trình",
       "description": "Quản lý danh sách quy trình đã hoàn thành"
     }
   },
@@ -1207,7 +1207,7 @@
     }
   },
   "histories": {
-    "title": "Lịch Sử Quy Trình",
+    "title": "Lịch sử quy trình",
     "field": {
       "processCode": "Mã quy trình",
       "processName": "Tên quy trình",
