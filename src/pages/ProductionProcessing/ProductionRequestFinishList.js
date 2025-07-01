@@ -348,12 +348,13 @@ const ProductionRequestList = () => {
             <Trans i18nKey="hint.create_plan_process">
               + Tạo quy trình
               <span className="font-medium text-blue-600 ml-1">(kế hoạch)</span> bằng
-              cách click vào biểu tượng
+              cách click vào biểu tượng  
             </Trans>
-          </p>
-          <span className="text-green-600 inline-block cursor-pointer">
+          
+          <span className="ml-1 text-green-600 inline-block cursor-pointer">
             <FaGear />
           </span>
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -363,15 +364,16 @@ const ProductionRequestList = () => {
               <span className="font-medium text-green-600 ml-1">(tổng hợp)</span> bằng
               cách chọn vào nút
             </Trans>
-          </p>
+          
           <button
-            className="font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
+            className="ml-2 mb-2 font-semibold text-white bg-green-600 px-2 py-1 rounded cursor-pointer"
             onClick={() =>
               navigate("/system/admin/production-processing/consolidated-create")
             }
           >
             {t("action.create_batch_process")}
           </button>
+          </p>
         </div>
       </div>
 
@@ -482,17 +484,20 @@ const ProductionRequestList = () => {
                   {t("action.create_process")}
                 </Button>
 
-                {/* Nút đóng */}
-                <button
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
-                >
-                  {t("common.close")}
-                </button>
+
               </div>
             )}
           </div>
         )}
+        {/* Nút đóng */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="mt-2 bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
+          >
+            {t("common.close")}
+          </button>
+        </div>
       </DrawerComponent>
     </div>
   );

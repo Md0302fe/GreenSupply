@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./User.scss";
+import { message } from "antd";
 
 import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
 
@@ -130,20 +131,33 @@ const BlockedUserComponent = () => {
   } = mutationUnBlock;
 
   // Handle Notification and set loading for delete function
-  useEffect(() => {
-    if (isSuccessDelete || isSuccessUnblock) {
-      if (deleteRespone?.status === "OK" || unblockRespone?.status === "OK") {
-        setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
-        toast.success(unblockRespone?.message);
-      } else {
-        toast.error(deleteRespone?.message);
-        toast.error(unblockRespone?.message);
-        setIsOpenDelete(false);
-      }
+  // 🟢 Block user
+useEffect(() => {
+  if (isSuccessDelete && deleteRespone) {
+    const msg = deleteRespone.message || t("common.unknown_error");
+    if (deleteRespone.status === "OK") {
+      message.success(msg);
+    } else {
+      message.error(msg);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessDelete, isSuccessUnblock]);
+    setIsOpenDelete(false);
+  }
+}, [isSuccessDelete]);
+
+// 🟢 Unblock user
+useEffect(() => {
+  if (isSuccessUnblock && unblockRespone) {
+    const msg = unblockRespone.message || t("common.unknown_error");
+    if (unblockRespone.status === "OK") {
+      message.success(msg);
+    } else {
+      message.error(msg);
+    }
+    setIsOpenDelete(false);
+  }
+}, [isSuccessUnblock]);
+
+
 
   // Handle each time rowSelected was call
   useEffect(() => {

@@ -14,7 +14,7 @@ const StageComponent = ({
   const { t } = useTranslation();
 
   const statusKeyMap = {
-    "Đang thực hiện": "executing",
+    "Đang thực thi": "executing",
     "Hoàn thành": "done",
     "Đã hủy": "cancelled",
     // Nếu API trả key tiếng Anh (executing, done...) thì có thể map ngược lại cũng được

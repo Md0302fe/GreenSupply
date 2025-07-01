@@ -406,7 +406,7 @@ const FuelOrderStatus = () => {
         style={{
           marginBottom: 24,
           background: "#fafafa",
-          padding: 16,
+          padding: isMobile ? 0 : 16,
           borderRadius: 8,
         }}
       >

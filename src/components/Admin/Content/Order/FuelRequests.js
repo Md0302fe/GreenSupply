@@ -468,9 +468,9 @@ const FuelRequestsManagement = () => {
       >
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails}>
-          <div className="overflow-x-auto">
+          <div className="w-full">
           <Descriptions bordered column={1} layout="horizontal"
-          className="min-w-[400px]">
+          className="w-full">
             <Descriptions.Item
               label={t("fuel_request.table.customer")}
               labelStyle={{ width: "40%" }}

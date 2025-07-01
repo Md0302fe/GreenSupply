@@ -93,27 +93,29 @@ const ProcessingManagement = () => {
 
         {/* type of process */}
         <div className="px-0 lg:px-20">
-          <div className="p-1 lg:p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-fit">
-            <p>{t("processingManagement.label.processType")}</p>
-            <div className="flex gap-2 mt-2">
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
-                onClick={handleSingleLoadData}
-              >
-                {t("processingManagement.button.single")}
-              </span>
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
-                onClick={() => handleLoadConsolidate()}
-              >
-                {t("processingManagement.button.consolidated")}
-              </span>
+          <div className="flex justify-center md:justify-end">
+            <div className="p-1 lg:p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-[288px]">
+              <p>{t("processingManagement.label.processType")}</p>
+              <div className="flex gap-2 mt-2">
+                <span
+                  className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-slate-500 hover:bg-slate-600"
+                    }`}
+                  onClick={handleSingleLoadData}
+                >
+                  {t("processingManagement.button.single")}
+                </span>
+                <span
+                  className={`text-sm font-medium text-white hover:bg-green-600 px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-slate-500 hover:bg-slate-600"
+                    }`}
+                  onClick={() => handleLoadConsolidate()}
+                >
+                  {t("processingManagement.button.consolidated")}
+                </span>
+              </div>
             </div>
           </div>
         </div>

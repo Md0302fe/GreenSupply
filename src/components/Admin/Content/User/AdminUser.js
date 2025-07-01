@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./User.scss";
+import { message } from "antd";
 
 import { Button, Form, Input, Select, Space, Upload } from "antd";
 import { FaUser } from "react-icons/fa"; // Import biểu tượng từ react-icons
@@ -214,17 +215,17 @@ const UserComponent = () => {
   };
 
   // UseEffect - HANDLE Notification success/error UPDATE PRODUCT
-  useEffect(() => {
-    if (isSuccessUpdate) {
-      if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
-        handleCancelUpdate();
-      } else {
-        toast.error(dataRes?.message);
-      }
+ useEffect(() => {
+  if (isSuccessUpdate) {
+    if (dataRes?.status === "OK") {
+      message.success(dataRes?.message || t("user_list.update_success"));
+      handleCancelUpdate();
+    } else {
+      message.error(dataRes?.message || t("user_list.update_error"));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessUpdate, isErrorUpdate]);
+  }
+}, [isSuccessUpdate]);
+
 
   // CANCEL MODAL - DELETE PRODUCT
   const handleCancelDelete = () => {

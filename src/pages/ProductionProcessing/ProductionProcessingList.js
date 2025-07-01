@@ -464,26 +464,31 @@ const ProductionProcessingList = () => {
 
 
         <div className="content-main-table-user">
-          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">            <p>{t("productionProcess.label.processType")}</p>
-            <div className="flex flex-row gap-2 mt-2">
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
-                onClick={() => set_type_process("single")}
-              >
-                {t("productionProcess.button.single")}
-              </span>
-              <span
-                className={`text-sm font-medium text-white hover:bg-green-600 px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-slate-500 hover:bg-slate-600"
-                  }`}
-                onClick={() => handleLoadConsolidate()}
-              >
-                {t("productionProcess.button.consolidated")}
-              </span>
+          <div className="flex justify-center md:justify-end">
+            <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-[288px]">
+              <p>{t("productionProcess.label.processType")}</p>
+
+              <div className="flex gap-2 mt-2">
+                <span
+                  className={`flex-1 text-center text-sm font-medium text-white px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "single"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-slate-500 hover:bg-slate-600"
+                    }`}
+                  onClick={() => set_type_process("single")}
+                >
+                  {t("productionProcess.button.single")}
+                </span>
+
+                <span
+                  className={`flex-1 text-center text-sm font-medium text-white px-1 lg:px-3 py-1.5 rounded-md cursor-pointer transition-all duration-200 ${type_process === "consolidate"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-slate-500 hover:bg-slate-600"
+                    }`}
+                  onClick={() => handleLoadConsolidate()}
+                >
+                  {t("productionProcess.button.consolidated")}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -729,6 +734,15 @@ const ProductionProcessingList = () => {
             </Button>
           </Space>
         </Form>
+        {/* Nút đóng */}
+        <div className="w-full flex justify-end mt-4">
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
+          >
+            {t("common.close")}
+          </button>
+        </div>
       </Drawer>
     </div>
   );
