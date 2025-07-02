@@ -132,14 +132,15 @@ const HarvestRequestPage = () => {
 
     // Kiểm tra dữ liệu trước khi gửi
     if (!formData.fuel_name.trim())
-      newErrors.fuel_name = "Tên yêu cầu không được để trống!";
+      newErrors.fuel_name = t("harvestRequest.empty_request_name");
     if (!formData.fuel_type.trim())
-      newErrors.fuel_type = "Loại nguyên liệu không được để trống!";
+      newErrors.fuel_type = t("harvestRequest.empty_material_type");
     if (!formData.quantity.trim())
-      newErrors.quantity = "Số lượng không được để trống!";
-    if (!formData.price.trim()) newErrors.price = "Giá không được để trống!";
+      newErrors.quantity = t("harvestRequest.empty_quantity");
+    if (!formData.price.trim())
+      newErrors.price = t("harvestRequest.empty_price");
     if (!formData.address.trim())
-      newErrors.address = "Địa chỉ không được để trống!";
+      newErrors.address = t("harvestRequest.empty_address");
     // Không gửi form nếu có lỗi
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -162,10 +163,9 @@ const HarvestRequestPage = () => {
       status: "Chờ duyệt",
       fuel_type: formData.fuel_type,
     };
-    console.log("123", fuelRequest);
     try {
       await createHarvestRequest(fuelRequest);
-      message.success("Tạo yêu cầu thu hàng thành công!");
+      message.success(t("harvestRequest.create_success"));
 
       setFormData({
         fuel_name: "",
@@ -178,13 +178,12 @@ const HarvestRequestPage = () => {
       setErrors({});
     } catch (error) {
       console.error("Lỗi khi tạo yêu cầu:", error);
-      message.error("Tạo yêu cầu thất bại! Vui lòng thử lại.");
+      message.error(t("harvestRequest.create_fail"));
     }
   };
 
   return (
     <div className="px-2">
-
       {/* Form Tạo Yêu Cầu Thu Hàng */}
       <div className="w-full border border-gray-200 p-6 rounded-md bg-white shadow">
         <h2 className="text-xl font-[800] mb-4 text-black flex items-center gap-3">
@@ -195,7 +194,9 @@ const HarvestRequestPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* fuel_name */}
           <div>
-            <label className="block mb-1 font-semibold">{t("harvestRequest.request_name")}</label>
+            <label className="block mb-1 font-semibold">
+              {t("harvestRequest.request_name")}
+            </label>
             <input
               type="text"
               name="fuel_name"
@@ -222,18 +223,25 @@ const HarvestRequestPage = () => {
               }}
               className="border p-2 rounded w-full mb-2"
             />
+            {errors.fuel_name && (
+              <p className="text-red-500 text-sm">{errors.fuel_name}</p>
+            )}
           </div>
 
           {/* fuel_type */}
           <div>
-            <label className="block mb-1 font-semibold">{t("harvestRequest.material_type")}</label>
+            <label className="block mb-1 font-semibold">
+              {t("harvestRequest.material_type")}
+            </label>
             <select
               name="fuel_type"
               value={formData.fuel_type}
               onChange={handleChange}
               className="border p-2 rounded w-full mb-2"
             >
-              <option value="">{t("harvestRequest.material_type_placeholder")}</option>
+              <option value="">
+                {t("harvestRequest.material_type_placeholder")}
+              </option>
               {fuelTypeList.map((fuel) => (
                 <option key={fuel._id} value={fuel._id}>
                   {fuel.type_name}
@@ -247,7 +255,9 @@ const HarvestRequestPage = () => {
 
           {/* quantity */}
           <div>
-            <label className="block mb-1 font-semibold">{t("harvestRequest.quantity")}</label>
+            <label className="block mb-1 font-semibold">
+              {t("harvestRequest.quantity")}
+            </label>
             <input
               type="number"
               name="quantity"
@@ -293,36 +303,49 @@ const HarvestRequestPage = () => {
 
           {/* address */}
           <div>
-            <label className="block mb-1 font-semibold">{t("harvestRequest.pickup_address")}</label>
-            <select
-              name="address"
-              value={selectedAddressId}
-              onChange={(e) => {
-                const addrId = e.target.value;
-                setSelectedAddressId(addrId);
-                const addrObj = addresses.find((a) => a._id === addrId);
-                setFormData((prev) => ({
-                  ...prev,
-                  address: addrObj ? addrObj.address : "",
-                }));
-                // Xoá lỗi nếu có
-                setErrors((prev) => {
-                  const newErrors = { ...prev };
-                  delete newErrors.address;
-                  return newErrors;
-                });
-              }}
-              className="border p-2 rounded w-full mb-2"
-            >
-              {addresses.length === 0 && (
-                <option value="">{t("harvestRequest.no_address")}</option>
-              )}
-              {addresses.map((addr) => (
-                <option key={addr._id} value={addr._id}>
-                  {addr.address}
-                </option>
-              ))}
-            </select>
+            <label className="block mb-1 font-semibold">
+              {t("harvestRequest.pickup_address")}
+            </label>
+            {addresses.length === 0 ? (
+              <input
+                type="text"
+                name="address"
+                placeholder={t("harvestRequest.enter_pickup_address")}
+                value={formData.address}
+                onChange={handleChange}
+                className="border p-2 rounded w-full mb-2"
+              />
+            ) : (
+              <select
+                name="address"
+                value={selectedAddressId}
+                onChange={(e) => {
+                  const addrId = e.target.value;
+                  setSelectedAddressId(addrId);
+                  const addrObj = addresses.find((a) => a._id === addrId);
+                  setFormData((prev) => ({
+                    ...prev,
+                    address: addrObj ? addrObj.address : "",
+                  }));
+                  // Xoá lỗi nếu có
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.address;
+                    return newErrors;
+                  });
+                }}
+                className="border p-2 rounded w-full mb-2"
+              >
+                {addresses.length === 0 && (
+                  <option value="">{t("harvestRequest.no_address")}</option>
+                )}
+                {addresses.map((addr) => (
+                  <option key={addr._id} value={addr._id}>
+                    {addr.address}
+                  </option>
+                ))}
+              </select>
+            )}
             {errors.address && (
               <p className="text-red-500 text-sm">{errors.address}</p>
             )}
@@ -332,14 +355,18 @@ const HarvestRequestPage = () => {
         {/* Hiển thị total_price */}
         <div className="mt-4 mb-4">
           <p>
-            <span className="font-semibold mr-2">{t("harvestRequest.total_price_label")}</span>
+            <span className="font-semibold mr-2">
+              {t("harvestRequest.total_price_label")}
+            </span>
             {totalPrice().toLocaleString("vi-VN")} VNĐ
           </p>
         </div>
 
         {/* note */}
         <div className="mb-4">
-          <label className="block mb-1 font-semibold">{t("harvestRequest.note")}</label>
+          <label className="block mb-1 font-semibold">
+            {t("harvestRequest.note")}
+          </label>
           <textarea
             name="note"
             maxLength="200"

@@ -202,6 +202,7 @@
     "quantity_placeholder": "Enter quantity...",
     "price_placeholder": "Enter price...",
     "pickup_address": "Pickup Address",
+    "enter_pickup_address": "Enter address...",
     "no_address": "No address available",
     "note_placeholder": "Note (max 200 characters)",
     "total_price_label": "Total Price:",

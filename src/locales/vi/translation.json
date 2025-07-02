@@ -199,6 +199,7 @@
     "quantity_placeholder": "Số lượng...",
     "price_placeholder": "Giá bán...",
     "pickup_address": "Địa chỉ lấy hàng",
+    "enter_pickup_address": "Nhập địa chỉ...",
     "no_address": "Không có địa chỉ nào",
     "note_placeholder": "Ghi chú (tối đa 200 ký tự)",
     "total_price_label": "Tổng giá:",
