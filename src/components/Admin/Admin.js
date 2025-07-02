@@ -15,6 +15,8 @@ import {
 import { FaHockeyPuck, FaShoppingCart } from "react-icons/fa";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { MdDashboardCustomize } from "react-icons/md";
+import { CubeIcon } from "@heroicons/react/24/outline";
+import { GrStorage } from "react-icons/gr";
 
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 import Sidebar from "./Sidebar";
@@ -27,7 +29,9 @@ import { useEffect } from "react";
 const Admin = (props) => {
   const [collapsed, setCollapsed] = useState(true);
   const navigate = useNavigate();
-  const [toggleIcons, setToggleIcons] = useState("dashboard");
+  const [toggleIcons, setToggleIcons] = useState(() => {
+    return localStorage.getItem("activeMenu" || "dashboard");
+  });
 
   const navigationsData = [
     {
@@ -55,7 +59,7 @@ const Admin = (props) => {
       href: "feature_request_suppplier",
     },
     {
-      icon: <FaHockeyPuck className="text-2xl" />,
+      icon: <GrStorage className="text-2xl" />,
       label: "management_warehouse",
       text: "Q.lý kho",
       href: "feature_warehouse",
@@ -72,12 +76,12 @@ const Admin = (props) => {
       text: "Q.lý sản xuất",
       href: "feature_production_process",
     },
-    {
-      icon: <FaFileInvoice className="text-2xl" />,
-      label: "manaement_product_orders",
-      text: "Q.lý đơn đặt hàng",
-      href: "feature_product_orders",
-    },
+    // {
+    //   icon: <FaFileInvoice className="text-2xl" />,
+    //   label: "manaement_product_orders",
+    //   text: "Q.lý đơn đặt hàng",
+    //   href: "feature_product_orders",
+    // },
     {
       icon: <FaCubes className="text-2xl" />,
       label: "finished_product",
@@ -93,6 +97,7 @@ const Admin = (props) => {
 
   const handleToggle = (label, href) => {
     setToggleIcons(label);
+    localStorage?.setItem("activeMenu", label);
     if (href) {
       navigate(href);
     }
@@ -134,7 +139,7 @@ const Admin = (props) => {
   return (
     <div className="admin-container min-h-screen overflow-y-auto">
       {/* Admin-Sidebar */}
-      <div
+      {/* <div
         className={`admin-sidebar min-h-screen ${
           !collapsed && isMobile ? "mobile-visible" : ""
         }`}
@@ -147,10 +152,7 @@ const Admin = (props) => {
             type: "utility",
             content: isMobile ? (
               <div className="flex items-center gap-3">
-                {/* Language Switcher: chỉ icon */}
                 <LanguageSwitcher onlyIcon />
-
-                {/* Home Icon */}
                 <div
                   className="cursor-pointer hover:text-blue-500"
                   onClick={() => navigate("/home")}
@@ -162,7 +164,7 @@ const Admin = (props) => {
             ) : null,
           }}
         />
-      </div>
+      </div> */}
 
       <div className="admin-content w-full overflow-x-hidden">
         {/* Top Navigation Bar */}

@@ -15,7 +15,7 @@ const UserComponent = () => {
         <FaUser className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
           {t("userManagement.title")}
-          <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
+          <span className="absolute left-0 right-0 bottom-0 h-1 bg-black transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
 

@@ -17,6 +17,7 @@ import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { Descriptions, Tag } from "antd";
+import { FaClipboardList } from "react-icons/fa";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import { Space, Input, Form, Button, message } from "antd";
@@ -398,7 +399,7 @@ const FuelProvideManagement = () => {
   // COLUMNS DATA TABLE
   const columns = [
     {
-      title: t("fuelProvide.customer"),
+      title: <div className="text-left">{t("fuelProvide.customer")}</div>,
       dataIndex: "customerName",
       key: "customerName",
       ...getColumnSearchProps("customerName"),
@@ -504,7 +505,7 @@ const FuelProvideManagement = () => {
   ];
   return (
     <div className="Wrapper-Admin-User">
-      <div className="Main-Content">
+      <div className="Main-Content md:px-8">
         <div
           style={{ marginBottom: 24, marginTop: 24 }}
           className="flex items-center justify-between"
@@ -513,7 +514,7 @@ const FuelProvideManagement = () => {
           <Button
             onClick={() => navigate(-1)}
             type="primary"
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -522,15 +523,19 @@ const FuelProvideManagement = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
             </svg>
             <span className="hidden md:inline">{t("fuelProvide.back")}</span>
           </Button>
 
-
           {/* Title căn giữa */}
-          <h5 className="text-center font-bold text-[16px] md:text-2xl flex-grow mx-4">
-            {t("fuelProvide.title")}
+          <h5 className="text-center flex items-baseline gap-2 justify-center font-bold text-2xl md:text-2xl flex-grow mx-4 text-gray-800">
+            <FaClipboardList></FaClipboardList> {t("fuelProvide.title")}
           </h5>
 
           {/* Phần tử trống bên phải để cân bằng nút quay lại */}

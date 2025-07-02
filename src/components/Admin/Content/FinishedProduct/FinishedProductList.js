@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import * as ProductServices from "../../../../services/ProductServices";
 import { useTranslation } from "react-i18next";
 import default_image from "../../../../assets/Feature_warehouse/prouct_carton_img.jpg";
+import { AiFillProduct } from "react-icons/ai";
 
 const FinishedProductList = () => {
   const { t } = useTranslation();
@@ -105,7 +106,7 @@ const FinishedProductList = () => {
   }, [searchText, selectedType, page]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-2 lg:p-6">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 px-8">
       <div
         style={{ marginBottom: 24, marginTop: 24 }}
         className="flex items-center justify-between w-full"
@@ -114,7 +115,7 @@ const FinishedProductList = () => {
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +135,8 @@ const FinishedProductList = () => {
         </Button>
 
         {/* Tiêu đề ở giữa */}
-        <h2 className="text-center font-bold text-[16px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
+        <h2 className="flex justify-center items-center gap-2 text-center font-bold text-[16px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
+          <AiFillProduct></AiFillProduct>
           {t("finishedProductList.title")}
         </h2>
 
@@ -214,16 +216,16 @@ const FinishedProductList = () => {
           </div>
         )}
       </Spin>
-        <div className="mt-6 w-full">
-          <Pagination
-            current={page}
-            pageSize={pageSize}
-            total={total}
-            onChange={(p) => setPage(p)}
-            showSizeChanger={false}
-            align="end"
-          />
-        </div>
+      <div className="mt-6 w-full">
+        <Pagination
+          current={page}
+          pageSize={pageSize}
+          total={total}
+          onChange={(p) => setPage(p)}
+          showSizeChanger={false}
+          align="end"
+        />
+      </div>
       <Modal
         title={
           <span style={{ fontSize: "24px", fontWeight: "bold" }}>

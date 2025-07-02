@@ -384,7 +384,7 @@ const HarvestRequestManagement = () => {
           <div className="w-full p-6 bg-white rounded-md shadow">
             <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
-                <label className="block mb-1 font-semibold">
+                <label className="block mb-1 font-semibold ">
                   {t("harvestRequest.name")}
                 </label>
                 <input

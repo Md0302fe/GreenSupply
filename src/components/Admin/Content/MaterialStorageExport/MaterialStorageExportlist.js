@@ -14,6 +14,9 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 import Highlighter from "react-highlight-words";
 import { useTranslation } from "react-i18next";
 
+import { FaFileExport } from "react-icons/fa6";
+
+
 const statusColors = {
   "Chờ duyệt": "gold",
   "Đã duyệt": "green",
@@ -177,9 +180,9 @@ const MaterialStorageExportList = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase())
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -210,7 +213,7 @@ const MaterialStorageExportList = () => {
   const columns = [
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           {t("materialExportList.exportType")}
         </div>
       ),
@@ -218,17 +221,17 @@ const MaterialStorageExportList = () => {
       key: "type_export",
       align: "center",
       render: (text) => (
-        <div style={{ textAlign: "center" }}>{text || "Không rõ"}</div>
+        <div style={{ textAlign: "left" }}>{text || "Không rõ"}</div>
       ),
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           {t("materialExportList.productionRequest")}
         </div>
       ),
       key: "production_request",
-      align: "center",
+      align: "left",
       render: (_, record) => (
         <div style={{}}>
           {record?.production_request_id?.request_name || "Không rõ"}
@@ -237,12 +240,12 @@ const MaterialStorageExportList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
+        <div style={{ textAlign: "left", width: "100%" }}>
           {t("materialExportList.batch")}
         </div>
       ),
       key: "batch",
-      align: "center",
+      align: "left",
       render: (_, record) => (
         <div style={{}}>{record?.batch_id?.batch_name || "Không rõ"}</div>
       ),
@@ -258,11 +261,11 @@ const MaterialStorageExportList = () => {
       align: "center",
       filters: [
         {
-          text: t('status.pending'),
+          text: t("status.pending"),
           value: "Chờ duyệt",
         },
         {
-          text: t('status.completed'),
+          text: t("status.completed"),
           value: "Hoàn thành",
         },
       ],
@@ -292,11 +295,12 @@ const MaterialStorageExportList = () => {
 
         return (
           <div style={{ textAlign: "center" }}>
-            <Tag color={color}>{t(`status.${statusMap[status] || status}`)}</Tag>
+            <Tag color={color}>
+              {t(`status.${statusMap[status] || status}`)}
+            </Tag>
           </div>
         );
-      }
-
+      },
     },
     {
       title: (
@@ -422,17 +426,16 @@ const MaterialStorageExportList = () => {
   }, [isSuccessDelete, dataDelete]);
 
   return (
-    <div className="material-storage-export-list">
+    <div className="material-storage-export-list md:px-8  ">
       {/* Tiêu đề và nút quay lại */}
       <div
-        style={{ marginBottom: 24, marginTop: 24 }}
         className="flex items-center justify-between my-8"
       >
         {/* Nút quay lại bên trái */}
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -452,7 +455,8 @@ const MaterialStorageExportList = () => {
         </Button>
 
         {/* Tiêu đề ở giữa */}
-        <h2 className="text-center font-bold text-[16px] md:text-3xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
+        <h2 className="text-center flex items-center justify-center gap-2 font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
+          <FaFileExport></FaFileExport>
           {t("materialExportList.title")}
         </h2>
 
@@ -492,7 +496,9 @@ const MaterialStorageExportList = () => {
             <Descriptions.Item label={t("materialExportList.createdBy")}>
               {selectedExport?.user_id?.full_name || "Không rõ"}
             </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.productionRequest")}>
+            <Descriptions.Item
+              label={t("materialExportList.productionRequest")}
+            >
               {selectedExport?.production_request_id?.request_name ||
                 t("common.no_data")}
             </Descriptions.Item>
@@ -551,9 +557,7 @@ const MaterialStorageExportList = () => {
             {t("common.close")}
           </button>
         </div>
-
       </DrawerComponent>
-
 
       {/* messageContainer */}
       <messageContainer

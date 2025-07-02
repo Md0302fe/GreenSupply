@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
+import mng_dashboard_Purchasedorders from "../../assets/Feature_warehouse/prouct_carton_img.jpg";
 import { useTranslation } from "react-i18next";
 import { FaCubes } from "react-icons/fa";
 

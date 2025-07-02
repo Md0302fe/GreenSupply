@@ -5,6 +5,8 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { PiPlusThin } from "react-icons/pi";
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -101,40 +103,41 @@ const CreateFuel = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-2 lg:p-6">
-     
-  {/* Nút quay lại - đặt riêng, full width, căn trái */}
-  <div className="w-full mb-2 lg:mb-4">
-    <div className="max-w-xl ml-0">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-        type="button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 mr-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12H3m0 0l6-6m-6 6l6 6"
-          />
-        </svg>
-        Quay lại
-      </button>
-    </div>
-  </div>
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">
+      {/* Nút quay lại - đặt riêng, full width, căn trái */}
+      <div className="w-full mb-2 lg:mb-4">
+        <div className="max-w-xl ml-0">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            type="button"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            Quay lại
+          </button>
+        </div>
+      </div>
 
-
-      <div className="w-full max-w-xl bg-white rounded-lg shadow p-2 lg:p-8">
-        <h2 className="text-[20px] lg:text-3xl font-bold mt-3 mb-4 lg:mb-6 text-center">
-          Tạo Loại Nguyên liệu Mới
-        </h2>
+      <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
+        <div className="flex justify-center items-center gap-2 mb-3">
+          <PiPlusThin className="size-6"></PiPlusThin>
+          <h2 className="text-[20px] lg:text-2xl font-bold text-center text-gray-800 ">
+            Tạo Loại Nguyên liệu Mới
+          </h2>
+        </div>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
