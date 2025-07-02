@@ -55,7 +55,7 @@ const GoogleRegister = () => {
       });
 
       if (result.status === "OK") {
-        toast.success(t("fill_valid_information"));
+        toast.success(t("register_success"));
         setTimeout(() => {
           window.location.href = "/login";
         }, 1500);
@@ -104,7 +104,7 @@ const GoogleRegister = () => {
             <span>{t("back")}</span>
           </a>
           <div className="w-full pt-12 font-bold text-3xl text-center text-supply-primary mb-4">
-            {t("update_profile")}
+            {t("complete_profile")}
           </div>
 
           {/* Hiển thị thông tin từ Google */}
@@ -197,18 +197,6 @@ const GoogleRegister = () => {
               )}
             </div>
 
-            {/* Is supplier */}
-            <div>
-              <input
-                type={"checkbox"}
-                className="mr-2"
-                id="roleCheck"
-                checked={role_check}
-                onChange={(event) => setRoleCheck(event.target.checked)}
-              />
-              <label htmlFor="roleCheck">{t("supplier_check")}</label>
-            </div>
-
             {/* Submit Button */}
             <div className="text-center mt-6">
               <button
@@ -220,9 +208,6 @@ const GoogleRegister = () => {
             </div>
           </div>
 
-          <div className="mt-4 text-center">
-            <p className="text-[8px]">@2025 bản quyền thuộc về Green supply</p>
-          </div>
           <div className="flex w-full justify-end mr-6">
             <LanguageSwitcher />
           </div>

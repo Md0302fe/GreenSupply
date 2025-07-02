@@ -51,6 +51,8 @@
   "invalid_dob": "Ngày sinh không thể lớn hơn ngày hiện tại.",
   "back": "Quay lại",
   "update_profile": "Cập Nhật Thông Tin",
+  "complete_profile": "Hoàn tất hồ sơ",
+  "fill_valid_information": "Vui lòng điền đầy đủ thông tin",
   "complete": "Hoàn tất",
   "birthday_required": "Vui lòng chọn ngày sinh.",
   "notifications": "Thông báo",

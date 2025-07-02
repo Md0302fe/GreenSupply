@@ -54,6 +54,8 @@
   "invalid_dob": "Birth date cannot be in the future.",
   "back": "Back",
   "update_profile": "Update Profile",
+  "complete_profile": "Complete Profile",
+  "fill_valid_information": "Please fill all required information",
   "complete": "Complete",
   "birthday_required": "Please select your birth date.",
   "notifications": "Notifications",
