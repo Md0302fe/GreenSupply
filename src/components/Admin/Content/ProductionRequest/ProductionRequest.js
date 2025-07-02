@@ -130,11 +130,11 @@ const handlePackagingSelect = (value, type) => {
   let requiredQty = 0;
   const fieldName = type === "vacuumBag" ? "vacuumBagSelect" : "cartonSelect";
 
-  // ✅ Gán value vào Form để Form.Item tự nhận biết lựa chọn
+  //  Gán value vào Form để Form.Item tự nhận biết lựa chọn
   form.setFieldValue(fieldName, value);
 
   if (type === "vacuumBag") {
-    // ✅ Tính số túi = (kg * 1000) / dung tích gói mỗi túi
+    //  Tính số túi = (kg * 1000) / dung tích gói mỗi túi
     requiredQty = Math.ceil(productGrams / selectedMaterial.capacity);
   }
 
@@ -157,25 +157,26 @@ const handlePackagingSelect = (value, type) => {
       return;
     }
 
-    // ✅ Tính thể tích mỗi túi
+    //  Tính thể tích mỗi túi
     const bagVolume =
       vacuumBag.dimensions.length *
       vacuumBag.dimensions.width *
       (vacuumBag.dimensions.height || 1);
-
+    
+    // Tổng thể tích túi chân không = số lượng túi * thể tích mỗi túi
     const totalBagVolume = vacuumBagCount * bagVolume;
 
-    // ✅ Tính thể tích mỗi thùng
+    //  Tính thể tích mỗi thùng
     const boxVolume =
       selectedMaterial.dimensions.length *
       selectedMaterial.dimensions.width *
       selectedMaterial.dimensions.height;
 
-    // ✅ Số thùng = tổng thể tích túi / thể tích thùng
+    //  Số thùng = tổng thể tích túi / thể tích thùng
     requiredQty = Math.ceil(totalBagVolume / boxVolume);
   }
 
-  // ❌ Nếu không đủ số lượng → hiển thị lỗi ngay dưới ô Select
+  //  Nếu không đủ số lượng → hiển thị lỗi ngay dưới ô Select
   if (selectedMaterial.quantity < requiredQty) {
     form.setFields([
       {

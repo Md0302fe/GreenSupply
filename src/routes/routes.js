@@ -7,6 +7,8 @@ import HomePage from "../pages/HomePage/HomePage";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import ManageUser from "../components/Admin/Content/User/AdminUser";
 
+import DashboardUser from "../components/Admin/Content/Dashboard/DashboardUser";
+
 import ManageBlockedUser from "../components/Admin/Content/User/BlockedUser";
 
 import Dashboard from "../components/Admin/Content/Dashboard/Dashboard";
@@ -109,6 +111,7 @@ const Router = () => {
           <Route path="feature_users" element={<FeatureUser />} />
           <Route path="manage-users" element={<ManageUser />} />
           <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
+          <Route path="dashboard-user" element={<DashboardUser />} />
 
           {/* WareHouse Management */}
           <Route path="feature_warehouse" element={<FeatureWarehouse />} />

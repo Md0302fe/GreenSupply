@@ -5,6 +5,7 @@ import { FaUser } from "react-icons/fa";
 import mng_user from "../../assets/Feature_user/mng_user.jpg";
 import mng_account from "../../assets/Feature_user/mng_account.jpg";
 import { useTranslation } from "react-i18next";
+import mng_dashboard_Purchasedorders from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 
 const UserComponent = () => {
   const { t } = useTranslation();
@@ -21,7 +22,16 @@ const UserComponent = () => {
 
       {/* Feature Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 w-full justify-items-center">
-        {/* Card 1 */}
+
+          {/* Card 1 Dashboard */}
+         <Card
+          link="/system/admin/dashboard-user"
+          title={t("Dashboard")}
+          description={t("Quản lý người dùng")}
+          image={mng_dashboard_Purchasedorders}
+        />
+
+        {/* Card 2 */}
         <Card
           link="/system/admin/manage-users"
           title={t("userManagement.manageUsers.title")}
@@ -36,6 +46,8 @@ const UserComponent = () => {
           description={t("userManagement.manageAccounts.description")}
           image={mng_account}
         />
+
+      
       </div>
     </div>
   );

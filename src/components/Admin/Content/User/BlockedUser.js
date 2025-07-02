@@ -20,6 +20,8 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
+
 
 const BlockedUserComponent = () => {
   const { t } = useTranslation();
@@ -28,6 +30,10 @@ const BlockedUserComponent = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const statusFilter = queryParams.get("status"); // "active" nếu có
+
 
   const user = useSelector((state) => state.user);
 
@@ -277,9 +283,15 @@ const BlockedUserComponent = () => {
   };
 
   // DATA FROM USERS LIST
-  const tableData =
-    users?.data?.length &&
-    users?.data.map((user) => {
+const tableData =
+  users?.data?.length &&
+  users?.data
+    .filter((user) => {
+      if (statusFilter === "active") return user.is_blocked === false;
+      if (statusFilter === "blocked") return user.is_blocked === true;
+      return true; // nếu không có filter, trả lại tất cả
+    })
+    .map((user) => {
       return {
         ...user,
         key: user._id,
@@ -287,6 +299,7 @@ const BlockedUserComponent = () => {
         is_blocked: user?.is_blocked,
       };
     });
+
 
   // Actions
   const renderAction = (role, record) => {
