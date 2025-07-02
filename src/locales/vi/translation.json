@@ -417,7 +417,7 @@
     }
   },
   "purchaseRequest": {
-    "title": "Quản Lý Nguyên Liệu Cần Nhập",
+    "title": "Quản lý kế hoạch - Nguyên liệu cần nhập",
     "dashboard": {
       "title": "Dashboard",
       "description": "Thông tin phân tích quản lý nguyên liệu cần nhập"
@@ -436,7 +436,7 @@
     }
   },
   "supplierRequest": {
-    "title": "Quản Lý Yêu Cầu Nhà Cung Cấp",
+    "title": "Quản lý yêu cầu nhà cung cấp",
     "dashboard": {
       "title": "Dashboard",
       "description": "Thông tin toàn yêu cầu supplier"
@@ -455,7 +455,7 @@
     }
   },
   "warehouse": {
-    "title": "Quản Lý Kho",
+    "title": "Quản lý kho",
     "dashboard": {
       "title": "Dashboard",
       "description": "Quản lý thông tin tổng quát kho"
@@ -814,7 +814,7 @@
     "cancelOrder": "Hủy đơn"
   },
   "dashboardWarehouse": {
-    "title": "Quản Lý Kho",
+    "title": "Quản lý kho",
     "totalReceipts": "Tổng đơn nhập kho",
     "pendingReceipts": "Đơn Chờ Duyệt",
     "approvedReceipts": "Đơn Đã Duyệt",
