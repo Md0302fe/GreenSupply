@@ -7,9 +7,14 @@ import React, { useState, useRef, useEffect } from "react";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { Input, Space, Tag, Button } from "antd";
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+
 import TableHistories from "./TableHistories";
 import { converDateString } from "../../../../ultils";
 import { useTranslation } from "react-i18next";
+
+import { FaFileExport } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const statusColors = {
   "Đã duyệt": "green",
@@ -29,6 +34,8 @@ const RawMaterialBatchList = () => {
   // Drawer state
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   // Search state
   const [searchText, setSearchText] = useState("");
@@ -76,15 +83,14 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(data?.requests)
     ? data?.requests?.map((batch) => ({
-      ...batch,
-      key: batch._id,
-      batch_id: batch.material_export_id?.batch_id?.batch_id || "",
-      batch_name: batch.material_export_id?.batch_id?.batch_name || "",
-      type_export: batch.material_export_id?.type_export || "",
-      status: batch.material_export_id?.status || "",
-    }))
+        ...batch,
+        key: batch._id,
+        batch_id: batch.material_export_id?.batch_id?.batch_id || "",
+        batch_name: batch.material_export_id?.batch_id?.batch_name || "",
+        type_export: batch.material_export_id?.type_export || "",
+        status: batch.material_export_id?.status || "",
+      }))
     : [];
-
 
   // Fetch : Get User Details
   const fetchGetUserDetails = async ({ storage_export_id, access_token }) => {
@@ -264,8 +270,7 @@ const RawMaterialBatchList = () => {
         const key = statusMap[stt];
         const translated = key ? t(`status.${key}`) : stt;
         return <Tag color={statusColors[stt] || "default"}>{translated}</Tag>;
-      }
-
+      },
     },
     {
       title: <div className="text-center">{t("common.action")}</div>,
@@ -273,9 +278,15 @@ const RawMaterialBatchList = () => {
       className: "text-center",
       render: (record) => (
         <Space>
-          <Button type="link" onClick={() => handleViewDetail(record)}>
-            {t("common.viewDetail")}
-          </Button>
+          <Button
+            type="link"
+            icon={
+              <HiOutlineDocumentSearch
+                style={{ fontSize: "20px", color: "dodgerblue" }}
+              />
+            }
+            onClick={() => handleViewDetail(record)}
+          ></Button>
         </Space>
       ),
     },
@@ -297,9 +308,39 @@ const RawMaterialBatchList = () => {
   );
 
   return (
-    <div className="raw-material-batch-list">
-      <div className="flex justify-between items-center mb-4">
-        <h5 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4">{t("batchHistory.title")}</h5>
+    <div className="raw-material-batch-list md:px-8 ">
+      <div className="flex items-center justify-between my-8">
+        {/* Nút quay lại bên trái */}
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          <span className="hidden md:inline">{t("common.back")}</span>
+        </Button>
+
+        {/* Tiêu đề ở giữa */}
+        <h2 className="text-center flex items-center justify-center gap-2 font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
+          <FaFileExport></FaFileExport>
+          {t("batchHistory.title")}
+        </h2>
+
+        {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
 
       <Loading isPending={isLoading || loadingDetails}>
@@ -393,7 +434,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("common.enterQuantity")}
                     value={stateDetailsBatch?.batch_id?.quantity}
-                    onChange={() => { }}
+                    onChange={() => {}}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -409,7 +450,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("batchHistory.exportType")}
                     value={stateDetailsBatch?.type_export}
-                    onChange={() => { }}
+                    onChange={() => {}}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>

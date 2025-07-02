@@ -30,6 +30,7 @@ const ProcessDetails = () => {
   const [dataProcess, setDataProcess] = useState();
   const [dataStage, setDataStage] = useState();
   const [activeStage, setActiveStage] = useState(null); // stage nào đang mở
+  const [rawMaterialFromRequest, setRawMaterialFromRequest] = useState(0);
 
   const [stage1, setStage1] = useState();
   const [stage2, setStage2] = useState();
@@ -65,6 +66,7 @@ const ProcessDetails = () => {
     queryKey: ["both_process_details", process_id],
     queryFn: fetchBothDetails,
     retry: 0,
+    staleTime: 0, // <- luôn coi là stale, refetch luôn lấy mới
   });
 
   useEffect(() => {
@@ -76,20 +78,33 @@ const ProcessDetails = () => {
       setStage5(dataStage?.data[4] || []);
       setStage6(dataStage?.data[5] || []);
       setStage7(dataStage?.data[6] || []);
+
+      // set quantity following type of process
+      if (dataProcess?.data?.process_type === "consolidated_processes") {
+        setRawMaterialFromRequest(dataProcess?.data?.total_raw_material);
+      } else {
+        setRawMaterialFromRequest(
+          dataProcess?.data?.production_request_id?.material_quantity
+        );
+      }
     }
   }, [dataStage]);
 
   // Handle finish stage => next stage for process
   const handleComplete = async (data) => {
     const { noStage, stage_id, dataUpdate } = data;
+    // Handle đảm bảo dữ liệu từ data đã có
+    if (!dataProcess?.data) {
+      message.warning("Dữ liệu của quy trình không hợp lệ");
+    }
 
     const response = await ProductionsProcessServices.handleFinishStage({
-      process_id,
-      noStage,
-      process_type: dataProcess?.data?.process_type,
-      stage_id,
-      dataUpdate,
-      access_token: user?.access_token,
+      process_id, // id của quy trình
+      noStage, // số giai đoạn
+      process_type: dataProcess?.data?.process_type, // loại quy trình
+      stage_id, // id của stage nhằm tìm ra và cập nhật process-status
+      dataUpdate, // dữ liệu cập nhật
+      access_token: user?.access_token, // token của người thực thi chức năng
     });
     if (response?.data?.success) {
       // reload quy trình
@@ -100,6 +115,7 @@ const ProcessDetails = () => {
       message.error(t("processDetails.message.completeError"));
       await refetch();
     }
+    await refetch();
   };
 
   return (
@@ -148,61 +164,104 @@ const ProcessDetails = () => {
 
           {/* Thêm nền trắng cho phần hiển thị thông tin */}
           <div className="bg-white p-3 lg:p-4 rounded-lg shadow-sm">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-2 mb-2">
+              {/* Start Time */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   📅 {t("processDetails.info.start")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {convertDateStringV1(dataProcess?.data?.start_time)}
                 </p>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* End Time */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   📅 {t("processDetails.info.etaEnd")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {convertDateStringV1(dataProcess?.data?.end_time)}
                 </p>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* Current Stage */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   ⏳ {t("processDetails.info.currentStage")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {dataProcess?.data?.current_stage}
                 </p>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* Status */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   🔄 {t("processDetails.info.status")}
                 </p>
                 <span
-                  className={`inline-block text-xs px-1 py-0.5 rounded text-black ${
+                  className={`inline-block text-xs font-semibold px-2 py-0.5 rounded ${
                     dataProcess?.data?.status === "Hoàn thành"
-                      ? "bg-green-500"
-                      : "bg-yellow-200"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
                   }`}
                 >
-                  {dataProcess?.data.status}
+                  {dataProcess?.data?.status}
                 </span>
               </div>
-              <div className="info-box">
-                <p className="text-gray-500 text-xs mb-2">
+
+              {/* Assigned User */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
                   👤 {t("processDetails.info.assignedUser")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {/* {dataProcess?.user_id?.name || "Chưa gán"} */}
+                  {dataProcess?.user_id?.name || "Chưa gán"}
                 </p>
               </div>
-              <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
-                <p className="text-gray-500 text-xs mb-2">
-                  📝 {t("processDetails.info.note")}
+
+              {/* Nguyên liệu */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
+                  🍋 Nguyên liệu
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.data?.note}
+                  {
+                    dataProcess?.data?.production_request_id?.material
+                      ?.fuel_type_id?.type_name
+                  }
                 </p>
               </div>
+
+              {/* Khối lượng nguyên liệu */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
+                  ⚖️ Khối lượng nguyên liệu
+                </p>
+                <p className="font-medium text-gray-800 text-sm">
+                  {dataProcess?.data?.production_request_id?.material_quantity}
+                </p>
+              </div>
+
+              {/* Khối lượng thành phẩm */}
+              <div className="bg-white rounded-lg shadow-sm p-2">
+                <p className="text-gray-500 text-xs mb-1 font-bold">
+                  ⚖️ Khối lượng thành phẩm
+                </p>
+                <p className="font-medium text-gray-800 text-sm">
+                  {dataProcess?.data?.production_request_id?.product_quantity}
+                </p>
+              </div>
+            </div>
+            {/* Note box */}
+            <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
+              <p className="text-gray-500 text-xs mb-2 font-bold">
+                📝 {t("processDetails.info.note")}
+              </p>
+              <p className="font-medium text-gray-800 text-sm">
+                {dataProcess?.data?.note}
+              </p>
             </div>
           </div>
         </div>
@@ -217,9 +276,9 @@ const ProcessDetails = () => {
             onToggle={() => setActiveStage(activeStage === 1 ? null : 1)}
             // props tổng số lượng nguyên liệu thô đề xuất
             data={{
-              quantity:
-                dataProcess?.data?.production_request_id?.material_quantity,
-                dataStage: dataStage?.data,
+              quantity: rawMaterialFromRequest,
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
             }}
           />
           <StageDetailsComponents
@@ -230,7 +289,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 2 ? null : 2)}
             // props tổng số lượng nguyên liệu thô sau phân loại (after stage1)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage3}
@@ -240,7 +302,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 3 ? null : 3)}
             // props tổng số lượng nguyên liệu thô sau rọt - gửa - tách hạt - cắt lát (after stage2)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage4}
@@ -250,7 +315,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 4 ? null : 4)}
             // props tổng số lượng nguyên liệu thô sau chần (after stage3)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage5}
@@ -260,7 +328,10 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 5 ? null : 5)}
             // props tổng số lượng nguyên liệu thô sau điều vị ngâm (after stage4)
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
           <StageDetailsComponents
             stage={stage6}
@@ -270,8 +341,11 @@ const ProcessDetails = () => {
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 6 ? null : 6)}
             // props tổng số lượng nguyên liệu thô sau sấy (after stage5)
-            data={{ dataStage: dataStage?.data }}
-          />
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
+          />  
           <StageDetailsComponents
             stage={stage7}
             noStage="7"
@@ -279,7 +353,10 @@ const ProcessDetails = () => {
             isOpen={activeStage === 7}
             handleComplete={handleComplete}
             onToggle={() => setActiveStage(activeStage === 7 ? null : 7)}
-            data={{ dataStage: dataStage?.data }}
+            data={{
+              dataStage: dataStage?.data,
+              dataProcess: dataProcess?.data,
+            }}
           />
         </div>
       </div>

@@ -35,7 +35,7 @@ const UserComponent = () => {
         />
         <Card
           link="/system/admin/View-Order-Success"
-          title={t("warehouse.createReceipt.title")}
+          title={t("warehouse.receiptRequestList.title")}
           description={t("warehouse.createReceipt.description")}
           image={mng_receipt_orders}
         />

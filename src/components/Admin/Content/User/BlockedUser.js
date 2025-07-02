@@ -5,6 +5,8 @@ import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 
+import { FaUser } from "react-icons/fa";
+
 import { BiBlock, BiImageAdd } from "react-icons/bi";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
@@ -479,7 +481,11 @@ const tableData =
 
   const columns = [
     {
-      title: t("blocked_user.name"),
+      title: (
+        <div style={{ textAlign: "left", width: "100%" }}>
+          {t("blocked_user.name")}
+        </div>
+      ),
       dataIndex: "full_name",
       key: "full_name",
       ...getColumnSearchProps("full_name"),
@@ -606,13 +612,13 @@ const tableData =
   ];
   return (
     <div className="Wrapper-Admin-User">
-      <div className="Main-Content">
-        <div className="flex items-center justify-between mb-4">
+      <div className="Main-Content py-8 md:p-6 lg:p-6">
+        <div className="flex items-center justify-between mb-4 md:mb-16 mt-4">
           {/* Nút quay lại */}
           <button
             onClick={() => navigate(-1)}
             type="button"
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -632,9 +638,14 @@ const tableData =
           </button>
 
           {/* Tiêu đề căn giữa */}
-          <h2 className="text-center font-bold text-[20px] md:text-4xl flex-grow mx-2 mt-1 mb-1">
-            {t("blocked_user.title")}
-          </h2>
+
+          <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
+            <FaUser className="text-2xl text-black mr-2" />
+            <h5 className="relative">
+              {t("blocked_user.title")}
+              <span className="absolute left-0 right-0 bottom-0 h-1 bg-black transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
+            </h5>
+          </div>
 
           {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
           <div className="min-w-[20px] md:min-w-[100px]"></div>

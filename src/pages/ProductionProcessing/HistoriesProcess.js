@@ -8,6 +8,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Loading from "../../components/LoadingComponent/Loading";
 import { getHistoriesProcess } from "../../services/ProductionProcessingServices";
 import Highlighter from "react-highlight-words";
+import { BsBuildingFillGear } from "react-icons/bs";
+
 import { useTranslation } from "react-i18next";
 
 const HistoriesProcess = () => {
@@ -231,8 +233,45 @@ const HistoriesProcess = () => {
   ];
 
   return (
-    <div className="production-processing-list">
-      <h5 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4">{t("histories.title")}</h5>
+    <div className="production-processing-list px-8">
+      <div className="my-9">
+        <div className="flex items-center justify-between">
+          {/* Nút quay lại responsive */}
+          <button
+            onClick={() => navigate(-1)}
+            type="button"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[32px] md:min-w-[100px]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            <span className="hidden md:inline">
+              {t("productionProcess.button.back")}
+            </span>
+          </button>
+
+          {/* Tiêu đề căn giữa */}
+          <h5 className="flex justify-center items-center gap-2 text-center font-bold text-xl md:text-2xl flex-grow mx-2 text-gray-800">
+            <BsBuildingFillGear></BsBuildingFillGear>
+            {t("histories.title")}
+          </h5>
+
+          {/* Phần tử trống để cân layout */}
+          <div className="min-w-[32px] md:min-w-[100px]"></div>
+        </div>
+      </div>
+
       <Loading isPending={isLoading}>
         <Table
           columns={columns}

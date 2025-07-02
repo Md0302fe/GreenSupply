@@ -18,7 +18,8 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import * as ProductServices from "../../../../services/ProductServices";
 import { useTranslation } from "react-i18next";
-import default_image from "../../../../assets/Feature_materials_category/mng_addnew_mango.jpg";
+import default_image from "../../../../assets/Feature_warehouse/prouct_carton_img.jpg";
+import { AiFillProduct } from "react-icons/ai";
 
 const FinishedProductList = () => {
   const { t } = useTranslation();
@@ -105,7 +106,7 @@ const FinishedProductList = () => {
   }, [searchText, selectedType, page]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-2 lg:p-6">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 px-8">
       <div
         style={{ marginBottom: 24, marginTop: 24 }}
         className="flex items-center justify-between w-full"
@@ -114,7 +115,7 @@ const FinishedProductList = () => {
         <Button
           onClick={() => navigate(-1)}
           type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +135,8 @@ const FinishedProductList = () => {
         </Button>
 
         {/* Tiêu đề ở giữa */}
-        <h2 className="text-center font-bold text-[16px] md:text-4xl flex-grow mx-4 mt-1 mb-1">
+        <h2 className="flex justify-center items-center gap-2 text-center font-bold text-[16px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
+          <AiFillProduct></AiFillProduct>
           {t("finishedProductList.title")}
         </h2>
 
@@ -170,54 +172,60 @@ const FinishedProductList = () => {
       </div>
 
       <Spin spinning={loading} tip={t("finishedProductList.loading")}>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-          {products?.map((item, index) => (
-            <div
-              onClick={() => handleItemClick(item._id)}
-              key={item._id}
-              className="border rounded-xl p-2 cursor-pointer text-center bg-white shadow-md"
-            >
-              <img
-                src={item.image || default_image}
-                alt={item.name}
-                className="w-full h-24 object-contain mb-2"
-              />
-              <div className="text-sm font-semibold">
-                {t("finishedProductList.productCode")}: {item.masanpham}
-              </div>
-              <div className="text-sm text-red-600">
-                {t("finishedProductList.importDate")}: {item.created_date}
-              </div>
-              <div className="flex items-center gap-2 justify-center">
-                <div className="text-sm font-bold text-black mt-1">
-                  {t(`finishedProductList.statuses.${item?.status}`)}
+        {products && products.length === 0 && !loading ? (
+          <div className="text-center w-full py-10 text-gray-500 font-semibold text-lg">
+            {t("harvestRequest.no_data")}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            {products?.map((item) => (
+              <div
+                onClick={() => handleItemClick(item._id)}
+                key={item._id}
+                className="border rounded-xl p-2 cursor-pointer text-center bg-white shadow-md"
+              >
+                <img
+                  src={default_image}
+                  alt={item.name}
+                  className="w-full h-40 object-contain mb-2"
+                />
+                <div className="text-sm font-semibold">
+                  {t("finishedProductList.productCode")}: {item.masanpham}
                 </div>
-                <div
-                  className="w-3 h-3 mt-1 rounded-full"
-                  style={{
-                    backgroundColor:
-                      item.status === "còn hạn"
-                        ? "green"
-                        : item.status === "sắp hết hạn"
-                        ? "orange"
-                        : "red",
-                  }}
-                ></div>
+                <div className="text-sm text-red-600">
+                  {t("finishedProductList.importDate")}: {item.created_date}
+                </div>
+                <div className="flex items-center gap-2 justify-center">
+                  <div className="text-sm font-bold text-black mt-1">
+                    {t(`finishedProductList.statuses.${item?.status}`)}
+                  </div>
+                  <div
+                    className="w-3 h-3 mt-1 rounded-full"
+                    style={{
+                      backgroundColor:
+                        item.status === "còn hạn"
+                          ? "green"
+                          : item.status === "sắp hết hạn"
+                          ? "orange"
+                          : "red",
+                    }}
+                  ></div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-6 w-full">
-          <Pagination
-            current={page}
-            pageSize={pageSize}
-            total={total}
-            onChange={(p) => setPage(p)}
-            showSizeChanger={false}
-            align="end"
-          />
-        </div>
+            ))}
+          </div>
+        )}
       </Spin>
+      <div className="mt-6 w-full">
+        <Pagination
+          current={page}
+          pageSize={pageSize}
+          total={total}
+          onChange={(p) => setPage(p)}
+          showSizeChanger={false}
+          align="end"
+        />
+      </div>
       <Modal
         title={
           <span style={{ fontSize: "24px", fontWeight: "bold" }}>
@@ -264,7 +272,9 @@ const FinishedProductList = () => {
                         : "red",
                   }}
                 >
-                  {t(`finishedProductList.statuses.${selectedProductDetail?.status}`)}
+                  {t(
+                    `finishedProductList.statuses.${selectedProductDetail?.status}`
+                  )}
                 </span>
               </p>
               <p className="pl-2">
@@ -341,11 +351,13 @@ const FinishedProductList = () => {
               </h3>
               <p className="pl-2">
                 <strong>{t("finishedProductList.vacuumBag")}:</strong>{" "}
-                {selectedProductDetail?.packaging?.vacuumBag} {t("finishedProductList.unit.bag")}
+                {selectedProductDetail?.packaging?.vacuumBag}{" "}
+                {t("finishedProductList.unit.bag")}
               </p>
               <p className="pl-2">
                 <strong>{t("finishedProductList.cartonBox")}:</strong>{" "}
-                {selectedProductDetail?.packaging?.carton} {t("finishedProductList.unit.carton")}
+                {selectedProductDetail?.packaging?.carton}{" "}
+                {t("finishedProductList.unit.carton")}
               </p>
             </div>
           </div>

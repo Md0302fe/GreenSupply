@@ -287,10 +287,10 @@ const HarvestRequestPage = () => {
       {/* Bố cục chính: Flex ngang trên desktop, dọc trên mobile */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Form chính (80%) */}
-        <div className="w-full md:w-full bg-gray-100 p-0 lg:p-4">
+        <div className="w-full md:w-full bg-gray-100 p-6">
           <button
             onClick={() => navigate(-1)} // Quay lại trang trước đó
-            className="flex mb-1 items-center bg-blue-500 text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            className="flex mb-1 items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:opacity-70 transition duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -308,8 +308,9 @@ const HarvestRequestPage = () => {
             </svg>
             {t("harvest.back")}
           </button>
+          
           <div className="max-w-4xl mx-auto bg-white p-4 lg:p-6 rounded-lg shadow-lg">
-            <h2 className="text-center lg:text-left text-[18px] lg:text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center lg:justify-start gap-2">
+            <h2 className="text-center lg:text-left text-[18px] lg:text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
               🛒 {t("harvest.title")}
             </h2>
 
@@ -317,7 +318,7 @@ const HarvestRequestPage = () => {
               {/* Tên đơn */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  {t("harvest.form.name")}
+                  <span className="text-red-600">* </span> {t("harvest.form.name")}
                 </label>
                 <input
                   type="text"
@@ -333,7 +334,7 @@ const HarvestRequestPage = () => {
               {/* Loại Nguyên liệu */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  {t("harvest.form.fuel_type")}
+                  <span className="text-red-600">* </span>{t("harvest.form.fuel_type")}
                 </label>
                 <select
                   name="fuel_type"
@@ -357,10 +358,10 @@ const HarvestRequestPage = () => {
               </div>
 
               {/* Ảnh Nguyên liệu */}
-              <div className="flex flex-col lg:flex-row justify-between items-start min-h-[20vh] gap-0 lg:gap-4">
+              <div className="">
                 <div className="flex-[0.25] w-full text-left text-gray-800 font-semibold lg:mb-2">
                   <MDBCardText className="block text-left text-gray-800 font-semibold lg:mb-2">
-                    {t("harvest.form.image")}
+                    <span className="text-red-600">* </span> {t("harvest.form.image")}
                   </MDBCardText>
                 </div>
                 <div>
@@ -393,7 +394,7 @@ const HarvestRequestPage = () => {
               {/* Số lượng cần thu (Kg) */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  {t("harvest.form.quantity")}
+                  <span className="text-red-600">* </span> {t("harvest.form.quantity")}
                 </label>
                 <div className="relative w-full">
                   <input
@@ -419,7 +420,7 @@ const HarvestRequestPage = () => {
               {/* Giá trên mỗi Kg / Đơn vị */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  {t("harvest.form.price")}
+                  <span className="text-red-600">* </span> {t("harvest.form.price")}
                 </label>
                 <div className="relative w-full">
                   <input
@@ -491,7 +492,7 @@ const HarvestRequestPage = () => {
               {/* Mức độ ưu tiên */}
               <div>
                 <label className="block text-gray-800 font-semibold mb-2">
-                  {t("harvest.form.priority")}
+                  <span className="text-red-600">* </span> {t("harvest.form.priority")}
                 </label>
                 <select
                   name="priority"

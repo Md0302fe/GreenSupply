@@ -21,6 +21,7 @@ export const getAllProducts = async (
   return res?.data;
 };
 
+
 export const getAllOrdersDetail = async (id) => {
   try {
     const response = await axios.get(
@@ -32,3 +33,19 @@ export const getAllOrdersDetail = async (id) => {
     throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
   }
 };
+
+// get product detail by product code
+export const getProductDetails = async (id) => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/product/getProductDetailV2/${id}`
+    );
+    return response.data.productDetail;
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết thành phẩm:", error);
+    throw new Error("Không thể tải dữ liệu, vui lòng thử lại!");
+  }
+};
+
+
+

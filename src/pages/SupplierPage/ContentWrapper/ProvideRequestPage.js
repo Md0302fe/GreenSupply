@@ -23,6 +23,7 @@ const ProvideRequestPage = () => {
     quantity: "",
     quality: "",
     note: "",
+    address: "",
   });
   const formRef = useRef(null);
   const [error, setError] = useState(""); // Lưu lỗi nhập liệu
@@ -30,6 +31,8 @@ const ProvideRequestPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [timeLeft, setTimeLeft] = useState(null);
+  const [addressError, setAddressError] = useState("");
+
   const fetchOrders = async (page = 1) => {
     try {
       const access_token = userRedux?.access_token;
@@ -153,7 +156,10 @@ const ProvideRequestPage = () => {
       message.error(t("provideRequest.select_order_warning"));
       return;
     }
-
+    if (!formData.address || !formData.address.trim()) {
+      setAddressError(t("harvestRequest.empty_address"));
+      return;
+    }
     const quantity = selectedOrder.quantity_remain;
     const selectedAddressText =
       addresses.find((addr) => addr._id === selectedAddressId)?.address || "";
@@ -167,7 +173,7 @@ const ProvideRequestPage = () => {
       price: selectedOrder.price,
       start_received: "",
       end_received: "",
-      user_address: selectedAddressText,
+      user_address: selectedAddressText || formData.address,
       total_price: totalPrice(),
       note: formData.note,
     };
@@ -364,17 +370,34 @@ const ProvideRequestPage = () => {
                 <label className="block text-sm font-semibold mb-1">
                   {t("provideRequest.delivery_address")}
                 </label>
-                <select
-                  value={selectedAddressId}
-                  onChange={(e) => setSelectedAddressId(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-2 w-full"
-                >
-                  {addresses.map((addr) => (
-                    <option key={addr._id} value={addr._id}>
-                      {`${addr.address}`}
-                    </option>
-                  ))}
-                </select>
+                {addresses.length === 0 ? (
+                  // Nếu không có địa chỉ nào, hiển thị input cho người dùng nhập
+                  <input
+                    type="text"
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    placeholder={t("harvestRequest.enter_pickup_address")}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                  />
+                ) : (
+                  // Nếu có địa chỉ, hiển thị select cho người dùng chọn
+                  <select
+                    value={selectedAddressId}
+                    onChange={(e) => setSelectedAddressId(e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                  >
+                    {addresses.map((addr) => (
+                      <option key={addr._id} value={addr._id}>
+                        {addr.address}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {addressError && (
+                  <p className="text-red-500 text-sm">{addressError}</p>
+                )}
               </div>
 
               <div className="sm:col-span-2">

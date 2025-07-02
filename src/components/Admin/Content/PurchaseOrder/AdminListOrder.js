@@ -788,38 +788,43 @@ const UserComponent = () => {
   ];
   return (
     <div className="Wrapper-Admin-User">
-      <div className="Main-Content">
+      <div className="Main-Content p-6">
         {/* Nút Quay lại */}
-        <div className="relative my-3 min-h-[60px]">
-          {/* Nút cố định vị trí */}
-          <div className="absolute top-[80px] left-0 z-10">
-            <Button
-              onClick={() => navigate(-1)}
-              type="primary"
-              className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md shadow-sm transition duration-300"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12H3m0 0l6-6m-6 6l6 6"
-                />
-              </svg>
-              {t("order.back")}
-            </Button>
-          </div>
 
-          {/* Tiêu đề căn giữa */}
-          <h5 className="content-title text-[25px] sm:text-2xl text-center">
-            {t("order.title")}
+        <div
+          style={{ marginBottom: 24, marginTop: 24 }}
+          className="flex items-center justify-between"
+        >
+          {/* Nút quay lại bên trái */}
+          <Button
+            onClick={() => navigate(-1)}
+            type="primary"
+            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
+            </svg>
+            <span className="hidden md:inline">{t("fuelProvide.back")}</span>
+          </Button>
+
+          {/* Title căn giữa */}
+          <h5 className="text-center font-bold text-2xl md:text-2xl flex-grow mx-4 text-gray-800">
+            🛒 {t("order.title")}
           </h5>
+
+          {/* Phần tử trống bên phải để cân bằng nút quay lại */}
+          <div className="min-w-[20px] md:min-w-[100px]"></div>
         </div>
         <div className="content-main-table-user">
           <TableOrder
@@ -842,11 +847,11 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-         title={
-    <span className="text-[14px] lg:text-lg font-semibold">
-      {t("order.drawer_title")}
-    </span>
-  }
+        title={
+          <span className="text-[14px] lg:text-lg font-semibold text-gray-800">
+            {t("order.drawer_title")}
+          </span>
+        }
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
