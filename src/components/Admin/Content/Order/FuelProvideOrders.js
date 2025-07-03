@@ -78,13 +78,15 @@ const FuelProvideManagement = () => {
     address: "",
     supplier_id: "",
     total_price: "",
+    createdAt: "",
+    updatedAt: "",
+    address: "",
   });
 
   // Fetch : Get User Details
   const fetchGetUserDetails = async ({ id, access_token }) => {
     const res = await OrderServices.getDetailProvideOrders(id, access_token);
     // Get respone từ api và gán vào state update details
-
     if (res?.data) {
       setStateDetailsUser({
         _id: res?.data._id,
@@ -99,6 +101,9 @@ const FuelProvideManagement = () => {
         request_id: res?.data.request_id,
         supplier_id: res?.data.supplier_id,
         total_price: res?.data.total_price,
+        createdAt: res?.data.createdAt,
+        updatedAt: res?.data.updatedAt,
+        address: res?.data.address || "",
       });
       setOrderStatus(res?.data.status); // Cập nhật trạng thái đơn hàng từ dữ liệu
     }
@@ -634,6 +639,35 @@ const FuelProvideManagement = () => {
             >
               {stateDetailsUser?.total_price || ""}
             </Descriptions.Item>
+
+            <Descriptions.Item
+              label={t("fuelProvide.address")}
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.address || ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={t("fuelProvide.createdAt")}
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.createdAt
+                ? new Date(stateDetailsUser.createdAt).toLocaleString()
+                : ""}
+            </Descriptions.Item>
+
+            <Descriptions.Item
+              label={t("fuelProvide.updatedAt")}
+              labelStyle={{ width: "40%" }}
+              contentStyle={{ width: "60%" }}
+            >
+              {stateDetailsUser?.updatedAt
+                ? new Date(stateDetailsUser.updatedAt).toLocaleString()
+                : ""}
+            </Descriptions.Item>
+
           </Descriptions>
 
           {orderStatus === "Chờ duyệt" && (

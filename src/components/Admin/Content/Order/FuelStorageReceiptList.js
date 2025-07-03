@@ -104,13 +104,11 @@ const FuelStorageReceiptList = () => {
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
       title: t(
-        `fuelStorage.confirmTitle.${
-          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmTitle.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       content: t(
-        `fuelStorage.confirmContent.${
-          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmContent.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       okText: t("fuelStorage.confirm.okText"),
@@ -202,9 +200,9 @@ const FuelStorageReceiptList = () => {
     onFilter: (value, record) =>
       record.manager_id?.full_name
         ? record.manager_id.full_name
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -542,6 +540,28 @@ const FuelStorageReceiptList = () => {
                     : t("fuelStorage.receiptType.request")}
                 </div>
 
+                {/* Tên nguyên liệu */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  {t("fuelProvide.fuelName")}
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.receipt_request_id?.fuel_name ||
+                    selectedReceipt.receipt_supply_id?.fuel_name ||
+                    t("fuelStorage.noDataShort")}
+                </div>
+
+                {/* Đơn giá */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  {t("fuelProvide.price")}
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.receipt_request_id?.price !== undefined
+                    ? selectedReceipt.receipt_request_id.price.toLocaleString() + " VNĐ"
+                    : selectedReceipt.receipt_supply_id?.price !== undefined
+                      ? selectedReceipt.receipt_supply_id.price.toLocaleString() + " VNĐ"
+                      : t("fuelStorage.noDataShort")}
+                </div>
+
                 {/* Số Lượng */}
                 <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
                   {t("fuelStorage.columns.quantity")}
@@ -549,6 +569,28 @@ const FuelStorageReceiptList = () => {
                 <div className="col-span-6 p-3 border border-gray-300">
                   {selectedReceipt.receipt_request_id?.quantity ||
                     selectedReceipt.receipt_supply_id?.quantity ||
+                    t("fuelStorage.noDataShort")}
+                </div>
+
+                {/* Thành tiền */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  {t("fuelProvide.totalPrice")}
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.receipt_request_id?.total_price !== undefined
+                    ? selectedReceipt.receipt_request_id.total_price.toLocaleString() + " VNĐ"
+                    : selectedReceipt.receipt_supply_id?.total_price !== undefined
+                      ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() + " VNĐ"
+                      : t("fuelStorage.noDataShort")}
+                </div>
+
+                {/* Địa chỉ */}
+                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
+                  {t("fuelProvide.address")}
+                </div>
+                <div className="col-span-6 p-3 border border-gray-300">
+                  {selectedReceipt.receipt_request_id?.address ||
+                    selectedReceipt.receipt_supply_id?.address ||
                     t("fuelStorage.noDataShort")}
                 </div>
 
@@ -595,7 +637,7 @@ const FuelStorageReceiptList = () => {
 
                 {/* Ghi chú */}
                 {selectedReceipt.receipt_request_id?.note ||
-                selectedReceipt.receipt_supply_id?.note ? (
+                  selectedReceipt.receipt_supply_id?.note ? (
                   <>
                     <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
                       {t("fuelStorage.columns.note")}

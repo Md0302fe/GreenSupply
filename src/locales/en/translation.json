@@ -572,7 +572,15 @@
     "select_role": "Please select a role!",
     "required_name": "Please enter a name!",
     "required_email": "Please enter an email!",
-    "required_phone": "Please enter a phone number!"
+    "required_phone": "Please enter a phone number!",
+    "birth_day": "Birth day",
+    "gender": "Gender",
+    "address": "Address",
+    "male": "Male",
+    "female":"Female",
+    "other": "Other",
+    "required_gender": "Please select gender!",
+    "required_birth_day": "Please select a birth day!"
   },
   "blocked_user": {
     "back": "Go back",
@@ -809,6 +817,7 @@
     "canceled": "Canceled",
     "completed": "Completed",
     "createdAt": "Created At",
+    "updatedAt": "Last Updated",
     "noData": "No data",
     "invalid": "Invalid",
     "action": "Action",
@@ -821,7 +830,9 @@
     "noNote": "No note",
     "totalPrice": "Total Price",
     "approveOrder": "Approve",
-    "cancelOrder": "Cancel"
+    "cancelOrder": "Cancel",
+    "address": "Address",
+    "fuelName": "Fuel Name"
   },
   "dashboardWarehouse": {
     "title": "Warehouse Management",
@@ -963,7 +974,9 @@
     "requiredMaterialEstimate": "Estimated Required Material (Kg)",
     "selectFuelType": "Select Fuel Type",
     "enterEstimatedProduction": "Enter estimated production",
-    "selectStorage": "Select Storage"
+    "selectStorage": "Select Storage",
+    "createdAt": "Created At",
+    "updatedAt": "Last Updated"
   },
   "validation": {
     "requiredBatchId": "Please enter the batch ID",

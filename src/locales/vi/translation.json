@@ -569,7 +569,16 @@
     "select_role": "Vui lòng chọn vai trò!",
     "required_name": "Vui lòng điền tên!",
     "required_email": "Vui lòng điền email!",
-    "required_phone": "Vui lòng điền số điện thoại!"
+    "required_phone": "Vui lòng điền số điện thoại!",
+    "birth_day": "Ngày sinh",
+    "gender": "Giới tính",
+    "address": "Địa chỉ",
+    "male": "Nam",
+    "female":"Nữ",
+    "other": "Khác",
+    "required_gender": "Vui lòng chọn giới tính!",
+    "required_birth_day": "Vui lòng chọn ngày sinh!"
+
   },
   "blocked_user": {
     "back": "Quay lại",
@@ -806,6 +815,7 @@
     "canceled": "Đã hủy",
     "completed": "Hoàn thành",
     "createdAt": "Ngày Tạo",
+    "updatedAt": "Cập nhật gần nhất",
     "noData": "Không có dữ liệu",
     "invalid": "Không hợp lệ",
     "action": "Chức năng",
@@ -818,7 +828,9 @@
     "noNote": "Không có",
     "totalPrice": "Tổng Giá",
     "approveOrder": "Duyệt đơn",
-    "cancelOrder": "Hủy đơn"
+    "cancelOrder": "Hủy đơn",
+    "address": "Địa chỉ",
+    "fuelName": "Tên Nguyên Liệu"
   },
   "dashboardWarehouse": {
     "title": "Quản lý kho",
@@ -960,7 +972,9 @@
     "requiredMaterialEstimate": "Số lượng nguyên liệu cần thiết ước tính (Kg)",
     "selectFuelType": "Chọn loại Nguyên liệu",
     "enterEstimatedProduction": "Nhập sản lượng mong muốn",
-    "selectStorage": "Chọn kho lưu trữ"
+    "selectStorage": "Chọn kho lưu trữ",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Cập nhật gần nhất"
   },
   "validation": {
     "requiredBatchId": "Vui lòng nhập mã lô",
