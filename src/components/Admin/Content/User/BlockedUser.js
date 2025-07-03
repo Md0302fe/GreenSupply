@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./User.scss";
 
-import { Button, Form, Input, Modal, Select, Space, Upload } from "antd";
+import { Button, Form, Input, Modal, Select, Space, Upload, message } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 
@@ -11,7 +11,6 @@ import { BiBlock, BiImageAdd } from "react-icons/bi";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
-import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
 
@@ -142,11 +141,9 @@ const BlockedUserComponent = () => {
     if (isSuccessDelete || isSuccessUnblock) {
       if (deleteRespone?.status === "OK" || unblockRespone?.status === "OK") {
         setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
-        toast.success(unblockRespone?.message);
+        message.success(t('blocked_user.block_success'));
       } else {
-        toast.error(deleteRespone?.message);
-        toast.error(unblockRespone?.message);
+        message.error(t('blocked_user.block_fail'));
         setIsOpenDelete(false);
       }
     }
@@ -236,10 +233,10 @@ const BlockedUserComponent = () => {
   useEffect(() => {
     if (isSuccessUpdate) {
       if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
+        message.success(dataRes?.message);
         handleCancelUpdate();
       } else {
-        toast.error(dataRes?.message);
+        message.error(dataRes?.message);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -377,10 +374,10 @@ const tableData =
 
   const handleUnBlockAccount = (accountId) => {
     Modal.confirm({
-      title: "Xác nhận gỡ chặn tài khoản",
-      content: "Bạn có chắc chắn muốn gỡ chặn tài khoản này không?",
-      okText: "Xác nhận",
-      cancelText: "Hủy",
+      title: t("blocked_user.confirm_unblock_title"),
+      content: t("blocked_user.confirm_unblock_text"),
+      okText: t("common.confirm"),
+      cancelText: t("common.cancel"),
       width: 600,
       onOk() {
         handleConfirmUnBlock(accountId); // Truyền đúng accountId
