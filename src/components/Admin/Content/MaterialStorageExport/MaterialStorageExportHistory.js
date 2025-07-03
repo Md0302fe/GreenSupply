@@ -83,13 +83,13 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(data?.requests)
     ? data?.requests?.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        batch_id: batch.material_export_id?.batch_id?.batch_id || "",
-        batch_name: batch.material_export_id?.batch_id?.batch_name || "",
-        type_export: batch.material_export_id?.type_export || "",
-        status: batch.material_export_id?.status || "",
-      }))
+      ...batch,
+      key: batch._id,
+      batch_id: batch.material_export_id?.batch_id?.batch_id || "",
+      batch_name: batch.material_export_id?.batch_id?.batch_name || "",
+      type_export: batch.material_export_id?.type_export || "",
+      status: batch.material_export_id?.status || "",
+    }))
     : [];
 
   // Fetch : Get User Details
@@ -434,7 +434,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("common.enterQuantity")}
                     value={stateDetailsBatch?.batch_id?.quantity}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -450,7 +450,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("batchHistory.exportType")}
                     value={stateDetailsBatch?.type_export}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -470,6 +470,19 @@ const RawMaterialBatchList = () => {
                     )}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
+                </div>
+
+                {/* Trạng thái phiếu xuất */}
+                <div>
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    {t("batchHistory.status")}
+                  </label>
+                  <div className="p-2 w-full border border-gray-300 rounded inline-block">
+                    <Tag color={statusColors[stateDetailsBatch.status] || "default"}>
+                      {t(`status.${statusMap[stateDetailsBatch.status]}`) ||
+                        stateDetailsBatch.status}
+                    </Tag>
+                  </div>
                 </div>
 
                 {/* Ngày tạo lô */}

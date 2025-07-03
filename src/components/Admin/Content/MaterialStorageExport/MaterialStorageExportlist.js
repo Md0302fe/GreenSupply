@@ -180,9 +180,9 @@ const MaterialStorageExportList = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -516,7 +516,7 @@ const MaterialStorageExportList = () => {
             </Descriptions.Item>
             <Descriptions.Item label={t("materialExportList.status")}>
               <Tag color={statusColors[selectedExport.status] || "default"}>
-                {t(statusMap[selectedExport.status]) || t("common.no_data")}
+                {t(`status.${statusMap[selectedExport.status]}`) || selectedExport.status}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label={t("materialExportList.createdDate")}>
