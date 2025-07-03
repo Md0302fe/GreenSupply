@@ -128,10 +128,10 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
-      ...batch,
-      key: batch._id,
-      fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-    }))
+        ...batch,
+        key: batch._id,
+        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
+      }))
     : [];
 
   // Search trong bảng
@@ -328,6 +328,7 @@ const RawMaterialBatchList = () => {
 
   const handleViewDetail = (record) => {
     setSelectedBatch(record);
+    console.log(selectedBatch);
     setIsEditMode(false); // Đảm bảo chế độ xem chi tiết không phải chỉnh sửa
     setIsDrawerOpen(true); // Mở Drawer
     form.resetFields(); // Reset form khi mở Drawer
@@ -481,7 +482,8 @@ const RawMaterialBatchList = () => {
       <div className="raw-material-batch-list my-3">
         <div
           style={{ marginBottom: 24, marginTop: 24 }}
-          className="flex items-center justify-between">
+          className="flex items-center justify-between"
+        >
           {/* Nút Quay lại */}
           <Button
             onClick={() => navigate(-1)}
@@ -495,7 +497,12 @@ const RawMaterialBatchList = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12H3m0 0l6-6m-6 6l6 6"
+              />
             </svg>
             <span className="hidden md:inline">{t("fuelStorage.back")}</span>
           </Button>
@@ -690,12 +697,18 @@ const RawMaterialBatchList = () => {
                   </Form.Item>
 
                   {/* Ngày tạo */}
-                  <Form.Item label={t("materialBatch.createdAt")} name="createdAt">
+                  <Form.Item
+                    label={t("materialBatch.createdAt")}
+                    name="createdAt"
+                  >
                     <Input disabled />
                   </Form.Item>
 
                   {/* Ngày cập nhật */}
-                  <Form.Item label={t("materialBatch.updatedAt")} name="updatedAt">
+                  <Form.Item
+                    label={t("materialBatch.updatedAt")}
+                    name="updatedAt"
+                  >
                     <Input disabled />
                   </Form.Item>
 
@@ -748,6 +761,12 @@ const RawMaterialBatchList = () => {
                     {t(statusMap[selectedBatch.status] || selectedBatch.status)}
                   </Tag>
                 </Descriptions.Item>
+                <Descriptions.Item label={t("materialBatch.createdAt")}>
+                  {converDateString(selectedBatch.createdAt) || "N/A"}
+                </Descriptions.Item>
+                <Descriptions.Item label={t("materialBatch.updatedAt")}>
+                  {converDateString(selectedBatch.updatedAt) || "N/A"}
+                </Descriptions.Item>
               </Descriptions>
             )}
 
@@ -792,7 +811,7 @@ const RawMaterialBatchList = () => {
         rtl={false}
         draggable
       />
-    </div >
+    </div>
   );
 };
 
