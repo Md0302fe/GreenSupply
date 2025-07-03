@@ -22,6 +22,7 @@ import { useLocation } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { VscRequestChanges } from "react-icons/vsc";
 import { useTranslation } from "react-i18next";
+import { converDateString } from "../../../../ultils";
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
@@ -474,13 +475,13 @@ const RawMaterialBatchList = () => {
 
     form.setFieldsValue({ quantity: value });
   };
-
+  console.log("Selected batch:", selectedBatch);
   return (
     <div className="md:px-8">
       <div className="raw-material-batch-list my-3">
         <div
-        style={{ marginBottom: 24, marginTop: 24 }}
-        className="flex items-center justify-between">
+          style={{ marginBottom: 24, marginTop: 24 }}
+          className="flex items-center justify-between">
           {/* Nút Quay lại */}
           <Button
             onClick={() => navigate(-1)}
@@ -557,6 +558,8 @@ const RawMaterialBatchList = () => {
                     storage_id: selectedBatch?.fuel_type_id?.storage_id,
                     status: selectedBatch?.status,
                     note: selectedBatch?.note,
+                    createdAt: converDateString(selectedBatch?.createdAt),
+                    updatedAt: converDateString(selectedBatch?.updatedAt),
                   }}
                   onFinish={handleSaveUpdate}
                 >
@@ -686,6 +689,16 @@ const RawMaterialBatchList = () => {
                     <Input.TextArea rows={4} />
                   </Form.Item>
 
+                  {/* Ngày tạo */}
+                  <Form.Item label={t("materialBatch.createdAt")} name="createdAt">
+                    <Input disabled />
+                  </Form.Item>
+
+                  {/* Ngày cập nhật */}
+                  <Form.Item label={t("materialBatch.updatedAt")} name="updatedAt">
+                    <Input disabled />
+                  </Form.Item>
+
                   {/* Các nút thao tác */}
                   <div className="flex justify-center gap-4 mt-4">
                     <Button
@@ -740,28 +753,28 @@ const RawMaterialBatchList = () => {
 
             {/* Nút chỉnh sửa */}
             {/* Nút chỉnh sửa và Đóng */}
-<div className="flex justify-between mt-4 px-4">
-  {/* Nút Chỉnh sửa bên trái */}
-  {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" ? (
-    <Button
-      type="primary"
-      onClick={() => handleEdit(selectedBatch)}
-      className="bg-blue-600 text-white"
-    >
-      {t("common.edit")}
-    </Button>
-  ) : (
-    <div></div> // để giữ khoảng trống cân đối nếu nút chỉnh sửa ẩn
-  )}
+            <div className="flex justify-between mt-4 px-4">
+              {/* Nút Chỉnh sửa bên trái */}
+              {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" ? (
+                <Button
+                  type="primary"
+                  onClick={() => handleEdit(selectedBatch)}
+                  className="bg-blue-600 text-white"
+                >
+                  {t("common.edit")}
+                </Button>
+              ) : (
+                <div></div> // để giữ khoảng trống cân đối nếu nút chỉnh sửa ẩn
+              )}
 
-  {/* Nút Đóng bên phải */}
-  <button
-    onClick={() => setIsDrawerOpen(false)}
-    className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
-  >
-    Đóng
-  </button>
-</div>
+              {/* Nút Đóng bên phải */}
+              <button
+                onClick={() => setIsDrawerOpen(false)}
+                className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
+              >
+                Đóng
+              </button>
+            </div>
           </>
         )}
       </DrawerComponent>

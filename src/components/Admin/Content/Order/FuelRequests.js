@@ -584,19 +584,19 @@ const FuelRequestsManagement = () => {
                 marginTop: 24,
               }}
             >
-              <Button type="primary" onClick={handleApproveOrder}>
-                {t("fuel_request.actions.approve")}
-              </Button>
-              <Button danger onClick={handleCancelOrder}>
-                {t("fuel_request.actions.cancel")}
-              </Button>
             </div>
           )}
         </Loading>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-center gap-3 mt-2">
+          <Button type="primary" onClick={handleApproveOrder}>
+            {t("fuel_request.actions.approve")}
+          </Button>
+          <Button danger onClick={handleCancelOrder}>
+            {t("fuel_request.actions.cancel")}
+          </Button>
           <button
             onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
+            className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
           >
             Đóng
           </button>

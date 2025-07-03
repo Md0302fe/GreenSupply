@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./User.scss";
 
 import { Button, Form, Input, Select, Space, Upload } from "antd";
+import dayjs from "dayjs";
 import { FaUser } from "react-icons/fa"; // Import biểu tượng từ react-icons
 
 import * as UserServices from "../../../../services/UserServices";
@@ -580,8 +581,8 @@ const UserComponent = () => {
           <Form
             name="update-form"
             labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600, padding: "20px" }} // Thêm padding
+            wrapperCol={{ span: 20 }}
+            style={{ maxWidth: 600, }}
             initialValues={{ remember: true }}
             onFinish={onFinishUpdate}
             autoComplete="on"
@@ -593,6 +594,7 @@ const UserComponent = () => {
               rules={[
                 { required: true, message: t("user_list.required_name") },
               ]}
+              style={{ marginBottom: 12 }}
             >
               <Input
                 value={stateDetailsUser.full_name}
@@ -610,6 +612,7 @@ const UserComponent = () => {
               rules={[
                 { required: true, message: t("user_list.required_email") },
               ]}
+              style={{ marginBottom: 12 }}
             >
               <Input
                 value={stateDetailsUser.email}
@@ -624,6 +627,7 @@ const UserComponent = () => {
               rules={[
                 { required: true, message: t("user_list.required_phone") },
               ]}
+              style={{ marginBottom: 12 }}
             >
               <Input
                 value={stateDetailsUser.phone}
@@ -633,10 +637,50 @@ const UserComponent = () => {
               />
             </Form.Item>
 
+            <Form.Item label={t("user_list.address")} name="address"
+            style={{ marginBottom: 12 }}>
+              <Input
+                value={stateDetailsUser.address}
+                placeholder={t("user_list.address")}
+                style={{ borderRadius: "5px" }}
+                readOnly // ⬅ không cho chỉnh sửa
+              />
+            </Form.Item>
+
+            <Form.Item label={t("user_list.gender")} name="gender" 
+            style={{ marginBottom: 12 }}>
+              <Select
+                value={stateDetailsUser.gender}
+                open={false} // chặn mở dropdown
+                onMouseDown={(e) => e.preventDefault()} // chặn chọn
+                style={{ borderRadius: "5px", pointerEvents: "auto", backgroundColor: "#fff" }}
+                suffixIcon={null} // ẩn icon nếu muốn gọn
+              >
+                <Select.Option value="male">{t("user_list.male")}</Select.Option>
+                <Select.Option value="female">{t("user_list.female")}</Select.Option>
+                <Select.Option value="other">{t("user_list.other")}</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item label={t("user_list.birth_day")}
+            style={{ marginBottom: 12 }}>
+              <Input
+                value={
+                  stateDetailsUser.birth_day
+                    ? dayjs(stateDetailsUser.birth_day).format("DD-MM-YYYY")
+                    : ""
+                }
+                readOnly
+                style={{ borderRadius: "5px" }}
+              />
+            </Form.Item>
+
+
             <Form.Item
               label={t("user_list.role")}
               name="role"
               rules={[{ required: true, message: t("user_list.select_role") }]}
+              style={{ marginBottom: 12 }}
             >
               <Select
                 onChange={(value) => handleOnChangeDetails(value, "role")}
@@ -654,7 +698,8 @@ const UserComponent = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item label={t("user_list.upload_image")}>
+            <Form.Item label={t("user_list.upload_image")}
+            style={{ marginBottom: 12 }}>
               <Upload.Dragger
                 listType="picture"
                 showUploadList={{ showRemoveIcon: true }}
@@ -673,7 +718,8 @@ const UserComponent = () => {
               </Upload.Dragger>
             </Form.Item>
 
-            <Form.Item label={t("user_list.review_avatar")} name="avatar">
+            <Form.Item label={t("user_list.review_avatar")} name="avatar"
+            style={{ marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <img
                   src={
@@ -692,19 +738,21 @@ const UserComponent = () => {
               </div>
             </Form.Item>
 
-            <Form.Item label={t("user_list.created_at")} name="created">
+            <Form.Item label={t("user_list.created_at")} name="created"
+            style={{ marginBottom: 12 }}>
               <div className="flex justify-end">
                 {converDateString(stateDetailsUser?.createdAt)}
               </div>
             </Form.Item>
-            <Form.Item label={t("user_list.updated_at")} name="created">
+            <Form.Item label={t("user_list.updated_at")} name="created"
+            style={{ marginBottom: 12 }}>
               <div className="flex justify-end">
                 {converDateString(stateDetailsUser?.updatedAt)}
               </div>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
-              <div className="flex justify-between mt-4">
+            <Form.Item wrapperCol={{ offset: 0, span: 24 }} style={{ marginBottom: 12 }}>
+              <div className="flex justify-between">
                 {/* Nút đóng bên phải */}
                 <Button
                   type="primary"
