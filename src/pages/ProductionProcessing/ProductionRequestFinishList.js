@@ -84,10 +84,10 @@ const ProductionRequestList = () => {
 
   const tableData = Array.isArray(data)
     ? data
-        .filter(
-          (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
-        )
-        .map((req) => ({ ...req, key: req._id }))
+      .filter(
+        (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
+      )
+      .map((req) => ({ ...req, key: req._id }))
     : [];
 
   // Search
@@ -436,7 +436,19 @@ const ProductionRequestList = () => {
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material_quantity} Kg
                 </div>
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
+                  {t("form.loss_percentage")}
+                </div>
+                <div className="p-3 border border-gray-300">
+                  {selectedRequest.loss_percentage ?? "0"}%
+                </div>
 
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
+                  {t("form.priority")}
+                </div>
+                <div className="p-3 border border-gray-300">
+                  {selectedRequest.priority ?? "-"}
+                </div>
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
                   {t("form.production_date")}
                 </div>

@@ -59,13 +59,14 @@ const FuelList = () => {
         setLoading(false);
         return;
       }
-      
+
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/fuel/getAll`
       );
       if (response.data.success) {
         const transformedFuels = response.data.requests.map((item) => ({
           _id: item._id,
+          fuel_type_id: item.fuel_type_id,
           type_name: item.fuel_type_id?.type_name || "Không có dữ liệu",
           description: item.fuel_type_id?.description || "Không có mô tả",
           is_deleted: item.is_deleted,
@@ -284,7 +285,7 @@ const FuelList = () => {
       // align: "center",
     },
     {
-      title: <div style={{ textAlign: "left",}}>Mô Tả</div>,
+      title: <div style={{ textAlign: "left", }}>Mô Tả</div>,
 
       dataIndex: "description",
       key: "description",
@@ -416,6 +417,17 @@ const FuelList = () => {
           <Descriptions bordered column={1}>
             <Descriptions.Item label="Tên Loại Nguyên liệu">
               {selectedFuel.type_name || "Không có dữ liệu"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Hình Ảnh">
+              {selectedFuel.fuel_type_id?.image ? (
+                <img
+                  src={selectedFuel.fuel_type_id.image}
+                  alt={selectedFuel.type_name}
+                  style={{ width: "100%", maxHeight: 200, objectFit: "contain", borderRadius: 8 }}
+                />
+              ) : (
+                <i>Không có hình ảnh</i>
+              )}
             </Descriptions.Item>
             <Descriptions.Item label="Mô Tả">
               {selectedFuel.description || "Không có mô tả"}

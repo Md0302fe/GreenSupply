@@ -577,7 +577,7 @@
     "gender": "Gender",
     "address": "Address",
     "male": "Male",
-    "female":"Female",
+    "female": "Female",
     "other": "Other",
     "required_gender": "Please select gender!",
     "required_birth_day": "Please select a birth day!"
@@ -1107,7 +1107,9 @@
     "end_date": "End Date",
     "status": "Status",
     "note": "Note",
-    "update_title": "Update Request"
+    "update_title": "Update Request",
+    "loss_percentage": "Loss Percentage (%)",
+    "priority": "Priority Level"
   },
   "action": {
     "edit": "Edit",
