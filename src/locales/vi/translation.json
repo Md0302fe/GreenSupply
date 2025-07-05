@@ -51,8 +51,6 @@
   "invalid_dob": "Ngày sinh không thể lớn hơn ngày hiện tại.",
   "back": "Quay lại",
   "update_profile": "Cập Nhật Thông Tin",
-  "complete_profile": "Hoàn tất hồ sơ",
-  "fill_valid_information": "Vui lòng điền đầy đủ thông tin",
   "complete": "Hoàn tất",
   "birthday_required": "Vui lòng chọn ngày sinh.",
   "notifications": "Thông báo",
@@ -199,7 +197,6 @@
     "quantity_placeholder": "Số lượng...",
     "price_placeholder": "Giá bán...",
     "pickup_address": "Địa chỉ lấy hàng",
-    "enter_pickup_address": "Nhập địa chỉ...",
     "no_address": "Không có địa chỉ nào",
     "note_placeholder": "Ghi chú (tối đa 200 ký tự)",
     "total_price_label": "Tổng giá:",
@@ -420,7 +417,7 @@
     }
   },
   "purchaseRequest": {
-    "title": "Quản lý kế hoạch - Nguyên liệu cần nhập",
+    "title": "Quản Lý Nguyên Liệu Cần Nhập",
     "dashboard": {
       "title": "Dashboard",
       "description": "Thông tin phân tích quản lý nguyên liệu cần nhập"
@@ -439,7 +436,7 @@
     }
   },
   "supplierRequest": {
-    "title": "Quản lý yêu cầu nhà cung cấp",
+    "title": "Quản Lý Yêu Cầu Nhà Cung Cấp",
     "dashboard": {
       "title": "Dashboard",
       "description": "Thông tin toàn yêu cầu supplier"
@@ -458,7 +455,7 @@
     }
   },
   "warehouse": {
-    "title": "Quản lý kho",
+    "title": "Quản Lý Kho",
     "dashboard": {
       "title": "Dashboard",
       "description": "Quản lý thông tin tổng quát kho"
@@ -574,11 +571,10 @@
     "gender": "Giới tính",
     "address": "Địa chỉ",
     "male": "Nam",
-    "female":"Nữ",
+    "female": "Nữ",
     "other": "Khác",
     "required_gender": "Vui lòng chọn giới tính!",
     "required_birth_day": "Vui lòng chọn ngày sinh!"
-
   },
   "blocked_user": {
     "back": "Quay lại",
@@ -602,10 +598,6 @@
     "confirm_block_text": "Bạn có chắc chắn muốn chặn tài khoản này không?",
     "confirm_unblock_title": "Xác nhận gỡ chặn tài khoản",
     "confirm_unblock_text": "Bạn có chắc chắn muốn gỡ chặn tài khoản này không?",
-    "block_success": "Thành công",
-    "block_fail": "Thất bại",
-    "unblock_success": "Gỡ chặn tài khoản người dùng thành công",
-    "unblock_fail": "Gỡ chặn tài khoản người dùng thất bại",
     "required_name": "Vui lòng điền tên!",
     "required_email": "Vui lòng điền email!",
     "required_phone": "Vui lòng điền số điện thoại!",
@@ -833,7 +825,7 @@
     "fuelName": "Tên Nguyên Liệu"
   },
   "dashboardWarehouse": {
-    "title": "Quản lý kho",
+    "title": "Quản Lý Kho",
     "totalReceipts": "Tổng đơn nhập kho",
     "pendingReceipts": "Đơn Chờ Duyệt",
     "approvedReceipts": "Đơn Đã Duyệt",
@@ -1105,7 +1097,9 @@
     "end_date": "Ngày kết thúc",
     "status": "Trạng thái",
     "note": "Ghi chú",
-    "update_title": "Cập nhật đơn"
+    "update_title": "Cập nhật đơn",
+    "loss_percentage": "Tỉ lệ hao hụt",
+    "priority": "Mức độ ưu tiên"
   },
   "action": {
     "edit": "Chỉnh sửa",

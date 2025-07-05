@@ -506,6 +506,8 @@ const ProductionRequestList = () => {
       request_type: selectedRequest?.request_type,
       product_quantity: selectedRequest?.product_quantity,
       material_quantity: selectedRequest?.material_quantity,
+      loss_percentage: selectedRequest?.loss_percentage,
+      priority: selectedRequest?.priority,
       production_date: selectedRequest?.production_date
         ? dayjs(selectedRequest.production_date).startOf("day")
         : null,
@@ -633,6 +635,20 @@ const ProductionRequestList = () => {
                 </div>
                 <div className="p-3 border border-gray-300">
                   {selectedRequest.material_quantity} Kg
+                </div>
+
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
+                  {t("form.loss_percentage")}
+                </div>
+                <div className="p-3 border border-gray-300">
+                  {selectedRequest.loss_percentage}%
+                </div>
+
+                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
+                  {t("form.priority")}
+                </div>
+                <div className="p-3 border border-gray-300">
+                  {selectedRequest.priority}
                 </div>
 
                 <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
@@ -784,6 +800,35 @@ const ProductionRequestList = () => {
                 name="material_quantity"
               >
                 <InputNumber className="w-full" disabled />
+              </Form.Item>
+
+              {/* Tỉ lệ hao hụt (%) */}
+              <Form.Item
+                label={t("form.loss_percentage")}
+                name="loss_percentage"
+                rules={[{ required: true, message: t("validate.loss_percentage") }]}
+              >
+                <InputNumber
+                  className="w-full"
+                  min={0}
+                  max={100}
+                  formatter={(value) => `${value}%`}
+                  parser={(value) => value.replace('%', '')}
+                />
+              </Form.Item>
+
+              {/* Độ ưu tiên */}
+              <Form.Item
+                label={t("form.priority")}
+                name="priority"
+                rules={[{ required: true, message: t("validate.priority") }]}
+              >
+                <InputNumber
+                  className="w-full"
+                  min={1}
+                  max={10}
+                  step={1}
+                />
               </Form.Item>
 
               {/* Ngày sản xuất -> DatePicker */}
