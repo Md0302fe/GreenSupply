@@ -83,13 +83,13 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(data?.requests)
     ? data?.requests?.map((batch) => ({
-      ...batch,
-      key: batch._id,
-      batch_id: batch.material_export_id?.batch_id?.batch_id || "",
-      batch_name: batch.material_export_id?.batch_id?.batch_name || "",
-      type_export: batch.material_export_id?.type_export || "",
-      status: batch.material_export_id?.status || "",
-    }))
+        ...batch,
+        key: batch._id,
+        batch_id: batch.material_export_id?.batch_id?.batch_id || "",
+        batch_name: batch.material_export_id?.batch_id?.batch_name || "",
+        type_export: batch.material_export_id?.type_export || "",
+        status: batch.material_export_id?.status || "",
+      }))
     : [];
 
   // Fetch : Get User Details
@@ -255,21 +255,32 @@ const RawMaterialBatchList = () => {
       className: "text-center",
     },
     {
-      title: <div className="text-center">{t("batchHistory.status")}</div>,
+      title: (
+        <div className="text-center">{t("fuelStorage.columns.status")}</div>
+      ),
       dataIndex: "status",
       key: "status",
       className: "text-center",
-      filters: Object.keys(statusColors).map((status) => {
-        const key = statusMap[status];
-        return {
-          text: key ? t(`status.${key}`) : status,
-          value: status,
+      filters: [
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.processing"), value: "Đang xử lý" },
+        { text: t("status.completed"), value: "Hoàn thành" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+      ],
+      onFilter: (value, record) => record.status === value,
+      render: (statusLabel) => {
+        const statusKey = statusMap[statusLabel];
+        const statusColors = {
+          pending: "gold",
+          processing: "orange",
+          completed: "blue",
+          cancelled: "red",
         };
-      }),
-      render: (stt) => {
-        const key = statusMap[stt];
-        const translated = key ? t(`status.${key}`) : stt;
-        return <Tag color={statusColors[stt] || "default"}>{translated}</Tag>;
+        return (
+          <Tag color={statusColors[statusKey] || "default"}>
+            {t(`status.${statusKey}`) || statusKey}
+          </Tag>
+        );
       },
     },
     {
@@ -434,7 +445,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("common.enterQuantity")}
                     value={stateDetailsBatch?.batch_id?.quantity}
-                    onChange={() => { }}
+                    onChange={() => {}}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -450,7 +461,7 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("batchHistory.exportType")}
                     value={stateDetailsBatch?.type_export}
-                    onChange={() => { }}
+                    onChange={() => {}}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
@@ -478,7 +489,11 @@ const RawMaterialBatchList = () => {
                     {t("batchHistory.status")}
                   </label>
                   <div className="p-2 w-full border border-gray-300 rounded inline-block">
-                    <Tag color={statusColors[stateDetailsBatch.status] || "default"}>
+                    <Tag
+                      color={
+                        statusColors[stateDetailsBatch.status] || "default"
+                      }
+                    >
                       {t(`status.${statusMap[stateDetailsBatch.status]}`) ||
                         stateDetailsBatch.status}
                     </Tag>

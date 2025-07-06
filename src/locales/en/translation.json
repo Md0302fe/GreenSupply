@@ -466,6 +466,10 @@
       "title": "Dashboard",
       "description": "Overview of warehouse information"
     },
+    "receiptRequestList": {
+      "title": "Manage Orders Waiting for Storage",
+      "description": "Manage the list of received goods and create warehouse receipt requests"
+    },
     "createReceipt": {
       "title": "Create Receipt Request",
       "description": "Manage incoming goods and create warehouse receipt requests"
@@ -767,6 +771,7 @@
     "table": {
       "customer": "Customer",
       "fuel_type": "Fuel Type",
+      "request_name": "Request Name",
       "price": "Price",
       "status": "Status",
       "actions": "Actions"

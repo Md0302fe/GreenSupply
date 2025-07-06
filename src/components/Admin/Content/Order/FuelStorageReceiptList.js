@@ -76,9 +76,12 @@ const FuelStorageReceiptList = () => {
         }
       );
       if (response.data.success) {
-        const rawData = response.data.data;
+        const rawData = response.data.data.map((item) => ({
+          ...item,
+          manager: item.manager_id?.full_name || "",
+        }));
         setOriginalReceipts(rawData);
-        setReceipts(rawData); // Không cần applyFilters nếu đã lọc server-side
+        setReceipts(rawData);
       } else {
         message.error("Lỗi khi lấy danh sách đơn nhập kho!");
       }
@@ -104,11 +107,13 @@ const FuelStorageReceiptList = () => {
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
       title: t(
-        `fuelStorage.confirmTitle.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmTitle.${
+          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       content: t(
-        `fuelStorage.confirmContent.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmContent.${
+          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       okText: t("fuelStorage.confirm.okText"),
@@ -200,9 +205,9 @@ const FuelStorageReceiptList = () => {
     onFilter: (value, record) =>
       record.manager_id?.full_name
         ? record.manager_id.full_name
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase())
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -298,9 +303,10 @@ const FuelStorageReceiptList = () => {
       title: (
         <div className="text-center">{t("fuelStorage.columns.manager")}</div>
       ),
-      dataIndex: ["manager_id", "full_name"],
-      key: "manager_id",
+      dataIndex: "manager", // thêm alias cho search
+      key: "manager",
       className: "text-center",
+      ...getColumnSearchProps("manager"),
       render: (_, record) =>
         record.manager_id?.full_name || t("fuelStorage.unknown"),
     },
@@ -350,6 +356,14 @@ const FuelStorageReceiptList = () => {
       dataIndex: "status",
       key: "status",
       className: "text-center",
+      filters: [
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.processing"), value: "Đang xử lý" },
+        { text: t("status.imported"), value: "Nhập kho thành công" },
+        { text: t("status.importFailed"), value: "Nhập kho thất bại" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+      ],
+      onFilter: (value, record) => record.status === value,
       render: (statusLabel) => {
         const statusKey = statusMap[statusLabel];
         const statusColors = {
@@ -372,6 +386,7 @@ const FuelStorageReceiptList = () => {
       ),
       dataIndex: "createdAt",
       className: "text-center",
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       render: (date) =>
         date ? converDateString(date) : t("fuelStorage.noDataShort"),
     },
@@ -381,6 +396,7 @@ const FuelStorageReceiptList = () => {
       ),
       dataIndex: "updatedAt",
       className: "text-center",
+      sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
       render: (date) =>
         date ? converDateString(date) : t("fuelStorage.noDataShort"),
     },
@@ -556,10 +572,12 @@ const FuelStorageReceiptList = () => {
                 </div>
                 <div className="col-span-6 p-3 border border-gray-300">
                   {selectedReceipt.receipt_request_id?.price !== undefined
-                    ? selectedReceipt.receipt_request_id.price.toLocaleString() + " VNĐ"
+                    ? selectedReceipt.receipt_request_id.price.toLocaleString() +
+                      " VNĐ"
                     : selectedReceipt.receipt_supply_id?.price !== undefined
-                      ? selectedReceipt.receipt_supply_id.price.toLocaleString() + " VNĐ"
-                      : t("fuelStorage.noDataShort")}
+                    ? selectedReceipt.receipt_supply_id.price.toLocaleString() +
+                      " VNĐ"
+                    : t("fuelStorage.noDataShort")}
                 </div>
 
                 {/* Số Lượng */}
@@ -578,10 +596,13 @@ const FuelStorageReceiptList = () => {
                 </div>
                 <div className="col-span-6 p-3 border border-gray-300">
                   {selectedReceipt.receipt_request_id?.total_price !== undefined
-                    ? selectedReceipt.receipt_request_id.total_price.toLocaleString() + " VNĐ"
-                    : selectedReceipt.receipt_supply_id?.total_price !== undefined
-                      ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() + " VNĐ"
-                      : t("fuelStorage.noDataShort")}
+                    ? selectedReceipt.receipt_request_id.total_price.toLocaleString() +
+                      " VNĐ"
+                    : selectedReceipt.receipt_supply_id?.total_price !==
+                      undefined
+                    ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() +
+                      " VNĐ"
+                    : t("fuelStorage.noDataShort")}
                 </div>
 
                 {/* Địa chỉ */}
@@ -637,7 +658,7 @@ const FuelStorageReceiptList = () => {
 
                 {/* Ghi chú */}
                 {selectedReceipt.receipt_request_id?.note ||
-                  selectedReceipt.receipt_supply_id?.note ? (
+                selectedReceipt.receipt_supply_id?.note ? (
                   <>
                     <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
                       {t("fuelStorage.columns.note")}

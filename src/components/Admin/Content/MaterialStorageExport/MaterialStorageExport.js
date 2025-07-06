@@ -233,7 +233,7 @@ const MaterialStorageExport = () => {
               label={t("materialExport.selectBatch")}
               name="batch_id"
               rules={[
-                { required: true, message: "Vui lòng chọn lô nguyên liệu" },
+                { required: true, message: t("validation.requiredBatch") },
               ]}
             >
               <Select

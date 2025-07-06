@@ -532,7 +532,7 @@ const FuelOrderStatus = () => {
             onClick={() => setIsDrawerOpen(false)}
             className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
           >
-            Đóng
+            {t("close")}
           </button>
         </div>
       </Drawer>

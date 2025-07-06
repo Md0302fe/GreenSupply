@@ -358,7 +358,8 @@ const FuelRequestsManagement = () => {
       dataIndex: "price",
       key: "price",
       className: "text-center",
-      ...getColumnSearchProps("price"),
+      sorter: (a, b) => a.price - b.price,
+      render: (price) => `${price.toLocaleString()} đ`,
     },
     {
       title: t("fuel_request.table.status"),
@@ -367,13 +368,12 @@ const FuelRequestsManagement = () => {
       className: "text-center",
       filters: [
         { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.processing"), value: "Đang xử lý" },
         { text: t("status.approve"), value: "Đã duyệt" },
-        { text: t("status.cancelled"), value: "Đã Hủy" },
-        { text: t("status.completed"), value: "Hoàn thành" },
+        { text: t("status.cancelled"), value: "Đã hủy" },
+        { text: t("status.completed"), value: "Hoàn Thành" },
       ],
-
-      onFilter: (value, record) => record.status.includes(value),
-      filteredValue: defaultStatusFilter ? [defaultStatusFilter] : null,
+      onFilter: (value, record) => record.status?.trim() === value.trim(),
       render: (status) => {
         let color = "";
         switch (status) {
@@ -383,11 +383,12 @@ const FuelRequestsManagement = () => {
           case "Đã duyệt":
             color = "green";
             break;
-          case "Đã Hủy":
+          case "Đã huỷ":
+          case "Đã hủy": // đề phòng cả 2 cách viết
             color = "red";
             break;
           case "Hoàn Thành":
-            color = "green"; // Thêm màu cho trạng thái "Đã hoàn thành"
+            color = "blue";
             break;
           case "Đang xử lý":
             color = "blue";
@@ -494,7 +495,7 @@ const FuelRequestsManagement = () => {
               </Descriptions.Item>
 
               <Descriptions.Item
-                label={t("fuel_request.table.fuel_type")}
+                label={t("fuel_request.table.request_name")}
                 labelStyle={{ width: "40%" }}
                 contentStyle={{ width: "60%" }}
               >
@@ -583,8 +584,7 @@ const FuelRequestsManagement = () => {
                 gap: "10px",
                 marginTop: 24,
               }}
-            >
-            </div>
+            ></div>
           )}
         </Loading>
         <div className="flex justify-center gap-3 mt-2">
@@ -598,7 +598,7 @@ const FuelRequestsManagement = () => {
             onClick={() => setIsDrawerOpen(false)}
             className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
           >
-            Đóng
+            {t("close")}
           </button>
         </div>
       </DrawerComponent>
