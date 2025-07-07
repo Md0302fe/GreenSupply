@@ -1371,5 +1371,110 @@
     "createSuccess": "Tạo loại nguyên liệu mới thành công!",
     "createFail": "Tạo nguyên liệu thất bại!",
     "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới."
+  },
+  "fuelList": {
+    "title": "Danh Sách Loại Nguyên Liệu",
+    "back": "Quay lại",
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tìm kiếm",
+    "searchButton": "Tìm",
+    "resetButton": "Đặt lại",
+    "closeButton": "Đóng",
+    "export_excel": "Xuất Excel",
+    "no_data_to_export": "Không có dữ liệu để xuất!",
+    "create_success": "Cập nhật thành công!",
+    "create_fail": "Cập nhật thất bại!",
+    "update_error": "Lỗi kết nối đến server!",
+    "delete_success": "Đã chuyển Nguyên liệu vào trạng thái Đã xóa!",
+    "delete_fail": "Hủy thất bại!",
+    "not_logged_in": "Bạn chưa đăng nhập! Vui lòng đăng nhập lại.",
+    "fetch_fail": "Lỗi khi lấy danh sách loại Nguyên liệu!",
+    "server_error": "Không thể kết nối đến server!",
+    "columns": {
+      "type_name": "Tên Loại Nguyên liệu",
+      "description": "Mô Tả",
+      "quantity": "Số Lượng Trong Kho",
+      "status": "Trạng Thái",
+      "actions": "Hành Động"
+    },
+    "status": {
+      "deleted": "Đã xóa",
+      "active": "Chưa xóa"
+    },
+    "drawer": {
+      "details_title": "Chi tiết Loại Nguyên liệu",
+      "update_title": "Cập nhật Loại Nguyên liệu",
+      "image": "Hình Ảnh",
+      "no_image": "Không có hình ảnh",
+      "no_data": "Không có dữ liệu",
+      "no_description": "Không có mô tả",
+      "delete_status": "Trạng Thái Xóa",
+      "storage": "Kho Lưu Trữ",
+      "created_at": "Ngày Tạo",
+      "updated_at": "Cập Nhật Lần Cuối",
+      "loading": "Đang tải dữ liệu...",
+      "close": "Đóng",
+      "cancel": "Hủy",
+      "save": "Lưu"
+    },
+    "form": {
+      "placeholder_name": "Tên Loại Nguyên liệu",
+      "placeholder_description": "Mô Tả",
+      "placeholder_quantity": "Số Lượng",
+      "empty_name": "Tên Nguyên liệu không được để trống"
+    }
+  },
+  "boxList": {
+    "title": "Danh sách vật liệu theo loại",
+    "back": "Quay lại",
+    "create": "+ Tạo vật liệu mới",
+    "image": "Ảnh",
+    "no_image": "Chưa có ảnh",
+    "name": "Tên Nguyên Vật Liệu",
+    "quantity": "Số lượng",
+    "capacity": "Dung tích",
+    "size": "Size Bao Bì",
+    "status": "Trạng Thái",
+    "status_deleted": "Đã xóa",
+    "status_active": "Hoạt động",
+    "actions": "Hành động",
+    "confirm_delete": "Xác nhận xoá",
+    "confirm_delete_content": "Bạn có chắc chắn muốn xoá vật liệu này không?",
+    "delete_success": "Xoá thành công.",
+    "delete_fail": "Xoá thất bại.",
+    "delete_error": "Lỗi khi xoá.",
+    "category_error": "Không thể lấy danh sách loại thùng.",
+    "box_error": "Không thể lấy danh sách thùng.",
+    "details": {
+      "title": "Chi tiết thùng",
+      "name": "Tên",
+      "quantity": "Số lượng",
+      "status": "Trạng thái",
+      "capacity": "Dung tích",
+      "size": "Size Bao Bì",
+      "created": "Ngày tạo",
+      "updated": "Cập nhật lần cuối",
+      "close": "Đóng"
+    },
+    "update": {
+      "title": "Cập nhật thùng",
+      "name": "Tên thùng",
+      "quantity": "Số lượng",
+      "image_label": "Ảnh mới",
+      "preview": "Ảnh mới sẽ được cập nhật",
+      "cancel": "Hủy",
+      "submit": "Cập nhật",
+      "validate_name": "Vui lòng nhập tên thùng",
+      "validate_quantity": "Vui lòng nhập số lượng",
+      "update_success": "Cập nhật thành công!",
+      "update_fail": "Cập nhật thất bại!",
+      "update_error": "Lỗi khi cập nhật."
+    },
+    "sizes": {
+      "small": "Size S",
+      "medium": "Size M",
+      "large": "Size L",
+      "unknown": "Không rõ"
+    }
   }
 }
