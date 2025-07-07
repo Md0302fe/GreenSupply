@@ -1480,5 +1480,68 @@
       "large": "Size L",
       "unknown": "Unknown"
     }
+  },
+  "packageCategory": {
+    "title": "Package Material Categories",
+    "back": "Go Back",
+    "create": "+ Create New Category",
+    "name": "Category Name",
+    "description": "Description",
+    "totalQuantity": "Total Quantity",
+    "status": "Status",
+    "status_active": "Active",
+    "status_deleted": "Inactive",
+    "actions": "Actions",
+    "details": {
+      "title": "Category Details",
+      "name": "Category Name",
+      "description": "Description",
+      "quantity": "Total Quantity",
+      "status": "Status",
+      "created": "Created At",
+      "updated": "Last Updated",
+      "loading": "Loading...",
+      "close": "Close"
+    },
+    "edit": {
+      "title": "Edit Category",
+      "name": "Category Name",
+      "description": "Description",
+      "cancel": "Cancel",
+      "submit": "Update",
+      "validate_name": "Please enter category name"
+    },
+    "messages": {
+      "fetch_error": "Failed to fetch categories.",
+      "server_error": "Error connecting to server.",
+      "update_success": "Update successful!",
+      "update_fail": "Update failed!",
+      "update_error": "Error updating.",
+      "delete_confirm": "Confirm Deactivation",
+      "delete_message": "Are you sure you want to deactivate this category?",
+      "delete_success": "Category deactivated successfully.",
+      "delete_fail": "Operation failed.",
+      "unauthorized": "Unauthorized (401)",
+      "delete_error": "Error during operation."
+    },
+    "search": {
+      "placeholder": "Search",
+      "search": "Search",
+      "reset": "Reset",
+      "close": "Close"
+    }
+  },
+  "createPackageCategory": {
+    "title": "Create New Material Category",
+    "back": "Go Back",
+    "name_label": "Material Category Name",
+    "name_placeholder": "Enter material category name",
+    "name_required": "Please enter the material category name",
+    "description_label": "Description",
+    "description_placeholder": "Enter description (optional)",
+    "submit": "Create Material Category",
+    "success": "Category created successfully!",
+    "fail": "Creation failed!",
+    "error": "Server connection error!"
   }
 }

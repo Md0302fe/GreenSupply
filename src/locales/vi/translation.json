@@ -1476,5 +1476,68 @@
       "large": "Size L",
       "unknown": "Không rõ"
     }
+  },
+  "packageCategory": {
+    "title": "Danh Sách loại vật Liệu",
+    "back": "Quay lại",
+    "create": "+ Tạo loại Vật Liệu",
+    "name": "Tên Loại Vật Liệu",
+    "description": "Mô Tả",
+    "totalQuantity": "Số Lượng Tổng",
+    "status": "Trạng Thái",
+    "status_active": "Hoạt động",
+    "status_deleted": "Ngừng sử dụng",
+    "actions": "Hành Động",
+    "details": {
+      "title": "Chi tiết Loại Thùng",
+      "name": "Tên loại thùng",
+      "description": "Mô tả",
+      "quantity": "Tổng số lượng",
+      "status": "Trạng thái",
+      "created": "Ngày tạo",
+      "updated": "Cập nhật lần cuối",
+      "loading": "Đang tải...",
+      "close": "Đóng"
+    },
+    "edit": {
+      "title": "Chỉnh sửa Loại Nguyên Liệu",
+      "name": "Tên loại thùng",
+      "description": "Mô tả",
+      "cancel": "Hủy",
+      "submit": "Cập nhật",
+      "validate_name": "Vui lòng nhập tên loại thùng"
+    },
+    "messages": {
+      "fetch_error": "Không thể lấy danh sách loại Nguyên Liệu.",
+      "server_error": "Lỗi khi kết nối tới server.",
+      "update_success": "Cập nhật thành công!",
+      "update_fail": "Cập nhật thất bại!",
+      "update_error": "Lỗi khi cập nhật.",
+      "delete_confirm": "Xác nhận xoá",
+      "delete_message": "Bạn có chắc chắn muốn ngừng sử dụng loại nguyên liệu này không?",
+      "delete_success": "Đã ngừng sử dụng thành công.",
+      "delete_fail": "Thao tác thất bại.",
+      "unauthorized": "Không có quyền thực hiện (401)",
+      "delete_error": "Lỗi khi thực hiện thao tác."
+    },
+    "search": {
+      "placeholder": "Tìm kiếm",
+      "search": "Tìm",
+      "reset": "Đặt lại",
+      "close": "Đóng"
+    }
+  },
+  "createPackageCategory": {
+    "title": "Tạo Loại Vật Liệu Mới",
+    "back": "Quay lại",
+    "name_label": "Tên loại Vật liệu",
+    "name_placeholder": "Nhập tên loại nguyên liệu",
+    "name_required": "Vui lòng nhập tên loại nguyên liệu",
+    "description_label": "Mô tả",
+    "description_placeholder": "Nhập mô tả (tuỳ chọn)",
+    "submit": "Tạo loại Nguyên Vật Liệu",
+    "success": "Tạo loại thùng thành công!",
+    "fail": "Tạo thất bại!",
+    "error": "Lỗi kết nối đến server!"
   }
 }

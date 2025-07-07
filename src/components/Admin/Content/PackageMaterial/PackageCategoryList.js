@@ -23,8 +23,11 @@ import { VscPackage } from "react-icons/vsc";
 import { useSelector } from "react-redux";
 import { Modal } from "antd";
 import _ from "lodash";
+import { useTranslation } from "react-i18next";
 
 const PackageCategoryList = () => {
+  const { t } = useTranslation();
+
   const [categories, setCategories] = useState([]); // Dữ liệu gốc
   const [filteredCategories, setFilteredCategories] = useState([]); // Dữ liệu đã lọc
   const [loading, setLoading] = useState(false);
@@ -91,25 +94,24 @@ const PackageCategoryList = () => {
         }
       );
       if (res.data.success) {
-        message.success("Cập nhật thành công!");
+        message.success(t("packageCategory.messages.update_success"));
         setIsEditDrawerOpen(false);
         fetchCategories(); // Tải lại dữ liệu sau khi chỉnh sửa
       } else {
-        message.error("Cập nhật thất bại!");
+        message.error(t("packageCategory.messages.update_fail"));
       }
     } catch (err) {
-      message.error("Lỗi khi cập nhật.");
+      message.error(t("packageCategory.messages.update_error"));
     }
   };
 
   const handleDelete = (id) => {
     Modal.confirm({
-      title: "Xác nhận xoá",
-      content:
-        "Bạn có chắc chắn muốn ngừng sử dụng loại nguyên liệu này không?",
-      okText: "Ngừng sử dụng",
+      title: t("packageCategory.messages.delete_confirm"),
+      content: t("packageCategory.messages.delete_message"),
+      okText: t("packageCategory.status_deleted"),
       okType: "danger",
-      cancelText: "Huỷ",
+      cancelText: t("packageCategory.edit.cancel"),
       onOk: async () => {
         try {
           const res = await axios.delete(
@@ -122,16 +124,16 @@ const PackageCategoryList = () => {
           );
 
           if (res.data.success) {
-            message.success("Đã ngừng sử dụng thành công.");
+            message.success(t("packageCategory.messages.delete_success"));
             fetchCategories(); // Tải lại danh sách sau khi xóa
           } else {
-            message.error("Thao tác thất bại.");
+            message.error(t("packageCategory.messages.delete_fail"));
           }
         } catch (err) {
           if (err.response?.status === 401) {
-            message.error("Không có quyền thực hiện (401)");
+            message.error(t("packageCategory.messages.unauthorized"));
           } else {
-            message.error("Lỗi khi thực hiện thao tác.");
+            message.error(t("packageCategory.messages.delete_error"));
           }
         }
       },
@@ -176,7 +178,7 @@ const PackageCategoryList = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Tìm
+            {t("packageCategory.search.search")}
           </Button>
           <Button
             onClick={() => {
@@ -186,10 +188,10 @@ const PackageCategoryList = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Reset
+            {t("packageCategory.search.reset")}
           </Button>
           <Button type="link" size="small" onClick={close}>
-            Đóng
+            {t("packageCategory.search.close")}
           </Button>
         </Space>
       </div>
@@ -210,7 +212,7 @@ const PackageCategoryList = () => {
     {
       title: (
         <div style={{ textAlign: "left", width: "100%" }}>
-          Tên Loại Vật Liệu
+          {t("packageCategory.name")}
         </div>
       ),
       dataIndex: "categories_name",
@@ -219,14 +221,20 @@ const PackageCategoryList = () => {
       ...getColumnSearchProps("categories_name"),
     },
     {
-      title: <div style={{ textAlign: "left", width: "100%" }}>Mô Tả</div>,
+      title: (
+        <div style={{ textAlign: "left", width: "100%" }}>
+          {t("packageCategory.description")}
+        </div>
+      ),
       dataIndex: "Descriptions",
       key: "Descriptions",
       align: "center",
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Số Lượng Tổng</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("packageCategory.totalQuantity")}
+        </div>
       ),
       dataIndex: "quantity",
       key: "quantity",
@@ -235,27 +243,33 @@ const PackageCategoryList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("packageCategory.status")}
+        </div>
       ),
       dataIndex: "is_delete",
       key: "is_delete",
       align: "center",
       filters: [
-        { text: "Hoạt động", value: "false" },
-        { text: "Ngừng sử dụng", value: "true" },
+        { text: t("packageCategory.status_active"), value: "false" },
+        { text: t("packageCategory.status_deleted"), value: "true" },
       ],
       onFilter: (value, record) => record.is_delete.toString() === value,
       render: (val) => (
         <div style={{ textAlign: "center", width: "100%" }}>
           <Tag color={val ? "orange" : "green"}>
-            {val ? "Ngừng sử dụng" : "Hoạt động"}
+            {val
+              ? t("packageCategory.status_deleted")
+              : t("packageCategory.status_active")}
           </Tag>
         </div>
       ),
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Hành Động</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("packageCategory.actions")}
+        </div>
       ),
       key: "action",
       align: "center", // Căn giữa tất cả các cột
@@ -357,14 +371,14 @@ const PackageCategoryList = () => {
               d="M15 12H3m0 0l6-6m-6 6l6 6"
             />
           </svg>
-          <span className="hidden md:inline">Quay lại</span>
+          <span className="hidden md:inline">{t("packageCategory.back")}</span>
         </button>
 
         {/* Tiêu đề căn giữa */}
         <div className="flex items-center justify-center gap-2">
           <VscPackage className="size-8"></VscPackage>
           <h2 className="text-center font-bold text-[18px] md:text-2xl flex-grow text-gray-800">
-            Danh Sách loại vật Liệu
+            {t("packageCategory.title")}
           </h2>
         </div>
 
@@ -378,7 +392,7 @@ const PackageCategoryList = () => {
           onClick={() => navigate("/system/admin/box-categories/create")}
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow mb-2"
         >
-          + Tạo loại Vật Liệu
+          {t("packageCategory.create")}
         </Button>
       </div>
 
@@ -393,7 +407,7 @@ const PackageCategoryList = () => {
 
       {/* Drawer xem chi tiết */}
       <Drawer
-        title="Chi tiết Loại Thùng"
+        title={t("packageCategory.details.title")}
         open={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
@@ -403,43 +417,45 @@ const PackageCategoryList = () => {
       >
         {selectedCategory ? (
           <Descriptions column={1} bordered>
-            <Descriptions.Item label="Tên loại thùng">
+            <Descriptions.Item label={t("packageCategory.details.name")}>
               {selectedCategory.categories_name}
             </Descriptions.Item>
-            <Descriptions.Item label="Mô tả">
-              {selectedCategory.Descriptions || "Không có"}
+            <Descriptions.Item label={t("packageCategory.details.description")}>
+              {selectedCategory.Descriptions || t("fuelStorage.noData")}
             </Descriptions.Item>
-            <Descriptions.Item label="Tổng số lượng">
+            <Descriptions.Item label={t("packageCategory.details.quantity")}>
               {selectedCategory.quantity}
             </Descriptions.Item>
-            <Descriptions.Item label="Trạng thái">
+            <Descriptions.Item label={t("packageCategory.details.status")}>
               <Tag color={selectedCategory.is_delete ? "orange" : "green"}>
-                {selectedCategory.is_delete ? "Ngừng sử dụng" : "Hoạt động"}
+                {selectedCategory.is_delete
+                  ? t("packageCategory.status_deleted")
+                  : t("packageCategory.actions")}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Ngày tạo">
+            <Descriptions.Item label={t("packageCategory.details.created")}>
               {new Date(selectedCategory.createdAt).toLocaleString()}
             </Descriptions.Item>
-            <Descriptions.Item label="Cập nhật lần cuối">
+            <Descriptions.Item label={t("packageCategory.details.updated")}>
               {new Date(selectedCategory.updatedAt).toLocaleString()}
             </Descriptions.Item>
           </Descriptions>
         ) : (
-          <p>Đang tải...</p>
+          <p>{t("packageCategory.details.loading")}</p>
         )}
         <div className="flex justify-end mt-4">
           <button
             onClick={() => setIsDrawerOpen(false)}
             className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
           >
-            Đóng
+            {t("packageCategory.details.close")}
           </button>
         </div>
       </Drawer>
 
       {/* Drawer chỉnh sửa */}
       <Drawer
-        title="Chỉnh sửa Loại Nguyên Liệu"
+        title={t("packageCategory.edit.title")}
         width={400}
         onClose={() => setIsEditDrawerOpen(false)}
         open={isEditDrawerOpen}
@@ -455,16 +471,22 @@ const PackageCategoryList = () => {
           }}
         >
           <Form.Item
-            label="Tên loại thùng"
+            label={t("packageCategory.edit.name")}
             name="categories_name"
             rules={[
-              { required: true, message: "Vui lòng nhập tên loại thùng" },
+              {
+                required: true,
+                message: t("packageCategory.edit.validate_name"),
+              },
             ]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Mô tả" name="Descriptions">
+          <Form.Item
+            label={t("packageCategory.details.description")}
+            name="Descriptions"
+          >
             <Input.TextArea rows={4} />
           </Form.Item>
 
@@ -473,10 +495,10 @@ const PackageCategoryList = () => {
               onClick={() => setIsEditDrawerOpen(false)}
               style={{ marginRight: 8 }}
             >
-              Hủy
+              {t("packageCategory.edit.cancel")}
             </Button>
             <Button type="primary" htmlType="submit">
-              Cập nhật
+              {t("packageCategory.edit.submit")}
             </Button>
           </div>
         </Form>

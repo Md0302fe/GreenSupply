@@ -394,7 +394,7 @@ const BoxList = () => {
             onClick={() => navigate("/system/admin/box-Create")}
             className="shadow-md"
           >
-            + {t("boxList.create")}
+            {t("boxList.create")}
           </Button>
         </div>
 
