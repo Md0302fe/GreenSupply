@@ -1328,5 +1328,29 @@
       "sắp hết hạn": "Sắp hết hạn",
       "hết hạn": "Hết hạn"
     }
+  },
+  "material_dashboard": {
+    "title": "Dashboard Quản Lý Nguyên Liệu",
+    "totalFuelTypes": "Tổng Số Loại Nguyên Liệu",
+    "totalFuelQuantity": "Tổng Khối Lượng Nguyên Liệu",
+    "quickOverview": "Tổng Quan Nhanh",
+    "recentTransactions": "lượt nhập/xuất nguyên liệu gần đây",
+    "mostAvailable": "Nguyên Liệu Nhiều nhất",
+    "lowStock": "Nguyên Liệu Sắp hết",
+    "noLowStock": "Không Có",
+    "fuelDistribution": "Phân Bổ Nguyên Liệu Trong Kho",
+    "noData": "Không có dữ liệu để hiển thị",
+    "historyTitle": "Lịch Sử Nhập/Xuất Nguyên Liệu",
+    "noHistory": "Không có dữ liệu nhập/xuất nguyên liệu",
+    "warningTitle": "Cảnh Báo Nguyên Liệu Sắp Hết",
+    "fuelType": "Loại Nguyên Liệu",
+    "quantity": "Khối Lượng",
+    "status": "Trạng Thái",
+    "date": "Ngày",
+    "import": "Nhập kho",
+    "export": "Xuất kho",
+    "errorLoading": "Không thể tải dữ liệu, vui lòng thử lại!",
+    "warningAlmostEmpty": "Sắp hết nhiên liệu!",
+    "warningEmpty": "Hết nhiên liệu!"
   }
 }

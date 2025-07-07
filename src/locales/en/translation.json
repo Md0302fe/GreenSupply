@@ -1332,5 +1332,29 @@
       "sắp hết hạn": "Expiring Soon",
       "hết hạn": "Expired"
     }
+  },
+  "material_dashboard": {
+    "title": "Fuel Management Dashboard",
+    "totalFuelTypes": "Total Fuel Types",
+    "totalFuelQuantity": "Total Fuel Quantity",
+    "quickOverview": "Quick Overview",
+    "recentTransactions": "recent fuel transactions",
+    "mostAvailable": "Most Available Fuel",
+    "lowStock": "Low Stock Fuel",
+    "noLowStock": "None",
+    "fuelDistribution": "Fuel Distribution in Storage",
+    "noData": "No data to display",
+    "historyTitle": "Fuel Import/Export History",
+    "noHistory": "No fuel import/export data",
+    "warningTitle": "Low Fuel Warnings",
+    "fuelType": "Fuel Type",
+    "quantity": "Quantity",
+    "status": "Status",
+    "date": "Date",
+    "import": "Import",
+    "export": "Export",
+    "errorLoading": "Failed to load data, please try again!",
+    "warningAlmostEmpty": "Almost out of fuel!",
+    "warningEmpty": "Out of fuel!"
   }
 }
