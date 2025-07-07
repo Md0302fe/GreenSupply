@@ -1352,5 +1352,24 @@
     "errorLoading": "Không thể tải dữ liệu, vui lòng thử lại!",
     "warningAlmostEmpty": "Sắp hết nhiên liệu!",
     "warningEmpty": "Hết nhiên liệu!"
+  },
+  "createFuel": {
+    "title": "Tạo Loại Nguyên liệu Mới",
+    "back": "Quay lại",
+    "nameLabel": "Tên loại nguyên liệu",
+    "namePlaceholder": "Nhập tên loại nguyên liệu",
+    "nameRequired": "Vui lòng nhập tên loại Nguyên liệu",
+    "descLabel": "Mô tả",
+    "descPlaceholder": "Nhập mô tả (không bắt buộc)",
+    "imageLabel": "Ảnh loại nguyên liệu (JPG, PNG < 2MB)",
+    "imageRequired": "Vui lòng chọn ảnh loại Nguyên liệu",
+    "chooseImage": "Chọn ảnh",
+    "submit": "Tạo Loại nguyên Liệu",
+    "imageTypeError": "Chỉ hỗ trợ upload ảnh JPG/PNG!",
+    "imageSizeError": "Ảnh phải nhỏ hơn 2MB!",
+    "uploadError": "Lỗi khi đọc ảnh.",
+    "createSuccess": "Tạo loại nguyên liệu mới thành công!",
+    "createFail": "Tạo nguyên liệu thất bại!",
+    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới."
   }
 }

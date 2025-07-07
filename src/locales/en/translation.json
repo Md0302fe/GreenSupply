@@ -1356,5 +1356,24 @@
     "errorLoading": "Failed to load data, please try again!",
     "warningAlmostEmpty": "Almost out of fuel!",
     "warningEmpty": "Out of fuel!"
+  },
+  "createFuel": {
+    "title": "Create New Fuel Type",
+    "back": "Go Back",
+    "nameLabel": "Fuel Type Name",
+    "namePlaceholder": "Enter fuel type name",
+    "nameRequired": "Please enter the fuel type name",
+    "descLabel": "Description",
+    "descPlaceholder": "Enter description (optional)",
+    "imageLabel": "Fuel image (JPG, PNG < 2MB)",
+    "imageRequired": "Please upload a fuel image",
+    "chooseImage": "Select Image",
+    "submit": "Create Fuel Type",
+    "imageTypeError": "Only JPG/PNG images are supported!",
+    "imageSizeError": "Image must be smaller than 2MB!",
+    "uploadError": "Failed to read image.",
+    "createSuccess": "Fuel type created successfully!",
+    "createFail": "Fuel creation failed!",
+    "createError": "An error occurred while creating fuel type."
   }
 }

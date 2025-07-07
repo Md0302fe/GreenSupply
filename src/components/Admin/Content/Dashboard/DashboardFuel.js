@@ -48,7 +48,7 @@ const DashboardFuel = () => {
       if (alertsRes.data.success) setLowStock(alertsRes.data.lowStock);
     } catch (error) {
       console.error("❌ Lỗi khi gọi API:", error);
-      message.error("Không thể tải dữ liệu, vui lòng thử lại!");
+      message.error(t('material_dashboard.errorLoading'));
     }
     setLoading(false);
   };
