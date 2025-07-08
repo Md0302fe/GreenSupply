@@ -211,135 +211,108 @@ const MaterialStorageExportList = () => {
   };
 
   const columns = [
-    {
-      title: (
-        <div style={{ textAlign: "left", width: "100%" }}>
-          {t("materialExportList.exportType")}
-        </div>
+  {
+    title: (
+      <div style={{ textAlign: "left", width: "100%" }}>
+        {t("materialExportList.exportType")}
+      </div>
+    ),
+    dataIndex: "type_export",
+    key: "type_export",
+    align: "left",
+    // ...getColumnSearchProps("type_export", "Tìm loại xuất kho"),
+    // sorter: (a, b) => a.type_export?.localeCompare(b.type_export),
+    render: (text) => <span>{text || "Không rõ"}</span>,
+  },
+  {
+    title: (
+      <div style={{ textAlign: "left", width: "100%" }}>
+        {t("materialExportList.productionRequest")}
+      </div>
+    ),
+    key: "production_request",
+    align: "left",
+    ...getColumnSearchProps(["production_request_id", "request_name"], "Tìm yêu cầu sản xuất"),
+    sorter: (a, b) =>
+      (a.production_request_id?.request_name || "").localeCompare(
+        b.production_request_id?.request_name || ""
       ),
-      dataIndex: "type_export",
-      key: "type_export",
-      align: "center",
-      render: (text) => (
-        <div style={{ textAlign: "left" }}>{text || "Không rõ"}</div>
-      ),
+    render: (_, record) => (
+      <span>{record?.production_request_id?.request_name || "Không rõ"}</span>
+    ),
+  },
+  {
+    title: (
+      <div style={{ textAlign: "left", width: "100%" }}>
+        {t("materialExportList.batch")}
+      </div>
+    ),
+    key: "batch",
+    align: "left",
+    ...getColumnSearchProps(["batch_id", "batch_name"], "Tìm lô nguyên liệu"),
+    sorter: (a, b) =>
+      (a.batch_id?.batch_name || "").localeCompare(b.batch_id?.batch_name || ""),
+    render: (_, record) => (
+      <span>{record?.batch_id?.batch_name || "Không rõ"}</span>
+    ),
+  },
+  {
+    title: (
+      <div style={{ textAlign: "center", width: "100%" }}>
+        {t("materialExportList.status")}
+      </div>
+    ),
+    dataIndex: "status",
+    key: "status",
+    align: "center",
+    filters: [
+      { text: t("status.pending"), value: "Chờ duyệt" },
+      { text: t("status.completed"), value: "Hoàn thành" },
+      { text: t("status.cancelled"), value: "Đã hủy" },
+    ],
+    onFilter: (value, record) => record.status === value,
+    filteredValue: statusFilter ? [statusFilter] : null,
+    // sorter: (a, b) => a.status.localeCompare(b.status),
+    render: (status) => {
+      const color = statusColors[status] || "default";
+      return (
+        <Tag color={color}>
+          {t(`status.${statusMap[status]}`) || status}
+        </Tag>
+      );
     },
-    {
-      title: (
-        <div style={{ textAlign: "left", width: "100%" }}>
-          {t("materialExportList.productionRequest")}
-        </div>
-      ),
-      key: "production_request",
-      align: "left",
-      render: (_, record) => (
-        <div style={{}}>
-          {record?.production_request_id?.request_name || "Không rõ"}
-        </div>
-      ),
-    },
-    {
-      title: (
-        <div style={{ textAlign: "left", width: "100%" }}>
-          {t("materialExportList.batch")}
-        </div>
-      ),
-      key: "batch",
-      align: "left",
-      render: (_, record) => (
-        <div style={{}}>{record?.batch_id?.batch_name || "Không rõ"}</div>
-      ),
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("materialExportList.status")}
-        </div>
-      ),
-      dataIndex: "status",
-      key: "status",
-      align: "center",
-      filters: [
-        {
-          text: t("status.pending"),
-          value: "Chờ duyệt",
-        },
-        {
-          text: t("status.completed"),
-          value: "Hoàn thành",
-        },
-      ],
-      onFilter: (value, record) => record.status === value,
-      filteredValue: statusFilter ? [statusFilter] : null,
-      render: (status) => {
-        let color = "";
-        switch (status) {
-          case "Chờ duyệt":
-            color = "orange";
-            break;
-          case "Đã duyệt":
-            color = "green";
-            break;
-          case "Đã hủy":
-            color = "red";
-            break;
-          case "Hoàn thành":
-            color = "blue";
-            break;
-          case "Đang xử lý":
-            color = "yellow";
-            break;
-          default:
-            color = "default";
-        }
+  },
+  {
+    title: (
+      <div style={{ textAlign: "center", width: "100%" }}>
+        {t("common.action")}
+      </div>
+    ),
+    key: "action",
+    align: "center",
+    render: (_, record) => (
+      <Button
+        type="link"
+        icon={<HiOutlineDocumentSearch style={{ fontSize: "20px", color: "dodgerblue" }} />}
+        onClick={() => showExportDetails(record._id)}
+      />
+    ),
+  },
+];
 
-        return (
-          <div style={{ textAlign: "center" }}>
-            <Tag color={color}>
-              {t(`status.${statusMap[status] || status}`)}
-            </Tag>
-          </div>
-        );
-      },
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("common.action")}
-        </div>
-      ),
-      key: "action",
-      align: "center",
-      render: (_, record) => (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            type="link"
-            icon={
-              <HiOutlineDocumentSearch
-                style={{ fontSize: "20px", color: "dodgerblue" }}
-              />
-            }
-            onClick={() => showExportDetails(record._id)}
-          />
-        </div>
-      ),
-    },
-  ];
 
   const handleTableChange = (pagination, filters, sorter) => {
-    // Cập nhật filter trạng thái
     if (filters.status) {
       setStatusFilter(filters.status[0] || "");
     } else {
       setStatusFilter("");
     }
 
-    // Cập nhật sortOrder theo createdAt hoặc export_name nếu muốn
     if (sorter.order) {
-      // sorter.order là 'ascend' hoặc 'descend'
       setSortOrder(sorter.order === "ascend" ? "asc" : "desc");
     }
   };
+
   // Accept Request
   const mutationAccept = useMutationHooks(async (data) => {
     const response = await MaterialServices.handleAcceptMaterialExport(data);
@@ -383,7 +356,7 @@ const MaterialStorageExportList = () => {
       .then((response) => {
         if (response.data.success) {
           setSelectedExport(response.data.export);
-          setIsDrawerOpen(true); // ✅ mở drawer
+          setIsDrawerOpen(true); // mở drawer
         } else {
           message.error(t("messages.notFound"));
         }
