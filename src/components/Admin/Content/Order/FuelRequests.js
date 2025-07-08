@@ -27,7 +27,7 @@ import {
 } from "../../../../services/OrderServices";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 const FuelRequestsManagement = () => {
   const { t } = useTranslation();
 
@@ -479,101 +479,143 @@ const FuelRequestsManagement = () => {
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails}>
           <div className="overflow-x-auto">
-            <Descriptions
-              bordered
-              column={1}
-              layout="horizontal"
-              className="min-w-[400px]"
-            >
-              <Descriptions.Item
-                label={t("fuel_request.table.customer")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.supplier_id?.full_name ||
-                  t("common.no_data")}
-              </Descriptions.Item>
+            <div className="w-full p-6 bg-white rounded-md shadow">
+              <div className="grid grid-cols-1 gap-4 mb-2">
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.table.customer")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.supplier_id?.full_name || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.table.request_name")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.fuel_name || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.table.request_name")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.fuel_name || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.table.price")}
-                labelStyle={{ width: "35%" }}
-                contentStyle={{ width: "65%" }}
-              >
-                {stateDetailsUser?.price || t("common.no_data")}
-              </Descriptions.Item>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block mb-1 font-semibold">
+                      {t("fuel_request.drawer.quantity")}
+                    </label>
+                    <input
+                      type="text"
+                      value={stateDetailsUser?.quantity || t("common.no_data")}
+                      readOnly
+                      className="border p-2 rounded w-full mb-1 bg-gray-100"
+                    />
+                  </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.priority")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.priority || t("common.no_data")}
-              </Descriptions.Item>
+                  <div>
+                    <label className="block mb-1 font-semibold">
+                      {t("fuel_request.table.price")}
+                    </label>
+                    <input
+                      type="text"
+                      value={stateDetailsUser?.price || t("common.no_data")}
+                      readOnly
+                      className="border p-2 rounded w-full mb-1 bg-gray-100"
+                    />
+                  </div>
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.quantity")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.quantity || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.total_price")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.total_price || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.total_price")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.total_price || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.address")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.address || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.address")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.address || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.priority")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.priority || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.status")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {t(`status.${statusMap[orderStatus]}`) || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.note")}
+                  </label>
+                  <textarea
+                    value={stateDetailsUser?.note || t("common.no_data")}
+                    readOnly
+                    className="w-full h-auto border p-2 rounded bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.note")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.note || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.status")}
+                  </label>
+                  <input
+                    type="text"
+                    value={t(`status.${statusMap[orderStatus]}`)}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.created_at")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.createdAt || t("common.no_data")}
-              </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.created_at")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.createdAt || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-              <Descriptions.Item
-                label={t("fuel_request.drawer.updated_at")}
-                labelStyle={{ width: "40%" }}
-                contentStyle={{ width: "60%" }}
-              >
-                {stateDetailsUser?.updatedAt || t("common.no_data")}
-              </Descriptions.Item>
-            </Descriptions>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuel_request.drawer.updated_at")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.updatedAt || t("common.no_data")}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
+              </div>
+            </div>
+
           </div>
 
           {orderStatus === "Chờ duyệt" && (
@@ -587,19 +629,10 @@ const FuelRequestsManagement = () => {
             ></div>
           )}
         </Loading>
-        <div className="flex justify-center gap-3 mt-2">
-          <Button type="primary" onClick={handleApproveOrder}>
-            {t("fuel_request.actions.approve")}
-          </Button>
-          <Button danger onClick={handleCancelOrder}>
-            {t("fuel_request.actions.cancel")}
-          </Button>
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
-          >
-            {t("close")}
-          </button>
+        <div className="flex justify-end gap-3">
+          <ButtonComponent type="approve-order" onClick={handleApproveOrder} />
+          <ButtonComponent type="cancel-order" onClick={handleCancelOrder} />
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
       </DrawerComponent>
     </div>
