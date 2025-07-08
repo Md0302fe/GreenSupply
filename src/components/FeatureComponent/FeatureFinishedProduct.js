@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import mng_dashboard_Purchasedorders1 from "../../assets/Feature_purchased_order/mng_dashboard_Purchasedorders.png";
 import mng_dashboard_Purchasedorders from "../../assets/Feature_warehouse/prouct_carton_img.jpg";
 import { useTranslation } from "react-i18next";
 import { FaCubes } from "react-icons/fa";
@@ -17,8 +17,18 @@ const UserComponent = () => {
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
-
+      
       {/* Feature Cards Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
+        {/* Dashboard */}
+        <Card
+          link="/system/admin/dashboard-finished-product"
+          title="DashBoard Thành Phẩm"
+          description="toàn bộ thông tin về thành phẩm"
+          image={mng_dashboard_Purchasedorders1}
+        />
+
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
         {/* Dashboard */}
         <Card
@@ -29,6 +39,7 @@ const UserComponent = () => {
         />
 
       </div>
+      
     </div>
   );
 };
