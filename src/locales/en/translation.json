@@ -1377,7 +1377,7 @@
     "createError": "An error occurred while creating Material type."
   },
   "fuelList": {
-    "title": "Material type List",
+    "title": "Material Type List",
     "back": "Go Back",
     "search": "Search",
     "searchPlaceholder": "Search",
