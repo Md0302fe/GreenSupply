@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Order.scss";
 
-import { Button, Form, Input, Space, Upload } from "antd";
+import { Button, Form, Input, Space, Upload , message } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServices";
@@ -11,7 +11,6 @@ import { Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
-import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import { convertDateStringV1 } from "../../../../ultils";
 
@@ -124,10 +123,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (updateSuccess) {
       if (dataUpdate.status) {
-        toast.success("Update Purchased Order Success");
+        message.success("Update Purchased Order Success");
         setIsDrawerOpen(false);
       } else {
-        toast.success("Update Purchased Order Fail");
+        message.success("Update Purchased Order Fail");
       }
     }
   }, [updateSuccess]);
@@ -142,10 +141,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (AcceptSuccess) {
       if (dataAccept.status) {
-        toast.success("Accept Purchased Order Success");
+        message.success("Accept Purchased Order Success");
         setIsDrawerOpen(false);
       } else {
-        toast.success("Accept Purchased Order Fail");
+        message.success("Accept Purchased Order Fail");
       }
     }
   }, [AcceptSuccess]);
@@ -162,7 +161,7 @@ const UserComponent = () => {
     const validationErrors = validatePurchaseDetails();
 
     if (validationErrors.length > 0) {
-      validationErrors.forEach((error) => toast.warning(error));
+      validationErrors.forEach((error) => message.warning(error));
       return; // Dừng lại nếu có lỗi
     }
 
@@ -185,7 +184,7 @@ const UserComponent = () => {
     const validationErrors = validatePurchaseDetails();
 
     if (validationErrors.length > 0) {
-      validationErrors.forEach((error) => toast.warning(error));
+      validationErrors.forEach((error) => message.warning(error));
       return; // Dừng lại nếu có lỗi
     }
 
@@ -251,9 +250,9 @@ const UserComponent = () => {
     if (isSuccessDelete) {
       if (deleteRespone?.status === "OK") {
         setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
+        message.success(deleteRespone?.message);
       } else {
-        toast.success(deleteRespone?.message);
+        message.success(deleteRespone?.message);
         setIsOpenDelete(false);
       }
     }
@@ -311,7 +310,7 @@ const UserComponent = () => {
   // CANCEL MODAL - Close Modal - CLOSE FORM UPDATE
   const handleCancelUpdate = () => {
     if (!rowSelected) {
-      toast.error(t("order.toast.no_order_selected"));
+      message.error(t("order.toast.no_order_selected"));
       return;
     }
 
@@ -324,13 +323,13 @@ const UserComponent = () => {
       },
       {
         onSuccess: () => {
-          toast.success(t("order.toast.cancel_success"));
+          message.success(t("order.toast.cancel_success"));
           queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
           setIsDrawerOpen(false); // 🔹 Đóng form sau khi hủy
         },
         onError: (error) => {
           console.error("🔴 Lỗi khi gọi API:", error);
-          toast.error(t("order.toast.cancel_failed"));
+          message.error(t("order.toast.cancel_failed"));
         },
       }
     );
@@ -370,17 +369,17 @@ const UserComponent = () => {
     const { name, value } = e.target;
     if (name === "start_received") {
       if (value <= currentDate) {
-        toast.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
+        message.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
         return;
       }
     } else if (name === "end_received") {
       if (value < purchaseDetails.start_received) {
-        toast.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
+        message.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
         return;
       }
     } else if (name === "due_date") {
       if (value < purchaseDetails.end_received) {
-        toast.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
+        message.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
         return;
       }
     }
@@ -430,12 +429,12 @@ const UserComponent = () => {
       },
       {
         onSuccess: () => {
-          toast.success("Đã hủy đơn hàng!");
+          message.success("Đã hủy đơn hàng!");
           queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
         },
         onError: (error) => {
           console.error("🔴 Lỗi khi gọi API:", error);
-          toast.error("Hủy đơn hàng thất bại!");
+          message.error("Hủy đơn hàng thất bại!");
         },
       }
     );

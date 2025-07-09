@@ -156,7 +156,8 @@ const ProvideRequestPage = () => {
       message.error(t("provideRequest.select_order_warning"));
       return;
     }
-    if (!formData.address || !formData.address.trim()) {
+    console.log(selectedAddressId);
+    if (!selectedAddressId || !selectedAddressId.trim()) {
       setAddressError(t("harvestRequest.empty_address"));
       return;
     }
@@ -194,7 +195,7 @@ const ProvideRequestPage = () => {
     <div>
       <div className="p-6 bg-white shadow-md rounded">
         <h2 className="text-xl font-bold mb-4">
-          {t("provideRequest.create_title")}
+          {t("provideRequest.create_title")} 
         </h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -384,7 +385,7 @@ const ProvideRequestPage = () => {
                 ) : (
                   // Nếu có địa chỉ, hiển thị select cho người dùng chọn
                   <select
-                    value={selectedAddressId}
+                    value={selectedAddressId || "Khong the get dia chi"}
                     onChange={(e) => setSelectedAddressId(e.target.value)}
                     className="border border-gray-300 rounded px-3 py-2 w-full"
                   >
