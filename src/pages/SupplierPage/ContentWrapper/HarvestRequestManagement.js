@@ -3,6 +3,7 @@ import { Input, Button, Table, Tag, Space, message } from "antd";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as HarverstRequestService from "../../../services/HarvestRequestService";
 // import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
@@ -253,7 +254,7 @@ const HarvestRequestManagement = () => {
     {
       title: (
         <div style={{ textAlign: "center" }}>
-          {t("harvestRequest.total_price")} (VNĐ)
+          {t("harvestRequest.total_price")}
         </div>
       ),
       dataIndex: "total_price",
@@ -341,13 +342,13 @@ const HarvestRequestManagement = () => {
   // Chọn cột hiển thị tùy theo thiết bị
   const columns = isMobile
     ? [
-        allColumns[0],
-        allColumns[1],
-        allColumns[2],
-        allColumns[3],
-        allColumns[4],
-        actionColumn,
-      ] // Tên yêu cầu, Trạng thái, Hành động
+      allColumns[0],
+      allColumns[1],
+      allColumns[2],
+      allColumns[3],
+      allColumns[4],
+      actionColumn,
+    ] // Tên yêu cầu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
   const handleViewDetail = (record) => {
@@ -383,8 +384,9 @@ const HarvestRequestManagement = () => {
         {selectedRequest ? (
           <div className="w-full p-6 bg-white rounded-md shadow">
             <div className="grid grid-cols-1 gap-4 mb-4">
+              {/* Tên yêu cầu */}
               <div>
-                <label className="block mb-1 font-semibold ">
+                <label className="block mb-1 font-semibold">
                   {t("harvestRequest.name")}
                 </label>
                 <input
@@ -401,42 +403,46 @@ const HarvestRequestManagement = () => {
                 )}
               </div>
 
-              <div>
-                <label className="block mb-1 font-semibold">
-                  {t("harvestRequest.quantity")}
-                </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  min="1"
-                  placeholder={t("harvestRequest.quantity")}
-                  value={editForm.quantity}
-                  onChange={handleEditChange}
-                  className="border p-2 rounded w-full mb-1"
-                />
-                {errors.quantity && (
-                  <p className="text-red-500 text-xs">{errors.quantity}</p>
-                )}
+              {/* Số lượng + Giá mỗi đơn vị */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("harvestRequest.quantity")}
+                  </label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    placeholder={t("harvestRequest.quantity")}
+                    value={editForm.quantity}
+                    onChange={handleEditChange}
+                    className="border p-2 rounded w-full mb-1"
+                  />
+                  {errors.quantity && (
+                    <p className="text-red-500 text-xs">{errors.quantity}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("harvestRequest.price")}
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    min="1"
+                    placeholder={t("harvestRequest.price")}
+                    value={editForm.price}
+                    onChange={handleEditChange}
+                    className="border p-2 rounded w-full mb-1"
+                  />
+                  {errors.price && (
+                    <p className="text-red-500 text-xs">{errors.price}</p>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <label className="block mb-1 font-semibold">
-                  {t("harvestRequest.price")}
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  min="1"
-                  placeholder={t("harvestRequest.price")}
-                  value={editForm.price}
-                  onChange={handleEditChange}
-                  className="border p-2 rounded w-full mb-1"
-                />
-                {errors.price && (
-                  <p className="text-red-500 text-xs">{errors.price}</p>
-                )}
-              </div>
-
+              {/* Địa chỉ */}
               <div>
                 <label className="block mb-1 font-semibold">
                   {t("harvestRequest.address")}
@@ -456,16 +462,17 @@ const HarvestRequestManagement = () => {
               </div>
             </div>
 
+            {/* Tổng giá */}
             <div className="mt-4 mb-4">
               <p>
                 <span className="font-semibold mr-2">
                   {t("harvestRequest.total_price_display")}:
                 </span>
-                {(editForm.quantity * editForm.price).toLocaleString("vi-VN")}{" "}
-                VNĐ
+                {(editForm.quantity * editForm.price).toLocaleString("vi-VN")} VNĐ
               </p>
             </div>
 
+            {/* Ghi chú */}
             <div className="mb-4">
               <label className="block mb-1 font-semibold">
                 {t("harvestRequest.note")}
@@ -480,19 +487,12 @@ const HarvestRequestManagement = () => {
               />
             </div>
 
-            <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-4">
-              <button
-                onClick={handleEditSubmit}
-                className="bg-[#006838] text-white font-bold px-4 py-2 rounded hover:bg-[#028A48] w-full"
-              >
-                {t("harvestRequest.update")}
-              </button>
-              <button
+            <div className="flex flex-col md:flex-row justify-end gap-4 mt-4">
+              <ButtonComponent type="update" onClick={handleEditSubmit} />
+              <ButtonComponent
+                type="cancel"
                 onClick={() => setIsDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600 w-full"
-              >
-                {t("harvestRequest.close")}
-              </button>
+              />
             </div>
           </div>
         ) : (
@@ -524,30 +524,31 @@ const HarvestRequestManagement = () => {
                 />
               </div>
 
-              {/* Số lượng */}
-              <div>
-                <label className="block mb-1 font-semibold">
-                  {t("harvestRequest.quantity")} (kg)
-                </label>
-                <input
-                  type="number"
-                  value={viewDetailRequest.quantity}
-                  readOnly
-                  className="border p-2 rounded w-full mb-1"
-                />
-              </div>
+              {/* Số lượng + Giá mỗi đơn vị */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("harvestRequest.quantity")}
+                  </label>
+                  <input
+                    type="number"
+                    value={viewDetailRequest.quantity}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1"
+                  />
+                </div>
 
-              {/* Giá mỗi đơn vị */}
-              <div>
-                <label className="block mb-1 font-semibold">
-                  {t("harvestRequest.price")} (VNĐ)
-                </label>
-                <input
-                  type="number"
-                  value={viewDetailRequest.price}
-                  readOnly
-                  className="border p-2 rounded w-full mb-1"
-                />
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("harvestRequest.price")}
+                  </label>
+                  <input
+                    type="number"
+                    value={viewDetailRequest.price}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1"
+                  />
+                </div>
               </div>
 
               {/* Tổng giá */}
@@ -558,8 +559,7 @@ const HarvestRequestManagement = () => {
                 <input
                   type="text"
                   value={
-                    viewDetailRequest.total_price.toLocaleString("vi-VN") +
-                    " VNĐ"
+                    viewDetailRequest.total_price.toLocaleString("vi-VN") + " VNĐ"
                   }
                   readOnly
                   className="border p-2 rounded w-full mb-1"
@@ -580,7 +580,7 @@ const HarvestRequestManagement = () => {
               </div>
 
               {/* Ghi chú */}
-              <div className="">
+              <div>
                 <label className="block mb-1 font-semibold">
                   {t("harvestRequest.note")}
                 </label>
@@ -592,7 +592,7 @@ const HarvestRequestManagement = () => {
               </div>
 
               {/* Trạng thái */}
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2">
                 <label className="font-semibold">
                   {t("harvestRequest.status")}:
                 </label>
@@ -605,20 +605,20 @@ const HarvestRequestManagement = () => {
                     viewDetailRequest.status === "Chờ duyệt"
                       ? t("status.pending")
                       : viewDetailRequest.status === "Đã duyệt"
-                      ? t("status.approve")
-                      : viewDetailRequest.status === "Hoàn Thành" ||
-                        viewDetailRequest.status === "Đang xử lý"
-                      ? t("status.completed")
-                      : viewDetailRequest.status === "Đã huỷ"
-                      ? t("status.cancelled")
-                      : viewDetailRequest.status // fallback nếu không có trạng thái nào trùng khớp
+                        ? t("status.approve")
+                        : viewDetailRequest.status === "Hoàn Thành" ||
+                          viewDetailRequest.status === "Đang xử lý"
+                          ? t("status.completed")
+                          : viewDetailRequest.status === "Đã huỷ"
+                            ? t("status.cancelled")
+                            : viewDetailRequest.status
                   }
                 </span>
               </div>
             </div>
 
             {/* Nút đóng */}
-            <div className="flex justify-start">
+            <div className="flex justify-end">
               <button
                 onClick={() => setIsViewDrawerOpen(false)}
                 className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"

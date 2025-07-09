@@ -4,7 +4,9 @@ import "./User.scss";
 import { Button, Form, Input, Select, Space, Upload } from "antd";
 import dayjs from "dayjs";
 import { FaUser } from "react-icons/fa"; // Import biểu tượng từ react-icons
-
+import { AiFillEdit } from "react-icons/ai";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 import * as UserServices from "../../../../services/UserServices";
 
 import { BiImageAdd } from "react-icons/bi";
@@ -32,8 +34,12 @@ const UserComponent = () => {
 
   // gọi vào store redux get ra user
   const [rowSelected, setRowSelected] = useState("");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoadDetails, setIsLoadDetails] = useState(false);
+  const [drawerMode, setDrawerMode] = useState(null);
+
+  const isDrawerOpen = drawerMode !== null;
+  const isViewMode = drawerMode === "view";
+  const isEditMode = drawerMode === "edit";
+
   const [isOpenDelete, setIsOpenDelete] = useState(false);
 
   const user = useSelector((state) => state.user);
@@ -79,14 +85,12 @@ const UserComponent = () => {
         updatedAt: res?.data?.updatedAt,
       });
     }
-
-    setIsLoadDetails(false);
     return res;
   };
 
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
-    setIsDrawerOpen(true);
+    setDrawerMode("edit");
   };
 
   // Mutation - Update Product
@@ -149,17 +153,13 @@ const UserComponent = () => {
 
   // Handle each time rowSelected was call
   useEffect(() => {
-    if (rowSelected) {
-      if (isDrawerOpen) {
-        setIsLoadDetails(true);
-        fetchGetUserDetails({
-          id: rowSelected,
-          access_token: user?.access_token,
-        });
-      }
+    if (rowSelected && drawerMode !== null) {
+      fetchGetUserDetails({
+        id: rowSelected,
+        access_token: user?.access_token,
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rowSelected, isDrawerOpen, isOpenDelete]);
+  }, [rowSelected, drawerMode]);
 
   // Update stateDetails for form
   useEffect(() => {
@@ -247,7 +247,7 @@ const UserComponent = () => {
       updatedAt: "",
     });
     formUpdate.resetFields();
-    setIsDrawerOpen(false);
+    setDrawerMode(null);
   };
 
   // ONCHANGE FIELDS - UPDATE
@@ -287,19 +287,33 @@ const UserComponent = () => {
     });
 
   // Actions
-  const renderAction = () => {
+  const renderAction = (record) => {
     return (
-      <div
-        className="flex justify-center items-center text-black gap-2 cursor-pointer hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 w-[60%]"
-        onClick={handleDetailsProduct}
-      >
-        <AiOutlineEdit className="text-xl" style={{ color: "blueviolet" }} />
-        <span className="border-b-2 border-transparent hover:border-black transition-all duration-200">
-          {t("user_list.detail")}
-        </span>
+      <div className="flex justify-center items-center gap-2">
+        <div
+          className="flex items-center gap-1 cursor-pointer text-black hover:bg-gray-200 px-2 py-1 rounded transition-all"
+          onClick={() => {
+            setRowSelected(record._id);
+            setDrawerMode("view"); // Mở Drawer ở chế độ "chi tiết"
+          }}
+        >
+          <AiOutlineEdit className="text-xl text-blue-500" />
+          <span className="hover:underline">{t("user_list.detail")}</span>
+        </div>
+        <div
+          className="flex items-center gap-1 cursor-pointer text-black hover:bg-gray-200 px-2 py-1 rounded transition-all"
+          onClick={() => {
+            setRowSelected(record._id);
+            setDrawerMode("edit");;
+          }}
+        >
+          <AiOutlineEdit className="text-xl text-green-600" />
+          <span className="hover:underline">{t("user_list.update")}</span>
+        </div>
       </div>
     );
   };
+
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -488,20 +502,33 @@ const UserComponent = () => {
           {t("user_list.action")}
         </div>
       ),
-      dataIndex: "action",
-      render: (text, record) => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {renderAction(text, record)}
+      key: "action",
+      align: "center",
+      render: (_, record) => (
+        <div className="flex justify-center items-center gap-2">
+          {/* Nút Chi tiết */}
+          <Button
+            size="middle"
+            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
+            onClick={() => {
+              setRowSelected(record._id);
+              setDrawerMode("view"); // hoặc handleViewDetail nếu tên khác
+            }}
+          />
+
+          {/* Nút Cập nhật */}
+          <Button
+            size="middle"
+            icon={<AiFillEdit style={{ color: "black" }} />}
+            className="bg-white hover:bg-gray-200 text-black"
+            onClick={() => {
+              setRowSelected(record._id);
+              setDrawerMode("edit"); // mở Drawer update
+            }}
+          />
         </div>
       ),
-      align: "center",
-    },
+    }
   ];
   return (
     <div className="Wrapper-Admin-User">
@@ -569,211 +596,171 @@ const UserComponent = () => {
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title={t("user_list.update_title")}
+        title={
+          isEditMode
+            ? t("user_list.update_title")
+            : t("user_list.detail_title")
+        }
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => setDrawerMode(null)}
         placement="right"
         width={drawerWidth}
-        forceRender
-        style={{ backgroundColor: "#f0f2f5" }} // Thay đổi màu nền
       >
-        <Loading isPending={isLoadDetails || isPendingUpDate}>
-          <Form
-            name="update-form"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 20 }}
-            style={{ maxWidth: 600, }}
-            initialValues={{ remember: true }}
-            onFinish={onFinishUpdate}
-            autoComplete="on"
-            form={formUpdate}
-          >
-            <Form.Item
-              label={t("user_list.name")}
-              name="full_name"
-              rules={[
-                { required: true, message: t("user_list.required_name") },
-              ]}
-              style={{ marginBottom: 12 }}
-            >
-              <Input
+        <div className="w-full p-6 bg-white rounded-md shadow">
+          <div className="grid grid-cols-1 gap-4 mb-4">
+            {/* Họ tên */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.name")}</label>
+              <input
+                type="text"
                 value={stateDetailsUser.full_name}
-                onChange={(event) =>
-                  handleOnChangeDetails(event.target.value, "full_name")
-                }
+                onChange={(e) => handleOnChangeDetails(e.target.value, "full_name")}
                 placeholder={t("user_list.name")}
-                style={{ borderRadius: "5px" }} // Thêm bo góc
+                className="border p-2 rounded w-full mb-1"
+                disabled={isViewMode}
               />
-            </Form.Item>
+            </div>
 
-            <Form.Item
-              label={t("user_list.email")}
-              name="email"
-              rules={[
-                { required: true, message: t("user_list.required_email") },
-              ]}
-              style={{ marginBottom: 12 }}
-            >
-              <Input
+            {/* Email */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.email")}</label>
+              <input
+                type="text"
                 value={stateDetailsUser.email}
-                placeholder={t("user_list.email")}
-                style={{ borderRadius: "5px" }}
                 readOnly
+                className="border p-2 rounded w-full mb-1 bg-gray-100"
               />
-            </Form.Item>
-            <Form.Item
-              label={t("user_list.phone")}
-              name="phone"
-              rules={[
-                { required: true, message: t("user_list.required_phone") },
-              ]}
-              style={{ marginBottom: 12 }}
-            >
-              <Input
+            </div>
+
+            {/* Số điện thoại */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.phone")}</label>
+              <input
+                type="text"
                 value={stateDetailsUser.phone}
-                placeholder={t("user_list.phone")}
-                style={{ borderRadius: "5px" }}
                 readOnly
+                className="border p-2 rounded w-full mb-1 bg-gray-100"
               />
-            </Form.Item>
+            </div>
 
-            <Form.Item label={t("user_list.address")} name="address"
-            style={{ marginBottom: 12 }}>
-              <Input
+            {/* Địa chỉ */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.address")}</label>
+              <input
+                type="text"
                 value={stateDetailsUser.address}
-                placeholder={t("user_list.address")}
-                style={{ borderRadius: "5px" }}
-                readOnly // ⬅ không cho chỉnh sửa
+                readOnly
+                className="border p-2 rounded w-full mb-1 bg-gray-100"
               />
-            </Form.Item>
+            </div>
 
-            <Form.Item label={t("user_list.gender")} name="gender" 
-            style={{ marginBottom: 12 }}>
-              <Select
+            {/* Giới tính */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.gender")}</label>
+              <select
                 value={stateDetailsUser.gender}
-                open={false} // chặn mở dropdown
-                onMouseDown={(e) => e.preventDefault()} // chặn chọn
-                style={{ borderRadius: "5px", pointerEvents: "auto", backgroundColor: "#fff" }}
-                suffixIcon={null} // ẩn icon nếu muốn gọn
+                disabled
+                className={`border p-2 rounded w-full mb-1 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
               >
-                <Select.Option value="male">{t("user_list.male")}</Select.Option>
-                <Select.Option value="female">{t("user_list.female")}</Select.Option>
-                <Select.Option value="other">{t("user_list.other")}</Select.Option>
-              </Select>
-            </Form.Item>
+                <option value="male">{t("user_list.male")}</option>
+                <option value="female">{t("user_list.female")}</option>
+                <option value="other">{t("user_list.other")}</option>
+              </select>
+            </div>
 
-            <Form.Item label={t("user_list.birth_day")}
-            style={{ marginBottom: 12 }}>
-              <Input
+            {/* Ngày sinh */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.birth_day")}</label>
+              <input
+                type="text"
                 value={
                   stateDetailsUser.birth_day
                     ? dayjs(stateDetailsUser.birth_day).format("DD-MM-YYYY")
                     : ""
                 }
                 readOnly
-                style={{ borderRadius: "5px" }}
+                className="border p-2 rounded w-full mb-1 bg-gray-100"
               />
-            </Form.Item>
+            </div>
 
-
-            <Form.Item
-              label={t("user_list.role")}
-              name="role"
-              rules={[{ required: true, message: t("user_list.select_role") }]}
-              style={{ marginBottom: 12 }}
-            >
-              <Select
-                onChange={(value) => handleOnChangeDetails(value, "role")}
-                style={{ borderRadius: "5px" }}
+            {/* Vai trò */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.role")}</label>
+              <select
+                value={stateDetailsUser.role}
+                onChange={(e) => handleOnChangeDetails(e.target.value, "role")}
+                className={`border p-2 rounded w-full mb-1 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
+                disabled={isViewMode}
               >
-                <Select.Option value="67950da386a0a462d408c7b9">
-                  Admin
-                </Select.Option>
-                <Select.Option value="67950fec8465df03b29bf753">
-                  Supplier
-                </Select.Option>
-                <Select.Option value="67950f9f8465df03b29bf752">
-                  User{" "}
-                </Select.Option>
-              </Select>
-            </Form.Item>
+                <option value="67950da386a0a462d408c7b9">Admin</option>
+                <option value="67950fec8465df03b29bf753">Supplier</option>
+                <option value="67950f9f8465df03b29bf752">User</option>
+              </select>
+            </div>
 
-            <Form.Item label={t("user_list.upload_image")}
-            style={{ marginBottom: 12 }}>
-              <Upload.Dragger
-                listType="picture"
-                showUploadList={{ showRemoveIcon: true }}
-                accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .esp"
-                maxCount={1}
-                beforeUpload={(file) => false}
-                onChange={(event) => handleChangeAvatarDetails(event)}
-                style={{ borderRadius: "5px", borderColor: "#1890ff" }} // Thay đổi màu viền
-              >
-                <div className="flex-center-center">
-                  {t("user_list.upload_image")}
-                  <BiImageAdd
-                    style={{ marginLeft: "10px", fontSize: "20px" }}
-                  />
-                </div>
-              </Upload.Dragger>
-            </Form.Item>
+            {/* Upload avatar */}
+            {!isViewMode && (
+              <div>
+                <label className="block mb-1 font-semibold">{t("user_list.upload_image")}</label>
+                <Upload.Dragger
+                  listType="picture"
+                  showUploadList={{ showRemoveIcon: true }}
+                  accept=".png,.jpg,.jpeg,.webp"
+                  maxCount={1}
+                  beforeUpload={() => false}
+                  onChange={handleChangeAvatarDetails}
+                  style={{ borderRadius: "5px", borderColor: "#1890ff" }}
+                >
+                  <div className="flex justify-center items-center">
+                    {t("user_list.upload_image")}
+                    <BiImageAdd className="ml-2 text-lg" />
+                  </div>
+                </Upload.Dragger>
+              </div>
+            )}
 
-            <Form.Item label={t("user_list.review_avatar")} name="avatar"
-            style={{ marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "center" }}>
+            {/* Ảnh đại diện xem trước */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.review_avatar")}</label>
+              <div className="flex justify-center">
                 <img
-                  src={
-                    stateDetailsUser?.avatar
-                      ? stateDetailsUser?.avatar
-                      : defaultBackground
-                  }
-                  alt="Avatar User"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                    borderRadius: "50%", // Bo tròn hình ảnh
-                  }}
+                  src={stateDetailsUser?.avatar || defaultBackground}
+                  alt="Avatar"
+                  className="w-24 h-24 rounded-full object-cover"
                 />
               </div>
-            </Form.Item>
+            </div>
 
-            <Form.Item label={t("user_list.created_at")} name="created"
-            style={{ marginBottom: 12 }}>
-              <div className="flex justify-end">
+            {/* Created at */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.created_at")}</label>
+              <p className="text-left">
                 {converDateString(stateDetailsUser?.createdAt)}
-              </div>
-            </Form.Item>
-            <Form.Item label={t("user_list.updated_at")} name="created"
-            style={{ marginBottom: 12 }}>
-              <div className="flex justify-end">
+              </p>
+            </div>
+
+            {/* Updated at */}
+            <div>
+              <label className="block mb-1 font-semibold">{t("user_list.updated_at")}</label>
+              <p className="text-left">
                 {converDateString(stateDetailsUser?.updatedAt)}
-              </div>
-            </Form.Item>
+              </p>
+            </div>
+          </div>
 
-            <Form.Item wrapperCol={{ offset: 0, span: 24 }} style={{ marginBottom: 12 }}>
-              <div className="flex justify-between">
-                {/* Nút đóng bên phải */}
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="font-bold px-3 py-2 rounded"
-                >
-                  {t("user_list.update")}
-                </Button>
-
-                {/* Nút cập nhật bên trái */}
-                <button
-                  type="button"
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
-                >
-                  {t("common.close")}
-                </button>
-              </div>
-            </Form.Item>
-          </Form>
-        </Loading>
+          {/* Nút hành động */}
+          <div className="flex justify-end gap-4 mt-6">
+            {isEditMode && (
+              <>
+                <ButtonComponent type="update" onClick={onFinishUpdate} />
+                <ButtonComponent type="cancel" onClick={() => setDrawerMode(null)} />
+              </>
+            )}
+            {isViewMode && (
+              <ButtonComponent type="close" onClick={() => setDrawerMode(null)} />
+            )}
+          </div>
+        </div>
       </DrawerComponent>
 
       {/* Modal Confirm Delete Product */}

@@ -565,7 +565,8 @@
     "role": "Role",
     "action": "Actions",
     "detail": "Details",
-    "update_title": "Account Details",
+    "update_title": "Update Account",
+    "detail_title": "Account Details",
     "update": "Update",
     "created_at": "Created At",
     "updated_at": "Last Updated",
@@ -1543,5 +1544,14 @@
     "success": "Category created successfully!",
     "fail": "Creation failed!",
     "error": "Server connection error!"
+  },
+  "button": {
+    "cancel": "Cancel",
+    "reject": "Reject",
+    "update": "Update",
+    "approve": "Approve",
+    "close": "Close",
+    "approve_order": "Approve Order",
+    "cancel_order": "Reject Order"
   }
 }
