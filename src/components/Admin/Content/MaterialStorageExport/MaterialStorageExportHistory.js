@@ -8,7 +8,7 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { Input, Space, Tag, Button } from "antd";
 import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 import TableHistories from "./TableHistories";
 import { converDateString } from "../../../../ultils";
 import { useTranslation } from "react-i18next";
@@ -83,13 +83,13 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(data?.requests)
     ? data?.requests?.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        batch_id: batch.material_export_id?.batch_id?.batch_id || "",
-        batch_name: batch.material_export_id?.batch_id?.batch_name || "",
-        type_export: batch.material_export_id?.type_export || "",
-        status: batch.material_export_id?.status || "",
-      }))
+      ...batch,
+      key: batch._id,
+      batch_id: batch.material_export_id?.batch_id?.batch_id || "",
+      batch_name: batch.material_export_id?.batch_id?.batch_name || "",
+      type_export: batch.material_export_id?.type_export || "",
+      status: batch.material_export_id?.status || "",
+    }))
     : [];
 
   // Fetch : Get User Details
@@ -260,7 +260,7 @@ const RawMaterialBatchList = () => {
       ),
       dataIndex: "status",
       key: "status",
-      className: "text-center",
+      align: "center",
       filters: [
         { text: t("status.pending"), value: "Chờ duyệt" },
         { text: t("status.processing"), value: "Đang xử lý" },
@@ -277,18 +277,22 @@ const RawMaterialBatchList = () => {
           cancelled: "red",
         };
         return (
-          <Tag color={statusColors[statusKey] || "default"}>
-            {t(`status.${statusKey}`) || statusKey}
-          </Tag>
+          <div className="flex justify-center">
+            <Tag
+              color={statusColors[statusKey] || "default"}
+            >
+              {t(`status.${statusKey}`) || statusKey}
+            </Tag>
+          </div>
         );
       },
     },
     {
       title: <div className="text-center">{t("common.action")}</div>,
       key: "action",
-      className: "text-center",
+      align: "center",
       render: (record) => (
-        <Space>
+        <div className="flex justify-center">
           <Button
             type="link"
             icon={
@@ -297,8 +301,8 @@ const RawMaterialBatchList = () => {
               />
             }
             onClick={() => handleViewDetail(record)}
-          ></Button>
-        </Space>
+          />
+        </div>
       ),
     },
   ];
@@ -445,76 +449,77 @@ const RawMaterialBatchList = () => {
                     min="1"
                     placeholder={t("common.enterQuantity")}
                     value={stateDetailsBatch?.batch_id?.quantity}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
                   />
                 </div>
 
-                {/* Mức độ ưu tiên */}
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    {t("batchHistory.exportType")}
-                  </label>
-                  <input
-                    type="text"
-                    name="type_export"
-                    min="1"
-                    placeholder={t("batchHistory.exportType")}
-                    value={stateDetailsBatch?.type_export}
-                    onChange={() => {}}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
-                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Loại xuất kho */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.exportType")}
+                    </label>
+                    <input
+                      type="text"
+                      name="type_export"
+                      min="1"
+                      placeholder={t("batchHistory.exportType")}
+                      value={stateDetailsBatch?.type_export}
+                      readOnly
+                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                  </div>
 
-                {/* Ngày tạo lô */}
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    {t("batchHistory.createdDate")}
-                  </label>
-                  <input
-                    type="text"
-                    name="type_export"
-                    min="1"
-                    placeholder={t("batchHistory.createdDate")}
-                    value={converDateString(
-                      stateDetailsBatch?.batch_id?.createdAt
-                    )}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
-                </div>
-
-                {/* Trạng thái phiếu xuất */}
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    {t("batchHistory.status")}
-                  </label>
-                  <div className="p-2 w-full border border-gray-300 rounded inline-block">
-                    <Tag
-                      color={
-                        statusColors[stateDetailsBatch.status] || "default"
-                      }
-                    >
-                      {t(`status.${statusMap[stateDetailsBatch.status]}`) ||
-                        stateDetailsBatch.status}
-                    </Tag>
+                  {/* Trạng thái phiếu xuất */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.status")}
+                    </label>
+                    <div className="p-2 w-full border border-gray-300 rounded inline-block">
+                      <Tag color={statusColors[stateDetailsBatch.status] || "default"}>
+                        {t(`status.${statusMap[stateDetailsBatch.status]}`) ||
+                          stateDetailsBatch.status}
+                      </Tag>
+                    </div>
                   </div>
                 </div>
 
-                {/* Ngày tạo lô */}
-                <div>
-                  <label className="block text-gray-800 font-semibold mb-2">
-                    {t("batchHistory.exportDate")}
-                  </label>
-                  <input
-                    type="text"
-                    name="type_export"
-                    min="1"
-                    placeholder={t("batchHistory.exportDate")}
-                    value={converDateString(
-                      stateDetailsBatch?.batch_history?.createdAt
-                    )}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
+                {/* Ngày tạo lô + Ngày xuất lô */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Ngày tạo lô */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.createdDate")}
+                    </label>
+                    <input
+                      type="text"
+                      name="type_export"
+                      min="1"
+                      placeholder={t("batchHistory.createdDate")}
+                      value={converDateString(
+                        stateDetailsBatch?.batch_id?.createdAt
+                      )}
+                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                  </div>
+
+                  {/* Ngày xuất lô */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.exportDate")}
+                    </label>
+                    <input
+                      type="text"
+                      name="type_export"
+                      min="1"
+                      placeholder={t("batchHistory.exportDate")}
+                      value={converDateString(
+                        stateDetailsBatch?.batch_history?.createdAt
+                      )}
+                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                  </div>
                 </div>
 
                 {/* Ghi chú */}
@@ -535,12 +540,7 @@ const RawMaterialBatchList = () => {
           </div>
         </Loading>
         <div className="flex justify-end mt-4">
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Đóng
-          </button>
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
       </DrawerComponent>
     </div>

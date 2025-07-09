@@ -1,138 +1,142 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Table,
-  Input,
-  Space,
-  Tag,
-  Button,
-  Form,
-  Descriptions,
-  InputNumber,
-  message,
-  Select,
-} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
-import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
+import { useQuery } from "@tanstack/react-query";
+import { SearchOutlined } from "@ant-design/icons";
 import Loading from "../../../LoadingComponent/Loading";
+import React, { useState, useRef, useEffect } from "react";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
-import { useLocation } from "react-router-dom";
+import { Input, Space, Tag, Button } from "antd";
+import * as MaterialServices from "../../../../services/MaterialStorageExportService";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-import { VscRequestChanges } from "react-icons/vsc";
-import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
+import TableHistories from "./TableHistories";
 import { converDateString } from "../../../../ultils";
+import { useTranslation } from "react-i18next";
+
+import { FaFileExport } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const statusColors = {
-  "Đang chuẩn bị": "gold",
-  "Chờ xuất kho": "blue",
-  "Đã xuất kho": "green",
-  "Hủy bỏ": "red",
+  "Đã duyệt": "green",
+  "Hoàn thành": "green",
+  "Đã xóa": "red",
 };
 
 const RawMaterialBatchList = () => {
   const { t } = useTranslation();
 
-  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const [fuel_managements, set_fuel_managements] = useState([]);
-  const [requiredMaterial, setRequiredMaterial] = useState(0);
-  const [isFuelSelected, setIsFuelSelected] = useState(false);
-  const [storageId, setStorageId] = useState(null);
+  // Loading status
+  const [loadingDetails, setIsLoadDetails] = useState(false);
+  // selected Row
+  const [rowSelected, setRowSelected] = useState("");
 
   // Drawer state
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Form cho chỉnh sửa
-  const [form] = Form.useForm();
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [storages, setStorages] = useState([]);
+  const navigate = useNavigate();
 
   // Search state
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-  const [fuelBatchs, setFuelBatchs] = useState([]);
-  const [loading, setLoading] = useState(false);
   const searchInput = useRef(null);
-
-  const location = useLocation();
   const statusMap = {
-    "Đang chuẩn bị": "status.preparing",
-    "Chờ xuất kho": "status.waitingExport",
-    "Đã xuất kho": "status.exported",
-    "Hủy bỏ": "status.cancelled",
+    "Chờ duyệt": "pending",
+    "Đã duyệt": "approve",
+    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
+    "Hoàn thành": "completed",
+    "Đang xử lý": "processing",
+    "thất bại": "failed",
+    "Vô hiệu hóa": "disable",
+    "Nhập kho thành công": "imported",
   };
-  const handleCreateExportOrder = (batchId) => {
-    navigate(`/system/admin/material-storage-export?id=${batchId}`);
-  };
+  // Details State
+  const [stateDetailsBatch, setStateDetailsBatch] = useState({
+    production_request_id: {},
+    batch_id: "",
+    user_id: "",
+    export_name: "",
+    type_export: "",
+    note: "",
+    status: "",
+    createdAt: "",
+    is_deleted: false,
+    batch_history: {},
+  });
 
-  // Fetch danh sách lô nguyên liệu
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response =
-        await RawMaterialBatchServices.getAllRawMaterialBatches();
-      const getAllManagements =
-        await RawMaterialBatchServices.getAllFuelManagements();
-      if (response) {
-        setFuelBatchs(response);
-      }
-      if (getAllManagements) {
-        set_fuel_managements(getAllManagements.requests);
-      }
-    } catch (error) {
-      message.error("Lỗi khi tải danh sách lô nguyên liệu!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchStorages = async () => {
-    try {
-      const response = await RawMaterialBatchServices.getAllStorages();
-      if (
-        response.success &&
-        Array.isArray(response.data) &&
-        response.data.length > 0
-      ) {
-        setStorages(response.data); // Cập nhật state storages với dữ liệu trả về từ API
-      } else {
-        setStorages([]); // Nếu không có dữ liệu, gán storages là mảng trống
-      }
-    } catch (error) {
-      message.error("Lỗi khi tải danh sách kho lưu trữ!");
-      setStorages([]); // Nếu có lỗi, gán mảng trống
-    }
+  // GET ALL PRODUCT FROM DB
+  const fetchBatchHistories = async () => {
+    const access_token = user?.access_token;
+    const res = await MaterialServices.getAllBatchStorageExportHistory(
+      access_token
+    );
+    return res;
   };
 
-  useEffect(() => {
-    fetchData(); // Để lấy lô nguyên liệu
-    fetchStorages(); // Để lấy kho lưu trữ
-  }, []);
+  const queryBatchHistories = useQuery({
+    queryKey: ["batch_histories"],
+    queryFn: fetchBatchHistories,
+  });
+  const { isLoading, data } = queryBatchHistories;
 
-  // Gọi API khi component mount hoặc khi có thay đổi
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (location.state?.createdSuccess) {
-      message.success("Tạo lô nguyên liệu thành công!");
-
-      // 👉 Xoá flag để tránh message lặp nếu user refresh lại trang
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
-
-  const tableData = Array.isArray(fuelBatchs)
-    ? fuelBatchs.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-      }))
+  const tableData = Array.isArray(data?.requests)
+    ? data?.requests?.map((batch) => ({
+      ...batch,
+      key: batch._id,
+      batch_id: batch.material_export_id?.batch_id?.batch_id || "",
+      batch_name: batch.material_export_id?.batch_id?.batch_name || "",
+      type_export: batch.material_export_id?.type_export || "",
+      status: batch.material_export_id?.status || "",
+    }))
     : [];
+
+  // Fetch : Get User Details
+  const fetchGetUserDetails = async ({ storage_export_id, access_token }) => {
+    const res = await MaterialServices.getAllBatchStorageExportHistoryDetail(
+      storage_export_id,
+      access_token
+    );
+    // Get respone từ api và gán vào state update details
+
+    if (res?.data) {
+      console.log("res?.data => ", res?.data.batch);
+      const batchData = res?.data.batch.material_export_id;
+      setStateDetailsBatch({
+        production_request_id: batchData?.production_request_id,
+        batch_id: batchData?.batch_id,
+        user_id: batchData?.user_id,
+        export_name: batchData?.export_name,
+        type_export: batchData?.type_export,
+        note: batchData?.note,
+        status: batchData?.status,
+        is_deleted: batchData?.is_deleted,
+        batch_history: res?.data.batch,
+      });
+    }
+
+    setIsLoadDetails(false);
+    return res;
+  };
+  console.log("stateDetailsBatch => ", stateDetailsBatch);
+  console.log(
+    "stateDetailsBatch?.batch_id?.createdAt => ",
+    stateDetailsBatch?.batch_id?.createdAt
+  );
+  // Handle each time rowSelected was call
+  useEffect(() => {
+    if (rowSelected) {
+      if (isDrawerOpen) {
+        setIsLoadDetails(true);
+        fetchGetUserDetails({
+          storage_export_id: rowSelected,
+          access_token: user?.access_token,
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowSelected, isDrawerOpen]);
 
   // Search trong bảng
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -176,7 +180,7 @@ const RawMaterialBatchList = () => {
       <div style={{ padding: 8 }}>
         <Input
           ref={searchInput}
-          placeholder={`Tìm kiếm`}
+          placeholder={t("common.search")}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -192,14 +196,14 @@ const RawMaterialBatchList = () => {
             size="small"
             style={{ width: 70 }}
           >
-            Search
+            Tìm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{ width: 70 }}
           >
-            Reset
+            Đặt lại
           </Button>
           <Button
             type="link"
@@ -207,7 +211,7 @@ const RawMaterialBatchList = () => {
             onClick={() => confirm()}
             style={{ padding: 0 }}
           >
-            Close
+            Đóng
           </Button>
         </Space>
       </div>
@@ -229,96 +233,73 @@ const RawMaterialBatchList = () => {
         text
       ),
   });
+
   const columns = [
     {
-      title: (
-        <div style={{ textAlign: "left" }}>{t("materialBatch.batchId")}</div>
-      ),
+      title: t("batchHistory.batchId"),
       dataIndex: "batch_id",
       key: "batch_id",
-      align: "center",
       ...getColumnSearchProps("batch_id"),
     },
-    // {
-    //   title: (
-    //     <div style={{ textAlign: "left" }}>
-    //       {t("materialBatch.batchName")}
-    //     </div>
-    //   ),
-    //   dataIndex: "batch_name",
-    //   key: "batch_name",
-    //   align: "center",
-    //   ...getColumnSearchProps("batch_name"),
-    //   sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
-    // },
     {
-      title: (
-        <div style={{ textAlign: "left" }}>{t("materialBatch.fuelType")}</div>
-      ),
-      dataIndex: "fuel_name",
-      key: "fuel_name",
-      align: "center",
-      render: (text) => <div style={{}}>{text}</div>,
+      title: t("batchHistory.batchName"),
+      dataIndex: "batch_name",
+      key: "batch_name",
+      ...getColumnSearchProps("batch_name"),
+      sorter: (a, b) => a.batch_name.localeCompare(b.batch_name),
+    },
+    {
+      title: <div className="text-center">{t("batchHistory.exportType")}</div>,
+      dataIndex: "type_export",
+      key: "type_export",
+      className: "text-center",
     },
     {
       title: (
-        <div style={{ textAlign: "center" }}>{t("materialBatch.quantity")}</div>
-      ),
-      dataIndex: "quantity",
-      key: "quantity",
-      align: "center",
-      sorter: (a, b) => a.quantity - b.quantity,
-      render: (val) => <div style={{ textAlign: "center" }}>{val} Kg</div>,
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>{t("materialBatch.storage")}</div>
-      ),
-      dataIndex: "name_storage",
-      key: "name_storage",
-      align: "center",
-      render: (_, record) => (
-        <div style={{ textAlign: "center" }}>
-          {record?.fuel_type_id?.storage_id?.name_storage || "Không có"}
-        </div>
-      ),
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>{t("materialBatch.status")}</div>
+        <div className="text-center">{t("fuelStorage.columns.status")}</div>
       ),
       dataIndex: "status",
       key: "status",
       align: "center",
-      filters: Object.keys(statusColors).map((status) => ({
-        text: t(statusMap[status]),
-        value: status,
-      })),
+      filters: [
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.processing"), value: "Đang xử lý" },
+        { text: t("status.completed"), value: "Hoàn thành" },
+        { text: t("status.cancelled"), value: "Đã huỷ" },
+      ],
       onFilter: (value, record) => record.status === value,
-      render: (stt) => (
-        <div style={{ textAlign: "center" }}>
-          <Tag color={statusColors[stt] || "default"}>
-            {t(statusMap[stt] || stt)}
-          </Tag>
-        </div>
-      ),
+      render: (statusLabel) => {
+        const statusKey = statusMap[statusLabel];
+        const statusColors = {
+          pending: "gold",
+          processing: "orange",
+          completed: "blue",
+          cancelled: "red",
+        };
+        return (
+          <div className="flex justify-center">
+            <Tag
+              color={statusColors[statusKey] || "default"}
+            >
+              {t(`status.${statusKey}`) || statusKey}
+            </Tag>
+          </div>
+        );
+      },
     },
     {
-      title: <div style={{ textAlign: "center" }}>{t("common.action")}</div>,
+      title: <div className="text-center">{t("common.action")}</div>,
       key: "action",
       align: "center",
       render: (record) => (
-        <div style={{ textAlign: "center" }}>
-          {record.status === "Đang chuẩn bị" ? (
-            <Button
-              type="link"
-              icon={<VscRequestChanges style={{ fontSize: 20 }} />}
-              onClick={() => handleCreateExportOrder(record._id)}
-            />
-          ) : null}
+        <div className="flex justify-center">
           <Button
             type="link"
-            icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
+            icon={
+              <HiOutlineDocumentSearch
+                style={{ fontSize: "20px", color: "dodgerblue" }}
+              />
+            }
             onClick={() => handleViewDetail(record)}
           />
         </div>
@@ -328,489 +309,240 @@ const RawMaterialBatchList = () => {
 
   const handleViewDetail = (record) => {
     setSelectedBatch(record);
-    console.log(selectedBatch);
-    setIsEditMode(false); // Đảm bảo chế độ xem chi tiết không phải chỉnh sửa
-    setIsDrawerOpen(true); // Mở Drawer
-    form.resetFields(); // Reset form khi mở Drawer
+    setIsDrawerOpen(true);
   };
 
   const handleCloseDrawer = () => {
-    setIsDrawerOpen(false); // Đóng Drawer
-    setIsEditMode(false); // Reset chế độ chỉnh sửa
-    setSelectedBatch(null); // Reset selectedBatch khi đóng Drawer
+    setIsDrawerOpen(false);
+    setSelectedBatch(null);
   };
 
-  const handleEdit = (record) => {
-    if (record.status !== "Đang chuẩn bị") {
-      message.error("Chỉ được chỉnh sửa lô ở trạng thái 'Đang chuẩn bị'");
-      return;
-    }
+  console.log(
+    "stateDetailsBatch.batch?.createdAt -> ",
+    stateDetailsBatch.batch?.createdAt
+  );
 
-    setSelectedBatch(record);
-    setIsEditMode(true); // Chuyển sang chế độ chỉnh sửa
-    setIsDrawerOpen(true); // Mở Drawer
-
-    form.setFieldsValue({
-      batch_id: record.batch_id,
-      batch_name: record.batch_name,
-      fuel_type_id: record.fuel_type_id?.fuel_type_id?.type_name,
-      quantity: record.quantity,
-      storage_id: record.fuel_type_id?.storage_id?._id || storages[0]?._id,
-      status: record.status,
-      note: record.note,
-    });
-
-    // Nếu không có storage_id trong record, bạn cần xác nhận là có ít nhất 1 kho lưu trữ trong `storages`
-    if (!record.fuel_type_id?.storage_id && storages.length > 0) {
-      setStorageId(storages[0]._id); // Gán storageId mặc định
-    }
-  };
-
-  const handleSaveUpdate = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        if (!values.fuel_type_id || !values.storage_id) {
-          message.error(
-            "Vui lòng chọn đầy đủ thông tin loại nguyên liệu và kho lưu trữ!"
-          );
-          return;
-        }
-
-        const dataUpdate = {
-          ...selectedBatch,
-          ...values,
-          storage_id: storageId || storages[0]?._id,
-        };
-
-        console.log("Dữ liệu gửi đi:", dataUpdate);
-
-        const { access_token } = user;
-        if (!access_token) {
-          message.error("Token không hợp lệ.");
-          return;
-        }
-
-        // Gọi API cập nhật
-        RawMaterialBatchServices.updateRawMaterialBatch(selectedBatch._id, {
-          formData: dataUpdate,
-          access_token,
-        })
-          .then((res) => {
-            message.success("Cập nhật thành công!");
-            fetchData(); // Reload lại danh sách
-            form.resetFields(); // Reset form sau khi cập nhật
-            setSelectedBatch(null); // Reset selectedBatch
-            setIsDrawerOpen(false);
-            setIsEditMode(false); // Tắt chế độ chỉnh sửa
-          })
-          .catch((error) => {
-            console.error("Lỗi khi cập nhật:", error);
-            message.error("Cập nhật thất bại!");
-          });
-      })
-      .catch((err) => {
-        message.error("Vui lòng điền đầy đủ thông tin!");
-      });
-  };
-
-  const handleFuelTypeChange = (batch_id) => {
-    setSelectedBatch((prev) => ({
-      ...prev,
-      fuel_type_id: batch_id?.fuel_type_id,
-    }));
-    setIsFuelSelected(true);
-  };
-
-  const handleChangeStorage = (value) => {
-    setStorageId(value);
-  };
-
-  const handleKeyDown = (event) => {
-    if (
-      /[^0-9]/.test(event.key) &&
-      event.key !== "Backspace" &&
-      event.key !== "Tab"
-    ) {
-      event.preventDefault();
-    }
-  };
-
-  const handleEstimatedProductionChange = (value) => {
-    if (value === null || value === undefined || value === "") {
-      form.setFieldsValue({ quantity: null }); // Không đặt về 0
-      setRequiredMaterial(0);
-      return;
-    }
-
-    if (value === 0 || /e|E|[^0-9]/.test(value)) {
-      message.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
-      form.setFieldsValue({ quantity: null });
-      return;
-    }
-
-    const required = Math.ceil(value / 0.9);
-    setRequiredMaterial(required);
-
-    const selectedFuelId = form.getFieldValue("storage_id");
-
-    if (selectedFuelId) {
-      const selectedFuel = fuel_managements.find(
-        (fuel) => fuel._id === selectedFuelId
-      );
-      if (selectedFuel) {
-        const availableFuel = selectedFuel.quantity;
-        if (required > availableFuel) {
-          const maxProduction = Math.floor(availableFuel * 0.9);
-          message.warning(
-            `Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có...`
-          );
-          form.setFieldsValue({
-            quantity: maxProduction,
-          });
-          setRequiredMaterial(Math.ceil(maxProduction / 0.9));
-          return;
-        }
-      }
-    }
-
-    form.setFieldsValue({ quantity: value });
-  };
-  console.log("Selected batch:", selectedBatch);
   return (
-    <div className="md:px-8">
-      <div className="raw-material-batch-list my-3">
-        <div
-          style={{ marginBottom: 24, marginTop: 24 }}
-          className="flex items-center justify-between"
+    <div className="raw-material-batch-list md:px-8 ">
+      <div className="flex items-center justify-between my-8">
+        {/* Nút quay lại bên trái */}
+        <Button
+          onClick={() => navigate(-1)}
+          type="primary"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
         >
-          {/* Nút Quay lại */}
-          <Button
-            onClick={() => navigate(-1)}
-            type="primary"
-            className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
-            </svg>
-            <span className="hidden md:inline">{t("fuelStorage.back")}</span>
-          </Button>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          <span className="hidden md:inline">{t("common.back")}</span>
+        </Button>
 
-          {/* Title căn giữa */}
-          <h5 className="text-center font-bold text-2xl md:text-2xl flex-grow mx-4 text-gray-800">
-            {t("materialBatch.title")}
-          </h5>
+        {/* Tiêu đề ở giữa */}
+        <h2 className="text-center flex items-center justify-center gap-2 font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
+          <FaFileExport></FaFileExport>
+          {t("batchHistory.title")}
+        </h2>
 
-          {/* Phần tử trống bên phải để cân bằng */}
-          <div className="min-w-[20px] md:min-w-[100px]"></div>
-        </div>
-
-        {/* Hàng 2: Nút Tạo */}
-        <div className="flex justify-end my-2">
-          <Button
-            type="primary"
-            className="bg-blue-600 font-semibold text-white hover:bg-blue-700 py-2 rounded-md px-2 md:px-4"
-            onClick={() => navigate("/system/admin/material-storage-export")}
-          >
-            {t("materialBatch.createExportOrder")}
-          </Button>
-        </div>
+        {/* Phần tử trống bên phải để cân bằng với nút bên trái */}
+        <div className="min-w-[20px] md:min-w-[100px]"></div>
       </div>
-      <Loading isPending={loading}>
-        <div className="">
-          {" "}
-          {/* 👈 thêm margin top ở đây */}
-          <Table
-            columns={columns}
-            dataSource={tableData}
-            pagination={{ pageSize: 6 }}
-            scroll={{ x: "max-content" }}
-          />
-        </div>
+
+      <Loading isPending={isLoading || loadingDetails}>
+        <TableHistories
+          // Props List
+          columns={columns}
+          isLoading={isLoading}
+          data={tableData}
+          setRowSelected={setRowSelected}
+          pagination={{ pageSize: 6 }}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: (event) => {
+                setRowSelected(record._id);
+              },
+            };
+          }}
+          scroll={{ x: "max-content" }}
+        ></TableHistories>
       </Loading>
+
       <DrawerComponent
-        title={
-          isEditMode
-            ? t("materialBatch.updateTitle")
-            : t("materialBatch.detailTitle")
-        }
+        title={t("batchHistory.detailTitle")}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
         width={drawerWidth}
       >
-        {selectedBatch && (
-          <>
-            {isEditMode ? (
-              <>
-                <Form
-                  form={form}
-                  layout="vertical"
-                  initialValues={{
-                    batch_id: selectedBatch?.batch_id,
-                    batch_name: selectedBatch?.batch_name,
-                    fuel_type_id: selectedBatch?.fuel_type_id,
-                    quantity: selectedBatch?.quantity,
-                    storage_id: selectedBatch?.fuel_type_id?.storage_id,
-                    status: selectedBatch?.status,
-                    note: selectedBatch?.note,
-                    createdAt: converDateString(selectedBatch?.createdAt),
-                    updatedAt: converDateString(selectedBatch?.updatedAt),
-                  }}
-                  onFinish={handleSaveUpdate}
-                >
-                  {/* Mã Lô - Disabled vì không cần chỉnh sửa */}
-                  <Form.Item
-                    label={t("materialBatch.batchId")}
-                    name="batch_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredBatchId"),
-                      },
-                    ]}
-                  >
-                    <Input disabled />
-                  </Form.Item>
+        <Loading isPending={loadingDetails}>
+          {/* Form cập nhật đơn thu Nguyên liệu */}
+          <div className="w-full bg-gray-100 p-0 lg:p-6">
+            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+              <div className="space-y-4">
+                {/* Tên đơn */}
+                <div>
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    {t("batchHistory.requestName")}
+                  </label>
+                  <input
+                    type="text"
+                    name="request_name"
+                    maxLength="50"
+                    placeholder={t("batchHistory.requestNamePlaceholder")}
+                    value={stateDetailsBatch?.batch_id.batch_name || ""}
+                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                </div>
 
-                  {/* Tên Lô */}
-                  <Form.Item
-                    label={t("materialBatch.batchName")}
-                    name="batch_name"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredBatchName"),
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
+                {/* Tên Lô */}
+                <div>
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    {t("materialBatch.batchName")}
+                  </label>
+                  <input
+                    type="text"
+                    name="request_name"
+                    maxLength="50"
+                    placeholder={t("batchHistory.batchNamePlaceholder")}
+                    value={stateDetailsBatch.export_name || ""}
+                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                </div>
 
-                  {/* Loại Nguyên Liệu */}
-                  <Form.Item
-                    label={t("materialBatch.fuelType")}
-                    name="fuel_type_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredFuelType"),
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder={t("materialBatch.selectFuelType")}
-                      className="rounded border-gray-300"
-                      onChange={handleFuelTypeChange}
-                    >
-                      {fuel_managements
-                        ?.filter((fuel) => fuel.quantity > 0)
-                        .map((fuel) => (
-                          <Select.Option key={fuel._id} value={fuel._id}>
-                            {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
-                          </Select.Option>
-                        ))}
-                    </Select>
-                    {console.log("Fuel Batchs: ", fuelBatchs)}
-                  </Form.Item>
-
-                  {/* Nhập số lượng */}
-                  <Form.Item
-                    label={t("materialBatch.estimatedProduction")}
-                    name="quantity"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredProductionOrder"),
-                      },
-                    ]}
-                  >
-                    <InputNumber
-                      min={null}
-                      className="w-full rounded border-gray-300"
-                      placeholder={t("materialBatch.enterEstimatedProduction")}
-                      onChange={handleEstimatedProductionChange}
-                      onKeyDown={handleKeyDown}
-                      onBlur={() => {
-                        const currentValue = form.getFieldValue("quantity");
-                        if (!currentValue) {
-                          form.setFieldsValue({ quantity: null }); // Không thay đổi giá trị thành 0
-                        }
-                      }}
-                      disabled={!isFuelSelected}
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    label={t("materialBatch.requiredMaterialEstimate")}
-                  >
-                    <InputNumber
-                      disabled
-                      className="w-full rounded border-gray-300 bg-gray-50"
-                      value={requiredMaterial}
-                    />
-                  </Form.Item>
-
-                  {/* Kho Lưu Trữ */}
-                  <Form.Item
-                    label={t("materialBatch.storage")}
-                    name="storage_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredStorage"),
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder={t("materialBatch.selectStorage")}
-                      onChange={handleChangeStorage}
-                      value={storageId || storages[0]?._id}
-                    >
-                      {storages.map((storage) => (
-                        <Select.Option key={storage._id} value={storage._id}>
-                          {storage?.name_storage}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-
-                  {/* Trạng Thái */}
-                  <Form.Item label={t("materialBatch.status")} name="status">
-                    <Input value={selectedBatch?.status} disabled />
-                  </Form.Item>
-
-                  {/* Ghi chú */}
-                  <Form.Item label={t("materialBatch.note")} name="note">
-                    <Input.TextArea rows={4} />
-                  </Form.Item>
-
-                  {/* Ngày tạo */}
-                  <Form.Item
-                    label={t("materialBatch.createdAt")}
-                    name="createdAt"
-                  >
-                    <Input disabled />
-                  </Form.Item>
-
-                  {/* Ngày cập nhật */}
-                  <Form.Item
-                    label={t("materialBatch.updatedAt")}
-                    name="updatedAt"
-                  >
-                    <Input disabled />
-                  </Form.Item>
-
-                  {/* Các nút thao tác */}
-                  <div className="flex justify-center gap-4 mt-4">
-                    <Button
-                      onClick={() => {
-                        setIsEditMode(false); // Chuyển về chế độ xem chi tiết
-                      }}
-                      type="default"
-                    >
-                      {t("common.backToDetail")}
-                    </Button>
-                    <Button
-                      onClick={handleSaveUpdate} // Gọi hàm lưu dữ liệu khi bấm Lưu
-                      type="primary"
-                    >
-                      {t("common.save")}
-                    </Button>
-                    <Button onClick={handleCloseDrawer}>
-                      {t("common.close")}
-                    </Button>
+                {/* Ảnh Nguyên liệu */}
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 min-h-[20vh]">
+                  {/* Tiêu đề */}
+                  <div className="w-full md:w-1/4 text-gray-800 font-semibold">
+                    {t("batchHistory.image")}
                   </div>
-                </Form>
-              </>
-            ) : (
-              <Descriptions bordered column={1}>
-                <Descriptions.Item label={t("materialBatch.batchId")}>
-                  {selectedBatch.batch_id}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.batchName")}>
-                  {selectedBatch.batch_name}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.fuelType")}>
-                  {selectedBatch?.fuel_type_id?.fuel_type_id?.type_name ||
-                    "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.quantity")}>
-                  {selectedBatch.quantity}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.storage")}>
-                  {selectedBatch.fuel_type_id?.storage_id?.name_storage ||
-                    "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.note")}>
-                  {selectedBatch.note || "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.status")}>
-                  <Tag color={statusColors[selectedBatch.status]}>
-                    {t(statusMap[selectedBatch.status] || selectedBatch.status)}
-                  </Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.createdAt")}>
-                  {converDateString(selectedBatch.createdAt) || "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.updatedAt")}>
-                  {converDateString(selectedBatch.updatedAt) || "N/A"}
-                </Descriptions.Item>
-              </Descriptions>
-            )}
 
-            {/* Nút chỉnh sửa */}
-            {/* Nút chỉnh sửa và Đóng */}
-            <div className="flex justify-between mt-4 px-4">
-              {/* Nút Chỉnh sửa bên trái */}
-              {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" ? (
-                <Button
-                  type="primary"
-                  onClick={() => handleEdit(selectedBatch)}
-                  className="bg-blue-600 text-white"
-                >
-                  {t("common.edit")}
-                </Button>
-              ) : (
-                <div></div> // để giữ khoảng trống cân đối nếu nút chỉnh sửa ẩn
-              )}
+                  {/* Hiển thị hình ảnh */}
+                  {stateDetailsBatch?.fuel_image && (
+                    <div className="w-full md:w-1/2">
+                      <img
+                        src={stateDetailsBatch.fuel_image}
+                        alt="Hình ảnh Nguyên liệu"
+                        className="w-full h-auto max-h-[300px] object-contain rounded-lg shadow-md border border-gray-300"
+                      />
+                    </div>
+                  )}
+                </div>
 
-              {/* Nút Đóng bên phải */}
-              <button
-                onClick={() => setIsDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
-              >
-                Đóng
-              </button>
+                {/* Số lượng cần thu */}
+                <div>
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    {t("batchHistory.totalQuantity")}
+                  </label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    placeholder={t("common.enterQuantity")}
+                    value={stateDetailsBatch?.batch_id?.quantity}
+                    onChange={() => { }}
+                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Loại xuất kho */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.exportType")}
+                    </label>
+                    <input
+                      type="text"
+                      name="type_export"
+                      min="1"
+                      placeholder={t("batchHistory.exportType")}
+                      value={stateDetailsBatch?.type_export}
+                      readOnly
+                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                  </div>
+
+                  {/* Trạng thái phiếu xuất */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.status")}
+                    </label>
+                    <div className="p-2 w-full border border-gray-300 rounded inline-block">
+                      <Tag color={statusColors[stateDetailsBatch.status] || "default"}>
+                        {t(`status.${statusMap[stateDetailsBatch.status]}`) ||
+                          stateDetailsBatch.status}
+                      </Tag>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ngày tạo lô + Ngày xuất lô */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Ngày tạo lô */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.createdDate")}
+                    </label>
+                    <input
+                      type="text"
+                      name="type_export"
+                      min="1"
+                      placeholder={t("batchHistory.createdDate")}
+                      value={converDateString(
+                        stateDetailsBatch?.batch_id?.createdAt
+                      )}
+                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                  </div>
+
+                  {/* Ngày xuất lô */}
+                  <div>
+                    <label className="block text-gray-800 font-semibold mb-2">
+                      {t("batchHistory.exportDate")}
+                    </label>
+                    <input
+                      type="text"
+                      name="type_export"
+                      min="1"
+                      placeholder={t("batchHistory.exportDate")}
+                      value={converDateString(
+                        stateDetailsBatch?.batch_history?.createdAt
+                      )}
+                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    />
+                  </div>
+                </div>
+
+                {/* Ghi chú */}
+                <div>
+                  <label className="block text-gray-800 font-semibold mb-2">
+                    {t("batchHistory.note")}
+                  </label>
+                  <textarea
+                    name="note"
+                    placeholder={t("batchHistory.note")}
+                    rows="3"
+                    value={stateDetailsBatch?.note}
+                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                  />
+                </div>
+              </div>
             </div>
-          </>
-        )}
+          </div>
+        </Loading>
+        <div className="flex justify-end mt-4">
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+        </div>
       </DrawerComponent>
-
-      {/* messageContainer */}
-      <messageContainer
-        hideProgressBar={false}
-        position="top-right"
-        newestOnTop={false}
-        pauseOnFocusLoss
-        autoClose={3000}
-        closeOnClick
-        pauseOnHover
-        theme="light"
-        rtl={false}
-        draggable
-      />
     </div>
   );
 };
