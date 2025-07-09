@@ -251,18 +251,25 @@ const FuelProvideManagement = () => {
   };
 
   // DATA FROM USERS LIST
-  const tableData =
-    orders?.data?.length &&
-    orders?.data
-      .map((order) => {
-        return {
-          ...order,
-          key: order._id,
-          customerName: order?.supplier_id?.full_name,
-          createdAt: order?.createdAt,
-        };
-      })
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+const filteredOrders =
+  orders?.data?.filter((order) => {
+    return defaultStatusFilter
+      ? order.status?.trim() === defaultStatusFilter.trim()
+      : true;
+  }) || [];
+
+const tableData =
+  filteredOrders.length &&
+  filteredOrders
+    .map((order) => {
+      return {
+        ...order,
+        key: order._id,
+        customerName: order?.supplier_id?.full_name,
+        createdAt: order?.createdAt,
+      };
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Actions
   const renderAction = () => {

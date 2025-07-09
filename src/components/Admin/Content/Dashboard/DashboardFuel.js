@@ -6,6 +6,7 @@ import { Pie } from "@ant-design/plots";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Column } from "@ant-design/plots";
 
 const DashboardFuel = () => {
   const { t } = useTranslation();
@@ -48,7 +49,7 @@ const DashboardFuel = () => {
       if (alertsRes.data.success) setLowStock(alertsRes.data.lowStock);
     } catch (error) {
       console.error("❌ Lỗi khi gọi API:", error);
-      message.error(t('material_dashboard.errorLoading'));
+      message.error(t("material_dashboard.errorLoading"));
     }
     setLoading(false);
   };
@@ -131,6 +132,45 @@ const DashboardFuel = () => {
     height: isMobile ? 240 : 400,
   };
 
+  // Dữ liệu biểu đồ cột
+  const boxBarData = Object.entries(
+    fuelSummary?.boxCategory?.typeBreakdown || {}
+  ).map(([type, quantity]) => ({
+    type,
+    quantity,
+  }));
+
+  const barConfig = {
+    data: boxBarData,
+    xField: "type", // Phân loại theo loại bao bì
+    yField: "quantity", // Số lượng
+    color: ({ type }) => {
+      // Màu sắc tùy theo loại
+      if (type === "túi chân không") return "#1677ff";
+      if (type === "thùng carton") return "#13c2c2";
+      return "#bfbfbf";
+    },
+    label: {
+      position: "top",
+      style: {
+        fontSize: isMobile ? 10 : 12,
+      },
+    },
+    columnWidthRatio: isMobile ? 0.3 : 0.6,
+    height: isMobile ? 220 : 400,
+    xAxis: {
+      label: {
+        autoRotate: false,
+        style: {
+          fill: "#000",
+          fontSize: isMobile ? 10 : 12,
+          wordBreak: "break-word",
+          whiteSpace: "normal",
+          textAlign: "center",
+        },
+      },
+    },
+  };
   // 🔍 Tổng hợp cho Card thứ 3
   const past7days = fuelHistory.filter((entry) =>
     moment(entry.timestamp).isAfter(moment().subtract(7, "days"))
@@ -161,26 +201,50 @@ const DashboardFuel = () => {
       ) : (
         <>
           {/* 🔹 Thống kê tổng quan */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 md:mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-4 md:mb-6">
             {/* Thẻ 1: đã có hoverable */}
             <Card
               hoverable
-              onClick={() => navigate("/system/admin/fuel-list")}
               className="transition-transform hover:scale-105 duration-300 shadow"
             >
-              <Statistic
-                title={
-                  <span className="flex items-center gap-1">
-                    <span style={{ fontSize: 14, color: "#1f2937" }}>🌿</span>
-                    <span className="font-medium">
-                      {t("material_dashboard.totalFuelTypes")}
-                    </span>
-                  </span>
-                }
-                value={fuelSummary?.totalFuelTypes || 0}
-              />
-            </Card>
+              <div className="flex flex-col gap-2">
+                {/* Dòng 1: Tổng số loại nhiên liệu */}
+                <div
+                  onClick={() => navigate("/system/admin/fuel-list")}
+                  className="cursor-pointer hover:underline"
+                >
+                  <Statistic
+                    title={
+                      <span className="flex items-center gap-1">
+                        🌿{" "}
+                        <span className="font-medium">
+                          Tổng số loại nguyên liệu
+                        </span>
+                      </span>
+                    }
+                    value={fuelSummary?.fuel?.totalFuelTypes || 0}
+                  />
+                </div>
 
+                {/* Dòng 2: Tổng số loại bao bì */}
+                <div
+                  onClick={() => navigate("/system/admin/box-categories/list")}
+                  className="cursor-pointer hover:underline pb-1 text-gray-600"
+                >
+                  <Statistic
+                    title={
+                      <span className="flex items-center gap-1">
+                        📦{" "}
+                        <span className="font-medium">
+                          Tổng số loại vật liệu
+                        </span>
+                      </span>
+                    }
+                    value={fuelSummary?.boxCategory?.totalBoxCategories || 0}
+                  />
+                </div>
+              </div>
+            </Card>
             {/* Thẻ 2: thêm hoverable + hiệu ứng */}
             <Card
               hoverable
@@ -195,7 +259,7 @@ const DashboardFuel = () => {
                     </span>
                   </span>
                 }
-                value={fuelSummary?.totalFuelQuantity || 0}
+                value={fuelSummary?.fuel?.totalFuelQuantity || 0}
                 suffix="Kg"
               />
             </Card>
@@ -236,18 +300,67 @@ const DashboardFuel = () => {
                 </div>
               </div>
             </Card>
+            <Card
+              hoverable
+              className="transition-transform hover:scale-105 duration-300 shadow"
+            >
+              <h3 className="text-base font-semibold mb-2 flex items-center gap-1">
+                🧾 Thống kê vật liệu đóng gói
+              </h3>
+              <div className="text-sm text-gray-800 leading-6 space-y-2">
+                <div>
+                  🟢 Đang hoạt động:{" "}
+                  <strong>
+                    {fuelSummary?.boxCategory?.activeBoxCategories || 0}
+                  </strong>
+                </div>
+                <div>
+                  🔴 Đã ngừng sử dụng:{" "}
+                  <strong>
+                    {fuelSummary?.boxCategory?.inactiveBoxCategories || 0}
+                  </strong>
+                </div>
+                <div>
+                  🏆 Tồn nhiều nhất:{" "}
+                  <strong>
+                    {fuelSummary?.boxCategory?.maxStockBoxCategory?.name} (
+                    {fuelSummary?.boxCategory?.maxStockBoxCategory?.quantity})
+                  </strong>
+                </div>
+                <div>
+                  ⚠️ Tồn ít nhất:{" "}
+                  <strong>
+                    {fuelSummary?.boxCategory?.minStockBoxCategory?.name} (
+                    {fuelSummary?.boxCategory?.minStockBoxCategory?.quantity})
+                  </strong>
+                </div>
+              </div>
+            </Card>
           </div>
+          {/* Biểu đồ tròn: phân bổ nguyên liệu */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 md:mb-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">
+                📊 Phân bổ nguyên liệu
+              </h2>
+              {pieData.length > 0 ? (
+                <Pie {...pieConfig} />
+              ) : (
+                <Alert message="Không có dữ liệu biểu đồ!" type="info" />
+              )}
+            </div>
 
-          {/* 🔹 Biểu đồ phân bổ nguyên liệu */}
-          <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
-            <h2 className="text-xl font-semibold mb-2 md:mb-4">
-              📊 {t("material_dashboard.fuelDistribution")}
-            </h2>
-            {pieData.length > 0 ? (
-              <Pie {...pieConfig} />
-            ) : (
-              <Alert message={t("material_dashboard.noData")} type="info" />
-            )}
+            {/* Biểu đồ cột: tổng bao bì theo loại */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">
+                📦 Phân bổ bao bì đã sử dụng
+              </h2>
+              {boxBarData.length > 0 ? (
+                <Column {...barConfig} />
+              ) : (
+                <Alert message="Không có dữ liệu biểu đồ bao bì!" type="info" />
+              )}
+            </div>
           </div>
 
           {/* 🔹 Danh sách lịch sử nhập/xuất nguyên liệu */}

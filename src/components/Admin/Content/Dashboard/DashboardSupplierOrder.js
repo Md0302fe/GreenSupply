@@ -79,7 +79,7 @@ const DashboardSupplierOrder = () => {
         ? "/system/admin/manage-fuel-orders"
         : "/system/admin/manage-provide-orders";
 
-    navigate(`${route}?status=${encodeURIComponent(status)}`);
+    navigate(`${route}?status=${encodeURIComponent(status)}&type=${type}`);
   };
 
   const [isMobile, setIsMobile] = useState(() => {
@@ -103,19 +103,24 @@ const DashboardSupplierOrder = () => {
   // 🔷 Biểu đồ cột - Trạng thái đơn
   const chartData = [
     {
-      type: isMobile ? t("status.pending").replace(" ", "\n") : t("status.pending"),
+      type: isMobile
+        ? t("status.pending").replace(" ", "\n")
+        : t("status.pending"),
       value: dashboardData?.pendingRequests || 0,
     },
     {
-      type: isMobile ? t("status.approve").replace(" ", "\n") : t("status.approve"),
+      type: isMobile
+        ? t("status.approve").replace(" ", "\n")
+        : t("status.approve"),
       value: dashboardData?.approvedRequests || 0,
     },
     {
-      type: isMobile ? t("status.completed").replace(" ", "\n") : t("status.completed"),
+      type: isMobile
+        ? t("status.completed").replace(" ", "\n")
+        : t("status.completed"),
       value: dashboardData?.totalCompleted || 0,
     },
   ];
-
 
   const chartConfig = {
     data: chartData,
@@ -132,7 +137,7 @@ const DashboardSupplierOrder = () => {
       const raw = type.replace("\n", " ");
       if (raw === "Chờ duyệt") return "#faad14";
       if (raw === "Đã duyệt") return "#52c41a";
-      if (raw === "Hoàn thành") return "#1890ff";
+      if (raw === "Hoàn Thành") return "#1890ff";
       return "#ccc";
     },
     columnWidthRatio: isMobile ? 0.3 : 0.6,
@@ -151,12 +156,13 @@ const DashboardSupplierOrder = () => {
     },
   };
 
-
-
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-6 rounded mb-4 md:mb-6">
-        <h1 className="text-[20px] md:text-3xl font-bold"> {t("supplier_dashboard.title")}</h1>
+        <h1 className="text-[20px] md:text-3xl font-bold">
+          {" "}
+          {t("supplier_dashboard.title")}
+        </h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
@@ -189,7 +195,21 @@ const DashboardSupplierOrder = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 md:mb-6">
         {/* Card 1: Yêu Cầu Thu Nguyên Liệu */}
         <Card
-          title={t("supplier_dashboard.request_title")}
+          title={
+            <span
+              onClick={() => navigate("/system/admin/manage-fuel-orders")}
+              style={{
+                cursor: "pointer",
+                color: "#1890ff",
+                textDecoration: "underline",
+                transition: "color 0.2s",
+              }}
+              onMouseOver={(e) => (e.target.style.color = "#0958d9")}
+              onMouseOut={(e) => (e.target.style.color = "#1890ff")}
+            >
+              {t("supplier_dashboard.request_title")}
+            </span>
+          }
           bordered={false}
           className="shadow-md rounded-lg"
         >
@@ -214,7 +234,7 @@ const DashboardSupplierOrder = () => {
               <strong>{dashboardData?.fuelRequests?.approved || 0}</strong>
             </li>
             <li
-              onClick={() => handleCardClick("request", "Hoàn thành")}
+              onClick={() => handleCardClick("request", "Hoàn Thành")}
               className="text-blue-500 cursor-pointer hover:underline"
             >
               🏁 {t("status.completed")}:{" "}
@@ -225,7 +245,21 @@ const DashboardSupplierOrder = () => {
 
         {/* Card 2: Yêu Cầu Cung Cấp Nguyên Liệu */}
         <Card
-          title={t("supplier_dashboard.supply_title")}
+          title={
+            <span
+              onClick={() => navigate("/system/admin/manage-provide-orders")}
+              style={{
+                cursor: "pointer",
+                color: "#1890ff",
+                textDecoration: "underline",
+                transition: "color 0.2s",
+              }}
+              onMouseOver={(e) => (e.target.style.color = "#0958d9")}
+              onMouseOut={(e) => (e.target.style.color = "#1890ff")}
+            >
+              {t("supplier_dashboard.supply_title")}
+            </span>
+          }
           bordered={false}
           className="shadow-md rounded-lg"
         >
@@ -250,7 +284,7 @@ const DashboardSupplierOrder = () => {
               <strong>{dashboardData?.fuelSupplyOrders?.approved || 0}</strong>
             </li>
             <li
-              onClick={() => handleCardClick("supply", "Hoàn thành")}
+              onClick={() => handleCardClick("supply", "Hoàn Thành")}
               className="text-blue-500 cursor-pointer hover:underline"
             >
               🏁 {t("status.completed")}:{" "}
@@ -273,29 +307,32 @@ const DashboardSupplierOrder = () => {
         {/* 🔘 Bộ lọc thời gian */}
         <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${filterType === "day"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${
+              filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-              }`}
+            }`}
             onClick={() => setFilterType("day")}
           >
             {t("dashboard.filter_day")}
           </button>
 
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${filterType === "week"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${
+              filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-              }`}
+            }`}
             onClick={() => setFilterType("week")}
           >
             {t("dashboard.filter_week")}
           </button>
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${filterType === "month"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${
+              filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-              }`}
+            }`}
             onClick={() => setFilterType("month")}
           >
             {t("dashboard.filter_month")}
@@ -323,7 +360,11 @@ const DashboardSupplierOrder = () => {
               align: "center",
               className: "text-center",
             },
-            { title: <div className="text-center">{t("table.status")}</div>, dataIndex: "status", key: "status" },
+            {
+              title: <div className="text-center">{t("table.status")}</div>,
+              dataIndex: "status",
+              key: "status",
+            },
             {
               title: t("table.quantity"),
               dataIndex: "quantity",
