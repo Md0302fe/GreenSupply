@@ -19,6 +19,7 @@ import Highlighter from "react-highlight-words";
 import { Descriptions, Tag } from "antd";
 import { FaClipboardList } from "react-icons/fa";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 import { Space, Input, Form, Button, message } from "antd";
 
@@ -575,127 +576,173 @@ const FuelProvideManagement = () => {
         forceRender
       >
         <Loading isPending={isLoadDetails || isPendingUpDate}>
-          <Descriptions bordered column={1} layout="horizontal">
-            <Descriptions.Item
-              label={t("fuelProvide.customer")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.supplier_id?.full_name || ""}
-            </Descriptions.Item>
+          <div className="w-full p-6 bg-white rounded-md shadow">
+            <div className="grid grid-cols-1 gap-4 mb-4">
+              {/* Tên khách hàng */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.customer")}
+                </label>
+                <input
+                  type="text"
+                  value={stateDetailsUser?.supplier_id?.full_name || ""}
+                  readOnly
+                  className="border p-2 rounded w-full mb-1 bg-gray-100"
+                />
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.fuelType")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.fuel_name || ""}
-            </Descriptions.Item>
+              {/* Loại nhiên liệu */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.fuelType")}
+                </label>
+                <input
+                  type="text"
+                  value={stateDetailsUser?.fuel_name || ""}
+                  readOnly
+                  className="border p-2 rounded w-full mb-1 bg-gray-100"
+                />
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.price")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.price || ""}
-            </Descriptions.Item>
+              {/* Đơn giá + Chất lượng */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuelProvide.price")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.price || ""}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuelProvide.quality")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.quality || ""}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.quality")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.quality || ""}
-            </Descriptions.Item>
+              {/* Số lượng + Tổng giá */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuelProvide.quantity")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.quantity || ""}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.quantity")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.quantity || ""}
-            </Descriptions.Item>
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    {t("fuelProvide.totalPrice")}
+                  </label>
+                  <input
+                    type="text"
+                    value={stateDetailsUser?.total_price || ""}
+                    readOnly
+                    className="border p-2 rounded w-full mb-1 bg-gray-100"
+                  />
+                </div>
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.note")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.note || t("fuelProvide.noNote")}
-            </Descriptions.Item>
+              {/* Địa chỉ */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.address")}
+                </label>
+                <input
+                  type="text"
+                  value={stateDetailsUser?.address || ""}
+                  readOnly
+                  className="border p-2 rounded w-full mb-1 bg-gray-100"
+                />
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.status")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {t(`status.${statusMap[orderStatus]}`) || orderStatus}
-            </Descriptions.Item>
+              {/* Trạng thái */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.status")}
+                </label>
+                <input
+                  type="text"
+                  value={t(`status.${statusMap[orderStatus]}`) || orderStatus}
+                  readOnly
+                  className="border p-2 rounded w-full mb-1 bg-gray-100"
+                />
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.totalPrice")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.total_price || ""}
-            </Descriptions.Item>
+              {/* Ghi chú */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.note")}
+                </label>
+                <textarea
+                  value={stateDetailsUser?.note || t("fuelProvide.noNote")}
+                  readOnly
+                  className="w-full h-auto border p-2 rounded bg-gray-100"
+                />
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.address")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.address || ""}
-            </Descriptions.Item>
+              {/* Created at */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.createdAt")}
+                </label>
+                <input
+                  type="text"
+                  value={
+                    stateDetailsUser?.createdAt
+                      ? new Date(stateDetailsUser.createdAt).toLocaleString()
+                      : ""
+                  }
+                  readOnly
+                  className="border p-2 rounded w-full mb-1 bg-gray-100"
+                />
+              </div>
 
-            <Descriptions.Item
-              label={t("fuelProvide.createdAt")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.createdAt
-                ? new Date(stateDetailsUser.createdAt).toLocaleString()
-                : ""}
-            </Descriptions.Item>
-
-            <Descriptions.Item
-              label={t("fuelProvide.updatedAt")}
-              labelStyle={{ width: "40%" }}
-              contentStyle={{ width: "60%" }}
-            >
-              {stateDetailsUser?.updatedAt
-                ? new Date(stateDetailsUser.updatedAt).toLocaleString()
-                : ""}
-            </Descriptions.Item>
-
-          </Descriptions>
-
-          {orderStatus === "Chờ duyệt" && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "10px",
-                marginTop: 24,
-              }}
-            >
-              <Button type="primary" onClick={handleAcceptProvideOrder}>
-                {t("fuelProvide.approveOrder")}
-              </Button>
-              <Button danger onClick={handleCancelProvideOrder}>
-                {t("fuelProvide.cancelOrder")}
-              </Button>
+              {/* Updated at */}
+              <div>
+                <label className="block mb-1 font-semibold">
+                  {t("fuelProvide.updatedAt")}
+                </label>
+                <input
+                  type="text"
+                  value={
+                    stateDetailsUser?.updatedAt
+                      ? new Date(stateDetailsUser.updatedAt).toLocaleString()
+                      : ""
+                  }
+                  readOnly
+                  className="border p-2 rounded w-full mb-1 bg-gray-100"
+                />
+              </div>
             </div>
-          )}
+
+            {/* Nút hành động */}
+            <div className="flex flex-col md:flex-row justify-end gap-4 mt-6">
+              {orderStatus === "Chờ duyệt" && (
+                <>
+                  <ButtonComponent type="approve-order" onClick={handleAcceptProvideOrder} />
+                  <ButtonComponent type="cancel-order" onClick={handleCancelProvideOrder} />
+                </>
+              )}
+              <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+            </div>
+          </div>
         </Loading>
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-          >
-            {t("close")}
-          </button>
-        </div>
+
       </DrawerComponent>
     </div>
   );
