@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
-import { FiRefreshCw } from "react-icons/fi";
-import { AiFillEdit } from "react-icons/ai";
-import { toast } from "react-toastify";
-import { createHarvestRequest } from "../../../services/HarvestRequestService";
-import { useSelector } from "react-redux";
+
 import axios from "axios";
 import { message } from "antd";
-import { getUserAddresses } from "../../../services/UserService";
+import { useSelector } from "react-redux";
+import { AiFillEdit } from "react-icons/ai";
+import { FiRefreshCw } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
+import { getUserAddresses } from "../../../services/UserService";
+import { createHarvestRequest } from "../../../services/HarvestRequestService";
 
 const HarvestRequestPage = () => {
   const { t } = useTranslation();
