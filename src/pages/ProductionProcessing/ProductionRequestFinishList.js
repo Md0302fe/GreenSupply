@@ -11,7 +11,7 @@ import Loading from "../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../components/DrawerComponent/DrawerComponent";
 import * as ProductionRequestServices from "../../services/ProductionRequestServices";
 import { FcTodoList } from "react-icons/fc";
-
+import { useLocation } from "react-router-dom"; 
 import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -53,7 +53,10 @@ const ProductionRequestList = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const [filteredStatus, setFilteredStatus] = useState(null);
+  const location = useLocation();
 
+  
   // 1. FETCH danh sách kế hoạch (GET)
   const fetchProductionRequests = async () => {
     const access_token = user?.access_token;
@@ -82,13 +85,26 @@ const ProductionRequestList = () => {
     console.log("Lỗi:", error);
   }
 
-  const tableData = Array.isArray(data)
-    ? data
-      .filter(
-        (req) => req.status === "Đã duyệt" || req.status === "Đang sản xuất"
-      )
+ const tableData = Array.isArray(data)
+  ? data
+      .filter((req) => {
+        if (filteredStatus) {
+          return req.status === filteredStatus;
+        }
+        return req.status === "Đã duyệt" || req.status === "Đang sản xuất";
+      })
       .map((req) => ({ ...req, key: req._id }))
-    : [];
+  : [];
+
+  useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+  const statusFromURL = queryParams.get("status");
+
+  if (statusFromURL) {
+    setFilteredStatus(statusFromURL);
+  }
+ }, [location.search]);
+
 
   // Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {

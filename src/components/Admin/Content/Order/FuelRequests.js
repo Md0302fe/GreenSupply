@@ -186,15 +186,24 @@ const FuelRequestsManagement = () => {
   const { isLoading, data: orders } = queryOrder;
 
   // DATA FROM USERS LIST
-  const tableData =
-    orders?.data?.length &&
-    orders?.data.map((order) => {
-      return {
-        ...order,
-        key: order._id,
-        customerName: order?.supplier_id?.full_name,
-      };
-    });
+  const filteredOrders =
+  orders?.data?.length &&
+  orders.data.filter((order) => {
+    return defaultStatusFilter
+      ? order.status?.trim() === defaultStatusFilter.trim()
+      : true;
+  });
+
+const tableData =
+  filteredOrders?.length &&
+  filteredOrders.map((order) => {
+    return {
+      ...order,
+      key: order._id,
+      customerName: order?.supplier_id?.full_name,
+    };
+  });
+
 
   // Actions
   const renderAction = () => {
