@@ -80,6 +80,10 @@ import ProcessingDetails from "../pages/ProductionProcessing/ProcessDetails";
 import DashboardProductionProcess from "../components/Admin/Content/Dashboard/DashboardProductionProcess";
 import DashboardSupplyRequest from "../components/Admin/Content/Dashboard/DashboardSupplierRequest";
 import FinishedProductList from "../components/Admin/Content/FinishedProduct/FinishedProductList";
+
+
+import DashboardfinishedProduct from "../components/Admin/Content/Dashboard/DashboardfinishedProduct";
+
 const Router = () => {
   return (
     <>
@@ -156,6 +160,9 @@ const Router = () => {
           {/* Finished product */}
           <Route path="feature_finished_product" element={<FeatureFinishedProduct />} />
           <Route path="finished_product_list" element={<FinishedProductList />} />
+
+          {/* Dashboar finishedProduct */}
+          <Route path="dashboard-finished-product" element={<DashboardfinishedProduct />} />
 
           {/* Production Process Management */}
           <Route path="feature_production_process" element={<FeatureProductProcess />} />

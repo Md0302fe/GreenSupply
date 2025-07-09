@@ -20,15 +20,20 @@ import * as ProductServices from "../../../../services/ProductServices";
 import { useTranslation } from "react-i18next";
 import default_image from "../../../../assets/Feature_warehouse/prouct_carton_img.jpg";
 import { AiFillProduct } from "react-icons/ai";
-
+import { useLocation } from "react-router-dom";
 const FinishedProductList = () => {
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [selectedType, setSelectedType] = useState("");
   const [materialTypes, setMaterialTypes] = useState([]);
+  const location = useLocation();
+  const selectedMaterialId = location?.state?.selectedMaterialId || null;
+  const [selectedType, setSelectedType] = useState(selectedMaterialId || "");
+  const selectedStatus = location?.state?.selectedStatus || null;
+  const [status, setStatus] = useState(selectedStatus || "");
+
 
   // Phân trang
   const [page, setPage] = useState(1); // Lưu trang hiện tại
@@ -55,6 +60,10 @@ const FinishedProductList = () => {
       if (selectedType) {
         filter["type_material_id"] = selectedType;
       }
+      if (status) {
+        filter["status"] = status;
+      }
+
 
       const res = await ProductServices.getAllProducts(
         pageSize,
@@ -103,7 +112,7 @@ const FinishedProductList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [searchText, selectedType, page]);
+  }, [searchText, selectedType, page, status]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 px-8">

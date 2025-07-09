@@ -5,8 +5,11 @@ import { useSelector } from "react-redux";
 import { Pie } from "@ant-design/plots";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const DashboardFuel = () => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
   const [fuelSummary, setFuelSummary] = useState(null);
   const [fuelTypes, setFuelTypes] = useState([]);
@@ -20,20 +23,24 @@ const DashboardFuel = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [summaryRes, fuelTypesRes, historyRes, alertsRes] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/summary`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/fuel-types`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/history`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/alerts`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
+      const [summaryRes, fuelTypesRes, historyRes, alertsRes] =
+        await Promise.all([
+          axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/summary`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/fuel/dashboard/fuel-types`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          ),
+          axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/history`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${process.env.REACT_APP_API_URL}/fuel/dashboard/alerts`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
       if (summaryRes.data.success) setFuelSummary(summaryRes.data);
       if (fuelTypesRes.data.success) setFuelTypes(fuelTypesRes.data.fuelData);
@@ -41,7 +48,7 @@ const DashboardFuel = () => {
       if (alertsRes.data.success) setLowStock(alertsRes.data.lowStock);
     } catch (error) {
       console.error("❌ Lỗi khi gọi API:", error);
-      message.error("Không thể tải dữ liệu, vui lòng thử lại!");
+      message.error(t('material_dashboard.errorLoading'));
     }
     setLoading(false);
   };
@@ -51,21 +58,30 @@ const DashboardFuel = () => {
   }, []);
 
   const historyColumns = [
-    { title: "Ngày", dataIndex: "date", key: "date" },
-    { title: "Loại Nguyên Liệu", dataIndex: "fuelType", key: "fuelType" },
+    { title: t("material_dashboard.date"), dataIndex: "date", key: "date" },
     {
-      title: "Số Lượng",
+      title: t("material_dashboard.fuelType"),
+      dataIndex: "fuelType",
+      key: "fuelType",
+    },
+    {
+      title: t("material_dashboard.quantity"),
       dataIndex: "quantity",
       key: "quantity",
       render: (text) => <span className="font-bold">{text}</span>,
     },
     {
-      title: "Trạng Thái",
+      title: t("material_dashboard.status"),
       dataIndex: "type",
       key: "type",
       render: (text) => (
-        <span style={{ color: text === "Nhập kho" ? "#4CAF50" : "#FF5722", fontWeight: "bold" }}>
-          {text}
+        <span
+          style={{
+            color: text === "Nhập kho" ? "#4CAF50" : "#FF5722",
+            fontWeight: "bold",
+          }}
+        >
+          {t(`material_dashboard.${text}`)}
         </span>
       ),
     },
@@ -76,7 +92,7 @@ const DashboardFuel = () => {
     date: moment(entry.timestamp).format("DD/MM/YYYY"),
     fuelType: entry.type || "Không xác định",
     quantity: Math.abs(entry.quantity),
-    type: entry.action,
+    type: entry.action === "Nhập kho" ? "import" : "export",
   }));
 
   const [isMobile, setIsMobile] = useState(() => {
@@ -99,7 +115,10 @@ const DashboardFuel = () => {
 
   const pieData = fuelTypes
     .map((item) => ({
-      type: item.type && typeof item.type === "string" ? item.type.trim() : "Không xác định",
+      type:
+        item.type && typeof item.type === "string"
+          ? item.type.trim()
+          : "Không xác định",
       value: Number(item.value) || 0,
     }))
     .filter((item) => item.type !== "Không xác định" && item.value > 0);
@@ -113,12 +132,13 @@ const DashboardFuel = () => {
   };
 
   // 🔍 Tổng hợp cho Card thứ 3
-  const past7days = fuelHistory.filter(entry =>
+  const past7days = fuelHistory.filter((entry) =>
     moment(entry.timestamp).isAfter(moment().subtract(7, "days"))
   );
 
-  const maxFuel = pieData.reduce((prev, curr) =>
-    curr.value > prev.value ? curr : prev, { type: "", value: 0 }
+  const maxFuel = pieData.reduce(
+    (prev, curr) => (curr.value > prev.value ? curr : prev),
+    { type: "", value: 0 }
   );
 
   const mostCritical = lowStock.length
@@ -128,11 +148,16 @@ const DashboardFuel = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white p-6 rounded mb-4 md:mb-6">
-        <h1 className="text-[20px] md:text-3xl font-bold">Dashboard Quản Lý Nguyên Liệu</h1>
+        <h1 className="text-[20px] md:text-3xl font-bold">
+          {t("material_dashboard.title")}
+        </h1>
       </header>
 
       {loading ? (
-        <Spin size="large" className="flex justify-center items-center w-full h-full" />
+        <Spin
+          size="large"
+          className="flex justify-center items-center w-full h-full"
+        />
       ) : (
         <>
           {/* 🔹 Thống kê tổng quan */}
@@ -147,7 +172,9 @@ const DashboardFuel = () => {
                 title={
                   <span className="flex items-center gap-1">
                     <span style={{ fontSize: 14, color: "#1f2937" }}>🌿</span>
-                    <span className="font-medium">Tổng Số Loại Nguyên Liệu</span>
+                    <span className="font-medium">
+                      {t("material_dashboard.totalFuelTypes")}
+                    </span>
                   </span>
                 }
                 value={fuelSummary?.totalFuelTypes || 0}
@@ -163,7 +190,9 @@ const DashboardFuel = () => {
                 title={
                   <span className="flex items-center gap-1">
                     <span style={{ fontSize: 18, color: "#1f2937" }}>📦</span>
-                    <span className="font-medium">Tổng Khối Lượng Nguyên Liệu</span>
+                    <span className="font-medium">
+                      {t("material_dashboard.totalFuelQuantity")}
+                    </span>
                   </span>
                 }
                 value={fuelSummary?.totalFuelQuantity || 0}
@@ -177,42 +206,55 @@ const DashboardFuel = () => {
               className="transition-transform hover:scale-105 duration-300 shadow"
             >
               <h3 className="text-base font-semibold mb-2 flex items-center gap-1">
-                📈 Tổng Quan Nhanh
+                📈 {t("material_dashboard.quickOverview")}
               </h3>
               <div className="text-sm text-gray-800 leading-6 space-y-3">
                 <div className="flex items-center gap-2">
-                  🔁 <span className="text-blue-600 font-bold text-lg">{past7days.length}</span> lượt nhập/xuất nguyên liệu gần đây
+                  🔁{" "}
+                  <span className="text-blue-600 font-bold text-lg">
+                    {past7days.length}
+                  </span>{" "}
+                  {t("material_dashboard.recentTransactions")}
                 </div>
                 <div className="flex items-center gap-2">
-                  🥭 Nguyên Liệu Nhiều nhất:{" "}
+                  🥭 {t("material_dashboard.mostAvailable")}:{" "}
                   <span className="font-bold text-yellow-600">
                     {maxFuel.type} ({maxFuel.value} Kg)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  ⛔ Nguyên Liệu Sắp hết:{" "}
+                  ⛔ {t("material_dashboard.lowStock")}:{" "}
                   {mostCritical ? (
                     <span className="font-bold text-red-500">
                       {mostCritical.fuel_type} ({mostCritical.quantity} Kg)
                     </span>
                   ) : (
-                    <span className="text-gray-600 italic">Không Có</span>
+                    <span className="text-gray-600 italic">
+                      {t("material_dashboard.noLowStock")}
+                    </span>
                   )}
                 </div>
               </div>
             </Card>
-
           </div>
 
           {/* 🔹 Biểu đồ phân bổ nguyên liệu */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
-            <h2 className="text-xl font-semibold mb-2 md:mb-4">📊 Phân Bổ Nguyên Liệu Trong Kho</h2>
-            {pieData.length > 0 ? <Pie {...pieConfig} /> : <Alert message="Không có dữ liệu để hiển thị" type="info" />}
+            <h2 className="text-xl font-semibold mb-2 md:mb-4">
+              📊 {t("material_dashboard.fuelDistribution")}
+            </h2>
+            {pieData.length > 0 ? (
+              <Pie {...pieConfig} />
+            ) : (
+              <Alert message={t("material_dashboard.noData")} type="info" />
+            )}
           </div>
 
           {/* 🔹 Danh sách lịch sử nhập/xuất nguyên liệu */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
-            <h2 className="text-[18px] md:text-xl font-semibold mb-4">📜 Lịch Sử Nhập/Xuất Nguyên Liệu</h2>
+            <h2 className="text-[18px] md:text-xl font-semibold mb-4">
+              📜 {t("material_dashboard.historyTitle")}
+            </h2>
             {historyData.length > 0 ? (
               <Table
                 columns={historyColumns}
@@ -221,26 +263,40 @@ const DashboardFuel = () => {
                 scroll={{ x: "max-content" }}
               />
             ) : (
-              <Alert message="Không có dữ liệu nhập/xuất nguyên liệu" type="info" />
+              <Alert message={t("material_dashboard.noHistory")} type="info" />
             )}
           </div>
 
           {/* 🔹 Cảnh báo nguyên liệu sắp hết */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-4 md:mb-6">
-            <h2 className="text-[18px] md:text-xl font-semibold mb-4">⚠️ Cảnh Báo Nguyên Liệu Sắp Hết</h2>
+            <h2 className="text-[18px] md:text-xl font-semibold mb-4">
+              ⚠️ {t("material_dashboard.warningTitle")}
+            </h2>
             <Table
               columns={[
                 {
-                  title: "Loại Nguyên Liệu",
+                  title: t("material_dashboard.fuelType"),
                   dataIndex: "fuel_type",
                   key: "fuel_type",
                 },
-                { title: "Khối Lượng", dataIndex: "quantity", key: "quantity" },
                 {
-                  title: "Trạng Thái",
+                  title: t("material_dashboard.quantity"),
+                  dataIndex: "quantity",
+                  key: "quantity",
+                },
+                {
+                  title: t("material_dashboard.status"),
                   dataIndex: "warning",
                   key: "warning",
-                  render: (text) => <span className="text-red-500">{text}</span>,
+                  render: (text) => (
+                    <span className="text-red-500">
+                      {text === "Sắp hết nhiên liệu!"
+                        ? t("material_dashboard.warningAlmostEmpty")
+                        : text === "Hết nhiên liệu!"
+                        ? t("material_dashboard.warningEmpty")
+                        : text}
+                    </span>
+                  ),
                 },
               ]}
               dataSource={lowStock}

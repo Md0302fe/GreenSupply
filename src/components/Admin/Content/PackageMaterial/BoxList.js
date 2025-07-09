@@ -23,8 +23,11 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { Modal } from "antd";
+import { useTranslation } from "react-i18next";
 
 const BoxList = () => {
+  const { t } = useTranslation();
+
   const [categories, setCategories] = useState([]);
   const [boxes, setBoxes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,7 +59,7 @@ const BoxList = () => {
         setCategories(res.data.data);
       }
     } catch {
-      message.error("Không thể lấy danh sách loại thùng.");
+      message.error(t("boxList.category_error"));
     }
   };
 
@@ -78,11 +81,11 @@ const BoxList = () => {
         setBoxes(sortedBoxes);
       } else {
         setBoxes([]);
-        message.error("Không thể lấy danh sách thùng.");
+        message.error(t("boxList.box_error"));
       }
     } catch {
       setBoxes([]);
-      message.error("Không thể lấy danh sách thùng.");
+      message.error(t("boxList.box_error"));
     } finally {
       setLoading(false);
     }
@@ -109,10 +112,10 @@ const BoxList = () => {
 
   const handleDelete = (id) => {
     Modal.confirm({
-      title: "Xác nhận xoá",
-      content: "Bạn có chắc chắn muốn xoá vật liệu này không?",
-      okText: "Xoá",
-      cancelText: "Huỷ",
+      title: t("boxList.confirm_delete"),
+      content: t("boxList.confirm_delete_content"),
+      okText: t("harvestRequest.delete"),
+      cancelText: t("boxList.update.cancel"),
       okType: "danger",
       onOk: async () => {
         try {
@@ -125,13 +128,13 @@ const BoxList = () => {
             }
           );
           if (res.data.success) {
-            message.success("Xoá thành công.");
+            message.success(t("boxList.delete_success"));
             if (selectedCategory) fetchBoxes(selectedCategory);
           } else {
-            message.error("Xoá thất bại.");
+            message.error(t("boxList.delete_fail"));
           }
         } catch {
-          message.error("Lỗi khi xoá.");
+          message.error(t("boxList.delete_error"));
         }
       },
     });
@@ -170,20 +173,24 @@ const BoxList = () => {
       );
 
       if (res.data.success) {
-        message.success("Cập nhật thành công!");
+        message.success(t("boxList.update.update_success"));
         setIsEditDrawerOpen(false);
         if (selectedCategory) fetchBoxes(selectedCategory);
       } else {
-        message.error("Cập nhật thất bại!");
+        message.error(t("boxList.update.update_fail"));
       }
     } catch {
-      message.error("Lỗi khi cập nhật.");
+      message.error(t("boxList.update.update_error"));
     }
   };
 
   const columns = [
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Ảnh</div>,
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("boxList.image")}
+        </div>
+      ),
       dataIndex: "package_img",
       key: "package_img",
       align: "center",
@@ -201,14 +208,14 @@ const BoxList = () => {
           </div>
         ) : (
           <div style={{ textAlign: "center", width: "100%" }}>
-            <span>Chưa có ảnh</span>
+            <span>{t("boxList.no_image")}</span>
           </div>
         ),
     },
     {
       title: (
         <div style={{ textAlign: "center", width: "100%" }}>
-          Tên Nguyên Vật Liệu
+          {t("boxList.name")}
         </div>
       ),
       dataIndex: "package_material_name",
@@ -217,7 +224,11 @@ const BoxList = () => {
       render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
-      title: <div style={{ textAlign: "center", width: "100%" }}>Số lượng</div>,
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("boxList.quantity")}
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       align: "center",
@@ -225,7 +236,9 @@ const BoxList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Dung tích</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("boxList.capacity")}
+        </div>
       ),
       dataIndex: "capacity",
       key: "capacity",
@@ -238,7 +251,9 @@ const BoxList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Size Bao Bì</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("boxList.size")}
+        </div>
       ),
       dataIndex: "size_label",
       key: "size_label",
@@ -264,7 +279,9 @@ const BoxList = () => {
 
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("boxList.status")}
+        </div>
       ),
       dataIndex: "is_delete",
       key: "is_delete",
@@ -272,14 +289,16 @@ const BoxList = () => {
       render: (val) => (
         <div style={{ textAlign: "center", width: "100%" }}>
           <Tag color={val ? "red" : "green"}>
-            {val ? "Đã xóa" : "Hoạt động"}
+            {val ? t("boxList.status_deleted") : t("boxList.status_active")}
           </Tag>
         </div>
       ),
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Hành động</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("boxList.actions")}
+        </div>
       ),
       key: "action",
       align: "center",
@@ -354,13 +373,13 @@ const BoxList = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            <span className="hidden md:inline">Quay lại</span>
+            <span className="hidden md:inline">{t("boxList.back")}</span>
           </button>
 
           <div className="flex items-center justify-center gap-2">
             <VscPackage className="size-8"></VscPackage>
             <h2 className="text-center font-bold text-[18px] md:text-2xl flex-grow text-gray-800">
-              Danh sách vật liệu theo loại
+              {t("boxList.title")}
             </h2>
           </div>
 
@@ -375,7 +394,7 @@ const BoxList = () => {
             onClick={() => navigate("/system/admin/box-Create")}
             className="shadow-md"
           >
-            + Tạo vật liệu mới
+            {t("boxList.create")}
           </Button>
         </div>
 
@@ -414,43 +433,45 @@ const BoxList = () => {
       />
 
       <Drawer
-        title="Chi tiết thùng"
+        title={t("boxList.details.title")}
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         width={400}
       >
         {selectedBox && (
           <Descriptions column={1} bordered>
-            <Descriptions.Item label="Tên">
+            <Descriptions.Item label={t("boxList.details.name")}>
               {selectedBox.package_material_name}
             </Descriptions.Item>
-            <Descriptions.Item label="Số lượng">
+            <Descriptions.Item label={t("boxList.quantity")}>
               {selectedBox.quantity}
             </Descriptions.Item>
-            <Descriptions.Item label="Trạng thái">
+            <Descriptions.Item label={t("boxList.status")}>
               <Tag color={selectedBox.is_delete ? "red" : "green"}>
-                {selectedBox.is_delete ? "Đã xóa" : "Hoạt động"}
+                {selectedBox.is_delete
+                  ? t("boxList.status_deleted")
+                  : t("boxList.status_active")}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Dung tích">
+            <Descriptions.Item label={t("boxList.capacity")}>
               {selectedBox.capacity}{" "}
               {selectedBox.type === "túi chân không" ? "g" : "kg"}
             </Descriptions.Item>
 
-            <Descriptions.Item label="Size Bao Bì">
+            <Descriptions.Item label={t("boxList.details.size")}>
               {selectedBox.size_category === "nhỏ"
                 ? "Size S"
                 : selectedBox.size_category === "trung bình"
                 ? "Size M"
                 : selectedBox.size_category === "lớn"
                 ? "Size L"
-                : "Không rõ"}
+                : t("boxList.sizes.unknown")}
             </Descriptions.Item>
 
-            <Descriptions.Item label="Ngày tạo">
+            <Descriptions.Item label={t("boxList.details.created")}>
               {new Date(selectedBox.createdAt).toLocaleString()}
             </Descriptions.Item>
-            <Descriptions.Item label="Cập nhật lần cuối">
+            <Descriptions.Item label={t("boxList.details.updated")}>
               {new Date(selectedBox.updatedAt).toLocaleString()}
             </Descriptions.Item>
           </Descriptions>
@@ -460,13 +481,13 @@ const BoxList = () => {
             onClick={() => setIsDrawerOpen(false)}
             className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
           >
-            Đóng
+            {t("boxList.details.close")}
           </button>
         </div>
       </Drawer>
 
       <Drawer
-        title="Cập nhật thùng"
+        title={t("boxList.update.title")}
         open={isEditDrawerOpen}
         onClose={() => {
           setIsEditDrawerOpen(false);
@@ -476,17 +497,24 @@ const BoxList = () => {
       >
         <Form form={form} layout="vertical" onFinish={handleUpdate}>
           <Form.Item
-            label="Tên thùng"
+            label={t("boxList.update.name")}
             name="package_material_name"
-            rules={[{ required: true, message: "Vui lòng nhập tên thùng" }]}
+            rules={[
+              { required: true, message: t("boxList.update.validate_name") },
+            ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Số lượng"
+            label={t("boxList.update.quantity")}
             name="quantity"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+            rules={[
+              {
+                required: true,
+                message: t("boxList.update.validate_quantity"),
+              },
+            ]}
           >
             <Input type="number" min={0} />
           </Form.Item>
@@ -505,7 +533,7 @@ const BoxList = () => {
             />
           </Form.Item> */}
 
-          <Form.Item label="Ảnh mới">
+          <Form.Item label={t("boxList.update.image_label")}>
             <Upload
               accept="image/*"
               beforeUpload={() => false}
@@ -535,7 +563,9 @@ const BoxList = () => {
                 return true;
               }}
             >
-              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+              <Button icon={<UploadOutlined />}>
+                {t("createFuel.chooseImage")}
+              </Button>
             </Upload>
           </Form.Item>
 
@@ -547,16 +577,16 @@ const BoxList = () => {
                 width={100}
                 style={{ objectFit: "cover", borderRadius: 4 }}
               />
-              <p>Ảnh mới sẽ được cập nhật</p>
+              <p>{t("boxList.update.preview")}</p>
             </div>
           )}
 
           <div className="flex justify-end">
             <Button onClick={() => setIsEditDrawerOpen(false)} className="mr-2">
-              Hủy
+              {t("boxList.update.cancel")}
             </Button>
             <Button type="primary" htmlType="submit">
-              Cập nhật
+              {t("boxList.update.submit")}
             </Button>
           </div>
         </Form>

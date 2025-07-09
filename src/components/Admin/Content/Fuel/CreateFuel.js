@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { PiPlusThin } from "react-icons/pi";
+import { useTranslation } from "react-i18next";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -16,6 +17,8 @@ const getBase64 = (file) =>
   });
 
 const CreateFuel = () => {
+  const { t } = useTranslation();
+
   const [form] = Form.useForm();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [imageBase64, setImageBase64] = useState(null);
@@ -35,7 +38,7 @@ const CreateFuel = () => {
           const base64 = await getBase64(info.file.originFileObj);
           setImageBase64(base64);
         } catch {
-          message.error("Lỗi khi đọc ảnh.");
+          message.error(t("createFuel.uploadError"));
           setImageBase64(null);
         }
       } else {
@@ -46,7 +49,7 @@ const CreateFuel = () => {
 
   const onFinish = async (values) => {
     if (!imageBase64) {
-      message.error("Vui lòng chọn ảnh loại nguyên liệu");
+      message.error(t("createFuel.imageRequired"));
       return;
     }
 
@@ -69,15 +72,15 @@ const CreateFuel = () => {
       );
 
       if (res.data.success) {
-        message.success("Tạo loại nguyên liệu mới thành công!");
+        message.success(t("createFuel.createSuccess"));
         form.resetFields();
         setImageBase64(null);
       } else {
-        message.error("Tạo nguyên liệu thất bại!");
+        message.error(t("createFuel.createFail"));
       }
     } catch (error) {
       console.error("Lỗi khi tạo nguyên liệu:", error);
-      message.error("Có lỗi xảy ra khi tạo nguyên liệu mới.");
+      message.error(t("createFuel.createError"));
     } finally {
       setSubmitLoading(false);
     }
@@ -90,11 +93,11 @@ const CreateFuel = () => {
         file.type === "image/png" ||
         file.type === "image/jpg";
       if (!isValidType) {
-        message.error("Chỉ hỗ trợ upload ảnh JPG/PNG!");
+        message.error(t("createFuel.imageTypeError"));
       }
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        message.error("Ảnh phải nhỏ hơn 2MB!");
+        message.error(t("createFuel.imageSizeError"));
       }
       return isValidType && isLt2M;
     },
@@ -126,7 +129,7 @@ const CreateFuel = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("createFuel.back")}
           </button>
         </div>
       </div>
@@ -135,48 +138,46 @@ const CreateFuel = () => {
         <div className="flex justify-center items-center gap-2 mb-3">
           <PiPlusThin className="size-6"></PiPlusThin>
           <h2 className="text-[20px] lg:text-2xl font-bold text-center text-gray-800 ">
-            Tạo Loại Nguyên liệu Mới
+            {t("createFuel.title")}
           </h2>
         </div>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label="Tên loại nguyên liệu"
+            label={t("createFuel.nameLabel")}
             name="type_name"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên loại Nguyên liệu" },
-            ]}
+            rules={[{ required: true, message: t("createFuel.nameRequired") }]}
           >
             <Input
-              placeholder="Nhập tên loại nguyên liệu"
+              placeholder={t("createFuel.namePlaceholder")}
               maxLength={100}
               className="rounded border-gray-300"
             />
           </Form.Item>
 
-          <Form.Item label="Mô tả" name="description">
+          <Form.Item label={t("createFuel.descLabel")} name="description">
             <Input.TextArea
               rows={3}
-              placeholder="Nhập mô tả (không bắt buộc)"
+              placeholder={t("createFuel.descPlaceholder")}
               className="rounded border-gray-300"
             />
           </Form.Item>
 
           <Form.Item
-            label="Ảnh loại nguyên liệu (JPG, PNG < 2MB)"
+            label={t("createFuel.imageLabel")}
             name="image_url"
             valuePropName="fileList"
             getValueFromEvent={normFile}
-            rules={[
-              { required: true, message: "Vui lòng chọn ảnh loại Nguyên liệu" },
-            ]}
+            rules={[{ required: true, message: t("createFuel.imageRequired") }]}
           >
             <Upload
               {...uploadProps}
               onChange={handleUploadChange}
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+              <Button icon={<UploadOutlined />}>
+                {t("createFuel.chooseImage")}
+              </Button>
             </Upload>
           </Form.Item>
 
@@ -187,7 +188,7 @@ const CreateFuel = () => {
               className="w-full py-2"
               loading={submitLoading}
             >
-              Tạo Loại nguyên Liệu
+              {t("createFuel.submit")}
             </Button>
           </Form.Item>
         </Form>

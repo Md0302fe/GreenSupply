@@ -67,8 +67,11 @@ const FuelList = () => {
         const transformedFuels = response.data.requests.map((item) => ({
           _id: item._id,
           fuel_type_id: item.fuel_type_id,
-          type_name: item.fuel_type_id?.type_name || "Không có dữ liệu",
-          description: item.fuel_type_id?.description || "Không có mô tả",
+          type_name:
+            item.fuel_type_id?.type_name || t("fuelList.no_data_to_export"),
+          description:
+            item.fuel_type_id?.description ||
+            t("fuelList.drawer.no_description"),
           is_deleted: item.is_deleted,
           quantity: item.quantity,
           storage_id: item.storage_id,
@@ -78,10 +81,10 @@ const FuelList = () => {
         console.log("Danh sách Nguyên liệu:", transformedFuels);
         setFuels(transformedFuels);
       } else {
-        message.error("Lỗi khi lấy danh sách loại Nguyên liệu!");
+        message.error(t("fuelList.fetch_fail"));
       }
     } catch (error) {
-      message.error("Không thể kết nối đến server!");
+      message.error(t("fuelList.update_error"));
       console.log(error);
     }
     setLoading(false);
@@ -95,7 +98,7 @@ const FuelList = () => {
   const handleUpdate = async () => {
     try {
       if (updateData.type_name.trim() === "") {
-        toast.error("Tên Nguyên liệu không được để trống");
+        message.error(t("fuelList.form.empty_name"));
         return;
       }
 
@@ -106,7 +109,7 @@ const FuelList = () => {
       );
 
       if (res.data.success) {
-        message.success("Cập nhật thành công!");
+        message.success(t("fuelList.create_success"));
         setFuels((prev) =>
           prev.map((fuel) =>
             fuel._id === editingFuel._id ? { ...fuel, ...updateData } : fuel
@@ -114,10 +117,10 @@ const FuelList = () => {
         );
         setIsUpdateDrawerOpen(false); // Đóng Drawer cập nhật
       } else {
-        message.error("Cập nhật thất bại!");
+        message.error(t("fuelList.create_fail"));
       }
     } catch (error) {
-      message.error("Lỗi kết nối đến server!");
+      message.error(t("fuelList.update_error"));
     }
   };
 
@@ -132,17 +135,17 @@ const FuelList = () => {
       );
 
       if (res.data.success) {
-        message.success("Đã chuyển Nguyên liệu vào trạng thái Đã xóa!");
+        message.success(t("fuelList.delete_success"));
         setFuels((prev) =>
           prev.map((fuel) =>
             fuel._id === id ? { ...fuel, is_deleted: true } : fuel
           )
         );
       } else {
-        message.error("Hủy thất bại!");
+        message.error(t("fuelList.delete_fail"));
       }
     } catch (error) {
-      message.error("Lỗi kết nối đến server!");
+      message.error(t("fuelList.update_error"));
     }
   };
 
@@ -172,7 +175,7 @@ const FuelList = () => {
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
-          placeholder="Tìm kiếm"
+          placeholder={t("fuelList.searchPlaceholder")}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -188,21 +191,21 @@ const FuelList = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Tìm
+            {t("fuelList.searchButton")}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{ width: 90 }}
           >
-            Đặt lại
+            {t("fuelList.resetButton")}
           </Button>
           <Button
             type="link"
             size="small"
             onClick={() => clearFilters && confirm()}
           >
-            Đóng
+            {t("fuelList.closeButton")}
           </Button>
         </Space>
       </div>
@@ -228,22 +231,24 @@ const FuelList = () => {
   // Handle export to Excel
   const handleExportFileExcel = () => {
     if (!fuels.length) {
-      message.warning("Không có dữ liệu để xuất!");
+      message.warning(t("fuelList.no_data_to_export"));
       return;
     }
 
     const excel = new Excel();
     const exportColumns = [
-      { title: "Tên Loại Nguyên liệu", dataIndex: "type_name" },
-      { title: "Mô Tả", dataIndex: "description" },
-      { title: "Trạng Thái", dataIndex: "is_deleted" },
-      { title: "Số Lượng", dataIndex: "quantity" },
+      { title: t("fuelList.columns.type_name"), dataIndex: "type_name" },
+      { title: t("fuelList.columns.description"), dataIndex: "description" },
+      { title: t("fuelList.columns.quantity"), dataIndex: "is_deleted" },
+      { title: t("fuelList.columns.status"), dataIndex: "quantity" },
     ];
 
     const exportData = fuels.map((fuel) => ({
       type_name: fuel.type_name,
       description: fuel.description,
-      is_deleted: fuel.is_deleted ? "Đã xóa" : "Chưa xóa",
+      is_deleted: fuel.is_deleted
+        ? t("fuelList.status.deleted")
+        : t("fuelList.status.active"),
       quantity: fuel.quantity,
     }));
 
@@ -274,7 +279,7 @@ const FuelList = () => {
     {
       title: (
         <div style={{ textAlign: "left", width: "100%" }}>
-          Tên Loại Nguyên liệu
+          {t("fuelList.columns.type_name")}
         </div>
       ),
       // title: "Tên Loại Nguyên liệu",
@@ -285,7 +290,11 @@ const FuelList = () => {
       // align: "center",
     },
     {
-      title: <div style={{ textAlign: "left", }}>Mô Tả</div>,
+      title: (
+        <div style={{ textAlign: "left" }}>
+          {t("fuelList.columns.description")}
+        </div>
+      ),
 
       dataIndex: "description",
       key: "description",
@@ -295,7 +304,7 @@ const FuelList = () => {
     {
       title: (
         <div style={{ textAlign: "center", width: "100%" }}>
-          Số Lượng Trong Kho
+          {t("fuelList.columns.quantity")}
         </div>
       ),
       dataIndex: "quantity",
@@ -306,27 +315,33 @@ const FuelList = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Trạng Thái</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("fuelList.columns.status")}
+        </div>
       ),
       dataIndex: "is_deleted",
       key: "is_deleted",
       filters: [
-        { text: "Đã xóa", value: true },
-        { text: "Chưa xóa", value: false },
+        { text: t("fuelList.status.deleted"), value: true },
+        { text: t("fuelList.status.active"), value: false },
       ],
       onFilter: (value, record) => record.is_deleted === value,
       align: "center",
       render: (is_deleted) => (
         <div style={{ textAlign: "center" }}>
           <Tag color={is_deleted ? "red" : "green"}>
-            {is_deleted ? "Đã xóa" : "Chưa xóa"}
+            {is_deleted
+              ? t("fuelList.status.deleted")
+              : t("fuelList.status.active")}
           </Tag>
         </div>
       ),
     },
     {
       title: (
-        <div style={{ textAlign: "center", width: "100%" }}>Hành Động</div>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("fuelList.columns.actions")}
+        </div>
       ),
       key: "action",
       align: "center",
@@ -367,14 +382,19 @@ const FuelList = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
           </svg>
-          <span className="hidden md:inline">Quay lại</span>
+          <span className="hidden md:inline">{t("fuelList.back")}</span>
         </Button>
 
         {/* Tiêu đề căn giữa */}
         <h2 className="text-center font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
-          Danh Sách Loại Nguyên Liệu
+          {t("fuelList.title")}
         </h2>
 
         {/* Phần tử trống bên phải để cân bằng nút quay lại */}
@@ -404,7 +424,7 @@ const FuelList = () => {
       />
 
       <Drawer
-        title="Chi tiết Loại Nguyên liệu"
+        title={t("fuelList.drawer.details_title")}
         open={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
@@ -415,56 +435,63 @@ const FuelList = () => {
       >
         {selectedFuel ? (
           <Descriptions bordered column={1}>
-            <Descriptions.Item label="Tên Loại Nguyên liệu">
-              {selectedFuel.type_name || "Không có dữ liệu"}
+            <Descriptions.Item label={t("fuelList.columns.type_name")}>
+              {selectedFuel.type_name || t("fuelList.no_data_to_export")}
             </Descriptions.Item>
-            <Descriptions.Item label="Hình Ảnh">
+            <Descriptions.Item label={t("fuelList.drawer.image")}>
               {selectedFuel.fuel_type_id?.image ? (
                 <img
                   src={selectedFuel.fuel_type_id.image}
                   alt={selectedFuel.type_name}
-                  style={{ width: "100%", maxHeight: 200, objectFit: "contain", borderRadius: 8 }}
+                  style={{
+                    width: "100%",
+                    maxHeight: 200,
+                    objectFit: "contain",
+                    borderRadius: 8,
+                  }}
                 />
               ) : (
-                <i>Không có hình ảnh</i>
+                <i>{t("fuelList.drawer.no_image")}</i>
               )}
             </Descriptions.Item>
-            <Descriptions.Item label="Mô Tả">
-              {selectedFuel.description || "Không có mô tả"}
+            <Descriptions.Item label={t("fuelList.columns.description")}>
+              {selectedFuel.description || t("fuelList.drawer.no_description")}
             </Descriptions.Item>
-            <Descriptions.Item label="Trạng Thái Xóa">
+            <Descriptions.Item label={t("fuelList.drawer.delete_status")}>
               <Tag color={selectedFuel.is_deleted ? "red" : "green"}>
-                {selectedFuel.is_deleted ? "Đã xóa" : "Chưa xóa"}
+                {selectedFuel.is_deleted
+                  ? t("fuelList.status.deleted")
+                  : t("fuelList.status.active")}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Số Lượng">
+            <Descriptions.Item label={t("fuelList.form.placeholder_quantity")}>
               {selectedFuel.quantity ?? "Không có"}
             </Descriptions.Item>
-            <Descriptions.Item label="Kho Lưu Trữ">
+            <Descriptions.Item label={t("fuelList.drawer.storage")}>
               {selectedFuel.storage_id ?? "Không có"}
             </Descriptions.Item>
-            <Descriptions.Item label="Ngày Tạo">
+            <Descriptions.Item label={t("fuelList.drawer.created_at")}>
               {new Date(selectedFuel.createdAt).toLocaleString()}
             </Descriptions.Item>
-            <Descriptions.Item label="Cập Nhật Lần Cuối">
+            <Descriptions.Item label={t("fuelList.drawer.updated_at")}>
               {new Date(selectedFuel.updatedAt).toLocaleString()}
             </Descriptions.Item>
           </Descriptions>
         ) : (
-          <p>Đang tải dữ liệu...</p>
+          <p>{t("fuelList.drawer.loading")}</p>
         )}
         <div className="flex justify-end mt-4">
           <button
             onClick={() => setIsDrawerOpen(false)}
             className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
           >
-            Đóng
+            {t("fuelList.closeButton")}
           </button>
         </div>
       </Drawer>
 
       <Drawer
-        title="Cập nhật Loại Nguyên liệu"
+        title={t("fuelList.drawer.update_title")}
         open={isUpdateDrawerOpen}
         onClose={() => {
           setIsUpdateDrawerOpen(false);
@@ -480,7 +507,7 @@ const FuelList = () => {
               onChange={(e) =>
                 setUpdateData({ ...updateData, type_name: e.target.value })
               }
-              placeholder="Tên Loại Nguyên liệu"
+              placeholder={t("fuelList.columns.type_name")}
               className="mb-2"
             />
             <Input.TextArea
@@ -488,7 +515,7 @@ const FuelList = () => {
               onChange={(e) =>
                 setUpdateData({ ...updateData, description: e.target.value })
               }
-              placeholder="Mô Tả"
+              placeholder={t("fuelList.columns.description")}
               className="mb-2"
             />
             <Input
@@ -497,18 +524,20 @@ const FuelList = () => {
               onChange={(e) =>
                 setUpdateData({ ...updateData, quantity: e.target.value })
               }
-              placeholder="Số Lượng"
+              placeholder={t("fuelList.form.placeholder_quantity")}
               className="mb-2"
             />
             <Space style={{ marginTop: "10px" }}>
-              <Button onClick={() => setIsUpdateDrawerOpen(false)}>Hủy</Button>
+              <Button onClick={() => setIsUpdateDrawerOpen(false)}>
+                {t("fuelList.drawer.cancel")}
+              </Button>
               <Button type="primary" onClick={handleUpdate}>
-                Lưu
+                {t("fuelList.drawer.save")}
               </Button>
             </Space>
           </div>
         ) : (
-          <p>Đang tải dữ liệu...</p>
+          <p>{t("fuelList.drawer.loading")}</p>
         )}
       </Drawer>
     </div>

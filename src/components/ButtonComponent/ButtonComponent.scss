@@ -1,0 +1,67 @@
+.custom-button {
+  border-radius: 6px;
+  padding: 4px 16px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+
+  &.btn-cancel {
+    background-color: #757e8a;
+    border: 1px solid #d9d9d9;
+    color: #fff;
+
+    &:hover {
+      border-color: #aaa;
+    }
+  }
+
+  &.btn-reject {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #d32f2f;
+    }
+  }
+
+  &.btn-update {
+    background-color: #f5f5f5;
+    color: #000;
+    border: none;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+
+  &.btn-approve {
+    background-color: #000;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #333;
+    }
+  }
+
+   &.btn-approve-order {
+    background-color: #134afe;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #0606ab;
+    }
+  }
+
+  &.btn-cancel-order {
+    background-color: #e53935;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #c62828;
+    }
+  }
+}

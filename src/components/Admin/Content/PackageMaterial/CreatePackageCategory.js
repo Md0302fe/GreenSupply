@@ -3,8 +3,10 @@ import { Button, Form, Input, message } from "antd";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const CreatePackageCategory = () => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
@@ -29,14 +31,14 @@ const CreatePackageCategory = () => {
       );
 
       if (res.data.success) {
-        message.success("Tạo loại thùng thành công!");
+        message.success(t("createPackageCategory.success"));
         form.resetFields();
         navigate(-1);
       } else {
-        message.error("Tạo thất bại!");
+        message.error(t("createPackageCategory.fail"));
       }
     } catch (err) {
-      message.error("Lỗi kết nối đến server!");
+      message.error(t("createPackageCategory.error"));
     } finally {
       setLoading(false);
     }
@@ -65,27 +67,38 @@ const CreatePackageCategory = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("createPackageCategory.back")}
           </button>
         </div>
       </div>
 
       <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
         <h2 className="text-3xl font-bold mb-6 text-center">
-          Tạo Loại  Vật Liệu Mới
+          {t("createPackageCategory.title")}
         </h2>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label="Tên loại Vật liệu"
+            label={t("createPackageCategory.name_label")}
             name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên loại nguyên liệu" }]}
+            rules={[
+              {
+                required: true,
+                message: t("createPackageCategory.name_required"),
+              },
+            ]}
           >
-            <Input placeholder="Nhập tên loại nguyên liệu" />
+            <Input placeholder={t("createPackageCategory.name_placeholder")} />
           </Form.Item>
 
-          <Form.Item label="Mô tả" name="description">
-            <Input.TextArea placeholder="Nhập mô tả (tuỳ chọn)" rows={3} />
+          <Form.Item
+            label={t("createPackageCategory.description_label")}
+            name="description"
+          >
+            <Input.TextArea
+              placeholder={t("createPackageCategory.description_placeholder")}
+              rows={3}
+            />
           </Form.Item>
 
           <Form.Item>
@@ -95,7 +108,7 @@ const CreatePackageCategory = () => {
               loading={loading}
               className="w-full"
             >
-              Tạo loại Nguyên Vật Liệu 
+              {t("createPackageCategory.submit")}
             </Button>
           </Form.Item>
         </Form>
