@@ -461,8 +461,7 @@ const MaterialStorageExportList = () => {
       >
         <div className="w-full p-6 bg-white rounded-md shadow min-w-[400px]">
           {selectedExport ? (
-            <div className="grid grid-cols-1 gap-4">
-              {/* Người tạo */}
+            <div className="grid grid-cols-1 gap-3">
               <div>
                 <label className="block font-semibold mb-1">
                   {t("materialExportList.createdBy")}
@@ -475,7 +474,6 @@ const MaterialStorageExportList = () => {
                 />
               </div>
 
-              {/* Yêu cầu sản xuất */}
               <div>
                 <label className="block font-semibold mb-1">
                   {t("materialExportList.productionRequest")}
@@ -483,15 +481,11 @@ const MaterialStorageExportList = () => {
                 <input
                   type="text"
                   disabled
-                  value={
-                    selectedExport?.production_request_id?.request_name ||
-                    t("common.no_data")
-                  }
+                  value={selectedExport?.production_request_id?.request_name || t("common.no_data")}
                   className="border p-2 rounded w-full bg-gray-100"
                 />
               </div>
 
-              {/* Tên lô */}
               <div>
                 <label className="block font-semibold mb-1">
                   {t("materialExportList.batchName")}
@@ -504,38 +498,31 @@ const MaterialStorageExportList = () => {
                 />
               </div>
 
-              {/* Mã lô + Tên phiếu xuất (ngang hàng) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* Mã lô */}
-                <div>
-                  <label className="block font-semibold mb-1">
-                    {t("materialExportList.batchId")}
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={selectedExport?.batch_id?.batch_id || t("common.no_data")}
-                    className="border p-2 rounded w-full bg-gray-100"
-                  />
-                </div>
-
-                {/* Tên phiếu xuất */}
-                <div>
-                  <label className="block font-semibold mb-1">
-                    {t("materialExportList.exportName")}
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={selectedExport?.export_name || t("common.no_data")}
-                    className="border p-2 rounded w-full bg-gray-100"
-                  />
-                </div>
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.batchId")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.batch_id?.batch_id || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
               </div>
 
-              {/* Loại xuất kho + Trạng thái (ngang hàng) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-                {/* Loại xuất */}
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.exportName")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.export_name || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-semibold mb-1">
                     {t("materialExportList.exportType")}
@@ -548,21 +535,18 @@ const MaterialStorageExportList = () => {
                   />
                 </div>
 
-                {/* Trạng thái */}
                 <div>
                   <label className="block font-semibold mb-1">
                     {t("materialExportList.status")}
                   </label>
-                  <div className="border p-2 rounded w-full bg-gray-100 inline-block">
+                  <div className="border p-2 rounded w-full bg-gray-100">
                     <Tag color={statusColors[selectedExport.status] || "default"}>
-                      {t(`status.${statusMap[selectedExport.status]}`) ||
-                        selectedExport.status}
+                      {t(`status.${statusMap[selectedExport.status]}`) || selectedExport.status}
                     </Tag>
                   </div>
                 </div>
               </div>
 
-              {/* Ngày tạo */}
               <div>
                 <label className="block font-semibold mb-1">
                   {t("materialExportList.createdDate")}
@@ -570,16 +554,11 @@ const MaterialStorageExportList = () => {
                 <input
                   type="text"
                   disabled
-                  value={
-                    selectedExport?.createdAt
-                      ? new Date(selectedExport.createdAt).toLocaleString()
-                      : t("common.no_data")
-                  }
+                  value={selectedExport?.createdAt ? new Date(selectedExport.createdAt).toLocaleString() : t("common.no_data")}
                   className="border p-2 rounded w-full bg-gray-100"
                 />
               </div>
 
-              {/* Ghi chú */}
               <div>
                 <label className="block font-semibold mb-1">
                   {t("materialExportList.note")}
@@ -596,7 +575,6 @@ const MaterialStorageExportList = () => {
             <p className="text-center text-gray-500">{t("common.loading")}</p>
           )}
 
-          {/* Nút hành động */}
           <div className="flex justify-end gap-2.5 mt-6">
             {selectedExport?.status === "Chờ duyệt" && (
               <>
@@ -608,7 +586,6 @@ const MaterialStorageExportList = () => {
           </div>
         </div>
       </DrawerComponent>
-
 
       {/* messageContainer */}
       <messageContainer
