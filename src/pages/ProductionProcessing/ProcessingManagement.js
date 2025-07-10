@@ -11,6 +11,8 @@ import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
+
 
 import { FaGear } from "react-icons/fa6";
 import { FaGears } from "react-icons/fa6";
@@ -20,8 +22,12 @@ const ProcessingManagement = () => {
 
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
+  
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialType = queryParams.get("type") || "single";
 
-  const [type_process, set_type_process] = useState("single");
+  const [type_process, set_type_process] = useState(initialType);
   const [dataProcessing, setDataProcessing] = useState([]);
   const [singleProcessData, setSingleProcessData] = useState([]);
   // Fetch data từ API

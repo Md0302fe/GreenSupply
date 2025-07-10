@@ -17,6 +17,7 @@ import Highlighter from "react-highlight-words";
 import { CheckCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { BsBuildingFillGear } from "react-icons/bs";
 
+
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
@@ -204,16 +205,25 @@ const ProductionProcessingList = () => {
   }, [data, t]);
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const statusFromURL = queryParams.get("status");
+  const queryParams = new URLSearchParams(location.search);
+  const statusFromURL = queryParams.get("status");
+  const typeFromURL = queryParams.get("type");
 
-    if (statusFromURL) {
-      setFilters((prev) => ({
-        ...prev,
-        status: statusFromURL,
-      }));
-    }
-  }, [location.search]);
+  if (statusFromURL) {
+    setFilters((prev) => ({
+      ...prev,
+      status: statusFromURL,
+    }));
+  }
+
+  if (typeFromURL === "consolidate") {
+    handleLoadConsolidate();
+  } else {
+    set_type_process("single");
+  }
+}, [location.search]);
+
+
 
   const dataForExport = useMemo(() => {
     return (data || []).map((item) => ({

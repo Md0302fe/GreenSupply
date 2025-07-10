@@ -186,15 +186,24 @@ const FuelRequestsManagement = () => {
   const { isLoading, data: orders } = queryOrder;
 
   // DATA FROM USERS LIST
-  const tableData =
-    orders?.data?.length &&
-    orders?.data.map((order) => {
-      return {
-        ...order,
-        key: order._id,
-        customerName: order?.supplier_id?.full_name,
-      };
-    });
+  const filteredOrders =
+  orders?.data?.length &&
+  orders.data.filter((order) => {
+    return defaultStatusFilter
+      ? order.status?.trim() === defaultStatusFilter.trim()
+      : true;
+  });
+
+const tableData =
+  filteredOrders?.length &&
+  filteredOrders.map((order) => {
+    return {
+      ...order,
+      key: order._id,
+      customerName: order?.supplier_id?.full_name,
+    };
+  });
+
 
   // Actions
   const renderAction = () => {
@@ -479,8 +488,8 @@ const FuelRequestsManagement = () => {
         {/* truyền 2 isPending : 1 là load lại khi getDetailsProduct / 2 là load khi update product xong */}
         <Loading isPending={isLoadDetails}>
           <div className="overflow-x-auto">
-            <div className="w-full p-6 bg-white rounded-md shadow">
-              <div className="grid grid-cols-1 gap-4 mb-2">
+            <div className="w-full p-2 bg-white rounded-md shadow">
+              <div className="grid grid-cols-1 gap-2">
                 <div>
                   <label className="block mb-1 font-semibold">
                     {t("fuel_request.table.customer")}

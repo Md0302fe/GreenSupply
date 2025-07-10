@@ -607,7 +607,7 @@ const UserComponent = () => {
         width={drawerWidth}
       >
         <div className="w-full p-6 bg-white rounded-md shadow">
-          <div className="grid grid-cols-1 gap-4 mb-4">
+          <div className="grid grid-cols-1 gap-2 mb-2">
             {/* Họ tên */}
             <div>
               <label className="block mb-1 font-semibold">{t("user_list.name")}</label>
@@ -616,30 +616,30 @@ const UserComponent = () => {
                 value={stateDetailsUser.full_name}
                 onChange={(e) => handleOnChangeDetails(e.target.value, "full_name")}
                 placeholder={t("user_list.name")}
-                className="border p-2 rounded w-full mb-1"
+                className="border p-2 rounded w-full mb-2"
                 disabled={isViewMode}
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.email")}</label>
+              <label className="block mb-2 font-semibold">{t("user_list.email")}</label>
               <input
                 type="text"
                 value={stateDetailsUser.email}
                 readOnly
-                className="border p-2 rounded w-full mb-1 bg-gray-100"
+                className="border p-2 rounded w-full mb-0 bg-gray-100"
               />
             </div>
 
             {/* Số điện thoại */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.phone")}</label>
+              <label className="block mb-2 font-semibold">{t("user_list.phone")}</label>
               <input
                 type="text"
                 value={stateDetailsUser.phone}
                 readOnly
-                className="border p-2 rounded w-full mb-1 bg-gray-100"
+                className="border p-2 rounded w-full mb-2 bg-gray-100"
               />
             </div>
 
@@ -650,7 +650,7 @@ const UserComponent = () => {
                 type="text"
                 value={stateDetailsUser.address}
                 readOnly
-                className="border p-2 rounded w-full mb-1 bg-gray-100"
+                className="border p-2 rounded w-full mb-2 bg-gray-100"
               />
             </div>
 
@@ -660,7 +660,7 @@ const UserComponent = () => {
               <select
                 value={stateDetailsUser.gender}
                 disabled
-                className={`border p-2 rounded w-full mb-1 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
+                className={`border p-2 rounded w-full mb-2 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
               >
                 <option value="male">{t("user_list.male")}</option>
                 <option value="female">{t("user_list.female")}</option>
@@ -670,7 +670,7 @@ const UserComponent = () => {
 
             {/* Ngày sinh */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.birth_day")}</label>
+              <label className="block mb-2 font-semibold">{t("user_list.birth_day")}</label>
               <input
                 type="text"
                 value={
@@ -679,17 +679,17 @@ const UserComponent = () => {
                     : ""
                 }
                 readOnly
-                className="border p-2 rounded w-full mb-1 bg-gray-100"
+                className="border p-2 rounded w-full mb-2 bg-gray-100"
               />
             </div>
 
             {/* Vai trò */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.role")}</label>
+              <label className="block mb-2 font-semibold">{t("user_list.role")}</label>
               <select
                 value={stateDetailsUser.role}
                 onChange={(e) => handleOnChangeDetails(e.target.value, "role")}
-                className={`border p-2 rounded w-full mb-1 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
+                className={`border p-2 rounded w-full mb-2 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
                 disabled={isViewMode}
               >
                 <option value="67950da386a0a462d408c7b9">Admin</option>
@@ -701,7 +701,7 @@ const UserComponent = () => {
             {/* Upload avatar */}
             {!isViewMode && (
               <div>
-                <label className="block mb-1 font-semibold">{t("user_list.upload_image")}</label>
+                <label className="block mb-2 font-semibold">{t("user_list.upload_image")}</label>
                 <Upload.Dragger
                   listType="picture"
                   showUploadList={{ showRemoveIcon: true }}
@@ -721,7 +721,7 @@ const UserComponent = () => {
 
             {/* Ảnh đại diện xem trước */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.review_avatar")}</label>
+              <label className="block mt-4 font-semibold">{t("user_list.review_avatar")}</label>
               <div className="flex justify-center">
                 <img
                   src={stateDetailsUser?.avatar || defaultBackground}
@@ -733,7 +733,7 @@ const UserComponent = () => {
 
             {/* Created at */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.created_at")}</label>
+              <label className="block mb-2 font-semibold">{t("user_list.created_at")}</label>
               <p className="text-left">
                 {converDateString(stateDetailsUser?.createdAt)}
               </p>
@@ -741,7 +741,7 @@ const UserComponent = () => {
 
             {/* Updated at */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.updated_at")}</label>
+              <label className="block mb-2 font-semibold">{t("user_list.updated_at")}</label>
               <p className="text-left">
                 {converDateString(stateDetailsUser?.updatedAt)}
               </p>
@@ -749,7 +749,7 @@ const UserComponent = () => {
           </div>
 
           {/* Nút hành động */}
-          <div className="flex justify-end gap-4 mt-6">
+          <div className="flex justify-end gap-4 mt-2">
             {isEditMode && (
               <>
                 <ButtonComponent type="update" onClick={onFinishUpdate} />

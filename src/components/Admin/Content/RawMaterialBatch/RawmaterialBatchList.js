@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { AiFillEdit } from "react-icons/ai";
 import Highlighter from "react-highlight-words";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import Loading from "../../../LoadingComponent/Loading";
@@ -23,6 +24,8 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { VscRequestChanges } from "react-icons/vsc";
 import { useTranslation } from "react-i18next";
 import { converDateString } from "../../../../ultils";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
+
 
 const statusColors = {
   "Đang chuẩn bị": "gold",
@@ -128,10 +131,10 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
-        ...batch,
-        key: batch._id,
-        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-      }))
+      ...batch,
+      key: batch._id,
+      fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
+    }))
     : [];
 
   // Search trong bảng
@@ -308,22 +311,39 @@ const RawMaterialBatchList = () => {
       key: "action",
       align: "center",
       render: (record) => (
-        <div style={{ textAlign: "center" }}>
-          {record.status === "Đang chuẩn bị" ? (
+        <div className="flex justify-center items-center gap-2">
+          {/* Tạo phiếu xuất */}
+          {record.status === "Đang chuẩn bị" && (
             <Button
               type="link"
               icon={<VscRequestChanges style={{ fontSize: 20 }} />}
               onClick={() => handleCreateExportOrder(record._id)}
             />
-          ) : null}
+          )}
+
+          {/* Xem chi tiết */}
           <Button
             type="link"
             icon={<HiOutlineDocumentSearch style={{ fontSize: 20 }} />}
             onClick={() => handleViewDetail(record)}
           />
+
+          {/* Cập nhật */}
+          {record.status === "Đang chuẩn bị" && (
+            <Button
+              type="link"
+              icon={<AiFillEdit style={{ color: "#0e79c7" }} />}
+              className="hover:bg-gray-200"
+              onClick={() => {
+                setSelectedBatch(record);
+                setIsEditMode(true);
+                setIsDrawerOpen(true);
+              }}
+            />
+          )}
         </div>
       ),
-    },
+    }
   ];
 
   const handleViewDetail = (record) => {
@@ -540,263 +560,178 @@ const RawMaterialBatchList = () => {
         </div>
       </Loading>
       <DrawerComponent
-        title={
-          isEditMode
-            ? t("materialBatch.updateTitle")
-            : t("materialBatch.detailTitle")
-        }
-        isOpen={isDrawerOpen}
-        onClose={handleCloseDrawer}
-        placement="right"
-        width={drawerWidth}
-      >
-        {selectedBatch && (
-          <>
-            {isEditMode ? (
-              <>
-                <Form
-                  form={form}
-                  layout="vertical"
-                  initialValues={{
-                    batch_id: selectedBatch?.batch_id,
-                    batch_name: selectedBatch?.batch_name,
-                    fuel_type_id: selectedBatch?.fuel_type_id,
-                    quantity: selectedBatch?.quantity,
-                    storage_id: selectedBatch?.fuel_type_id?.storage_id,
-                    status: selectedBatch?.status,
-                    note: selectedBatch?.note,
-                    createdAt: converDateString(selectedBatch?.createdAt),
-                    updatedAt: converDateString(selectedBatch?.updatedAt),
-                  }}
-                  onFinish={handleSaveUpdate}
-                >
-                  {/* Mã Lô - Disabled vì không cần chỉnh sửa */}
-                  <Form.Item
-                    label={t("materialBatch.batchId")}
-                    name="batch_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredBatchId"),
-                      },
-                    ]}
-                  >
-                    <Input disabled />
-                  </Form.Item>
+  title={
+    isEditMode
+      ? t("materialBatch.updateTitle")
+      : t("materialBatch.detailTitle")
+  }
+  isOpen={isDrawerOpen}
+  onClose={handleCloseDrawer}
+  placement="right"
+  width={drawerWidth}
+>
+  {selectedBatch && (
+    <>
+      {isEditMode ? (
+        <>
+          <Form
+            form={form}
+            layout="vertical"
+            initialValues={{
+              batch_id: selectedBatch?.batch_id,
+              batch_name: selectedBatch?.batch_name,
+              fuel_type_id: selectedBatch?.fuel_type_id,
+              quantity: selectedBatch?.quantity,
+              storage_id: selectedBatch?.fuel_type_id?.storage_id,
+              status: selectedBatch?.status,
+              note: selectedBatch?.note,
+              createdAt: converDateString(selectedBatch?.createdAt),
+              updatedAt: converDateString(selectedBatch?.updatedAt),
+            }}
+            onFinish={handleSaveUpdate}
+          >
+            <Form.Item label={t("materialBatch.batchId")} name="batch_id" rules={[{ required: true, message: t("validation.requiredBatchId") }]} className="!mb-1">
+              <Input disabled />
+            </Form.Item>
 
-                  {/* Tên Lô */}
-                  <Form.Item
-                    label={t("materialBatch.batchName")}
-                    name="batch_name"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredBatchName"),
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.batchName")} name="batch_name" rules={[{ required: true, message: t("validation.requiredBatchName") }]} className="!mb-1">
+              <Input />
+            </Form.Item>
 
-                  {/* Loại Nguyên Liệu */}
-                  <Form.Item
-                    label={t("materialBatch.fuelType")}
-                    name="fuel_type_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredFuelType"),
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder={t("materialBatch.selectFuelType")}
-                      className="rounded border-gray-300"
-                      onChange={handleFuelTypeChange}
-                    >
-                      {fuel_managements
-                        ?.filter((fuel) => fuel.quantity > 0)
-                        .map((fuel) => (
-                          <Select.Option key={fuel._id} value={fuel._id}>
-                            {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
-                          </Select.Option>
-                        ))}
-                    </Select>
-                    {console.log("Fuel Batchs: ", fuelBatchs)}
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.fuelType")} name="fuel_type_id" rules={[{ required: true, message: t("validation.requiredFuelType") }]} className="!mb-1">
+              <Select
+                placeholder={t("materialBatch.selectFuelType")}
+                className="rounded border-gray-300"
+                onChange={handleFuelTypeChange}
+              >
+                {fuel_managements
+                  ?.filter((fuel) => fuel.quantity > 0)
+                  .map((fuel) => (
+                    <Select.Option key={fuel._id} value={fuel._id}>
+                      {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
+                    </Select.Option>
+                  ))}
+              </Select>
+            </Form.Item>
 
-                  {/* Nhập số lượng */}
-                  <Form.Item
-                    label={t("materialBatch.estimatedProduction")}
-                    name="quantity"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredProductionOrder"),
-                      },
-                    ]}
-                  >
-                    <InputNumber
-                      min={null}
-                      className="w-full rounded border-gray-300"
-                      placeholder={t("materialBatch.enterEstimatedProduction")}
-                      onChange={handleEstimatedProductionChange}
-                      onKeyDown={handleKeyDown}
-                      onBlur={() => {
-                        const currentValue = form.getFieldValue("quantity");
-                        if (!currentValue) {
-                          form.setFieldsValue({ quantity: null }); // Không thay đổi giá trị thành 0
-                        }
-                      }}
-                      disabled={!isFuelSelected}
-                    />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.estimatedProduction")} name="quantity" rules={[{ required: true, message: t("validation.requiredProductionOrder") }]} className="!mb-1">
+              <InputNumber
+                min={null}
+                className="w-full rounded border-gray-300"
+                placeholder={t("materialBatch.enterEstimatedProduction")}
+                onChange={handleEstimatedProductionChange}
+                onKeyDown={handleKeyDown}
+                onBlur={() => {
+                  const currentValue = form.getFieldValue("quantity");
+                  if (!currentValue) {
+                    form.setFieldsValue({ quantity: null });
+                  }
+                }}
+                disabled={!isFuelSelected}
+              />
+            </Form.Item>
 
-                  <Form.Item
-                    label={t("materialBatch.requiredMaterialEstimate")}
-                  >
-                    <InputNumber
-                      disabled
-                      className="w-full rounded border-gray-300 bg-gray-50"
-                      value={requiredMaterial}
-                    />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.requiredMaterialEstimate")} className="!mb-1">
+              <InputNumber disabled className="w-full rounded border-gray-300 bg-gray-50" value={requiredMaterial} />
+            </Form.Item>
 
-                  {/* Kho Lưu Trữ */}
-                  <Form.Item
-                    label={t("materialBatch.storage")}
-                    name="storage_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("validation.requiredStorage"),
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder={t("materialBatch.selectStorage")}
-                      onChange={handleChangeStorage}
-                      value={storageId || storages[0]?._id}
-                    >
-                      {storages.map((storage) => (
-                        <Select.Option key={storage._id} value={storage._id}>
-                          {storage?.name_storage}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.storage")} name="storage_id" rules={[{ required: true, message: t("validation.requiredStorage") }]} className="!mb-1">
+              <Select
+                placeholder={t("materialBatch.selectStorage")}
+                onChange={handleChangeStorage}
+                value={storageId || storages[0]?._id}
+              >
+                {storages.map((storage) => (
+                  <Select.Option key={storage._id} value={storage._id}>
+                    {storage?.name_storage}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-                  {/* Trạng Thái */}
-                  <Form.Item label={t("materialBatch.status")} name="status">
-                    <Input value={selectedBatch?.status} disabled />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.status")} name="status" className="!mb-1">
+              <Input value={selectedBatch?.status} disabled />
+            </Form.Item>
 
-                  {/* Ghi chú */}
-                  <Form.Item label={t("materialBatch.note")} name="note">
-                    <Input.TextArea rows={4} />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.note")} name="note" className="!mb-1">
+              <Input.TextArea rows={4} />
+            </Form.Item>
 
-                  {/* Ngày tạo */}
-                  <Form.Item
-                    label={t("materialBatch.createdAt")}
-                    name="createdAt"
-                  >
-                    <Input disabled />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.createdAt")} name="createdAt" className="!mb-1">
+              <Input disabled />
+            </Form.Item>
 
-                  {/* Ngày cập nhật */}
-                  <Form.Item
-                    label={t("materialBatch.updatedAt")}
-                    name="updatedAt"
-                  >
-                    <Input disabled />
-                  </Form.Item>
+            <Form.Item label={t("materialBatch.updatedAt")} name="updatedAt" className="!mb-1">
+              <Input disabled />
+            </Form.Item>
 
-                  {/* Các nút thao tác */}
-                  <div className="flex justify-center gap-4 mt-4">
-                    <Button
-                      onClick={() => {
-                        setIsEditMode(false); // Chuyển về chế độ xem chi tiết
-                      }}
-                      type="default"
-                    >
-                      {t("common.backToDetail")}
-                    </Button>
-                    <Button
-                      onClick={handleSaveUpdate} // Gọi hàm lưu dữ liệu khi bấm Lưu
-                      type="primary"
-                    >
-                      {t("common.save")}
-                    </Button>
-                    <Button onClick={handleCloseDrawer}>
-                      {t("common.close")}
-                    </Button>
-                  </div>
-                </Form>
-              </>
-            ) : (
-              <Descriptions bordered column={1}>
-                <Descriptions.Item label={t("materialBatch.batchId")}>
-                  {selectedBatch.batch_id}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.batchName")}>
-                  {selectedBatch.batch_name}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.fuelType")}>
-                  {selectedBatch?.fuel_type_id?.fuel_type_id?.type_name ||
-                    "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.quantity")}>
-                  {selectedBatch.quantity}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.storage")}>
-                  {selectedBatch.fuel_type_id?.storage_id?.name_storage ||
-                    "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.note")}>
-                  {selectedBatch.note || "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.status")}>
+            <div className="flex justify-end gap-3 mt-6">
+              <ButtonComponent type="update" onClick={handleSaveUpdate} />
+              <ButtonComponent type="close" onClick={handleCloseDrawer} />
+            </div>
+          </Form>
+        </>
+      ) : (
+        <Form layout="vertical" disabled>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <Form.Item label={t("materialBatch.batchId")} className="md:col-span-2 !mb-1">
+              <Input value={selectedBatch.batch_id} />
+            </Form.Item>
+
+            <Form.Item label={t("materialBatch.batchName")} className="md:col-span-2 !mb-1">
+              <Input value={selectedBatch.batch_name} />
+            </Form.Item>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+              <Form.Item label={t("materialBatch.fuelType")} className="!mb-1">
+                <Input value={selectedBatch?.fuel_type_id?.fuel_type_id?.type_name || "N/A"} />
+              </Form.Item>
+
+              <Form.Item label={t("materialBatch.quantity")} className="!mb-1">
+                <Input value={selectedBatch.quantity} />
+              </Form.Item>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+              <Form.Item label={t("materialBatch.storage")} className="!mb-1">
+                <Input value={selectedBatch.fuel_type_id?.storage_id?.name_storage || "N/A"} />
+              </Form.Item>
+
+              <Form.Item label={t("materialBatch.status")} className="!mb-1">
+                <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center">
                   <Tag color={statusColors[selectedBatch.status]}>
                     {t(statusMap[selectedBatch.status] || selectedBatch.status)}
                   </Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.createdAt")}>
-                  {converDateString(selectedBatch.createdAt) || "N/A"}
-                </Descriptions.Item>
-                <Descriptions.Item label={t("materialBatch.updatedAt")}>
-                  {converDateString(selectedBatch.updatedAt) || "N/A"}
-                </Descriptions.Item>
-              </Descriptions>
-            )}
-
-            {/* Nút chỉnh sửa */}
-            {/* Nút chỉnh sửa và Đóng */}
-            <div className="flex justify-between mt-4 px-4">
-              {/* Nút Chỉnh sửa bên trái */}
-              {!isEditMode && selectedBatch?.status === "Đang chuẩn bị" ? (
-                <Button
-                  type="primary"
-                  onClick={() => handleEdit(selectedBatch)}
-                  className="bg-blue-600 text-white"
-                >
-                  {t("common.edit")}
-                </Button>
-              ) : (
-                <div></div> // để giữ khoảng trống cân đối nếu nút chỉnh sửa ẩn
-              )}
-
-              {/* Nút Đóng bên phải */}
-              <button
-                onClick={() => setIsDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
-              >
-                Đóng
-              </button>
+                </div>
+              </Form.Item>
             </div>
-          </>
-        )}
-      </DrawerComponent>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+              <Form.Item label={t("materialBatch.createdAt")} className="!mb-1">
+                <Input value={converDateString(selectedBatch.createdAt)} />
+              </Form.Item>
+
+              <Form.Item label={t("materialBatch.updatedAt")} className="!mb-1">
+                <Input value={converDateString(selectedBatch.updatedAt)} />
+              </Form.Item>
+            </div>
+
+            <Form.Item label={t("materialBatch.note")} className="md:col-span-2 !mb-1">
+              <Input.TextArea value={selectedBatch.note || "N/A"} rows={3} />
+            </Form.Item>
+          </div>
+        </Form>
+      )}
+
+      {!isEditMode && (
+        <div className="flex justify-end mt-2">
+          <ButtonComponent type="close" onClick={handleCloseDrawer} />
+        </div>
+      )}
+    </>
+  )}
+</DrawerComponent>
+
 
       {/* messageContainer */}
       <messageContainer

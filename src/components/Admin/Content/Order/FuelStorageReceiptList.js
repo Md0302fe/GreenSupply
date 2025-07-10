@@ -9,6 +9,7 @@ import {
   Input,
   Modal,
   Popover,
+  Form,
 } from "antd";
 import {
   EyeOutlined,
@@ -25,6 +26,7 @@ import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { GoPackageDependencies } from "react-icons/go";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -107,13 +109,11 @@ const FuelStorageReceiptList = () => {
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
       title: t(
-        `fuelStorage.confirmTitle.${
-          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmTitle.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       content: t(
-        `fuelStorage.confirmContent.${
-          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmContent.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       okText: t("fuelStorage.confirm.okText"),
@@ -205,9 +205,9 @@ const FuelStorageReceiptList = () => {
     onFilter: (value, record) =>
       record.manager_id?.full_name
         ? record.manager_id.full_name
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -519,208 +519,200 @@ const FuelStorageReceiptList = () => {
         width={drawerWidth}
       >
         {selectedReceipt ? (
-          <div className="">
-            {/* Tiêu đề */}
-            {/* <h2 className="text-xl font-bold uppercase text-gray-800 text-center mb-4">
-              Thông tin chi tiết
-            </h2> */}
+          <Form layout="vertical" disabled>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Người quản lý - full width */}
+              <Form.Item label={t("fuelStorage.columns.manager")} className="col-span-1 lg:col-span-2 !mb-0">
+                <Input
+                  value={
+                    selectedReceipt.manager_id?.full_name ||
+                    t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
 
-            {/* Bảng hiển thị dữ liệu */}
-            <div className="border border-gray-300 rounded-lg p-0 lg:p-4">
-              <div className="grid grid-cols-10 gap-0">
-                {/* Người Quản Lý */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.manager")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.manager_id?.full_name ||
-                    t("fuelStorage.noDataShort")}
-                </div>
-
-                {/* Kho */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.storage")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.storage_id?.name_storage ||
-                    t("fuelStorage.noDataShort")}
-                </div>
-
-                {/* Loại Đơn Hàng */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.receiptType")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.receipt_supply_id
-                    ? t("fuelStorage.receiptType.supply")
-                    : t("fuelStorage.receiptType.request")}
-                </div>
-
-                {/* Tên nguyên liệu */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelProvide.fuelName")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.receipt_request_id?.fuel_name ||
+              {/* Tên nguyên liệu - full width */}
+              <Form.Item label={t("fuelProvide.fuelName")} className="col-span-1 lg:col-span-2 !mb-0">
+                <Input
+                  value={
+                    selectedReceipt.receipt_request_id?.fuel_name ||
                     selectedReceipt.receipt_supply_id?.fuel_name ||
-                    t("fuelStorage.noDataShort")}
-                </div>
+                    t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
 
-                {/* Đơn giá */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelProvide.price")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.receipt_request_id?.price !== undefined
-                    ? selectedReceipt.receipt_request_id.price.toLocaleString() +
-                      " VNĐ"
-                    : selectedReceipt.receipt_supply_id?.price !== undefined
-                    ? selectedReceipt.receipt_supply_id.price.toLocaleString() +
-                      " VNĐ"
-                    : t("fuelStorage.noDataShort")}
-                </div>
+              {/* Loại đơn hàng */}
+              <Form.Item label={t("fuelStorage.columns.receiptType")} className="!mb-0">
+                <Input
+                  value={
+                    selectedReceipt.receipt_supply_id
+                      ? t("fuelStorage.receiptType.supply")
+                      : t("fuelStorage.receiptType.request")
+                  }
+                />
+              </Form.Item>
 
-                {/* Số Lượng */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.quantity")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.receipt_request_id?.quantity ||
+              {/* Kho */}
+              <Form.Item label={t("fuelStorage.columns.storage")}className="!mb-0">
+                <Input
+                  value={
+                    selectedReceipt.storage_id?.name_storage ||
+                    t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
+
+              {/* Đơn giá */}
+              <Form.Item label={t("fuelProvide.price")}className="!mb-0">
+                <Input
+                  value={
+                    selectedReceipt.receipt_request_id?.price !== undefined
+                      ? selectedReceipt.receipt_request_id.price.toLocaleString() + " VNĐ"
+                      : selectedReceipt.receipt_supply_id?.price !== undefined
+                        ? selectedReceipt.receipt_supply_id.price.toLocaleString() + " VNĐ"
+                        : t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
+
+              {/* Số lượng */}
+              <Form.Item label={t("fuelStorage.columns.quantity")}className="!mb-0">
+                <Input
+                  value={
+                    selectedReceipt.receipt_request_id?.quantity ||
                     selectedReceipt.receipt_supply_id?.quantity ||
-                    t("fuelStorage.noDataShort")}
-                </div>
+                    t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
 
+              {/* Tổng giá và Trạng thái - cùng hàng trên màn hình lớn */}
                 {/* Thành tiền */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelProvide.totalPrice")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.receipt_request_id?.total_price !== undefined
-                    ? selectedReceipt.receipt_request_id.total_price.toLocaleString() +
-                      " VNĐ"
-                    : selectedReceipt.receipt_supply_id?.total_price !==
-                      undefined
-                    ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() +
-                      " VNĐ"
-                    : t("fuelStorage.noDataShort")}
-                </div>
+                <Form.Item label={t("fuelProvide.totalPrice")} className="!mb-0">
+                  <Input
+                    value={
+                      selectedReceipt.receipt_request_id?.total_price !== undefined
+                        ? selectedReceipt.receipt_request_id.total_price.toLocaleString() + " VNĐ"
+                        : selectedReceipt.receipt_supply_id?.total_price !== undefined
+                          ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() + " VNĐ"
+                          : t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
 
-                {/* Địa chỉ */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelProvide.address")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {selectedReceipt.receipt_request_id?.address ||
-                    selectedReceipt.receipt_supply_id?.address ||
-                    t("fuelStorage.noDataShort")}
-                </div>
-
-                {/* Trạng Thái */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.status")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {(() => {
-                    const statusKey = statusMap[selectedReceipt.status];
-                    const statusColors = {
-                      pending: "gold",
-                      processing: "orange",
-                      imported: "blue",
-                      importFailed: "volcano",
-                      cancelled: "red",
-                    };
-
-                    return (
-                      <Tag color={statusColors[statusKey] || "default"}>
-                        {t(`status.${statusKey}`) || selectedReceipt.status}
+                {/* Trạng thái */}
+                {selectedReceipt?.status && (
+                  <Form.Item label={t("fuelStorage.columns.status")} className="!mb-0">
+                    <div className="w-full h-[32px] border border-gray-300 rounded px-2 flex items-center justify-center">
+                      <Tag
+                        color={{
+                          pending: "gold",
+                          processing: "orange",
+                          imported: "blue",
+                          importFailed: "volcano",
+                          cancelled: "red",
+                        }[
+                          {
+                            "Chờ duyệt": "pending",
+                            "Đang xử lý": "processing",
+                            "Nhập kho thành công": "imported",
+                            "Nhập kho thất bại": "importFailed",
+                            "Đã huỷ": "cancelled",
+                          }[selectedReceipt.status] || "default"
+                        ]}
+                      >
+                        {t(
+                          `status.${{
+                            "Chờ duyệt": "pending",
+                            "Đang xử lý": "processing",
+                            "Nhập kho thành công": "imported",
+                            "Nhập kho thất bại": "importFailed",
+                            "Đã huỷ": "cancelled",
+                          }[selectedReceipt.status]}`
+                        ) || selectedReceipt.status}
                       </Tag>
-                    );
-                  })()}
-                </div>
-
-                {/* Ngày Nhập Kho */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.createdAt")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {converDateString(selectedReceipt.createdAt) ||
-                    t("fuelStorage.noDataShort")}
-                </div>
-
-                {/* Ngày Cập Nhật */}
-                <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                  {t("fuelStorage.columns.updatedAt")}
-                </div>
-                <div className="col-span-6 p-3 border border-gray-300">
-                  {converDateString(selectedReceipt.updatedAt) ||
-                    t("fuelStorage.noDataShort")}
-                </div>
-
-                {/* Ghi chú */}
-                {selectedReceipt.receipt_request_id?.note ||
-                selectedReceipt.receipt_supply_id?.note ? (
-                  <>
-                    <div className="col-span-4 font-semibold p-3 bg-gray-100 border border-gray-300">
-                      {t("fuelStorage.columns.note")}
                     </div>
-                    <div className="col-span-6 p-3 border border-gray-300 whitespace-pre-wrap">
-                      {selectedReceipt.receipt_request_id?.note ||
-                        selectedReceipt.receipt_supply_id?.note}
-                    </div>
-                  </>
-                ) : null}
-              </div>
-            </div>
+                  </Form.Item>
+                )}
 
-            {/* Nút Duyệt / Hủy */}
-            <div className="flex justify-center gap-2 mt-6">
-              <Button
-                type="primary"
-                className="px-6 py-2 text-lg"
-                onClick={() =>
-                  confirmUpdateStatus(
-                    selectedReceipt._id,
-                    "Nhập kho thành công"
-                  )
-                }
-                disabled={
-                  loading ||
-                  selectedReceipt.status === "Đã duyệt" ||
-                  selectedReceipt.status === "Nhập kho thành công" ||
-                  selectedReceipt.status === "Đã huỷ"
-                }
-              >
-                {t("fuelStorage.approve")}
-              </Button>
-              <Button
-                danger
-                className="px-6 py-2 text-lg"
-                onClick={() =>
-                  confirmUpdateStatus(selectedReceipt._id, "Đã huỷ")
-                }
-                disabled={
-                  loading ||
-                  selectedReceipt.status === "Đã huỷ" ||
-                  selectedReceipt.status === "Nhập kho thành công" ||
-                  selectedReceipt.status === "Đã duyệt"
-                }
-              >
-                {t("common.cancel")}
-              </Button>
-              <button
-                onClick={() => setIsDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-1 rounded hover:bg-gray-600"
-              >
-                {t("common.close")}
-              </button>
+              {/* Địa chỉ */}
+              <Form.Item label={t("fuelProvide.address")} className="col-span-1 lg:col-span-2 !mb-0">
+                <Input
+                  value={
+                    selectedReceipt.receipt_request_id?.address ||
+                    selectedReceipt.receipt_supply_id?.address ||
+                    t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
+
+              {/* Ngày tạo và cập nhật - shared row */}
+              <Form.Item label={t("fuelStorage.columns.createdAt")}className="!mb-0">
+                <Input value={converDateString(selectedReceipt.createdAt)} />
+              </Form.Item>
+              <Form.Item label={t("fuelStorage.columns.updatedAt")}className="!mb-0">
+                <Input value={converDateString(selectedReceipt.updatedAt)} />
+              </Form.Item>
+
+              {/* Ghi chú - nếu có */}
+              {(selectedReceipt.receipt_request_id?.note ||
+                selectedReceipt.receipt_supply_id?.note) && (
+                  <Form.Item
+                    label={t("fuelStorage.columns.note")}
+                    className="col-span-1 lg:col-span-2 !mb-0"
+                  >
+                    <Input.TextArea
+                      value={
+                        selectedReceipt.receipt_request_id?.note ||
+                        selectedReceipt.receipt_supply_id?.note
+                      }
+                      rows={3}
+                    />
+                  </Form.Item>
+                )}
             </div>
-          </div>
+          </Form>
+
         ) : (
           <p className="text-center text-gray-500">
             {t("fuelStorage.loadingDetails")}
           </p>
         )}
+
+        {/* Nút hành động */}
+        <div className="flex justify-end gap-3 mt-4">
+          <ButtonComponent
+            type="approve-order"
+            onClick={() =>
+              confirmUpdateStatus(selectedReceipt?._id, "Nhập kho thành công")
+            }
+            disabled={
+              loading ||
+              !selectedReceipt ||
+              ["Đã duyệt", "Nhập kho thành công", "Đã huỷ"].includes(
+                selectedReceipt.status
+              )
+            }
+          />
+
+          <ButtonComponent
+            type="cancel-order"
+            onClick={() =>
+              confirmUpdateStatus(selectedReceipt?._id, "Đã huỷ")
+            }
+            disabled={
+              loading ||
+              !selectedReceipt ||
+              ["Đã duyệt", "Nhập kho thành công", "Đã huỷ"].includes(
+                selectedReceipt.status
+              )
+            }
+          />
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+        </div>
       </DrawerComponent>
+
     </div>
   );
 };
