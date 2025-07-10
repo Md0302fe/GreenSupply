@@ -4,13 +4,13 @@ import "./Order.scss";
 import * as UserServices from "../../../../services/UserServices";
 import * as OrderServices from "../../../../services/OrderServices";
 
-import { SearchOutlined } from "@ant-design/icons";
+import { message } from "antd";
 import { useSelector } from "react-redux";
-import { useMutationHooks } from "../../../../hooks/useMutationHook";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { convertPrice } from "../../../../ultils";
-import { useNavigate } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
+import { useMutationHooks } from "../../../../hooks/useMutationHook";
 
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
@@ -21,7 +21,7 @@ import { FaClipboardList } from "react-icons/fa";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
-import { Space, Input, Form, Button, message } from "antd";
+import { Space, Input, Form, Button } from "antd";
 
 import {
   handleAcceptProvideOrders,
@@ -227,10 +227,10 @@ const FuelProvideManagement = () => {
   useEffect(() => {
     if (isSuccessUpdate) {
       if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
+        message.success(dataRes?.message);
         handleCancelUpdate();
       } else {
-        toast.error(dataRes?.message);
+        message.error(dataRes?.message);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -734,15 +734,23 @@ const FuelProvideManagement = () => {
             <div className="flex flex-col md:flex-row justify-end gap-4 mt-6">
               {orderStatus === "Chờ duyệt" && (
                 <>
-                  <ButtonComponent type="approve-order" onClick={handleAcceptProvideOrder} />
-                  <ButtonComponent type="cancel-order" onClick={handleCancelProvideOrder} />
+                  <ButtonComponent
+                    type="approve-order"
+                    onClick={handleAcceptProvideOrder}
+                  />
+                  <ButtonComponent
+                    type="cancel-order"
+                    onClick={handleCancelProvideOrder}
+                  />
                 </>
               )}
-              <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+              <ButtonComponent
+                type="close"
+                onClick={() => setIsDrawerOpen(false)}
+              />
             </div>
           </div>
         </Loading>
-
       </DrawerComponent>
     </div>
   );

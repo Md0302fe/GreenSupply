@@ -13,7 +13,7 @@ import { BiImageAdd } from "react-icons/bi";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
 import { converDateString } from "../../../../ultils";
@@ -142,9 +142,9 @@ const UserComponent = () => {
     if (isSuccessDelete) {
       if (deleteRespone?.status === "OK") {
         setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
+        message.success(deleteRespone?.message);
       } else {
-        toast.success(deleteRespone?.message);
+        message.success(deleteRespone?.message);
         setIsOpenDelete(false);
       }
     }
@@ -218,10 +218,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (isSuccessUpdate) {
       if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
+        message.success(dataRes?.message);
         handleCancelUpdate();
       } else {
-        toast.error(dataRes?.message);
+        message.error(dataRes?.message);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

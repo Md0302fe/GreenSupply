@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 
 import {
@@ -45,7 +45,7 @@ const handleDelete = async (id, addresses, setAddresses) => {
       setAddresses(addresses.filter((addr) => addr._id !== id));
 
       // Thông báo xóa thành công
-      toast.success("Xóa địa chỉ thành công!", {
+      message.success("Xóa địa chỉ thành công!", {
         position: "top-right",
         autoClose: 3000, // Tự động ẩn sau 3s
         hideProgressBar: false,
@@ -54,7 +54,7 @@ const handleDelete = async (id, addresses, setAddresses) => {
         draggable: true,
       });
     } catch (error) {
-      toast.error("Xóa địa chỉ thất bại!", {
+      message.error("Xóa địa chỉ thất bại!", {
         position: "top-right",
         autoClose: 3000,
       });

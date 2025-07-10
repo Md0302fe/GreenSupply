@@ -458,7 +458,7 @@
     }
   },
   "warehouse": {
-    "title": "Quản Lý Kho",
+    "title": "Quản lý kho",
     "dashboard": {
       "title": "Dashboard",
       "description": "Quản lý thông tin tổng quát kho"

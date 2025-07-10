@@ -3,8 +3,8 @@ import { Button, Form, Input, InputNumber, Select } from "antd";
 import { useSelector } from "react-redux";
 import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
+
+import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
@@ -94,20 +94,20 @@ const RawMaterialBatch = () => {
         if (processingRes.success) {
           setProcessing(processingRes.requests);
         } else {
-          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+          message.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
         if (storageRes.success) {
           setStorages(storageRes.data);
         } else {
-          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+          message.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
         if (getAllManagements) {
           set_fuel_managements(getAllManagements.requests);
         } else {
-          toast.warning("Có lỗi trong quá trình lấy dữ liệu");
+          message.warning("Có lỗi trong quá trình lấy dữ liệu");
         }
       } catch (error) {
-        toast.error("Lỗi khi tải dữ liệu kho hoặc Nguyên liệu!");
+        message.error("Lỗi khi tải dữ liệu kho hoặc Nguyên liệu!");
       } finally {
         setLoading(false);
       }
@@ -134,7 +134,7 @@ const RawMaterialBatch = () => {
     }
 
     if (value === 0 || /e|E|[^0-9]/.test(value)) {
-      toast.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
+      message.error("Sản lượng không hợp lệ! Vui lòng nhập một số hợp lệ.");
       form.setFieldsValue({ quantity: null });
       return;
     }
@@ -152,7 +152,7 @@ const RawMaterialBatch = () => {
         const availableFuel = selectedFuel.quantity;
         if (required > availableFuel) {
           const maxProduction = Math.floor(availableFuel * 0.9);
-          toast.warning(
+          message.warning(
             `Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là ${maxProduction} Kg.`
           );
           form.setFieldsValue({
@@ -192,17 +192,17 @@ const RawMaterialBatch = () => {
       );
 
       if (response.success) {
-        toast.success("Tạo lô nguyên liệu thành công!");
+        message.success("Tạo lô nguyên liệu thành công!");
         form.resetFields();
         // 👉 Chuyển hướng sau khi tạo thành công
         navigate("/system/admin/raw-material-batch-list", {
           state: { createdSuccess: true },
         });
       } else {
-        toast.error("Tạo lô thất bại!");
+        message.error("Tạo lô thất bại!");
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi tạo lô!");
+      message.error("Có lỗi xảy ra khi tạo lô!");
     } finally {
       setLoading(false);
     }
@@ -380,20 +380,6 @@ const RawMaterialBatch = () => {
           </Form.Item>
         </Form>
       </div>
-
-      {/* ToastContainer */}
-      <ToastContainer
-        hideProgressBar={false}
-        position="top-right"
-        newestOnTop={false}
-        pauseOnFocusLoss
-        autoClose={3000}
-        closeOnClick
-        pauseOnHover
-        theme="light"
-        rtl={false}
-        draggable
-      />
     </div>
   );
 };

@@ -45,7 +45,7 @@ const Admin = (props) => {
 
   const fetchNotifications = async () => {
     const dataRequest = {
-      access_token: user?._id,
+      access_token: user?.access_token,
     };
     const res = await Notifications?.getAllNotification(dataRequest);
     return res?.data;

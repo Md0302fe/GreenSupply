@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Loading from "../LoadingComponent/Loading";
 import * as UserServices from "../../services/UserServices";
 import "./Login.scss";
-import { toast } from "react-toastify";
+import { message } from "antd";
+
 import PasswordResetPopup from "./PasswordResetPopup";
 // react - ui
 import { useMutationHooks } from "../../hooks/useMutationHook";
@@ -96,11 +97,11 @@ const Login = () => {
     try {
       const response = await UserServices.userLogin({ googleToken });
       console.log(response);
-      const { status, user, message } = response;
+      const { status, user,  message: responseMessage  } = response;
       if (status === "NEW_USER") {
         navigate("/google-register", { state: { user } });
       } else if (status === "BLOCKED") {
-        setMessageBlocked(message);
+        setMessageBlocked(responseMessage);
         return null;
       } else if (status === "OK") {
         // Đăng nhập thành công
@@ -114,21 +115,21 @@ const Login = () => {
             handleGetDetailsUser(decode?.id, response.access_token);
           }
         }
-        toast.success(t("login_success"));
+        message.success(t("login_success"));
         setTimeout(() => {
           window.location.replace("/home");
         }, 1000);
       } else {
-        toast.error(message || t("login_fail"));
+        message.error(responseMessage || t("login_fail"));
       }
     } catch (error) {
       console.error("Google login failed:", error);
-      toast.error(t("login_retry"));
+      message.error(t("login_retry"));
     }
   };
 
   const handleGoogleLoginFailure = (error) => {
-    toast.error(t("login_retry"));
+    message.error(t("login_retry"));
     console.error("Google Login Failed:", error);
   };
   const handleCloseOtpPopup = () => {
@@ -170,7 +171,7 @@ const Login = () => {
           });
         }, 1000);
 
-        toast.success(t("otp_sent"));
+        message.success(t("otp_sent"));
       }
     } catch (error) {
       console.error("API call failed:", error);
@@ -184,14 +185,14 @@ const Login = () => {
     setErrorMessage("");
     if (!otp || otp.length !== 6) {
       // Kiểm tra OTP
-      toast.error(t("invalid_otp"));
+      message.error(t("invalid_otp"));
       return;
     }
     const res = await UserServices.checkOtp({ otp, emailForgot });
     if (res.status === "ERROR") {
       setErrorMessage(res.message);
     }
-    toast.success(t("otp_verified"));
+    message.success(t("otp_verified"));
     setNewPassword(true);
     setOtpPopupVisible(false);
     setIsForgotPassword(false);
@@ -205,14 +206,14 @@ const Login = () => {
       });
 
       if (res.status === "ERROR") {
-        toast.error(res.message);
+        message.error(res.message);
         return;
       }
       setNewPassword(false);
-      toast.success(t("password_updated"));
+      message.success(t("password_updated"));
     } catch (error) {
       console.error("Lỗi khi cập nhật mật khẩu:", error);
-      toast.error(t("error_generic"));
+      message.error(t("error_generic"));
     } finally {
       setsendOtpLoading(false);
     }

@@ -12,8 +12,7 @@ import {
   MDBBreadcrumbItem,
 } from "mdb-react-ui-kit";
 
-import { toast } from "react-toastify";
-import { Upload } from "antd";
+import { Upload , message } from "antd";
 import { getBase64 } from "../../ultils";
 import { updateUser } from "../../redux/slides/userSlides";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -161,10 +160,10 @@ const ProfilePage = () => {
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {
-        toast.success(data?.message);
+        message.success(data?.message);
         handleGetDetailsUser(userRedux?.id, userRedux?.access_token);
       } else if (data?.status === "ERROR") {
-        toast.error(data?.message);
+        message.error(data?.message);
       }
     }
   }, [isSuccess]);
@@ -248,19 +247,19 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        toast.success("OTP đã được gửi!");
+        message.success("OTP đã được gửi!");
       } else {
-        toast.error(result.message || "Không thể gửi OTP.");
+        message.error(result.message || "Không thể gửi OTP.");
       }
     } catch (error) {
       console.error("Lỗi khi yêu cầu OTP:", error.message);
-      toast.error("Không thể gửi OTP. Vui lòng thử lại.");
+      message.error("Không thể gửi OTP. Vui lòng thử lại.");
     }
   };
   // Click Submit Sau Khi Điền Form
   const HandleSubmitForm = async () => {
     if (!otp || otp.length !== 6) { // Kiểm tra OTP
-      toast.error("Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.");
+      message.error("Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.");
       return;
     }
     if (havePassword) {
@@ -277,11 +276,11 @@ const ProfilePage = () => {
   };
   const handleCheckPassword = async () => {
     if (newPassword !== confirmNewPassword) {
-      toast.error("Mật khẩu không trùng khớp");
+      message.error("Mật khẩu không trùng khớp");
       return;
     }
     if (password === newPassword) {
-      toast.error("Mật khẩu mới không được trùng với mật khẩu cũ");
+      message.error("Mật khẩu mới không được trùng với mật khẩu cũ");
       return;
     }
     if (!havePassword) {
@@ -289,7 +288,7 @@ const ProfilePage = () => {
       return;
     }
     if (!newPassword || !password || !confirmNewPassword) {
-      toast.error("Các trường thông tin không được để trống.");
+      message.error("Các trường thông tin không được để trống.");
       return;
     }
     setsendOtpLoading(true);
@@ -312,7 +311,7 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        toast.success("OTP đã được gửi!");
+        message.success("OTP đã được gửi!");
       }
     } catch (error) {
       console.error("API call failed:", error);
@@ -342,7 +341,7 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        toast.success("OTP đã được gửi!");
+        message.success("OTP đã được gửi!");
       }
     } catch (error) {
       console.error("API call failed:", error);
@@ -362,7 +361,7 @@ const ProfilePage = () => {
     const access_token = userRedux.access_token;
     const res2 = await UserServices.updatePassword({ newPassword, email, access_token });
     if (res2.status === "OK") {
-      toast.success("Thay đổi mật khẩu thành công.");
+      message.success("Thay đổi mật khẩu thành công.");
       handleGetDetailsUser(userRedux?.id, userRedux?.access_token);
       window.location.reload();
     }

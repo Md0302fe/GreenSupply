@@ -13,15 +13,12 @@ import {
 import axios from "axios";
 import {
   DownloadOutlined,
-  EyeOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
 import { Excel } from "antd-table-saveas-excel";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { toast } from "react-toastify";
-import { Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
