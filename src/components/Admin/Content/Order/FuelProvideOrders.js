@@ -584,7 +584,7 @@ const tableData =
       >
         <Loading isPending={isLoadDetails || isPendingUpDate}>
           <div className="w-full p-6 bg-white rounded-md shadow">
-            <div className="grid grid-cols-1 gap-4 mb-4">
+            <div className="grid grid-cols-1 gap-2 mb-4">
               {/* Tên khách hàng */}
               <div>
                 <label className="block mb-1 font-semibold">

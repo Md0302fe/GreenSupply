@@ -12,6 +12,7 @@ import {
   Row,
   Col,
   Input,
+  Form,
 } from "antd";
 import axios from "axios";
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
@@ -24,6 +25,7 @@ import Highlighter from "react-highlight-words";
 import * as util from "../../../../ultils";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 const FuelOrderStatus = () => {
   const { t } = useTranslation();
@@ -477,63 +479,91 @@ const FuelOrderStatus = () => {
         width={drawerWidth}
       >
         {selectedOrder ? (
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label={t("fuelOrderStatus.columns.customer")}>
-              {selectedOrder.supplier_id?.full_name ||
-                t("fuelOrderStatus.noData")}
-            </Descriptions.Item>
+          <Form layout="vertical" disabled>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <Descriptions.Item label={t("fuelOrderStatus.columns.fuelType")}>
-              {selectedOrder.fuel_name}
-            </Descriptions.Item>
+              {/* Khách hàng (full row) */}
+              <Form.Item label={t("fuelOrderStatus.columns.customer")} className="md:col-span-2 !mb-0">
+                <Input
+                  value={
+                    selectedOrder.supplier_id?.full_name || t("fuelOrderStatus.noData")
+                  }
+                />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.quantity")}>
-              {selectedOrder.quantity}
-            </Descriptions.Item>
+              {/* Loại nhiên liệu (full row) */}
+              <Form.Item label={t("fuelOrderStatus.columns.fuelType")} className="md:col-span-2 !mb-0">
+                <Input value={selectedOrder.fuel_name || ""} />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.price")}>
-              {selectedOrder.price}
-            </Descriptions.Item>
+              {/* Số lượng */}
+              <Form.Item label={t("fuelOrderStatus.quantity")}className="!mb-0">
+                <Input value={selectedOrder.quantity} />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.columns.totalPrice")}>
-              {selectedOrder.total_price}
-            </Descriptions.Item>
+              {/* Giá */}
+              <Form.Item label={t("fuelOrderStatus.price")}className="!mb-0">
+                <Input value={selectedOrder.price} />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.receiptType")}>
-              {selectedOrder.receipt_type === "supply"
-                ? t("fuelOrderStatus.supply")
-                : t("fuelOrderStatus.request")}
-            </Descriptions.Item>
+              {/* Tổng giá */}
+              <Form.Item label={t("fuelOrderStatus.columns.totalPrice")}className="!mb-0">
+                <Input value={selectedOrder.total_price} />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.columns.status")}>
-              {t(`status.${statusMap[selectedOrder.status]}`) ||
-                selectedOrder.status}
-            </Descriptions.Item>
+              {/* Loại đơn */}
+              <Form.Item label={t("fuelOrderStatus.receiptType")}className="!mb-0">
+                <Input
+                  value={
+                    selectedOrder.receipt_type === "supply"
+                      ? t("fuelOrderStatus.supply")
+                      : t("fuelOrderStatus.request")
+                  }
+                />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.createdAt")}>
-              {converDateString(selectedOrder.createdAt)}
-            </Descriptions.Item>
+              {/* Trạng thái - full row */}
+              <Form.Item
+                label={t("fuelOrderStatus.columns.status") }
+                className="md:col-span-2 !mb-0"
+              >
+                <div className="border border-gray-300 rounded px-2 py-1 h-[40px] flex items-center">
+                  <Tag color={colorMap[statusMap[selectedOrder.status]]}>
+                    {t(`status.${statusMap[selectedOrder.status]}`) || selectedOrder.status}
+                  </Tag>
+                </div>
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.updatedAt")}>
-              {converDateString(selectedOrder.updatedAt)}
-            </Descriptions.Item>
+              {/* Ngày tạo & Ngày cập nhật */}
+              <Form.Item label={t("fuelOrderStatus.createdAt")} className="!mb-0">
+                <Input value={converDateString(selectedOrder.createdAt)} />
+              </Form.Item>
 
-            <Descriptions.Item label={t("fuelOrderStatus.note")}>
-              {selectedOrder.note || t("fuelOrderStatus.noData")}
-            </Descriptions.Item>
-          </Descriptions>
+              <Form.Item label={t("fuelOrderStatus.updatedAt")} className="!mb-0">
+                <Input value={converDateString(selectedOrder.updatedAt)} />
+              </Form.Item>
+
+              {/* Ghi chú - full row */}
+              <Form.Item
+                label={t("fuelOrderStatus.note")}
+                className="md:col-span-2 !mb-0"
+              >
+                <Input.TextArea
+                  value={selectedOrder.note || t("fuelOrderStatus.noData")}
+                  rows={3}
+                />
+              </Form.Item>
+            </div>
+          </Form>
         ) : (
           <p className="text-center text-gray-500">
             {t("fuelOrderStatus.loading")}
           </p>
         )}
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-          >
-            {t("close")}
-          </button>
+
+        {/* Nút đóng */}
+        <div className="flex justify-end mt-2">
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
       </Drawer>
     </div>

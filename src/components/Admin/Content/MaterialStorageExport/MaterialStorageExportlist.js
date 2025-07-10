@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import Highlighter from "react-highlight-words";
 import { useTranslation } from "react-i18next";
-
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 import { FaFileExport } from "react-icons/fa6";
 
 
@@ -211,94 +211,94 @@ const MaterialStorageExportList = () => {
   };
 
   const columns = [
-  {
-    title: (
-      <div style={{ textAlign: "left", width: "100%" }}>
-        {t("materialExportList.exportType")}
-      </div>
-    ),
-    dataIndex: "type_export",
-    key: "type_export",
-    align: "left",
-    // ...getColumnSearchProps("type_export", "Tìm loại xuất kho"),
-    // sorter: (a, b) => a.type_export?.localeCompare(b.type_export),
-    render: (text) => <span>{text || "Không rõ"}</span>,
-  },
-  {
-    title: (
-      <div style={{ textAlign: "left", width: "100%" }}>
-        {t("materialExportList.productionRequest")}
-      </div>
-    ),
-    key: "production_request",
-    align: "left",
-    ...getColumnSearchProps(["production_request_id", "request_name"], "Tìm yêu cầu sản xuất"),
-    sorter: (a, b) =>
-      (a.production_request_id?.request_name || "").localeCompare(
-        b.production_request_id?.request_name || ""
+    {
+      title: (
+        <div style={{ textAlign: "left", width: "100%" }}>
+          {t("materialExportList.exportType")}
+        </div>
       ),
-    render: (_, record) => (
-      <span>{record?.production_request_id?.request_name || "Không rõ"}</span>
-    ),
-  },
-  {
-    title: (
-      <div style={{ textAlign: "left", width: "100%" }}>
-        {t("materialExportList.batch")}
-      </div>
-    ),
-    key: "batch",
-    align: "left",
-    ...getColumnSearchProps(["batch_id", "batch_name"], "Tìm lô nguyên liệu"),
-    sorter: (a, b) =>
-      (a.batch_id?.batch_name || "").localeCompare(b.batch_id?.batch_name || ""),
-    render: (_, record) => (
-      <span>{record?.batch_id?.batch_name || "Không rõ"}</span>
-    ),
-  },
-  {
-    title: (
-      <div style={{ textAlign: "center", width: "100%" }}>
-        {t("materialExportList.status")}
-      </div>
-    ),
-    dataIndex: "status",
-    key: "status",
-    align: "center",
-    filters: [
-      { text: t("status.pending"), value: "Chờ duyệt" },
-      { text: t("status.completed"), value: "Hoàn thành" },
-      { text: t("status.cancelled"), value: "Đã hủy" },
-    ],
-    onFilter: (value, record) => record.status === value,
-    filteredValue: statusFilter ? [statusFilter] : null,
-    // sorter: (a, b) => a.status.localeCompare(b.status),
-    render: (status) => {
-      const color = statusColors[status] || "default";
-      return (
-        <Tag color={color}>
-          {t(`status.${statusMap[status]}`) || status}
-        </Tag>
-      );
+      dataIndex: "type_export",
+      key: "type_export",
+      align: "left",
+      // ...getColumnSearchProps("type_export", "Tìm loại xuất kho"),
+      // sorter: (a, b) => a.type_export?.localeCompare(b.type_export),
+      render: (text) => <span>{text || "Không rõ"}</span>,
     },
-  },
-  {
-    title: (
-      <div style={{ textAlign: "center", width: "100%" }}>
-        {t("common.action")}
-      </div>
-    ),
-    key: "action",
-    align: "center",
-    render: (_, record) => (
-      <Button
-        type="link"
-        icon={<HiOutlineDocumentSearch style={{ fontSize: "20px", color: "dodgerblue" }} />}
-        onClick={() => showExportDetails(record._id)}
-      />
-    ),
-  },
-];
+    {
+      title: (
+        <div style={{ textAlign: "left", width: "100%" }}>
+          {t("materialExportList.productionRequest")}
+        </div>
+      ),
+      key: "production_request",
+      align: "left",
+      ...getColumnSearchProps(["production_request_id", "request_name"], "Tìm yêu cầu sản xuất"),
+      sorter: (a, b) =>
+        (a.production_request_id?.request_name || "").localeCompare(
+          b.production_request_id?.request_name || ""
+        ),
+      render: (_, record) => (
+        <span>{record?.production_request_id?.request_name || "Không rõ"}</span>
+      ),
+    },
+    {
+      title: (
+        <div style={{ textAlign: "left", width: "100%" }}>
+          {t("materialExportList.batch")}
+        </div>
+      ),
+      key: "batch",
+      align: "left",
+      ...getColumnSearchProps(["batch_id", "batch_name"], "Tìm lô nguyên liệu"),
+      sorter: (a, b) =>
+        (a.batch_id?.batch_name || "").localeCompare(b.batch_id?.batch_name || ""),
+      render: (_, record) => (
+        <span>{record?.batch_id?.batch_name || "Không rõ"}</span>
+      ),
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("materialExportList.status")}
+        </div>
+      ),
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      filters: [
+        { text: t("status.pending"), value: "Chờ duyệt" },
+        { text: t("status.completed"), value: "Hoàn thành" },
+        { text: t("status.cancelled"), value: "Đã hủy" },
+      ],
+      onFilter: (value, record) => record.status === value,
+      filteredValue: statusFilter ? [statusFilter] : null,
+      // sorter: (a, b) => a.status.localeCompare(b.status),
+      render: (status) => {
+        const color = statusColors[status] || "default";
+        return (
+          <Tag color={color}>
+            {t(`status.${statusMap[status]}`) || status}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("common.action")}
+        </div>
+      ),
+      key: "action",
+      align: "center",
+      render: (_, record) => (
+        <Button
+          type="link"
+          icon={<HiOutlineDocumentSearch style={{ fontSize: "20px", color: "dodgerblue" }} />}
+          onClick={() => showExportDetails(record._id)}
+        />
+      ),
+    },
+  ];
 
 
   const handleTableChange = (pagination, filters, sorter) => {
@@ -459,76 +459,131 @@ const MaterialStorageExportList = () => {
         placement="right"
         width={drawerWidth}
       >
-        {selectedExport ? (
-          <Descriptions
-            bordered
-            column={1}
-            labelStyle={{ width: "40%", fontWeight: "600" }}
-            contentStyle={{ width: "60%" }}
-          >
-            <Descriptions.Item label={t("materialExportList.createdBy")}>
-              {selectedExport?.user_id?.full_name || "Không rõ"}
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={t("materialExportList.productionRequest")}
-            >
-              {selectedExport?.production_request_id?.request_name ||
-                t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.batchName")}>
-              {selectedExport?.batch_id?.batch_name || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.batchId")}>
-              {selectedExport?.batch_id?.batch_id || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.exportName")}>
-              {selectedExport?.export_name || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.exportType")}>
-              {selectedExport?.type_export || t("common.no_data")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.status")}>
-              <Tag color={statusColors[selectedExport.status] || "default"}>
-                {t(`status.${statusMap[selectedExport.status]}`) || selectedExport.status}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.createdDate")}>
-              {new Date(selectedExport.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("materialExportList.note")}>
-              {selectedExport?.note || t("common.no_data")}
-            </Descriptions.Item>
-          </Descriptions>
-        ) : (
-          <p className="text-center">Đang tải dữ liệu...</p>
-        )}
+        <div className="w-full p-6 bg-white rounded-md shadow min-w-[400px]">
+          {selectedExport ? (
+            <div className="grid grid-cols-1 gap-3">
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.createdBy")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.user_id?.full_name || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
 
-        {/* Nút phê duyệt và từ chối (nếu trạng thái là "Chờ duyệt") */}
-        <div className="flex flex-row justify-space-between gap-2.5 lg:gap-4 mt-4">
-          {selectedExport?.status === "Chờ duyệt" && (
-            <>
-              <Button
-                type="primary"
-                onClick={handleAccept}
-                className="bg-blue-600 text-white font-bold px-2 lg:px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto"
-              >
-                {t("common.approve")}
-              </Button>
-              <Button
-                danger
-                onClick={handleReject}
-                className="bg-red-600 text-red font-bold px-2 lg:px-4 py-2 rounded hover:bg-red-700 w-full md:w-auto"
-              >
-                {t("common.reject")}
-              </Button>
-            </>
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.productionRequest")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.production_request_id?.request_name || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.batchName")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.batch_id?.batch_name || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.batchId")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.batch_id?.batch_id || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.exportName")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.export_name || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-semibold mb-1">
+                    {t("materialExportList.exportType")}
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    value={selectedExport?.type_export || t("common.no_data")}
+                    className="border p-2 rounded w-full bg-gray-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold mb-1">
+                    {t("materialExportList.status")}
+                  </label>
+                  <div className="border p-2 rounded w-full bg-gray-100">
+                    <Tag color={statusColors[selectedExport.status] || "default"}>
+                      {t(`status.${statusMap[selectedExport.status]}`) || selectedExport.status}
+                    </Tag>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.createdDate")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={selectedExport?.createdAt ? new Date(selectedExport.createdAt).toLocaleString() : t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.note")}
+                </label>
+                <textarea
+                  disabled
+                  value={selectedExport?.note || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                  rows={3}
+                />
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">{t("common.loading")}</p>
           )}
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-2 md:px-4 py-1 rounded hover:bg-gray-600 w-full md:w-auto"
-          >
-            {t("common.close")}
-          </button>
+
+          <div className="flex justify-end gap-2.5 mt-6">
+            {selectedExport?.status === "Chờ duyệt" && (
+              <>
+                <ButtonComponent type="approve-order" onClick={handleAccept} />
+                <ButtonComponent type="cancel-order" onClick={handleReject} />
+              </>
+            )}
+            <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+          </div>
         </div>
       </DrawerComponent>
 
