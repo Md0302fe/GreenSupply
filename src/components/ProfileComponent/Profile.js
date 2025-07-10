@@ -36,8 +36,9 @@ import {
 
 import userImage from "../../assets/DefaultUser.jpg";
 import OTPInput from "react-otp-input";
-
+import { useTranslation } from 'react-i18next';
 const ProfilePage = () => {
+  const { t } = useTranslation();
   // 1: Variables
   const userRedux = useSelector((state) => state.user);
   console.log("userRedux:", userRedux);
@@ -444,7 +445,7 @@ const ProfilePage = () => {
                           </span>
                         </MDBBreadcrumbItem>
                         <MDBBreadcrumbItem active>
-                          User Profile
+                          {t("userProfile")}
                         </MDBBreadcrumbItem>
                       </div>
                       {fromPayment && (
@@ -454,7 +455,7 @@ const ProfilePage = () => {
                               onClick={() => navigate("/Payment")}
                               className="cursor-pointer border-b border-black uppercase transition-all duration-200 hover:text-[17px]"
                             >
-                              Tiếp tục mua hàng
+                              {t("continueShopping")}
                             </span>
                           </MDBBreadcrumbItem>
                         </div>
@@ -482,7 +483,7 @@ const ProfilePage = () => {
                               handleClickBtnUpdate(e.target.value)
                             }
                           >
-                            LƯU THÔNG TIN
+                            {t("saveInfo")}
                           </MDBBtn>
                         </FlexCenterCenter>
                       </CardBodys>
@@ -492,7 +493,7 @@ const ProfilePage = () => {
                       <CardBodys>
                         <FlexCenterCenter>
                           <MDBBtn onClick={() => navigate("/Address")}>
-                            Danh Sách Địa Chỉ
+                            {t("addressList")}
                           </MDBBtn>
                         </FlexCenterCenter>
                       </CardBodys>
@@ -502,7 +503,7 @@ const ProfilePage = () => {
                       <CardBodys>
                         <FlexCenterCenter>
                           <MDBBtn onClick={() => handleChagePasswordModal()}>
-                            Đổi mật khẩu
+                            {t("changePassword")}
                           </MDBBtn>
                         </FlexCenterCenter>
                       </CardBodys>
@@ -513,7 +514,7 @@ const ProfilePage = () => {
                       <MDBCardBody className="flex flex-col gap-4">
                         <MDBRow>
                           <MDBCol sm="3">
-                            <MDBCardText>Tên</MDBCardText>
+                            <MDBCardText>{t("name")}</MDBCardText>
                           </MDBCol>
                           <MDBCol sm="9" className="cursor-pointer">
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
@@ -540,7 +541,7 @@ const ProfilePage = () => {
                         </MDBRow>
                         <MDBRow>
                           <MDBCol sm="3">
-                            <MDBCardText>Email</MDBCardText>
+                            <MDBCardText>{t("email")}</MDBCardText>
                           </MDBCol>
                           <MDBCol sm="9">
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
@@ -568,7 +569,7 @@ const ProfilePage = () => {
                         </MDBRow>
                         <MDBRow>
                           <MDBCol sm="3">
-                            <MDBCardText>Số điện thoại</MDBCardText>
+                            <MDBCardText>{t("phone")}</MDBCardText>
                           </MDBCol>
                           <MDBCol sm="9">
                             <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
@@ -596,7 +597,7 @@ const ProfilePage = () => {
 
                         <MDBRow>
                           <MDBCol sm="3">
-                            <MDBCardText>Ngày sinh</MDBCardText>
+                            <MDBCardText>{t("birthDate")}</MDBCardText>
                           </MDBCol>
                           <MDBCol sm="9">
                             {/* <InPut
@@ -623,7 +624,7 @@ const ProfilePage = () => {
                         </MDBRow>
                         <MDBRow>
                           <MDBCol sm="3">
-                            <MDBCardText>Giới tính</MDBCardText>
+                            <MDBCardText>{t("gender")}</MDBCardText>
                           </MDBCol>
                           <MDBCol sm="9">
                             <InPut
@@ -649,7 +650,7 @@ const ProfilePage = () => {
 
                         <div className="flex justify-between items-center min-h-[20vh]">
                           <div className="flex-[0.25]">
-                            <MDBCardText>Avatar</MDBCardText>
+                            <MDBCardText>{t("avatar")}</MDBCardText>
                           </div>
                           {/* setting image here */}
                           <div className="flex-[0.74]">
@@ -683,12 +684,12 @@ const ProfilePage = () => {
             <div onClick={() => setIsSubmitEmail(false)} className="absolute top-4 right-4 cursor-pointer">
               <img src="/image/icon/close.png" alt="" className="w-4" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-700">Xác nhận email</h2>
-            <p className="text-gray-500 text-sm mb-4">Vui lòng nhập email của bạn</p>
+            <h2 className="text-lg font-semibold text-gray-700">{t("confirmEmail")}</h2>
+            <p className="text-gray-500 text-sm mb-4">{t("pleaseEnterEmail")}</p>
             <input
               type="email"
               required
-              placeholder="Nhập email..."
+              placeholder={t("enterEmail")}
               onChange={(event) => setEmailSubmit(event.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
             />
@@ -705,7 +706,7 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 <span>
-                  Gửi yêu cầu
+                  {t("sendRequest")}
                 </span>
               )}
             </button>
@@ -729,10 +730,10 @@ const ProfilePage = () => {
               <img src="/image/icon/close.png" alt="" className="w-4" />
             </div>
             <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6 mt-2">
-              Nhập mã OTP
+              {t("enterOtp")}
             </h3>
             <p className="text-sm text-gray-600 text-center mb-4">
-              Vui lòng nhập mã OTP gồm 6 chữ số được gửi đến email của bạn
+              {t("otpInstruction")}
             </p>
             <OTPInput
               value={otp}
@@ -755,10 +756,10 @@ const ProfilePage = () => {
               className="mt-6 w-full py-3 bg-indigo-600 text-white text-lg font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
               onClick={() => HandleSubmitForm(otp)}
             >
-              Xác nhận OTP
+              {t("confirmOtp")}
             </button>
             <p className="text-sm text-gray-500 text-center mt-4">
-              Không nhận được mã?{" "}
+              {t("notReceiveOtp")}{" "}
               <span
                 className={`cursor-pointer ${resendTimer > 0
                   ? "text-gray-400 cursor-not-allowed"
@@ -766,7 +767,7 @@ const ProfilePage = () => {
                   }`}
                 onClick={resendTimer === 0 ? requestOtp : undefined}
               >
-                {resendTimer > 0 ? `Gửi lại sau ${resendTimer}s` : "Gửi lại"}
+                {resendTimer > 0 ? t("resendIn", { seconds: resendTimer }) : t("resendNow")}
               </span>
             </p>
           </div>
@@ -779,28 +780,28 @@ const ProfilePage = () => {
             <div onClick={() => setIsChangePassword(false)} className="absolute top-4 right-4 cursor-pointer">
               <img src="/image/icon/close.png" alt="" className="w-4" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-700">Đổi mật khẩu</h2>
+            <h2 className="text-lg font-semibold text-gray-700">{t("changePassword")}</h2>
             {havePassword && (
               <div>
-                <p className="text-gray-500 text-sm my-2 mt-3">Vui lòng nhập mật khẩu cũ của bạn</p>
+                <p className="text-gray-500 text-sm my-2 mt-3">{t("enterOldPassword")}</p>
                 <input
                   type="password"
                   required
-                  placeholder="Nhập mật khẩu cũ..."
+                  placeholder={t("enterOldPassword")}
                   onChange={(event) => setPassword(event.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
                 />
               </div>
             )}
-            <p className="text-gray-500 text-sm my-2 mt-3">Vui lòng nhập mật khẩu mới của bạn</p>
+            <p className="text-gray-500 text-sm my-2 mt-3">{t("enterNewPassword")}</p>
             <input
               type="password"
               required
-              placeholder="Nhập mật khẩu mới..."
+              placeholder={t("enterNewPassword")}
               onChange={(event) => setNewPassword(event.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
             />
-            <p className="text-gray-500 text-sm my-2 mt-3">Vui lòng nhập lại mật khẩu mới của bạn</p>
+            <p className="text-gray-500 text-sm my-2 mt-3">{t("confirmNewPassword")}</p>
             <input
               type="password"
               required
@@ -821,7 +822,7 @@ const ProfilePage = () => {
                 </div>
               ) : (
                 <span>
-                  Gửi yêu cầu
+                  {t("sendRequest")}
                 </span>
               )}
             </button>
