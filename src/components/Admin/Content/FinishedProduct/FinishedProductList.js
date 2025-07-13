@@ -215,8 +215,8 @@ const FinishedProductList = () => {
                         item.status === "còn hạn"
                           ? "green"
                           : item.status === "sắp hết hạn"
-                          ? "orange"
-                          : "red",
+                            ? "orange"
+                            : "red",
                     }}
                   ></div>
                 </div>
@@ -248,126 +248,134 @@ const FinishedProductList = () => {
       >
         {selectedProductDetail ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* THÔNG TIN ĐƠN HÀNG */}
-            <div className="space-y-2">
-              <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
-                {t("finishedProductList.orderInfo")}
-              </h3>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.productCode")}:</strong>{" "}
-                {selectedProductDetail?.masanpham}
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.productName")}:</strong>{" "}
-                {selectedProductDetail?.name}
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.productionDate")}:</strong>{" "}
-                {selectedProductDetail?.created_date?.slice(0, 10)}
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.expirationDate")}:</strong>{" "}
-                {selectedProductDetail?.expiration_date}
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.status")}:</strong>{" "}
-                <span
-                  style={{
-                    color:
-                      selectedProductDetail.status === "còn hạn"
-                        ? "green"
-                        : selectedProductDetail.status === "sắp hết hạn"
-                        ? "orange"
-                        : "red",
-                  }}
-                >
-                  {t(
-                    `finishedProductList.statuses.${selectedProductDetail?.status}`
-                  )}
-                </span>
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.materialType")}:</strong>{" "}
-                {
-                  selectedProductDetail?.type_material_id?.fuel_type_id
-                    ?.type_name
-                }
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.stockQuantity")}:</strong>{" "}
-                {selectedProductDetail?.quantity}
-              </p>
-            </div>
+            {/* THÔNG TIN SẢN PHẨM */}
+            <Form layout="vertical">
+              <div className="space-y-4">
+                <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
+                  {t("finishedProductList.orderInfo")}
+                </h3>
 
-            {/* THÔNG TIN CHI TIẾT */}
-            <div className="space-y-2">
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Mã thành phẩm: ${selectedProductDetail?.masanpham}`}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Tên thành phẩm: ${selectedProductDetail?.name}`}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Ngày sản xuất: ${selectedProductDetail?.created_date?.slice(0, 10)}`}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Hạn sử dụng: ${selectedProductDetail?.expiration_date}`}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Tình trạng: ${t(
+                      `finishedProductList.statuses.${selectedProductDetail?.status}`
+                    )}`}
+                    style={{
+                      color:
+                        selectedProductDetail.status === "còn hạn"
+                          ? "green"
+                          : selectedProductDetail.status === "sắp hết hạn"
+                            ? "orange"
+                            : "red",
+                    }}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Loại nguyên liệu: ${selectedProductDetail?.type_material_id?.fuel_type_id?.type_name
+                      }`}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Input
+                    readOnly
+                    value={`Số lượng tồn kho: ${selectedProductDetail?.quantity}`}
+                  />
+                </Form.Item>
+              </div>
+            </Form>
+
+            {/* CHI TIẾT KẾ HOẠCH SẢN XUẤT */}
+            <div className="space-y-4">
               <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
                 {t("finishedProductList.productionRequestDetail")}
               </h3>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.productionId")}:</strong>{" "}
-                {
-                  selectedProductDetail?.origin_production_request_id
-                    ?.production_id
-                }
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.requestName")}:</strong>{" "}
-                {
-                  selectedProductDetail?.origin_production_request_id
-                    ?.request_name
-                }
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.requestType")}:</strong>{" "}
-                {
-                  selectedProductDetail?.origin_production_request_id
-                    ?.request_type
-                }
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.materialQuantity")}:</strong>{" "}
-                {
-                  selectedProductDetail?.origin_production_request_id
-                    ?.material_quantity
-                }
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.lossPercentage")}:</strong>{" "}
-                {
-                  selectedProductDetail?.origin_production_request_id
-                    ?.loss_percentage
-                }
-                %
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.productQuantity")}:</strong>{" "}
-                {
-                  selectedProductDetail?.origin_production_request_id
-                    ?.product_quantity
-                }
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.priority")}:</strong>{" "}
-                {selectedProductDetail?.origin_production_request_id?.priority}
-              </p>
+
+              <Input
+                readOnly
+                value={`Mã kế hoạch: ${selectedProductDetail?.origin_production_request_id?.production_id
+                  }`}
+              />
+              <Input
+                readOnly
+                value={`Tên kế hoạch: ${selectedProductDetail?.origin_production_request_id?.request_name
+                  }`}
+              />
+              <Input
+                readOnly
+                value={`Loại yêu cầu: ${selectedProductDetail?.origin_production_request_id?.request_type
+                  }`}
+              />
+              <Input
+                readOnly
+                value={`Nguyên liệu sử dụng: ${selectedProductDetail?.origin_production_request_id?.material_quantity
+                  } Kg`}
+              />
+              <Input
+                readOnly
+                value={`Ước tính hao hụt: ${selectedProductDetail?.origin_production_request_id?.loss_percentage
+                  }%`}
+              />
+              <Input
+                readOnly
+                value={`Thành phẩm ước tính: ${selectedProductDetail?.origin_production_request_id?.product_quantity
+                  } Kg`}
+              />
+              <Input
+                readOnly
+                value={`Mức độ ưu tiên: ${selectedProductDetail?.origin_production_request_id?.priority ?? "-"
+                  }`}
+              />
             </div>
 
-            {/* CHI PHÍ / BAO BÌ nếu cần */}
-            <div className="md:col-span-2 space-y-2">
+            {/* BAO BÌ */}
+            <div className="md:col-span-2 space-y-4">
               <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
                 {t("finishedProductList.packagingInfo")}
               </h3>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.vacuumBag")}:</strong>{" "}
-                {selectedProductDetail?.packaging?.vacuumBag}{" "}
-                {t("finishedProductList.unit.bag")}
-              </p>
-              <p className="pl-2">
-                <strong>{t("finishedProductList.cartonBox")}:</strong>{" "}
-                {selectedProductDetail?.packaging?.carton}{" "}
-                {t("finishedProductList.unit.carton")}
-              </p>
+              <Input
+                readOnly
+                value={`Túi chân không: ${selectedProductDetail?.origin_production_request_id?.packaging?.vacuumBagBoxId?.package_material_name || "-"
+                  } - Số lượng: ${selectedProductDetail?.origin_production_request_id?.packaging?.vacuumBag || 0}`}
+              />
+
+              <Input
+                readOnly
+                value={`Thùng carton: ${selectedProductDetail?.origin_production_request_id?.packaging?.cartonBoxId?.package_material_name || "-"
+                  } - Số lượng: ${selectedProductDetail?.origin_production_request_id?.packaging?.carton || 0}`}
+              />
             </div>
           </div>
         ) : (

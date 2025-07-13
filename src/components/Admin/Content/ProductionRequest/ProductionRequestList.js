@@ -25,6 +25,8 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
 import { VscChecklist } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
+import { AiFillEdit } from "react-icons/ai";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
@@ -67,6 +69,24 @@ const ProductionRequestList = () => {
 
   // Form để bind data khi chỉnh sửa
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (selectedRequest && isEditMode) {
+      form.setFieldsValue({
+        request_name: selectedRequest.request_name,
+        request_type: selectedRequest.request_type,
+        material: selectedRequest.material_id || selectedRequest.material,
+        product_quantity: selectedRequest.product_quantity,
+        material_quantity: selectedRequest.material_quantity,
+        loss_percentage: selectedRequest.loss_percentage,
+        priority: selectedRequest.priority,
+        production_date: dayjs(selectedRequest.production_date),
+        end_date: dayjs(selectedRequest.end_date),
+        status: selectedRequest.status,
+        note: selectedRequest.note,
+      });
+    }
+  }, [selectedRequest, isEditMode, form]);
+
 
   const navigate = useNavigate();
 
@@ -461,25 +481,37 @@ const ProductionRequestList = () => {
       key: "action",
       render: (record) => (
         <div className="flex justify-center items-center gap-2">
-          <div
-            className=" text-black gap-2 cursor-pointer hover:bg-gray-200  rounded-lg transition-all duration-200 "
+          {/* Xem chi tiết */}
+          <Button
+            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
+            size="middle"
             onClick={() => handleViewDetail(record)}
-          >
-            <Button
-              icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
-              size="middle"
-            />
-          </div>
+            className="hover:bg-gray-200"
+          />
+
+          {/* Nút xoá: chỉ hiển thị nếu trạng thái là "Chờ duyệt" */}
           {record.status === "Chờ duyệt" && (
             <Button
               icon={<MdDelete style={{ color: "red" }} />}
               onClick={() => confirmDelete(record)}
-              disabled={record.status !== "Chờ duyệt"}
               loading={mutationDelete.isLoading}
               size="middle"
             />
           )}
+
+          {/* Nút cập nhật: Luôn hiển thị */}
+          <Button
+            type="link"
+            icon={<AiFillEdit style={{ color: "#0e79c7" }} />}
+            className="hover:bg-gray-200"
+            onClick={() => {
+              setSelectedRequest(record);
+              setIsEditMode(true);
+              setIsDrawerOpen(true);
+            }}
+          />
         </div>
+
       ),
     },
   ];
@@ -595,131 +627,74 @@ const ProductionRequestList = () => {
       >
         {/* Chế độ XEM CHI TIẾT */}
         {selectedRequest && !isEditMode && (
-          <div className="">
-            {/* <h2 className="text-xl font-bold uppercase text-gray-800 text-center mb-4">
-      Thông tin chi tiết
-    </h2> */}
+          <Form layout="vertical">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Tên đơn - hàng riêng */}
+              <Form.Item label={t("form.request_name")} className="!mb-0 lg:col-span-2">
+                <Input value={selectedRequest.request_name} disabled />
+              </Form.Item>
 
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
-              <div className="grid grid-cols-[3fr_7fr] gap-0">
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.request_name")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.request_name}
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.request_type")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.request_type}
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.material")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.material}
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.product_quantity")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.product_quantity} Kg
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.material_quantity")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.material_quantity} Kg
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.loss_percentage")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.loss_percentage}%
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.priority")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.priority}
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.production_date")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {convertDateStringV1(selectedRequest.production_date)}
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.end_date")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {convertDateStringV1(selectedRequest.end_date)}
-                </div>
-
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.status")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  <Tag
-                    color={statusColors[selectedRequest.status] || "default"}
-                  >
+              {/* Loại đơn + Trạng thái */}
+              <Form.Item label={t("form.request_type")} className="!mb-0">
+                <Input value={selectedRequest.request_type} disabled />
+              </Form.Item>
+              <Form.Item label={t("form.status")} className="!mb-0">
+                <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center">
+                  <Tag color={statusColors[selectedRequest.status] || "default"}>
                     {t(`status.${statusMap[selectedRequest.status]}`)}
                   </Tag>
                 </div>
+              </Form.Item>
 
-                {selectedRequest.note && (
-                  <>
-                    <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                      {t("form.note")}
-                    </div>
-                    <div className="p-3 border border-gray-300 whitespace-pre-wrap">
-                      {selectedRequest.note}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
+              {/* Nguyên liệu - hàng riêng */}
+              <Form.Item label={t("form.material")} className="!mb-0 lg:col-span-2">
+                <Input value={selectedRequest.material} disabled />
+              </Form.Item>
 
-            {/* Nút Chỉnh Sửa / Duyệt */}
-            <div className="flex justify-end gap-4 mt-6 flex-wrap">
-              {/* Nút sửa */}
-              <Button
-                type="primary"
-                className="px-6 py-2 text-lg"
-                onClick={handleEdit}
-              >
-                {t("action.edit")}
-              </Button>
+              {/* Thành phẩm + Nguyên liệu */}
+              <Form.Item label={t("form.product_quantity")} className="!mb-0">
+                <Input value={`${selectedRequest.product_quantity} Kg`} disabled />
+              </Form.Item>
+              <Form.Item label={t("form.material_quantity")} className="!mb-0">
+                <Input value={`${selectedRequest.material_quantity} Kg`} disabled />
+              </Form.Item>
 
-              {/* Nút duyệt nếu đang chờ duyệt */}
-              {selectedRequest.status === "Chờ duyệt" && (
-                <Button
-                  type="default"
-                  className="px-6 py-2 text-lg"
-                  onClick={() => handleApprove(selectedRequest)}
-                >
-                  {t("action.approve")}
-                </Button>
+              {/* Hao hụt + Ưu tiên */}
+              <Form.Item label={t("form.loss_percentage")} className="!mb-0">
+                <Input value={`${selectedRequest.loss_percentage}%`} disabled />
+              </Form.Item>
+              <Form.Item label={t("form.priority")} className="!mb-0">
+                <Input value={selectedRequest.priority} disabled />
+              </Form.Item>
+
+              {/* Ngày sản xuất + Ngày kết thúc */}
+              <Form.Item label={t("form.production_date")} className="!mb-0">
+                <Input value={convertDateStringV1(selectedRequest.production_date)} disabled />
+              </Form.Item>
+              <Form.Item label={t("form.end_date")} className="!mb-0">
+                <Input value={convertDateStringV1(selectedRequest.end_date)} disabled />
+              </Form.Item>
+
+              {/* Ghi chú nếu có */}
+              {selectedRequest.note && (
+                <Form.Item label={t("form.note")} className="lg:col-span-2 !mb-0">
+                  <Input.TextArea value={selectedRequest.note} rows={3} disabled />
+                </Form.Item>
               )}
-
-              {/* Nút đóng */}
-              <button
-                onClick={() => setIsDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-6 py-0.5 text-lg rounded hover:bg-gray-600"
-              >
-                {t("common.close")}
-              </button>
             </div>
-          </div>
+
+            {/* Nút hành động */}
+            <div className="flex justify-end gap-3 mt-6 flex-wrap">
+              {selectedRequest.status === "Chờ duyệt" && (
+                <ButtonComponent
+                  type="approve"
+                  onClick={() => handleApprove(selectedRequest)}
+                />
+              )}
+              <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+            </div>
+          </Form>
+
         )}
 
         {/* Chế độ CHỈNH SỬA */}
@@ -888,21 +863,18 @@ const ProductionRequestList = () => {
               </Form.Item>
             </Form>
 
-            <Space style={{ marginTop: 16 }}>
-              <Button
-                type="primary"
+            <div className="flex justify-end gap-3 mt-2">
+              <ButtonComponent
+                type="update"
                 onClick={handleSaveUpdate}
                 loading={mutationUpdate.isLoading}
-              >
-                {t("action.save")}
-              </Button>
-              <Button
-                onClick={handleCancelEdit}
+              />
+              <ButtonComponent
+                type="close"
+                onClick={() => setIsDrawerOpen(false)}
                 disabled={mutationUpdate.isLoading}
-              >
-                {t("action.cancel")}
-              </Button>
-            </Space>
+              />
+            </div>
           </div>
         )}
       </DrawerComponent>

@@ -18,6 +18,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { VscPackage } from "react-icons/vsc";
 import axios from "axios";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
@@ -265,10 +266,10 @@ const BoxList = () => {
               value === "Size S"
                 ? "green"
                 : value === "Size M"
-                ? "blue"
-                : value === "Size L"
-                ? "orange"
-                : "default"
+                  ? "blue"
+                  : value === "Size L"
+                    ? "orange"
+                    : "default"
             }
           >
             {value}
@@ -438,51 +439,84 @@ const BoxList = () => {
         onClose={() => setIsDrawerOpen(false)}
         width={400}
       >
-        {selectedBox && (
-          <Descriptions column={1} bordered>
-            <Descriptions.Item label={t("boxList.details.name")}>
-              {selectedBox.package_material_name}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("boxList.quantity")}>
-              {selectedBox.quantity}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("boxList.status")}>
-              <Tag color={selectedBox.is_delete ? "red" : "green"}>
-                {selectedBox.is_delete
-                  ? t("boxList.status_deleted")
-                  : t("boxList.status_active")}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label={t("boxList.capacity")}>
-              {selectedBox.capacity}{" "}
-              {selectedBox.type === "túi chân không" ? "g" : "kg"}
-            </Descriptions.Item>
+        {selectedBox ? (
+          <Form layout="vertical" disabled>
+            <div className="grid grid-cols-1 gap-0">
+              {/* Tên bao bì */}
+              <Form.Item
+                label={<span className="!mt-0">{t("boxList.details.name")}</span>}
+              >
+                <Input value={selectedBox.package_material_name} />
+              </Form.Item>
 
-            <Descriptions.Item label={t("boxList.details.size")}>
-              {selectedBox.size_category === "nhỏ"
-                ? "Size S"
-                : selectedBox.size_category === "trung bình"
-                ? "Size M"
-                : selectedBox.size_category === "lớn"
-                ? "Size L"
-                : t("boxList.sizes.unknown")}
-            </Descriptions.Item>
+              {/* Số lượng và Trạng thái */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <Form.Item
+                  label={<span className="!mt-0">{t("boxList.quantity")}</span>}
+                >
+                  <Input value={selectedBox.quantity} />
+                </Form.Item>
+                <Form.Item
+                  label={<span className="!mt-0">{t("boxList.status")}</span>}
+                >
+                  <div className="border border-gray-300 rounded px-2 py-1 h-[40px] flex items-center">
+                    <Tag color={selectedBox.is_delete ? "red" : "green"}>
+                      {selectedBox.is_delete
+                        ? t("boxList.status_deleted")
+                        : t("boxList.status_active")}
+                    </Tag>
+                  </div>
+                </Form.Item>
+              </div>
 
-            <Descriptions.Item label={t("boxList.details.created")}>
-              {new Date(selectedBox.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("boxList.details.updated")}>
-              {new Date(selectedBox.updatedAt).toLocaleString()}
-            </Descriptions.Item>
-          </Descriptions>
+              {/* Dung tích và Size */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <Form.Item
+                  label={<span className="!mt-0">{t("boxList.capacity")}</span>}
+                >
+                  <Input
+                    value={`${selectedBox.capacity} ${selectedBox.type === "túi chân không" ? "g" : "kg"
+                      }`}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={<span className="!mt-0">{t("boxList.details.size")}</span>}
+                >
+                  <Input
+                    value={
+                      selectedBox.size_category === "nhỏ"
+                        ? "Size S"
+                        : selectedBox.size_category === "trung bình"
+                          ? "Size M"
+                          : selectedBox.size_category === "lớn"
+                            ? "Size L"
+                            : t("boxList.sizes.unknown")
+                    }
+                  />
+                </Form.Item>
+              </div>
+
+              {/* Ngày tạo và Ngày cập nhật */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <Form.Item
+                  label={<span className="!mt-0">{t("boxList.details.created")}</span>}
+                >
+                  <Input value={new Date(selectedBox.createdAt).toLocaleString()} />
+                </Form.Item>
+                <Form.Item
+                  label={<span className="!mt-0">{t("boxList.details.updated")}</span>}
+                >
+                  <Input value={new Date(selectedBox.updatedAt).toLocaleString()} />
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
+        ) : (
+          <p className="text-center text-gray-500">{t("boxList.details.loading")}</p>
         )}
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-          >
-            {t("boxList.details.close")}
-          </button>
+
+        <div className="flex justify-end mt-2">
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
       </Drawer>
 
@@ -491,7 +525,7 @@ const BoxList = () => {
         open={isEditDrawerOpen}
         onClose={() => {
           setIsEditDrawerOpen(false);
-          setBase64Image(""); // ✅ Reset ảnh khi đóng
+          setBase64Image("");
         }}
         width={400}
       >
@@ -542,13 +576,13 @@ const BoxList = () => {
               fileList={
                 base64Image
                   ? [
-                      {
-                        uid: "-1",
-                        name: "Ảnh đã chọn",
-                        status: "done",
-                        url: base64Image,
-                      },
-                    ]
+                    {
+                      uid: "-1",
+                      name: "Ảnh đã chọn",
+                      status: "done",
+                      url: base64Image,
+                    },
+                  ]
                   : []
               }
               onChange={async ({ fileList }) => {
@@ -581,13 +615,9 @@ const BoxList = () => {
             </div>
           )}
 
-          <div className="flex justify-end">
-            <Button onClick={() => setIsEditDrawerOpen(false)} className="mr-2">
-              {t("boxList.update.cancel")}
-            </Button>
-            <Button type="primary" htmlType="submit">
-              {t("boxList.update.submit")}
-            </Button>
+          <div className="flex justify-end gap-3">
+            <ButtonComponent type="update" htmlType="submit" />
+            <ButtonComponent type="close" onClick={() => setIsEditDrawerOpen(false)} />
           </div>
         </Form>
       </Drawer>

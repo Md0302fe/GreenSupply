@@ -39,6 +39,7 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 import TableProcess from "../../components/Admin/Content/Order/TableUser";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 
 const { TextArea } = Input;
 
@@ -206,23 +207,23 @@ const ProductionProcessingList = () => {
   }, [data, t]);
 
   useEffect(() => {
-  const queryParams = new URLSearchParams(location.search);
-  const statusFromURL = queryParams.get("status");
-  const typeFromURL = queryParams.get("type");
+    const queryParams = new URLSearchParams(location.search);
+    const statusFromURL = queryParams.get("status");
+    const typeFromURL = queryParams.get("type");
 
-  if (statusFromURL) {
-    setFilters((prev) => ({
-      ...prev,
-      status: statusFromURL,
-    }));
-  }
+    if (statusFromURL) {
+      setFilters((prev) => ({
+        ...prev,
+        status: statusFromURL,
+      }));
+    }
 
-  if (typeFromURL === "consolidate") {
-    handleLoadConsolidate();
-  } else {
-    set_type_process("single");
-  }
-}, [location.search]);
+    if (typeFromURL === "consolidate") {
+      handleLoadConsolidate();
+    } else {
+      set_type_process("single");
+    }
+  }, [location.search]);
 
 
 
@@ -433,14 +434,29 @@ const ProductionProcessingList = () => {
       className: "text-center",
       render: (_, record) => (
         <Space>
+          {/* Nút xem chi tiết */}
           <Button
             icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
             type="link"
             onClick={() => handleViewDetail(record)}
           />
+
+          {/* Nút cập nhật nếu đang "Chờ duyệt" */}
+          {record.status === "Chờ duyệt" && (
+            <Button
+              icon={<EditOutlined style={{ color: "#0e79c7" }} />}
+              type="link"
+              className="hover:bg-gray-200"
+              onClick={() => {
+                setSelectedProcess(record);
+                handleOpenEditDrawer(true);
+              }}
+            />
+          )}
         </Space>
       ),
-    },
+    }
+
   ];
 
   return (
@@ -493,18 +509,16 @@ const ProductionProcessingList = () => {
                   className={`
               inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
               text-sm font-medium transition-all duration-300
-              ${
-                type_process === "single"
-                  ? "bg-white text-green-600 shadow-sm transform scale-105"
-                  : "text-gray-600 hover:text-green-600 hover:bg-white/50"
-              }
+              ${type_process === "single"
+                      ? "bg-white text-green-600 shadow-sm transform scale-105"
+                      : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+                    }
             `}
                   onClick={() => set_type_process("single")}
                 >
                   <FaGear
-                    className={`text-base ${
-                      type_process === "single" ? "text-green-500" : ""
-                    }`}
+                    className={`text-base ${type_process === "single" ? "text-green-500" : ""
+                      }`}
                   />
                   <span>{t("productionProcess.button.single")}</span>
                 </button>
@@ -513,18 +527,16 @@ const ProductionProcessingList = () => {
                   className={`
               inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
               text-sm font-medium transition-all duration-300
-              ${
-                type_process === "consolidate"
-                  ? "bg-white text-green-600 shadow-sm transform scale-105"
-                  : "text-gray-600 hover:text-green-600 hover:bg-white/50"
-              }
+              ${type_process === "consolidate"
+                      ? "bg-white text-green-600 shadow-sm transform scale-105"
+                      : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+                    }
             `}
                   onClick={() => handleLoadConsolidate()}
                 >
                   <FaGears
-                    className={`text-base ${
-                      type_process === "consolidate" ? "text-green-500" : ""
-                    }`}
+                    className={`text-base ${type_process === "consolidate" ? "text-green-500" : ""
+                      }`}
                   />
                   <span>{t("productionProcess.button.consolidated")}</span>
                 </button>
@@ -552,146 +564,115 @@ const ProductionProcessingList = () => {
         open={isDrawerOpen}
       >
         {selectedProcess && (
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label={t("productionProcess.field._id")}>
-              {selectedProcess._id}
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={t("productionProcess.field.production_name")}
-            >
-              {selectedProcess.production_name ||
-                selectedProcess.production_request_id.request_name}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("productionProcess.field.status")}>
-              {t(`status.${statusMap[selectedProcess.status]}`)}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("productionProcess.field.start_time")}>
-              {selectedProcess.start_time
-                ? moment(selectedProcess.start_time).format("DD/MM/YYYY HH:mm")
-                : t("common.unknown")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("productionProcess.field.end_time")}>
-              {selectedProcess.end_time
-                ? moment(selectedProcess.end_time).format("DD/MM/YYYY HH:mm")
-                : t("common.unknown")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("productionProcess.field.note")}>
-              {selectedProcess.note || "Không có"}
-            </Descriptions.Item>
+          <Form layout="vertical" disabled>
+            <div className="grid grid-cols-1 gap-2">
+              <Form.Item label={t("productionProcess.field._id")} className="!mb-0">
+                <Input value={selectedProcess._id} />
+              </Form.Item>
 
-            {/* Hiển thị thời gian của từng giai đoạn nếu có */}
-            {selectedProcess.process_stage1_start && (
-              <Descriptions.Item label={t("productionProcess.field.stage1")}>
-                {moment(selectedProcess.process_stage1_start).format(
-                  "DD/MM/YYYY HH:mm"
-                )}{" "}
-                -{" "}
-                {selectedProcess.process_stage1_end
-                  ? moment(selectedProcess.process_stage1_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : t("common.notEnded")}
-              </Descriptions.Item>
-            )}
-            {selectedProcess.process_stage2_start && (
-              <Descriptions.Item label={t("productionProcess.field.stage2")}>
-                {moment(selectedProcess.process_stage2_start).format(
-                  "DD/MM/YYYY HH:mm"
-                )}{" "}
-                -{" "}
-                {selectedProcess.process_stage2_end
-                  ? moment(selectedProcess.process_stage2_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : t("common.notEnded")}
-              </Descriptions.Item>
-            )}
-            {selectedProcess.process_stage3_start && (
-              <Descriptions.Item label={t("productionProcess.field.stage3")}>
-                {moment(selectedProcess.process_stage3_start).format(
-                  "DD/MM/YYYY HH:mm"
-                )}{" "}
-                -{" "}
-                {selectedProcess.process_stage3_end
-                  ? moment(selectedProcess.process_stage3_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : t("common.notEnded")}
-              </Descriptions.Item>
-            )}
-            {selectedProcess.process_stage4_start && (
-              <Descriptions.Item label={t("productionProcess.field.stage4")}>
-                {moment(selectedProcess.process_stage4_start).format(
-                  "DD/MM/YYYY HH:mm"
-                )}{" "}
-                -{" "}
-                {selectedProcess.process_stage4_end
-                  ? moment(selectedProcess.process_stage4_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : t("common.notEnded")}
-              </Descriptions.Item>
-            )}
-            {selectedProcess.process_stage5_start && (
-              <Descriptions.Item label={t("productionProcess.field.stage5")}>
-                {moment(selectedProcess.process_stage5_start).format(
-                  "DD/MM/YYYY HH:mm"
-                )}{" "}
-                -{" "}
-                {selectedProcess.process_stage5_end
-                  ? moment(selectedProcess.process_stage5_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : t("common.notEnded")}
-              </Descriptions.Item>
-            )}
-            {selectedProcess.process_stage6_start && (
-              <Descriptions.Item label={t("productionProcess.field.stage6")}>
-                {moment(selectedProcess.process_stage6_start).format(
-                  "DD/MM/YYYY HH:mm"
-                )}{" "}
-                -{" "}
-                {selectedProcess.process_stage6_end
-                  ? moment(selectedProcess.process_stage6_end).format(
-                      "DD/MM/YYYY HH:mm"
-                    )
-                  : t("common.notEnded")}
-              </Descriptions.Item>
-            )}
-          </Descriptions>
+              <Form.Item
+                label={t("productionProcess.field.production_name")}
+                className="!mb-0"
+              >
+                <Input
+                  value={
+                    selectedProcess.production_name ||
+                    selectedProcess.production_request_id?.request_name
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item label={t("form.status")} className="!mb-0">
+                <div className="border border-gray-300 rounded px-2 py-1 h-[40px] flex items-center font-semibold">
+                  {(() => {
+                    const status = selectedProcess.status;
+                    let color = "default";
+
+                    if (status === "Chờ duyệt") color = "gold";
+                    else if (status === "Đang xử lý") color = "cyan";
+                    else if (status === "Từ chối") color = "red";
+                    else if (status === "Đã huỷ") color = "volcano";
+                    else if (status === "Đang sản xuất") color = "blue";
+                    else if (status === "Hoàn thành") color = "green";
+
+                    return (
+                      <Tag color={color} style={{ fontWeight: 600 }}>
+                        {t(`status.${statusMap[status]}`) || status}
+                      </Tag>
+                    );
+                  })()}
+                </div>
+              </Form.Item>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Thời gian bắt đầu */}
+                <Form.Item label={t("productionProcess.field.start_time")} className="!mb-0">
+                  <Input
+                    value={
+                      selectedProcess.start_time
+                        ? moment(selectedProcess.start_time).format("DD/MM/YYYY HH:mm")
+                        : t("common.unknown")
+                    }
+                  />
+                </Form.Item>
+
+                {/* Thời gian kết thúc */}
+                <Form.Item label={t("productionProcess.field.end_time")} className="!mb-0">
+                  <Input
+                    value={
+                      selectedProcess.end_time
+                        ? moment(selectedProcess.end_time).format("DD/MM/YYYY HH:mm")
+                        : t("common.unknown")
+                    }
+                  />
+                </Form.Item>
+              </div>
+
+              <Form.Item label={t("productionProcess.field.note")} className="!mb-0">
+                <Input.TextArea value={selectedProcess.note || "Không có"} rows={3} />
+              </Form.Item>
+
+              {/* Các giai đoạn nếu có */}
+              {[1, 2, 3, 4, 5, 6].map((stage) => {
+                const startKey = `process_stage${stage}_start`;
+                const endKey = `process_stage${stage}_end`;
+                if (selectedProcess[startKey]) {
+                  return (
+                    <Form.Item
+                      key={stage}
+                      label={t(`productionProcess.field.stage${stage}`)}
+                      className="!mb-0"
+                    >
+                      <Input
+                        value={`${moment(selectedProcess[startKey]).format(
+                          "DD/MM/YYYY HH:mm"
+                        )} - ${selectedProcess[endKey]
+                          ? moment(selectedProcess[endKey]).format("DD/MM/YYYY HH:mm")
+                          : t("common.notEnded")
+                          }`}
+                      />
+                    </Form.Item>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </Form>
         )}
 
-        <Space style={{ marginTop: 16, width: "100%" }}>
+        {/* Nút hành động */}
+        <div className="flex justify-end items-center gap-4 mt-2">
           {selectedProcess?.status === "Chờ duyệt" && (
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={handleOpenEditDrawer}
-              style={{ flex: 1 }}
-            >
-              {t("productionProcess.button.update")}
-            </Button>
-          )}
-
-          {selectedProcess?.status === "Chờ duyệt" && (
-            <Button
-              type="primary"
-              icon={<CheckCircleOutlined />}
+            <ButtonComponent
+              type="approve"
               onClick={handleApprove}
-              style={{ flex: 1 }}
-            >
-              {t("productionProcess.button.approve")}
-            </Button>
+            />
           )}
-          <div className="flex justify-end items-center w-full mr-2 gap-4">
-            <button
-              onClick={() => setIsDrawerOpen(false)}
-              className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
-            >
-              {t("common.close")}
-            </button>
-          </div>
-        </Space>
+          <ButtonComponent
+            type="close"
+            onClick={() => setIsDrawerOpen(false)}
+          />
+        </div>
       </Drawer>
 
       {/* Drawer Cập Nhật */}
@@ -712,66 +693,74 @@ const ProductionProcessingList = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label={t("productionProcess.field.start_time")}
-            name="start_time"
-            rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
-          >
-            <DatePicker
-              showTime
-              format="DD/MM/YYYY HH:mm"
-              value={startDate}
-              onChange={(date) => setStartDate(date)}
-              disabledDate={(current) =>
-                current && current < moment().startOf("day")
-              }
-            />
-          </Form.Item>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Form.Item
+              label={t("productionProcess.field.start_time")}
+              name="start_time"
+              rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
+              className="!mb-0"
+            >
+              <DatePicker
+                showTime
+                format="DD/MM/YYYY HH:mm"
+                value={startDate}
+                onChange={(date) => setStartDate(date)}
+                disabledDate={(current) =>
+                  current && current < moment().startOf("day")
+                }
+                className="w-full"
+              />
+            </Form.Item>
 
-          <Form.Item
-            label={t("productionProcess.field.end_time")}
-            name="end_time"
-            dependencies={["start_time"]}
-            rules={[
-              { required: true, message: "Vui lòng chọn ngày kết thúc!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (
-                    !value ||
-                    !getFieldValue("start_time") ||
-                    value.isAfter(getFieldValue("start_time"))
-                  ) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Ngày kết thúc phải sau ngày bắt đầu!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <DatePicker
-              showTime
-              format="DD/MM/YYYY HH:mm"
-              value={endDate}
-              onChange={(date) => setEndDate(date)}
-              disabledDate={(current) => {
-                return current && startDate && current.isBefore(startDate);
-              }}
-            />
-          </Form.Item>
+            <Form.Item
+              label={t("productionProcess.field.end_time")}
+              name="end_time"
+              dependencies={["start_time"]}
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày kết thúc!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (
+                      !value ||
+                      !getFieldValue("start_time") ||
+                      value.isAfter(getFieldValue("start_time"))
+                    ) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("Ngày kết thúc phải sau ngày bắt đầu!")
+                    );
+                  },
+                }),
+              ]}
+              className="!mb-0"
+            >
+              <DatePicker
+                showTime
+                format="DD/MM/YYYY HH:mm"
+                value={endDate}
+                onChange={(date) => setEndDate(date)}
+                disabledDate={(current) =>
+                  current && startDate && current.isBefore(startDate)
+                }
+                className="w-full"
+              />
+            </Form.Item>
+          </div>
 
           <Form.Item label={t("productionProcess.field.note")} name="note">
             <TextArea rows={3} />
           </Form.Item>
-          <Space>
-            <Button type="primary" onClick={handleUpdate}>
-              {t("action.save")}
-            </Button>
-            <Button onClick={() => setIsEditModalOpen(false)}>
-              {t("action.cancel")}
-            </Button>
-          </Space>
+          <div className="flex justify-end gap-3 mt-4">
+            <ButtonComponent
+              type="update"
+              onClick={handleUpdate}
+            />
+            <ButtonComponent
+              type="close"
+              onClick={() => setIsEditModalOpen(false)}
+            />
+          </div>
         </Form>
       </Drawer>
     </div>
