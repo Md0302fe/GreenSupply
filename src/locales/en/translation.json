@@ -1024,7 +1024,8 @@
     "productionDateRequired": "Please select production date",
     "endDateRequired": "Please select end date",
     "mustBeGreaterThanZero": "Value must be greater than 0",
-    "lossPercentageRange": "Percentage must be between 0 and 100"
+    "lossPercentageRange": "Percentage must be between 0 and 100",
+    "checkFieldsBeforeSubmit": "Please check all error fields before submitting."
   },
   "messages": {
     "notLoggedIn": "You are not logged in.",
@@ -1048,7 +1049,10 @@
     "materialOverLimit": "Desired output exceeds current stock. Max output: {{max}} Kg.",
     "materialStockExceeded": "Entered quantity exceeds available stock ({{available}} Kg).",
     "createFail": "Failed to create production request!",
-    "submitError": "An error occurred while creating the production request."
+    "submitError": "An error occurred while creating the production request.",
+    "packagingLoadError": "Failed to load packaging materials.",
+    "needVacuumBagFirst": "You need to select the vacuum bag first to calculate carton boxes.",
+    "notEnoughPackaging": "{{type}} is not enough in stock. Required: {{required}}, available: {{available}}"
   },
   "materialExport": {
     "title": "Create Material Export Order",
@@ -1116,7 +1120,14 @@
     "selectProductionDate": "Select production date",
     "endDate": "End Date",
     "note": "Note",
-    "enterNote": "Enter note (optional)"
+    "enterNote": "Enter note (optional)",
+    "selectVacuumBag": "Select Vacuum Bag",
+    "selectCartonBox": "Select Carton Box",
+    "needProductQtyFirst": "Enter product quantity first",
+    "suggestedVacuumBags": "Suggested vacuum bags: {{count}} bags",
+    "suggestedCartons": "Suggested carton boxes: {{count}} boxes",
+    "vacuumBag": "Vacuum Bag",
+    "cartonBox": "Carton Box"
   },
   "priority": {
     "high": "High",

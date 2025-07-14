@@ -1016,7 +1016,8 @@
     "productionDateRequired": "Vui lòng chọn ngày sản xuất",
     "endDateRequired": "Vui lòng chọn ngày kết thúc",
     "mustBeGreaterThanZero": "Giá trị phải lớn hơn 0",
-    "lossPercentageRange": "Phần trăm phải từ 0 đến 100"
+    "lossPercentageRange": "Phần trăm phải từ 0 đến 100",
+    "checkFieldsBeforeSubmit": "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận."
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1040,7 +1041,10 @@
     "materialOverLimit": "Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là {{max}} Kg.",
     "materialStockExceeded": "Số lượng nguyên liệu vượt quá số lượng tồn kho hiện tại ({{available}} Kg).",
     "createFail": "Tạo Production Request thất bại!",
-    "submitError": "Có lỗi xảy ra khi tạo Production Request."
+    "submitError": "Có lỗi xảy ra khi tạo Production Request.",
+    "packagingLoadError": "Không thể tải danh sách bao bì.",
+    "needVacuumBagFirst": "Bạn cần chọn túi chân không trước để tính số lượng thùng carton.",
+    "notEnoughPackaging": "{{type}} trong kho không đủ. Cần: {{required}}, hiện có: {{available}}"
   },
   "materialExport": {
     "title": "Tạo Đơn Xuất Kho",
@@ -1108,7 +1112,14 @@
     "selectProductionDate": "Chọn ngày sản xuất",
     "endDate": "Ngày kết thúc",
     "note": "Ghi chú",
-    "enterNote": "Nhập ghi chú (nếu có)"
+    "enterNote": "Nhập ghi chú (nếu có)",
+    "selectVacuumBag": "Chọn Túi chân không",
+    "selectCartonBox": "Chọn Thùng carton",
+    "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
+    "suggestedVacuumBags": "Số lượng túi chân không gợi ý: {{count}} túi",
+    "suggestedCartons": "Số lượng thùng carton gợi ý: {{count}} thùng",
+    "vacuumBag": "Túi chân không",
+    "cartonBox": "Thùng carton"
   },
   "priority": {
     "high": "Cao",
