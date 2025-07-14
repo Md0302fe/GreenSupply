@@ -455,6 +455,12 @@ const ProductionRequest = () => {
                 className="w-full rounded border-gray-300"
                 placeholder={t("productionRequest.enterMaterialQty")}
                 onChange={calculateProductQuantity}
+                parser={(value) => value.replace(/[^\d]/g, "")} // loại bỏ ký tự không phải số
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Item>
           </div>
@@ -496,6 +502,9 @@ const ProductionRequest = () => {
           <Form.Item
             label={t("productionRequest.selectVacuumBag")}
             name="vacuumBagSelect"
+            rules={[
+              { required: true, message: t("validation.vacuumBagRequired") },
+            ]}
           >
             <Select
               placeholder={t("productionRequest.needProductQtyFirst")}
@@ -516,6 +525,9 @@ const ProductionRequest = () => {
           <Form.Item
             label={t("productionRequest.selectCartonBox")}
             name="cartonSelect"
+            rules={[
+              { required: true, message: t("validation.cartonBoxRequired") },
+            ]}
           >
             <Select
               placeholder={t("productionRequest.needProductQtyFirst")}

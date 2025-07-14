@@ -1025,7 +1025,9 @@
     "endDateRequired": "Please select end date",
     "mustBeGreaterThanZero": "Value must be greater than 0",
     "lossPercentageRange": "Percentage must be between 0 and 100",
-    "checkFieldsBeforeSubmit": "Please check all error fields before submitting."
+    "checkFieldsBeforeSubmit": "Please check all error fields before submitting.",
+    "vacuumBagRequired": "Please select vacuum bag",
+    "cartonBoxRequired": "Please select carton box"
   },
   "messages": {
     "notLoggedIn": "You are not logged in.",
@@ -1127,7 +1129,9 @@
     "suggestedVacuumBags": "Suggested vacuum bags: {{count}} bags",
     "suggestedCartons": "Suggested carton boxes: {{count}} boxes",
     "vacuumBag": "Vacuum Bag",
-    "cartonBox": "Carton Box"
+    "cartonBox": "Carton Box",
+    "selectEndDate": "Select end date",
+    "selectProductionDateFirst": "Select production date first"
   },
   "priority": {
     "high": "High",

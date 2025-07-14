@@ -1017,7 +1017,9 @@
     "endDateRequired": "Vui lòng chọn ngày kết thúc",
     "mustBeGreaterThanZero": "Giá trị phải lớn hơn 0",
     "lossPercentageRange": "Phần trăm phải từ 0 đến 100",
-    "checkFieldsBeforeSubmit": "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận."
+    "checkFieldsBeforeSubmit": "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận.",
+    "vacuumBagRequired": "Vui lòng chọn túi chân không.",
+    "cartonBoxRequired": "Vui lòng chọn thùng carton."
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1119,7 +1121,9 @@
     "suggestedVacuumBags": "Số lượng túi chân không gợi ý: {{count}} túi",
     "suggestedCartons": "Số lượng thùng carton gợi ý: {{count}} thùng",
     "vacuumBag": "Túi chân không",
-    "cartonBox": "Thùng carton"
+    "cartonBox": "Thùng carton",
+    "selectEndDate": "Chọn ngày kết thúc",
+    "selectProductionDateFirst": "Chọn ngày bắt đầu trước"
   },
   "priority": {
     "high": "Cao",
