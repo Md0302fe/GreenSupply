@@ -134,7 +134,10 @@
     "enterNote": "Enter note...",
     "ok": "OK",
     "reset": "Reset",
-    "notEnded": "Not yet ended"
+    "notEnded": "Not yet ended",
+    "note": "Note",
+    "createdAt": "Created At",
+    "loading": "Loading data..."
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -1054,7 +1057,11 @@
     "submitError": "An error occurred while creating the production request.",
     "packagingLoadError": "Failed to load packaging materials.",
     "needVacuumBagFirst": "You need to select the vacuum bag first to calculate carton boxes.",
-    "notEnoughPackaging": "{{type}} is not enough in stock. Required: {{required}}, available: {{available}}"
+    "notEnoughPackaging": "{{type}} is not enough in stock. Required: {{required}}, available: {{available}}",
+    "requestNotFound": "Production plan not found!",
+    "loadRequestError": "Failed to load production plans.",
+    "loadBatchError": "Failed to load material batches!",
+    "batchPreparingWarning": "There is a batch currently in 'Preparing' status. Please wait before creating the production process."
   },
   "materialExport": {
     "title": "Create Material Export Order",
@@ -1635,5 +1642,61 @@
     "selectImageButton": "Choose image",
     "vacuumBagLabel": "Vacuum Bag",
     "cartonBoxLabel": "Carton Box"
+  },
+  "createProductionProcess": {
+    "title": "Create Production Process",
+    "viewCreatedList": "View Created List",
+    "productionRequest": "Production Plan",
+    "selectRequest": "Select a production plan",
+    "startTime": "Start Time",
+    "selectStartTime": "Select start time",
+    "endTime": "End Time",
+    "selectStartTimeFirst": "Select start time first",
+    "selectEndTime": "Select end time",
+    "createButton": "Create Process",
+    "tipCanCreateWhenReady": "You can create the process once the raw material batches are ready!",
+    "batchDetailTitle": "Batch Details",
+    "batchListTitle": "Batch list"
+  },
+  "batch": {
+    "name": "Batch Name",
+    "code": "Batch Code",
+    "quantity": "Quantity",
+    "status": "Status"
+  },
+  "fuel": {
+    "quantity": "Raw Material Quantity"
+  },
+  "storage": {
+    "name": "Storage Location"
+  },
+  "createConsolidatedProcess": {
+    "title": "Create Consolidated Production Process",
+    "back": "Go back",
+    "viewCreatedList": "View Created List",
+    "selectPlans": "Select plans for the process",
+    "selectAtLeastTwo": "Select at least 2 production plans",
+    "cannotCreateIfLessThanTwo": "You cannot create a consolidated process with less than 2 plans",
+    "batchListTitle": "Corresponding raw material batches",
+    "preparingBatches": "{{count}} raw material batches are being prepared by the warehouse",
+    "readyToCreate": "You can create the process once the raw material batches are ready!",
+    "allBatchesReady": "All raw material batches have been prepared",
+    "canCreateNow": "You can create the process now",
+    "totalRawMaterial": "Total Raw Material (Kg)",
+    "totalLossPercentage": "Total Process Loss (%)",
+    "totalFinishProduct": "Estimated Final Product (Kg)",
+    "startTime": "Start Time",
+    "selectStartTime": "Select start time",
+    "endTime": "End Time",
+    "selectStartTimeFirst": "Select start time first",
+    "selectEndTime": "Select end time",
+    "note": "Note",
+    "notePlaceholder": "Enter note (if any)",
+    "createButton": "Create Process",
+    "drawerTitle": "Batch Details",
+    "noNote": "No note",
+    "unknown": "Unknown",
+    "loading": "Loading...",
+    "close": "Close"
   }
 }

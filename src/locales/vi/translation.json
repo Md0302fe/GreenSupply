@@ -131,7 +131,10 @@
     "enterNote": "Nhập ghi chú...",
     "ok": "Đồng ý",
     "reset": "Đặt lại",
-    "notEnded": "Chưa kết thúc"
+    "notEnded": "Chưa kết thúc",
+    "note": "Ghi chú",
+    "createdAt": "Ngày tạo",
+    "loading": "Đang tải dữ liệu..."
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -1042,11 +1045,15 @@
     "selectFuelFirst": "Vui lòng chọn loại Nguyên liệu trước khi nhập sản lượng mong muốn.",
     "materialOverLimit": "Sản lượng mong muốn vượt quá số lượng Nguyên liệu hiện có. Sản lượng tối đa có thể làm được là {{max}} Kg.",
     "materialStockExceeded": "Số lượng nguyên liệu vượt quá số lượng tồn kho hiện tại ({{available}} Kg).",
-    "createFail": "Tạo Production Request thất bại!",
     "submitError": "Có lỗi xảy ra khi tạo Production Request.",
     "packagingLoadError": "Không thể tải danh sách bao bì.",
     "needVacuumBagFirst": "Bạn cần chọn túi chân không trước để tính số lượng thùng carton.",
-    "notEnoughPackaging": "{{type}} trong kho không đủ. Cần: {{required}}, hiện có: {{available}}"
+    "notEnoughPackaging": "{{type}} trong kho không đủ. Cần: {{required}}, hiện có: {{available}}",
+    "requestNotFound": "Không tìm thấy Kế hoạch sản xuất tương ứng!",
+    "loadRequestError": "Không thể tải danh sách Kế hoạch sản xuất.",
+    "loadBatchError": "Không thể tải danh sách lô nguyên liệu!",
+    "batchPreparingWarning": "Có lô nguyên liệu đang trong trạng thái 'Đang chuẩn bị'. Vui lòng chờ trước khi tạo quy trình sản xuất.",
+    "createFail": "Tạo đơn thất bại!"
   },
   "materialExport": {
     "title": "Tạo Đơn Xuất Kho",
@@ -1631,5 +1638,61 @@
     "selectImageButton": "Chọn ảnh",
     "vacuumBagLabel": "Túi chân không",
     "cartonBoxLabel": "Thùng carton"
+  },
+  "createProductionProcess": {
+    "title": "Tạo Quy Trình Sản Xuất",
+    "viewCreatedList": "Xem danh sách đã tạo",
+    "productionRequest": "Kế hoạch sản xuất",
+    "selectRequest": "Chọn Kế hoạch sản xuất",
+    "startTime": "Thời gian bắt đầu",
+    "selectStartTime": "Chọn thời gian bắt đầu",
+    "endTime": "Thời gian kết thúc",
+    "selectStartTimeFirst": "Chọn thời gian bắt đầu trước",
+    "selectEndTime": "Chọn thời gian kết thúc",
+    "createButton": "Tạo quy trình",
+    "tipCanCreateWhenReady": "Bạn có thể tạo quy trình ngay khi các lô nguyên liệu đã được chuẩn bị!",
+    "batchDetailTitle": "Chi tiết lô nguyên liệu",
+    "batchListTitle": "Danh sách lô nguyên liệu"
+  },
+  "batch": {
+    "name": "Tên lô",
+    "code": "Mã lô",
+    "quantity": "Số lượng",
+    "status": "Trạng thái"
+  },
+  "fuel": {
+    "quantity": "Số lượng nguyên liệu"
+  },
+  "storage": {
+    "name": "Kho lưu trữ"
+  },
+  "createConsolidatedProcess": {
+    "title": "Tạo Quy Trình Sản Xuất Tổng Hợp",
+    "back": "Quay lại",
+    "viewCreatedList": "Xem danh sách đã tạo",
+    "selectPlans": "Chọn kế hoạch cho quy trình",
+    "selectAtLeastTwo": "Chọn ít nhất 2 Kế hoạch sản xuất",
+    "cannotCreateIfLessThanTwo": "Bạn không thể tạo quy trình tổng hợp nếu kế hoạch ít hơn 2",
+    "batchListTitle": "Lô nguyên liệu tương ứng",
+    "preparingBatches": "Hiện có {{count}} lô nguyên liệu đang được bộ phận kho chuẩn bị",
+    "readyToCreate": "Bạn có thể tạo quy trình ngay khi các lô nguyên liệu đã được chuẩn bị!",
+    "allBatchesReady": "Các lô nguyên liệu thô đã được chuẩn bị",
+    "canCreateNow": "Bạn có thể tạo quy trình ngay",
+    "totalRawMaterial": "Tổng K.lg nguyên liệu (Kg)",
+    "totalLossPercentage": "Tỷ lệ % hao hụt tổng quy trình",
+    "totalFinishProduct": "Tổng K.lg sản phẩm ước tính (Kg)",
+    "startTime": "Thời gian bắt đầu",
+    "selectStartTime": "Chọn thời gian bắt đầu",
+    "endTime": "Thời gian kết thúc",
+    "selectStartTimeFirst": "Chọn thời gian bắt đầu trước",
+    "selectEndTime": "Chọn thời gian kết thúc",
+    "note": "Ghi chú",
+    "notePlaceholder": "Nhập ghi chú (nếu có)",
+    "createButton": "Tạo quy trình",
+    "drawerTitle": "Chi tiết lô nguyên liệu",
+    "noNote": "Không có",
+    "unknown": "Không rõ",
+    "loading": "Đang tải...",
+    "close": "Đóng"
   }
 }
