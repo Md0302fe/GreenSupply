@@ -308,7 +308,7 @@ const FuelStorageReceiptList = () => {
       className: "text-center",
       ...getColumnSearchProps("manager"),
       render: (_, record) =>
-        record.manager_id?.full_name || t("fuelStorage.unknown"),
+        record.manager_id?.full_name || "Admin",
     },
     {
       title: (

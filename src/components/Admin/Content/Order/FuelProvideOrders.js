@@ -43,7 +43,7 @@ const FuelProvideManagement = () => {
   const statusMap = {
     "Chờ duyệt": "pending",
     "Đã duyệt": "approve",
-    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
     "Hoàn Thành": "completed",
     "Đang xử lý": "processing",
     "thất bại": "failed",
@@ -441,7 +441,7 @@ const tableData =
       filters: [
         { text: t("status.pending"), value: "Chờ duyệt" },
         { text: t("status.approve"), value: "Đã duyệt" },
-        { text: t("status.cancelled"), value: "Đã huỷ" },
+        { text: t("status.cancelled"), value: "Đã hủy" },
         { text: t("status.completed"), value: "Hoàn Thành" },
         { text: t("status.processing"), value: "Đang xử lý" },
         { text: t("status.failed"), value: "thất bại" },

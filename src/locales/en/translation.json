@@ -331,7 +331,7 @@
     "expired": "Expired"
   },
   "historyProvideOrder": {
-    "title": "History of Fuel Supply Orders",
+    "title": "History of Material Supply Orders",
     "loading": "Loading data...",
     "itemName": "Item Name",
     "quantity": "Quantity (kg)",
@@ -339,7 +339,7 @@
     "totalPrice": "Total Price",
     "status": "Status",
     "actions": "Actions",
-    "viewDetail": "View Fuel Request Details",
+    "viewDetail": "View Material Request Details",
     "note": "Note",
     "close": "Close",
     "noData": "No data available."
@@ -677,7 +677,7 @@
     "validation": {
       "empty_name": "Request name cannot be empty!",
       "empty_fuel_type": "Material type is required!",
-      "empty_image": "Fuel image is required!",
+      "empty_image": "Material image is required!",
       "empty_quantity": "Quantity is required!",
       "empty_price": "Price is required!",
       "empty_start_date": "Please select a start date!",
@@ -762,8 +762,8 @@
     "total_orders": "Total Orders",
     "pending_orders": "Pending Orders",
     "approved_orders": "Approved Orders",
-    "request_title": "📥 Fuel Collection Requests",
-    "supply_title": "📦 Fuel Provide Requests",
+    "request_title": "📥 Material Collection Requests",
+    "supply_title": "📦 Material Provide Requests",
     "total": "Total Requests",
     "status_chart_title": "Order Status Chart",
     "recent_orders": "Recent Orders",
@@ -777,7 +777,7 @@
     "order_id": "Order ID",
     "type": "Type",
     "supply_order": "Supply Order",
-    "fuel_request": "Fuel Collection",
+    "fuel_request": "Material Collection",
     "supplier": "Supplier",
     "status": "Status",
     "quantity": "Quantity",
@@ -791,7 +791,7 @@
   },
   "fuel_request": {
     "back": "Go Back",
-    "title": "Fuel Request Management",
+    "title": "Material Request Management",
     "table": {
       "customer": "Customer",
       "fuel_type": "Material type",
@@ -851,7 +851,7 @@
     "invalid": "Invalid",
     "action": "Action",
     "back": "Go Back",
-    "title": "Fuel Provide Management",
+    "title": "Material Provide Management",
     "orderDetail": "Order Details",
     "quality": "Quality",
     "quantity": "Quantity",
@@ -861,7 +861,7 @@
     "approveOrder": "Approve",
     "cancelOrder": "Cancel",
     "address": "Address",
-    "fuelName": "Fuel Name"
+    "fuelName": "Material Name"
   },
   "dashboardWarehouse": {
     "title": "Warehouse Management",
@@ -935,7 +935,7 @@
   },
   "fuelStorage": {
     "back": "Go Back",
-    "title": "Fuel Storage Receipts List",
+    "title": "Material Storage Receipts List",
     "export_excel": "Export Excel",
     "noDataToExport": "No data to export!",
     "noDataShort": "No data",
@@ -1358,19 +1358,19 @@
     }
   },
   "material_dashboard": {
-    "title": "Fuel Management Dashboard",
+    "title": "Material Management Dashboard",
     "totalFuelTypes": "Total Material types",
-    "totalFuelQuantity": "Total Fuel Quantity",
+    "totalFuelQuantity": "Total Material Quantity",
     "quickOverview": "Quick Overview",
-    "recentTransactions": "recent fuel transactions",
+    "recentTransactions": "recent Material transactions",
     "mostAvailable": "Most Available Fuel",
     "lowStock": "Low Stock Fuel",
     "noLowStock": "None",
-    "fuelDistribution": "Fuel Distribution in Storage",
+    "fuelDistribution": "Material Distribution in Storage",
     "noData": "No data to display",
-    "historyTitle": "Fuel Import/Export History",
-    "noHistory": "No fuel import/export data",
-    "warningTitle": "Low Fuel Warnings",
+    "historyTitle": "Material Import/Export History",
+    "noHistory": "No Material import/export data",
+    "warningTitle": "Low Material Warnings",
     "fuelType": "Material type",
     "quantity": "Quantity",
     "status": "Status",
@@ -1389,15 +1389,15 @@
     "nameRequired": "Please enter the Material type name",
     "descLabel": "Description",
     "descPlaceholder": "Enter description (optional)",
-    "imageLabel": "Fuel image (JPG, PNG < 2MB)",
-    "imageRequired": "Please upload a fuel image",
+    "imageLabel": "Material image (JPG, PNG < 2MB)",
+    "imageRequired": "Please upload a Material image",
     "chooseImage": "Select Image",
     "submit": "Create Material type",
     "imageTypeError": "Only JPG/PNG images are supported!",
     "imageSizeError": "Image must be smaller than 2MB!",
     "uploadError": "Failed to read image.",
     "createSuccess": "Material type created successfully!",
-    "createFail": "Fuel creation failed!",
+    "createFail": "Material creation failed!",
     "createError": "An error occurred while creating Material type."
   },
   "fuelList": {
@@ -1413,7 +1413,7 @@
     "create_success": "Update successful!",
     "create_fail": "Update failed!",
     "update_error": "Server connection error!",
-    "delete_success": "Fuel marked as deleted!",
+    "delete_success": "Material marked as deleted!",
     "delete_fail": "Delete failed!",
     "not_logged_in": "You are not logged in. Please log in again.",
     "fetch_fail": "Failed to fetch Material types!",
@@ -1449,7 +1449,7 @@
       "placeholder_name": "Material type Name",
       "placeholder_description": "Description",
       "placeholder_quantity": "Quantity",
-      "empty_name": "Fuel name cannot be empty"
+      "empty_name": "Material name cannot be empty"
     }
   },
   "boxList": {
