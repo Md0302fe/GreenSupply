@@ -253,7 +253,7 @@
     "rejected": "Rejected",
     "failed": "Failed",
     "disable": "Disable",
-    "imported": "Import completed",
+    "imported": "Imported",
     "importFailed": "Storage Failed",
     "preparing": "Preparing",
     "waitingExport": "Waiting for Export",
@@ -356,7 +356,7 @@
     "totalPrice": "Total Price",
     "status": "Status",
     "actions": "Actions",
-    "viewDetail": "View Material collection request Details",
+    "viewDetail": "View Material collection request details",
     "note": "Note",
     "close": "Close",
     "noData": "No data available.",
@@ -449,21 +449,21 @@
     }
   },
   "purchaseRequest": {
-    "title": "Material Purchase Management",
+    "title": "Material Purchase Plan Management",
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Purchase Material Dashboard",
       "description": "Analytical insights for incoming material management"
     },
     "create": {
-      "title": "Create Request",
+      "title": "Create Material Purchase",
       "description": "Create a new material purchase request"
     },
     "manage": {
-      "title": "Manage Requests",
+      "title": "Material Purchase List",
       "description": "Manage created material purchase requests"
     },
     "completed": {
-      "title": "Completed",
+      "title": "Material Purchase History",
       "description": "Completed material purchase requests"
     }
   },
@@ -489,11 +489,11 @@
   "warehouse": {
     "title": "Warehouse Management",
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Warehouse Dashboard",
       "description": "Overview of warehouse information"
     },
     "receiptRequestList": {
-      "title": "Manage Orders Waiting for Storage",
+      "title": "Warehouse Receipt Waiting",
       "description": "Manage the list of received goods and create warehouse receipt requests"
     },
     "createReceipt": {
@@ -501,7 +501,7 @@
       "description": "Manage incoming goods and create warehouse receipt requests"
     },
     "receiptList": {
-      "title": "Receipt Orders",
+      "title": "Warehouse Receipts List",
       "description": "Manage pending warehouse receipt requests"
     },
     "rawMaterialBatch": {
@@ -509,45 +509,45 @@
       "description": "Manage raw material batches needed for production"
     },
     "createExport": {
-      "title": "Create Export Order",
+      "title": "Create Warehouse Export",
       "description": "Manage pending warehouse export orders"
     },
     "exportList": {
-      "title": "Export Order List",
+      "title": "Warehouse Exports List",
       "description": "Manage all warehouse export orders"
     },
     "exportHistory": {
-      "title": "Export History",
-      "description": "View export order history"
+      "title": "Warehouse Export History",
+      "description": "View warehouse export orders history"
     }
   },
   "material": {
     "title": "Material Management",
     "dashboard": {
-      "title": "Dashboard",
-      "description": "Material information"
+      "title": "Material Dashboard",
+      "description": "Overview of material information"
     },
     "create": {
-      "title": "Create new material",
+      "title": "Create New Material",
       "description": "Create information for a new material"
     },
     "list": {
-      "title": "Material type list",
+      "title": "Material Types List",
       "description": "Manage list of material types"
     },
     "type": {
-      "title": "Manage material categories",
-      "description": "Manage list of material categories"
+      "title": "Package Material Categories",
+      "description": "Manage list of package material categories"
     },
     "manage": {
-      "title": "Manage materials",
-      "description": "Manage list of materials"
+      "title": "Package Materials List",
+      "description": "Manage list of package materials"
     }
   },
   "production": {
-    "title": "Production Request Management",
+    "title": "Production Management",
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Production Dashboard",
       "description": "Overview of all production processes"
     },
     "create": {
@@ -567,7 +567,7 @@
       "description": "Manage list of created processes"
     },
     "executing": {
-      "title": "Executing Process",
+      "title": "Executing Processes List",
       "description": "Manage executing production processes"
     },
     "history": {
@@ -794,7 +794,7 @@
   },
   "fuel_request": {
     "back": "Go Back",
-    "title": "Material Request Management",
+    "title": "Material Collection Requests List",
     "table": {
       "customer": "Customer",
       "fuel_type": "Material type",
@@ -841,7 +841,7 @@
     "completeFailed": "Failed to complete order!",
     "errorCompleting": "An error occurred while completing the order!",
     "customer": "Customer",
-    "fuelType": "Material type",
+    "fuelType": "Request Name",
     "price": "Price (VND)",
     "status": "Status",
     "pending": "Pending",
@@ -854,7 +854,7 @@
     "invalid": "Invalid",
     "action": "Action",
     "back": "Go Back",
-    "title": "Material Provide Management",
+    "title": "Material Provide Requests List",
     "orderDetail": "Order Details",
     "quality": "Quality",
     "quantity": "Quantity",
@@ -910,22 +910,22 @@
     "close": "Close",
     "columns": {
       "customer": "Customer",
-      "fuelType": "Material type",
+      "fuelType": "Material Type",
       "totalPrice": "Total Price",
       "status": "Status",
       "action": "Action"
     },
-    "createReceiptBtn": "Create Storage Receipt",
+    "createReceiptBtn": "Create Warehouse Receipt",
     "noData": "No data available",
     "supply": "Supply",
     "request": "Request",
     "back": "Go Back",
-    "title": "Manage Orders Waiting for Storage",
+    "title": "Warehouse Receipt Waiting",
     "filterLabel": "Filter by order type",
     "allOrders": "All Orders",
-    "requestOrders": "Request Orders",
-    "supplyOrders": "Supply Orders",
-    "receiptList": "Storage Receipt List",
+    "requestOrders": "Collection Orders",
+    "supplyOrders": "Provide Orders",
+    "receiptList": "Warehouse Receipt List",
     "orderList": "Order List",
     "orderDetail": "Order Details",
     "note": "Note",
@@ -938,7 +938,7 @@
   },
   "fuelStorage": {
     "back": "Go Back",
-    "title": "Material Storage Receipts List",
+    "title": "Warehouse Receipts List",
     "export_excel": "Export Excel",
     "noDataToExport": "No data to export!",
     "noDataShort": "No data",
@@ -1064,7 +1064,7 @@
     "batchPreparingWarning": "There is a batch currently in 'Preparing' status. Please wait before creating the production process."
   },
   "materialExport": {
-    "title": "Create Material Export Order",
+    "title": "Create Warehouse Export Order",
     "createdBy": "Created by:",
     "selectBatch": "Select Raw Material Batch",
     "selectBatchPlaceholder": "Choose a batch",
@@ -1078,7 +1078,7 @@
     "notePlaceholder": "Enter note"
   },
   "materialExportList": {
-    "title": "Material Export Management",
+    "title": "Warehouse Exports List",
     "exportType": "Export Type",
     "productionRequest": "Production Request",
     "batch": "Raw Material Batch",
@@ -1475,15 +1475,15 @@
     }
   },
   "boxList": {
-    "title": "Box Materials by Category",
+    "title": "Package Materials List",
     "back": "Go Back",
-    "create": "+ Create New Material",
+    "create": "Create New Material",
     "image": "Image",
     "no_image": "No Image",
-    "name": "Material Name",
+    "name": "Package Material Name",
     "quantity": "Quantity",
     "capacity": "Capacity",
-    "size": "Packaging Size",
+    "size": "Package Size",
     "status": "Status",
     "status_deleted": "Deleted",
     "status_active": "Active",
@@ -1501,7 +1501,7 @@
       "quantity": "Quantity",
       "status": "Status",
       "capacity": "Capacity",
-      "size": "Packaging Size",
+      "size": "Package Size",
       "created": "Created At",
       "updated": "Last Updated",
       "close": "Close"
