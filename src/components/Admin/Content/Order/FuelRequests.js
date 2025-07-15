@@ -400,7 +400,7 @@ const tableData =
             color = "blue";
             break;
           case "Đang xử lý":
-            color = "blue";
+            color = "volcano";
             break;
           default:
             color = "default";

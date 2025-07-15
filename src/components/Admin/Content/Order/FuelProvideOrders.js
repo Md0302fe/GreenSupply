@@ -444,8 +444,8 @@ const tableData =
         { text: t("status.cancelled"), value: "Đã hủy" },
         { text: t("status.completed"), value: "Hoàn Thành" },
         { text: t("status.processing"), value: "Đang xử lý" },
-        { text: t("status.failed"), value: "thất bại" },
-        { text: t("status.disable"), value: "Vô hiệu hóa" },
+        // { text: t("status.failed"), value: "thất bại" },
+        // { text: t("status.disable"), value: "Vô hiệu hóa" },
       ],
       onFilter: (value, record) => record.status?.trim() === value.trim(),
       render: (status) => {
@@ -465,7 +465,7 @@ const tableData =
             color = "blue";
             break;
           case "Đang xử lý":
-            color = "gold";
+            color = "volcano";
             break;
           case "thất bại":
             color = "volcano"; // hoặc crimson/firebrick tùy bạn
