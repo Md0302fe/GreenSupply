@@ -72,7 +72,7 @@ const ProductionRequest = () => {
         );
         setPackagingMaterials(res.data.data || []);
       } catch (error) {
-        message.error("Lỗi khi tải danh sách bao bì.");
+        message.error(t("messages.packagingLoadError"));
       }
     };
 
@@ -119,77 +119,96 @@ const ProductionRequest = () => {
   };
 
   // hàm tính số lượng túi và thùng carton cần thiết dựa trên sản lượng thành phẩm
-const handlePackagingSelect = (value, type) => {
-  const selectedMaterial = packagingMaterials.find(
-    (item) => item._id === value
-  );
-  const productKg = form.getFieldValue("product_quantity");
-  if (!productKg || !selectedMaterial) return;
+  const handlePackagingSelect = (value, type) => {
+    const selectedMaterial = packagingMaterials.find(
+      (item) => item._id === value
+    );
+    const productKg = form.getFieldValue("product_quantity");
+    if (!productKg || !selectedMaterial) return;
 
-  const productGrams = productKg * 1000;
-  let requiredQty = 0;
-  const fieldName = type === "vacuumBag" ? "vacuumBagSelect" : "cartonSelect";
+    const productGrams = productKg * 1000;
+    let requiredQty = 0;
+    const fieldName = type === "vacuumBag" ? "vacuumBagSelect" : "cartonSelect";
 
-  //  Gán value vào Form để Form.Item tự nhận biết lựa chọn
-  form.setFieldValue(fieldName, value);
+    //  Gán value vào Form để Form.Item tự nhận biết lựa chọn
+    form.setFieldValue(fieldName, value);
 
-  if (type === "vacuumBag") {
-    //  Tính số túi = (kg * 1000) / dung tích gói mỗi túi
-    requiredQty = Math.ceil(productGrams / selectedMaterial.capacity);
-  }
+    if (type === "vacuumBag") {
+      //  Tính số túi = (kg * 1000) / dung tích gói mỗi túi
+      requiredQty = Math.ceil(productGrams / selectedMaterial.capacity);
+    }
 
-  if (type === "carton") {
-    const vacuumBag = selectedPackaging.vacuumBag;
-    const vacuumBagCount = calculatedPackaging.vacuumBag;
+    if (type === "carton") {
+      const vacuumBag = selectedPackaging.vacuumBag;
+      const vacuumBagCount = calculatedPackaging.vacuumBag;
 
-    if (
-      !vacuumBag ||
-      !vacuumBagCount ||
-      !vacuumBag.dimensions ||
-      !selectedMaterial.dimensions
-    ) {
+      if (
+        !vacuumBag ||
+        !vacuumBagCount ||
+        !vacuumBag.dimensions ||
+        !selectedMaterial.dimensions
+      ) {
+        form.setFields([
+          {
+            name: fieldName,
+            errors: [t("messages.needVacuumBagFirst")],
+          },
+        ]);
+        return;
+      }
+
+      //  Tính thể tích mỗi túi
+      const bagVolume =
+        vacuumBag.dimensions.length *
+        vacuumBag.dimensions.width *
+        (vacuumBag.dimensions.height || 1);
+
+      // Tổng thể tích túi chân không = số lượng túi * thể tích mỗi túi
+      const totalBagVolume = vacuumBagCount * bagVolume;
+
+      //  Tính thể tích mỗi thùng
+      const boxVolume =
+        selectedMaterial.dimensions.length *
+        selectedMaterial.dimensions.width *
+        selectedMaterial.dimensions.height;
+
+      //  Số thùng = tổng thể tích túi / thể tích thùng
+      requiredQty = Math.ceil(totalBagVolume / boxVolume);
+    }
+
+    //  Nếu không đủ số lượng → hiển thị lỗi ngay dưới ô Select
+    if (selectedMaterial.quantity < requiredQty) {
       form.setFields([
         {
           name: fieldName,
-          errors: ["Cần chọn Túi chân không trước để tính được số thùng."],
+          errors: [
+            t("messages.notEnoughPackaging", {
+              type:
+                type === "vacuumBag"
+                  ? t("productionRequest.vacuumBag")
+                  : t("productionRequest.cartonBox"),
+              required: requiredQty,
+              available: selectedMaterial.quantity,
+            }),
+          ],
         },
       ]);
+
+      setSelectedPackaging((prev) => ({
+        ...prev,
+        [type]: selectedMaterial,
+      }));
+
+      setCalculatedPackaging((prev) => ({
+        ...prev,
+        [type]: requiredQty,
+      }));
+
       return;
     }
 
-    //  Tính thể tích mỗi túi
-    const bagVolume =
-      vacuumBag.dimensions.length *
-      vacuumBag.dimensions.width *
-      (vacuumBag.dimensions.height || 1);
-    
-    // Tổng thể tích túi chân không = số lượng túi * thể tích mỗi túi
-    const totalBagVolume = vacuumBagCount * bagVolume;
-
-    //  Tính thể tích mỗi thùng
-    const boxVolume =
-      selectedMaterial.dimensions.length *
-      selectedMaterial.dimensions.width *
-      selectedMaterial.dimensions.height;
-
-    //  Số thùng = tổng thể tích túi / thể tích thùng
-    requiredQty = Math.ceil(totalBagVolume / boxVolume);
-  }
-
-  //  Nếu không đủ số lượng → hiển thị lỗi ngay dưới ô Select
-  if (selectedMaterial.quantity < requiredQty) {
-    form.setFields([
-      {
-        name: fieldName,
-        errors: [
-          `${
-            type === "vacuumBag" ? "Túi chân không" : "Thùng carton"
-          } không đủ trong kho. Cần ${requiredQty}, hiện còn ${
-            selectedMaterial.quantity
-          }.`,
-        ],
-      },
-    ]);
+    // ✅ Nếu đủ, clear lỗi (nếu có)
+    form.setFields([{ name: fieldName, errors: [] }]);
 
     setSelectedPackaging((prev) => ({
       ...prev,
@@ -200,23 +219,7 @@ const handlePackagingSelect = (value, type) => {
       ...prev,
       [type]: requiredQty,
     }));
-
-    return;
-  }
-
-  // ✅ Nếu đủ, clear lỗi (nếu có)
-  form.setFields([{ name: fieldName, errors: [] }]);
-
-  setSelectedPackaging((prev) => ({
-    ...prev,
-    [type]: selectedMaterial,
-  }));
-
-  setCalculatedPackaging((prev) => ({
-    ...prev,
-    [type]: requiredQty,
-  }));
-};
+  };
 
   const calculateProductQuantity = () => {
     const material_quantity = form.getFieldValue("material_quantity");
@@ -277,9 +280,7 @@ const handlePackagingSelect = (value, type) => {
     const hasErrors = allFieldsError.some((field) => field.errors.length > 0);
 
     if (hasErrors) {
-      message.error(
-        "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận."
-      );
+      message.error(t("validation.checkFieldsBeforeSubmit"));
       return;
     }
 
@@ -454,6 +455,12 @@ const handlePackagingSelect = (value, type) => {
                 className="w-full rounded border-gray-300"
                 placeholder={t("productionRequest.enterMaterialQty")}
                 onChange={calculateProductQuantity}
+                parser={(value) => value.replace(/[^\d]/g, "")} // loại bỏ ký tự không phải số
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Item>
           </div>
@@ -492,9 +499,15 @@ const handlePackagingSelect = (value, type) => {
           </Form.Item>
 
           {/* Chọn Bao Bì */}
-          <Form.Item label="Chọn Túi chân không" name="vacuumBagSelect">
+          <Form.Item
+            label={t("productionRequest.selectVacuumBag")}
+            name="vacuumBagSelect"
+            rules={[
+              { required: true, message: t("validation.vacuumBagRequired") },
+            ]}
+          >
             <Select
-              placeholder="Có sản lượng thành phẩm trước"
+              placeholder={t("productionRequest.needProductQtyFirst")}
               disabled={!isProductQuantityCalculated}
               onChange={(value) => handlePackagingSelect(value, "vacuumBag")}
             >
@@ -509,9 +522,15 @@ const handlePackagingSelect = (value, type) => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Chọn Thùng carton" name="cartonSelect">
+          <Form.Item
+            label={t("productionRequest.selectCartonBox")}
+            name="cartonSelect"
+            rules={[
+              { required: true, message: t("validation.cartonBoxRequired") },
+            ]}
+          >
             <Select
-              placeholder="Có sản lượng thành phẩm trước"
+              placeholder={t("productionRequest.needProductQtyFirst")}
               disabled={!isProductQuantityCalculated}
               onChange={(value) => handlePackagingSelect(value, "carton")}
             >
@@ -529,12 +548,14 @@ const handlePackagingSelect = (value, type) => {
           {selectedPackaging.vacuumBag && selectedPackaging.carton && (
             <div>
               <p>
-                Số lượng Túi chân không gợi ý:{" "}
-                {calculatedPackaging.vacuumBag} Túi
+                {t("productionRequest.suggestedVacuumBags", {
+                  count: calculatedPackaging.vacuumBag,
+                })}
               </p>
               <p>
-                Số lượng Thùng carton gợi ý: {calculatedPackaging.carton}{" "}
-                Thùng
+                {t("productionRequest.suggestedCartons", {
+                  count: calculatedPackaging.carton,
+                })}
               </p>
             </div>
           )}

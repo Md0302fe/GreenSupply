@@ -39,9 +39,10 @@ const DashboardfinishedProduct = () => {
   };
 
   const stockBarData = [
-    { status: "Còn trong kho", value: dashboardData?.inStock || 0 },
-    { status: "Đã xuất kho", value: dashboardData?.exported || 0 },
-  ];
+  { status: "Chưa nhập kho lạnh", value: dashboardData?.exported || 0 },
+  { status: "Đã nhập kho lạnh", value: dashboardData?.inStock || 0 },
+];
+
 
   const stockBarConfig = {
     data: stockBarData,
@@ -91,7 +92,7 @@ const DashboardfinishedProduct = () => {
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-green-600 to-lime-500 text-white p-6 rounded mb-6">
         <h1 className="text-2xl md:text-3xl font-bold">
-          Dashboard Quản Lý Thành Phẩm
+          Dashboard Quản Lý Lô Thành Phẩm
         </h1>
       </header>
 
@@ -111,7 +112,7 @@ const DashboardfinishedProduct = () => {
               <Statistic
                 title={
                   <span>
-                    <i className="fas fa-boxes mr-1 text-blue-600" /> Tổng thành
+                    <i className="fas fa-boxes mr-1 text-blue-600" /> Tổng lô thành
                     phẩm
                   </span>
                 }
@@ -203,7 +204,7 @@ const DashboardfinishedProduct = () => {
           {/*  Thành phẩm mới nhất */}
           <div className="bg-white p-6 rounded shadow mb-6">
             <h2 className="text-lg md:text-xl font-semibold mb-3">
-              🆕 Thành phẩm mới nhất
+              🆕 Lô thành phẩm mới nhất
             </h2>
             <Table
               columns={latestColumns}
@@ -217,7 +218,7 @@ const DashboardfinishedProduct = () => {
           {/*  Biểu đồ Trạng thái kho */}
           <div className="bg-white p-6 rounded shadow mb-6">
             <h2 className="text-lg md:text-xl font-semibold mb-3">
-              📦 Biểu đồ trạng thái Thành phẩm
+              📦 Biểu đồ trạng thái lô thành phẩm
             </h2>
             <Bar {...stockBarConfig} />
           </div>
@@ -225,7 +226,7 @@ const DashboardfinishedProduct = () => {
           {/*  Cảnh báo sản phẩm sắp hết hạn */}
           <div className="bg-white p-6 rounded shadow mb-6">
             <h2 className="text-lg md:text-xl font-semibold mb-3">
-              ⚠️ Thành phẩm sắp hết hạn
+              ⚠️ Lô thành phẩm sắp hết hạn
             </h2>
             <Table
               columns={expiringColumns}

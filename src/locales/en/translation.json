@@ -65,6 +65,29 @@
   "account": "Account",
   "export_excel": "Export Excel",
   "create_process": "Create process",
+  "userProfile": "User Profile",
+  "continueShopping": "Continue Shopping",
+  "saveInfo": "Save Information",
+  "addressList": "Address List",
+  "changePassword": "Change Password",
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone Number",
+  "birthDate": "Birth Date",
+  "avatar": "Avatar",
+  "confirmEmail": "Confirm Email",
+  "pleaseEnterEmail": "Please enter your email",
+  "enterEmail": "Enter email...",
+  "sendRequest": "Send Request",
+  "enterOtp": "Enter OTP",
+  "otpInstruction": "Please enter the 6-digit OTP sent to your email",
+  "confirmOtp": "Confirm OTP",
+  "notReceiveOtp": "Didn't receive the code?",
+  "resendNow": "Resend",
+  "resendIn": "Resend in {{seconds}} seconds",
+  "enterOldPassword": "Please enter your current password",
+  "enterNewPassword": "Please enter your new password",
+  "confirmNewPassword": "Please confirm your new password",
   "carousel": {
     "view_more": "View more",
     "title_2": "CAREFUL SELECTION",
@@ -111,7 +134,10 @@
     "enterNote": "Enter note...",
     "ok": "OK",
     "reset": "Reset",
-    "notEnded": "Not yet ended"
+    "notEnded": "Not yet ended",
+    "note": "Note",
+    "createdAt": "Created At",
+    "loading": "Loading data..."
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -137,7 +163,7 @@
   },
   "feature_buttons": {
     "order_management": "ORDER MANAGEMENT",
-    "harvest_request": "HARVEST REQUEST",
+    "harvest_request": "Material collection request",
     "provide_material": "SUPPLY MATERIALS"
   },
   "footer": {
@@ -155,10 +181,10 @@
     "created_orders": "Created Orders",
     "harvest_orders": "Harvest Orders",
     "provide_orders": "Provide Orders",
-    "create_harvest_request": "Create Harvest Request",
+    "create_harvest_request": "Create Material collection request",
     "create_provide_order": "Create Provide Order",
     "order_history": "Order History",
-    "history_harvest": "Harvest Request History",
+    "history_harvest": "Material collection request History",
     "history_provide": "Provide Order History",
     "track_shipment": "Track Shipment",
     "adminTitle": "ADMIN",
@@ -169,9 +195,9 @@
     "footer": "minhduc.lmd Dev"
   },
   "harvestRequest": {
-    "title": "HARVEST REQUEST FORM",
-    "edit_title": "Edit Harvest Request",
-    "detail_title": "Harvest Request Details",
+    "title": "Material collection request FORM",
+    "edit_title": "Edit Material collection request",
+    "detail_title": "Material collection request Details",
     "name": "Request Name",
     "quantity": "Quantity (kg)",
     "price": "Price per Unit (VND)",
@@ -194,7 +220,7 @@
     "no_data": "No data available.",
     "delete": "Delete",
     "detail": "Detail",
-    "create_request_title": "Create Harvest Request",
+    "create_request_title": "Create Material collection request",
     "request_name": "Request Name",
     "request_name_placeholder": "Enter request name...",
     "material_type": "Material Type",
@@ -214,7 +240,7 @@
     "empty_quantity": "Quantity is required!",
     "empty_price": "Price is required!",
     "empty_address": "Address is required!",
-    "create_success": "Harvest request created successfully!",
+    "create_success": "Material collection request created successfully!",
     "create_fail": "Failed to create request! Please try again.",
     "invalid_address": "Address must not contain special characters!"
   },
@@ -227,7 +253,7 @@
     "rejected": "Rejected",
     "failed": "Failed",
     "disable": "Disable",
-    "imported": "Import completed",
+    "imported": "Imported",
     "importFailed": "Storage Failed",
     "preparing": "Preparing",
     "waitingExport": "Waiting for Export",
@@ -263,8 +289,8 @@
     "see_more": "See More"
   },
   "provideRequest": {
-    "title": "SUPPLY REQUEST",
-    "editTitle": "Update Supply Request",
+    "title": "PROVIDE REQUEST",
+    "editTitle": "Update Provide Request",
     "confirmDelete": "Delete Request",
     "deleteConfirmMessage": "Are you sure you want to delete this request?",
     "delete_success": "Request has been deleted!",
@@ -282,11 +308,11 @@
     "enter_quantity": "Quantity to supply",
     "enter_quantity_required": "Please enter quantity!",
     "actions": "Actions",
-    "detail_title": "Supply Request Details",
+    "detail_title": "Provide Request Details",
     "updated_at": "Updated At",
     "exceed_quantity": "Quantity must not exceed {{quantity}}!",
     "must_divisible_by_10": "Quantity must be divisible by 10!",
-    "create_title": "Create Supply Request",
+    "create_title": "Create Provide Request",
     "remaining_quantity": "Remaining quantity:",
     "request_price": "Unit price:",
     "time_left": "Time left:",
@@ -299,8 +325,8 @@
     "send_request": "Send Request",
     "no_data": "None",
     "select_order_warning": "Please select an order!",
-    "success_create": "Supply request created successfully!",
-    "failed_create": "Failed to create supply request!",
+    "success_create": "Provide Request created successfully!",
+    "failed_create": "Failed to create Provide Request!",
     "note_length_error": "Note must not exceed 2000 characters!",
     "delivery_address": "Delivery Address",
     "selected_order_info": "Selected Order Information",
@@ -308,7 +334,7 @@
     "expired": "Expired"
   },
   "historyProvideOrder": {
-    "title": "History of Fuel Supply Orders",
+    "title": "History of Material Supply Orders",
     "loading": "Loading data...",
     "itemName": "Item Name",
     "quantity": "Quantity (kg)",
@@ -316,13 +342,13 @@
     "totalPrice": "Total Price",
     "status": "Status",
     "actions": "Actions",
-    "viewDetail": "View Fuel Request Details",
+    "viewDetail": "View Material Request Details",
     "note": "Note",
     "close": "Close",
     "noData": "No data available."
   },
   "historyHarvestRequestOrder": {
-    "title": "HARVEST REQUEST HISTORY",
+    "title": "Material collection request HISTORY",
     "loading": "Loading data...",
     "itemName": "Request Name",
     "quantity": "Quantity",
@@ -330,7 +356,7 @@
     "totalPrice": "Total Price",
     "status": "Status",
     "actions": "Actions",
-    "viewDetail": "View Harvest Request Details",
+    "viewDetail": "View Material collection request details",
     "note": "Note",
     "close": "Close",
     "noData": "No data available.",
@@ -423,21 +449,21 @@
     }
   },
   "purchaseRequest": {
-    "title": "Material Purchase Management",
+    "title": "Material Purchase Plan Management",
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Purchase Material Dashboard",
       "description": "Analytical insights for incoming material management"
     },
     "create": {
-      "title": "Create Request",
+      "title": "Create Material Purchase",
       "description": "Create a new material purchase request"
     },
     "manage": {
-      "title": "Manage Requests",
+      "title": "Material Purchase List",
       "description": "Manage created material purchase requests"
     },
     "completed": {
-      "title": "Completed",
+      "title": "Material Purchase History",
       "description": "Completed material purchase requests"
     }
   },
@@ -452,7 +478,7 @@
       "description": "Manage requests to collect raw materials"
     },
     "provideList": {
-      "title": "Material Supply Requests",
+      "title": "Material Provide Requests",
       "description": "Manage requests to supply raw materials"
     },
     "receipt": {
@@ -463,11 +489,11 @@
   "warehouse": {
     "title": "Warehouse Management",
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Warehouse Dashboard",
       "description": "Overview of warehouse information"
     },
     "receiptRequestList": {
-      "title": "Manage Orders Waiting for Storage",
+      "title": "Warehouse Receipt Waiting",
       "description": "Manage the list of received goods and create warehouse receipt requests"
     },
     "createReceipt": {
@@ -475,7 +501,7 @@
       "description": "Manage incoming goods and create warehouse receipt requests"
     },
     "receiptList": {
-      "title": "Receipt Orders",
+      "title": "Warehouse Receipts List",
       "description": "Manage pending warehouse receipt requests"
     },
     "rawMaterialBatch": {
@@ -483,45 +509,45 @@
       "description": "Manage raw material batches needed for production"
     },
     "createExport": {
-      "title": "Create Export Order",
+      "title": "Create Warehouse Export",
       "description": "Manage pending warehouse export orders"
     },
     "exportList": {
-      "title": "Export Order List",
+      "title": "Warehouse Exports List",
       "description": "Manage all warehouse export orders"
     },
     "exportHistory": {
-      "title": "Export History",
-      "description": "View export order history"
+      "title": "Warehouse Export History",
+      "description": "View warehouse export orders history"
     }
   },
   "material": {
     "title": "Material Management",
     "dashboard": {
-      "title": "Dashboard",
-      "description": "Material information"
+      "title": "Material Dashboard",
+      "description": "Overview of material information"
     },
     "create": {
-      "title": "Create new material",
+      "title": "Create New Material",
       "description": "Create information for a new material"
     },
     "list": {
-      "title": "Material type list",
+      "title": "Material Types List",
       "description": "Manage list of material types"
     },
     "type": {
-      "title": "Manage material categories",
-      "description": "Manage list of material categories"
+      "title": "Package Material Categories",
+      "description": "Manage list of package material categories"
     },
     "manage": {
-      "title": "Manage materials",
-      "description": "Manage list of materials"
+      "title": "Package Materials List",
+      "description": "Manage list of package materials"
     }
   },
   "production": {
-    "title": "Production Request Management",
+    "title": "Production Management",
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Production Dashboard",
       "description": "Overview of all production processes"
     },
     "create": {
@@ -541,7 +567,7 @@
       "description": "Manage list of created processes"
     },
     "executing": {
-      "title": "Executing Process",
+      "title": "Executing Processes List",
       "description": "Manage executing production processes"
     },
     "history": {
@@ -620,7 +646,7 @@
   },
   "harvest": {
     "back": "Go Back",
-    "title": "Material Supply Request",
+    "title": "Material Provide Request",
     "form": {
       "name": "Request Name",
       "name_placeholder": "Enter request name...",
@@ -654,7 +680,7 @@
     "validation": {
       "empty_name": "Request name cannot be empty!",
       "empty_fuel_type": "Material type is required!",
-      "empty_image": "Fuel image is required!",
+      "empty_image": "Material image is required!",
       "empty_quantity": "Quantity is required!",
       "empty_price": "Price is required!",
       "empty_start_date": "Please select a start date!",
@@ -739,8 +765,8 @@
     "total_orders": "Total Orders",
     "pending_orders": "Pending Orders",
     "approved_orders": "Approved Orders",
-    "request_title": "📥 Fuel Collection Requests",
-    "supply_title": "📦 Fuel Supply Requests",
+    "request_title": "📥 Material Collection Requests",
+    "supply_title": "📦 Material Provide Requests",
     "total": "Total Requests",
     "status_chart_title": "Order Status Chart",
     "recent_orders": "Recent Orders",
@@ -754,7 +780,7 @@
     "order_id": "Order ID",
     "type": "Type",
     "supply_order": "Supply Order",
-    "fuel_request": "Fuel Collection",
+    "fuel_request": "Material Collection",
     "supplier": "Supplier",
     "status": "Status",
     "quantity": "Quantity",
@@ -768,7 +794,7 @@
   },
   "fuel_request": {
     "back": "Go Back",
-    "title": "Fuel Request Management",
+    "title": "Material Collection Requests List",
     "table": {
       "customer": "Customer",
       "fuel_type": "Material type",
@@ -815,7 +841,7 @@
     "completeFailed": "Failed to complete order!",
     "errorCompleting": "An error occurred while completing the order!",
     "customer": "Customer",
-    "fuelType": "Material type",
+    "fuelType": "Request Name",
     "price": "Price (VND)",
     "status": "Status",
     "pending": "Pending",
@@ -828,7 +854,7 @@
     "invalid": "Invalid",
     "action": "Action",
     "back": "Go Back",
-    "title": "Fuel Provide Management",
+    "title": "Material Provide Requests List",
     "orderDetail": "Order Details",
     "quality": "Quality",
     "quantity": "Quantity",
@@ -838,7 +864,7 @@
     "approveOrder": "Approve",
     "cancelOrder": "Cancel",
     "address": "Address",
-    "fuelName": "Fuel Name"
+    "fuelName": "Material Name"
   },
   "dashboardWarehouse": {
     "title": "Warehouse Management",
@@ -884,22 +910,22 @@
     "close": "Close",
     "columns": {
       "customer": "Customer",
-      "fuelType": "Material type",
+      "fuelType": "Material Type",
       "totalPrice": "Total Price",
       "status": "Status",
       "action": "Action"
     },
-    "createReceiptBtn": "Create Storage Receipt",
+    "createReceiptBtn": "Create Warehouse Receipt",
     "noData": "No data available",
     "supply": "Supply",
     "request": "Request",
     "back": "Go Back",
-    "title": "Manage Orders Waiting for Storage",
+    "title": "Warehouse Receipt Waiting",
     "filterLabel": "Filter by order type",
     "allOrders": "All Orders",
-    "requestOrders": "Request Orders",
-    "supplyOrders": "Supply Orders",
-    "receiptList": "Storage Receipt List",
+    "requestOrders": "Collection Orders",
+    "supplyOrders": "Provide Orders",
+    "receiptList": "Warehouse Receipt List",
     "orderList": "Order List",
     "orderDetail": "Order Details",
     "note": "Note",
@@ -912,7 +938,7 @@
   },
   "fuelStorage": {
     "back": "Go Back",
-    "title": "Fuel Storage Receipts List",
+    "title": "Warehouse Receipts List",
     "export_excel": "Export Excel",
     "noDataToExport": "No data to export!",
     "noDataShort": "No data",
@@ -1001,7 +1027,10 @@
     "productionDateRequired": "Please select production date",
     "endDateRequired": "Please select end date",
     "mustBeGreaterThanZero": "Value must be greater than 0",
-    "lossPercentageRange": "Percentage must be between 0 and 100"
+    "lossPercentageRange": "Percentage must be between 0 and 100",
+    "checkFieldsBeforeSubmit": "Please check all error fields before submitting.",
+    "vacuumBagRequired": "Please select vacuum bag",
+    "cartonBoxRequired": "Please select carton box"
   },
   "messages": {
     "notLoggedIn": "You are not logged in.",
@@ -1025,10 +1054,17 @@
     "materialOverLimit": "Desired output exceeds current stock. Max output: {{max}} Kg.",
     "materialStockExceeded": "Entered quantity exceeds available stock ({{available}} Kg).",
     "createFail": "Failed to create production request!",
-    "submitError": "An error occurred while creating the production request."
+    "submitError": "An error occurred while creating the production request.",
+    "packagingLoadError": "Failed to load packaging materials.",
+    "needVacuumBagFirst": "You need to select the vacuum bag first to calculate carton boxes.",
+    "notEnoughPackaging": "{{type}} is not enough in stock. Required: {{required}}, available: {{available}}",
+    "requestNotFound": "Production plan not found!",
+    "loadRequestError": "Failed to load production plans.",
+    "loadBatchError": "Failed to load material batches!",
+    "batchPreparingWarning": "There is a batch currently in 'Preparing' status. Please wait before creating the production process."
   },
   "materialExport": {
-    "title": "Create Material Export Order",
+    "title": "Create Warehouse Export Order",
     "createdBy": "Created by:",
     "selectBatch": "Select Raw Material Batch",
     "selectBatchPlaceholder": "Choose a batch",
@@ -1042,7 +1078,7 @@
     "notePlaceholder": "Enter note"
   },
   "materialExportList": {
-    "title": "Material Export Management",
+    "title": "Warehouse Exports List",
     "exportType": "Export Type",
     "productionRequest": "Production Request",
     "batch": "Raw Material Batch",
@@ -1093,7 +1129,16 @@
     "selectProductionDate": "Select production date",
     "endDate": "End Date",
     "note": "Note",
-    "enterNote": "Enter note (optional)"
+    "enterNote": "Enter note (optional)",
+    "selectVacuumBag": "Select Vacuum Bag",
+    "selectCartonBox": "Select Carton Box",
+    "needProductQtyFirst": "Enter product quantity first",
+    "suggestedVacuumBags": "Suggested vacuum bags: {{count}} bags",
+    "suggestedCartons": "Suggested carton boxes: {{count}} boxes",
+    "vacuumBag": "Vacuum Bag",
+    "cartonBox": "Carton Box",
+    "selectEndDate": "Select end date",
+    "selectProductionDateFirst": "Select production date first"
   },
   "priority": {
     "high": "High",
@@ -1335,19 +1380,19 @@
     }
   },
   "material_dashboard": {
-    "title": "Fuel Management Dashboard",
+    "title": "Material Management Dashboard",
     "totalFuelTypes": "Total Material types",
-    "totalFuelQuantity": "Total Fuel Quantity",
+    "totalFuelQuantity": "Total Material Quantity",
     "quickOverview": "Quick Overview",
-    "recentTransactions": "recent fuel transactions",
+    "recentTransactions": "recent Material transactions",
     "mostAvailable": "Most Available Fuel",
     "lowStock": "Low Stock Fuel",
     "noLowStock": "None",
-    "fuelDistribution": "Fuel Distribution in Storage",
+    "fuelDistribution": "Material Distribution in Storage",
     "noData": "No data to display",
-    "historyTitle": "Fuel Import/Export History",
-    "noHistory": "No fuel import/export data",
-    "warningTitle": "Low Fuel Warnings",
+    "historyTitle": "Material Import/Export History",
+    "noHistory": "No Material import/export data",
+    "warningTitle": "Low Material Warnings",
     "fuelType": "Material type",
     "quantity": "Quantity",
     "status": "Status",
@@ -1366,15 +1411,15 @@
     "nameRequired": "Please enter the Material type name",
     "descLabel": "Description",
     "descPlaceholder": "Enter description (optional)",
-    "imageLabel": "Fuel image (JPG, PNG < 2MB)",
-    "imageRequired": "Please upload a fuel image",
+    "imageLabel": "Material image (JPG, PNG < 2MB)",
+    "imageRequired": "Please upload a Material image",
     "chooseImage": "Select Image",
     "submit": "Create Material type",
     "imageTypeError": "Only JPG/PNG images are supported!",
     "imageSizeError": "Image must be smaller than 2MB!",
     "uploadError": "Failed to read image.",
     "createSuccess": "Material type created successfully!",
-    "createFail": "Fuel creation failed!",
+    "createFail": "Material creation failed!",
     "createError": "An error occurred while creating Material type."
   },
   "fuelList": {
@@ -1390,7 +1435,7 @@
     "create_success": "Update successful!",
     "create_fail": "Update failed!",
     "update_error": "Server connection error!",
-    "delete_success": "Fuel marked as deleted!",
+    "delete_success": "Material marked as deleted!",
     "delete_fail": "Delete failed!",
     "not_logged_in": "You are not logged in. Please log in again.",
     "fetch_fail": "Failed to fetch Material types!",
@@ -1426,19 +1471,19 @@
       "placeholder_name": "Material type Name",
       "placeholder_description": "Description",
       "placeholder_quantity": "Quantity",
-      "empty_name": "Fuel name cannot be empty"
+      "empty_name": "Material name cannot be empty"
     }
   },
   "boxList": {
-    "title": "Box Materials by Category",
+    "title": "Package Materials List",
     "back": "Go Back",
-    "create": "+ Create New Material",
+    "create": "Create New Material",
     "image": "Image",
     "no_image": "No Image",
-    "name": "Material Name",
+    "name": "Package Material Name",
     "quantity": "Quantity",
     "capacity": "Capacity",
-    "size": "Packaging Size",
+    "size": "Package Size",
     "status": "Status",
     "status_deleted": "Deleted",
     "status_active": "Active",
@@ -1456,7 +1501,7 @@
       "quantity": "Quantity",
       "status": "Status",
       "capacity": "Capacity",
-      "size": "Packaging Size",
+      "size": "Package Size",
       "created": "Created At",
       "updated": "Last Updated",
       "close": "Close"
@@ -1554,5 +1599,125 @@
     "approve_order": "Approve Order",
     "cancel_order": "Reject Order",
     "create_process": "Create Process"
+  },
+  "boxMaterial": {
+    "back": "Back",
+    "title": "Create New Material",
+    "packageMaterialName": "Material Name",
+    "type": "Material Type",
+    "selectType": "Please select material type",
+    "selectCategory": "Please select package category",
+    "selectImage": "Please upload an image",
+    "quantity": "Quantity",
+    "length": "Length (cm)",
+    "width": "Width (cm)",
+    "height": "Height (cm)",
+    "capacity": "Capacity (Bag: g, Box: kg)",
+    "image": "Material Image",
+    "create": "Create Material",
+    "systemClassification": "👉 System Classification:",
+    "suggestedCapacity": "👉 Suggested capacity for size {{size}}: about {{capacity}} {{unit}}",
+    "sizeReferenceTable": "📏 Size Reference Table",
+    "vacuumBag": "🛍️ Vacuum Bag:",
+    "cartonBox": "📦 Carton Box:",
+    "size": "Size",
+    "dimensions": "Dimensions (cm)",
+    "suggestedCapacityColumn": "Suggested Capacity",
+    "small": "small",
+    "medium": "medium",
+    "large": "large",
+    "unknown": "unknown",
+    "errorLoadingCategories": "Failed to load box categories",
+    "createSuccess": "Material created successfully!",
+    "createFailed": "Failed to create material",
+    "serverError": "Server connection error",
+    "capacityExceeded": "Capacity {{capacity}}{{unit}} exceeds allowed for size {{size}} ({{limit}}{{unit}})",
+    "invalidCapacityLimit": "Cannot determine capacity limit.",
+    "enterLength": "Enter length",
+    "enterWidth": "Enter width",
+    "enterHeight": "Enter height",
+    "enterName": "Please enter material name",
+    "enterQuantity": "Please enter quantity",
+    "enterCapacity": "Please enter capacity",
+    "heightPlaceholder": "Only for carton box",
+    "selectImageButton": "Choose image",
+    "vacuumBagLabel": "Vacuum Bag",
+    "cartonBoxLabel": "Carton Box"
+  },
+  "createProductionProcess": {
+    "title": "Create Production Process",
+    "viewCreatedList": "View Created List",
+    "productionRequest": "Production Plan",
+    "selectRequest": "Select a production plan",
+    "startTime": "Start Time",
+    "selectStartTime": "Select start time",
+    "endTime": "End Time",
+    "selectStartTimeFirst": "Select start time first",
+    "selectEndTime": "Select end time",
+    "createButton": "Create Process",
+    "tipCanCreateWhenReady": "You can create the process once the raw material batches are ready!",
+    "batchDetailTitle": "Batch Details",
+    "batchListTitle": "Batch list"
+  },
+  "batch": {
+    "name": "Batch Name",
+    "code": "Batch Code",
+    "quantity": "Quantity",
+    "status": "Status"
+  },
+  "fuel": {
+    "quantity": "Raw Material Quantity"
+  },
+  "storage": {
+    "name": "Storage Location"
+  },
+  "createConsolidatedProcess": {
+    "title": "Create Consolidated Production Process",
+    "back": "Go back",
+    "viewCreatedList": "View Created List",
+    "selectPlans": "Select plans for the process",
+    "selectAtLeastTwo": "Select at least 2 production plans",
+    "cannotCreateIfLessThanTwo": "You cannot create a consolidated process with less than 2 plans",
+    "batchListTitle": "Corresponding raw material batches",
+    "preparingBatches": "{{count}} raw material batches are being prepared by the warehouse",
+    "readyToCreate": "You can create the process once the raw material batches are ready!",
+    "allBatchesReady": "All raw material batches have been prepared",
+    "canCreateNow": "You can create the process now",
+    "totalRawMaterial": "Total Raw Material (Kg)",
+    "totalLossPercentage": "Total Process Loss (%)",
+    "totalFinishProduct": "Estimated Final Product (Kg)",
+    "startTime": "Start Time",
+    "selectStartTime": "Select start time",
+    "endTime": "End Time",
+    "selectStartTimeFirst": "Select start time first",
+    "selectEndTime": "Select end time",
+    "note": "Note",
+    "notePlaceholder": "Enter note (if any)",
+    "createButton": "Create Process",
+    "drawerTitle": "Batch Details",
+    "noNote": "No note",
+    "unknown": "Unknown",
+    "loading": "Loading...",
+    "close": "Close"
+  },
+  "userDashboard": {
+    "title": "User Management Dashboard",
+    "totalUsers": "👥 Total Users",
+    "activeUsers": "Active Accounts",
+    "blockedUsers": "⛔Blocked Accounts",
+    "roleDistribution": "📊 User Role Distribution",
+    "noRoleData": "No role data available",
+    "latestUsers": "🆕 Latest Users",
+    "table": {
+      "fullName": "Full Name",
+      "email": "Email",
+      "role": "Role",
+      "createdAt": "Created At",
+      "unknown": "Unknown"
+    },
+    "error": {
+      "fetchUserFail": "Failed to load user data!",
+      "serverConnectionFail": "Cannot connect to server!"
+    }
   }
 }

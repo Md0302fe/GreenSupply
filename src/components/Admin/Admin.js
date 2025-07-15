@@ -208,9 +208,6 @@ const Admin = (props) => {
           onClick={() => handleToggle(label, href)}
         >
           <button className="flex justify-center items-center">{icon}</button>
-          <span className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition-all duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10">
-            {text}
-          </span>
         </div>
       );
     });

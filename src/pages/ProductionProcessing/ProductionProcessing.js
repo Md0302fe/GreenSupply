@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Giả lập API call danh sách Kế hoạch sản xuất
 const getAllProductionRequests = async (access_token) => {
@@ -33,6 +34,8 @@ const getAllBatchsById = async (requestId) => {
 };
 
 const ProductionProcessForm = () => {
+  const { t } = useTranslation();
+
   const [form] = Form.useForm();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,11 +65,11 @@ const ProductionProcessForm = () => {
             const batchList = await getAllBatchsById(matched._id);
             setBatchs(batchList);
           } else {
-            message.error("Không tìm thấy Kế hoạch sản xuất tương ứng!");
+            message.error(t("messages.requestNotFound"));
           }
         }
       } catch (error) {
-        message.error("Không thể tải danh sách Kế hoạch sản xuất.");
+        message.error(t("messages.loadRequestError"));
         console.log(error);
       }
     };
@@ -92,9 +95,7 @@ const ProductionProcessForm = () => {
     );
 
     if (hasPreparingBatch) {
-      message.warning(
-        "Có lô nguyên liệu đang trong trạng thái 'Đang chuẩn bị'. Vui lòng chờ trước khi tạo quy trình sản xuất."
-      );
+      message.warning(t("messages.batchPreparingWarning"));
       return; // Không cho phép tiếp tục
     }
 
@@ -111,11 +112,11 @@ const ProductionProcessForm = () => {
       });
 
     if (response) {
-      message.success("Tạo quy trình sản xuất thành công!");
+      message.success(t("messages.createSuccess"));
       form.resetFields();
       setBatchs([]);
     } else {
-      message.error("Tạo quy trình sản xuất thất bại!");
+      message.error(t("messages.createFail"));
     }
   };
 
@@ -134,9 +135,14 @@ const ProductionProcessForm = () => {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H3m0 0l6-6m-6 6l6 6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
           </svg>
-          <span className="hidden md:inline">Quay lại</span>
+          <span className="hidden md:inline">{t("common.back")}</span>
         </Button>
         <Button
           onClick={() => navigate("/system/admin/production-processing-list")}
@@ -144,22 +150,27 @@ const ProductionProcessForm = () => {
           className="flex items-center border border-gray-400 text-gray-700 font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
         >
           <span className="border-b border-black border-solid">
-            Xem danh sách đã tạo
+            {t("createProductionProcess.viewCreatedList")}
           </span>
         </Button>
       </div>
       <div className="w-full max-w-3xl mx-auto bg-white p-4 sm:p-6 rounded shadow">
         <h2 className="text-[16px] lg:text-2xl font-bold mb-4 text-center">
-          Tạo Quy Trình Sản Xuất
+          {t("createProductionProcess.title")}
         </h2>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
             name="production_request_id"
-            label="Kế hoạch sản xuất"
-            rules={[{ required: true, message: "Chọn Kế hoạch sản xuất" }]}
+            label={t("createProductionProcess.productionRequest")}
+            rules={[
+              {
+                required: true,
+                message: t("validation.selectProductionRequest"),
+              },
+            ]}
           >
             <Select
-              placeholder="Chọn Kế hoạch sản xuất"
+              placeholder={t("createProductionProcess.selectRequest")}
               disabled={!!requestIdFromURL} // Nếu có id → disable Select
               onChange={async (value) => {
                 form.setFieldsValue({ production_request_id: value });
@@ -168,7 +179,7 @@ const ProductionProcessForm = () => {
                   setBatchs(batchList);
                 } catch (error) {
                   console.error("Lỗi lấy danh sách lô:", error);
-                  message.error("Không thể tải danh sách lô nguyên liệu!");
+                  message.error(t("messages.loadBatchError"));
                 }
               }}
             >
@@ -182,7 +193,7 @@ const ProductionProcessForm = () => {
           {batchs.length > 0 && (
             <div className="my-4">
               <h3 className="text-[16px] lg:text-lg font-semibold mb-4">
-                Danh sách lô nguyên liệu
+                {t("createProductionProcess.batchListTitle")}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {batchs.map((batch) => (
@@ -192,13 +203,14 @@ const ProductionProcessForm = () => {
                       setSelectedBatch(batch);
                       setDrawerVisible(true);
                     }}
-                    className={`cursor-pointer border-2 p-2 rounded shadow transition-all hover:shadow-md ${batch.status === "Đã xuất kho"
+                    className={`cursor-pointer border-2 p-2 rounded shadow transition-all hover:shadow-md ${
+                      batch.status === "Đã xuất kho"
                         ? "border-green-500"
                         : batch.status === "Đang chuẩn bị" ||
                           batch.status === "Chờ xuất kho"
-                          ? "border-yellow-500"
-                          : "border-gray-300"
-                      }`}
+                        ? "border-yellow-500"
+                        : "border-gray-300"
+                    }`}
                   >
                     <p className="font-medium">{batch.batch_name}</p>
                     <p className="text-sm text-gray-500">
@@ -214,22 +226,29 @@ const ProductionProcessForm = () => {
 
           <Form.Item
             name="start_time"
-            label="Thời gian bắt đầu"
-            rules={[{ required: true, message: "Chọn thời gian bắt đầu" }]}
+            label={t("createProductionProcess.startTime")}
+            rules={[
+              {
+                required: true,
+                message: t("validation.productionDateRequired"),
+              },
+            ]}
           >
             <DatePicker
               showTime
               format="DD/MM/YYYY HH:mm"
               className="w-full"
-              placeholder="Chọn thời gian bắt đầu"
+              placeholder={t("createProductionProcess.selectStartTime")}
               disabledDate={disabledStartDate}
             />
           </Form.Item>
 
           <Form.Item
             name="end_time"
-            label="Thời gian kết thúc"
-            rules={[{ required: true, message: "Chọn thời gian kết thúc" }]}
+            label={t("createProductionProcess.endTime")}
+            rules={[
+              { required: true, message: t("validation.endDateRequired") },
+            ]}
             dependencies={["start_time"]}
           >
             <DatePicker
@@ -238,22 +257,21 @@ const ProductionProcessForm = () => {
               className="w-full"
               placeholder={
                 !startTime
-                  ? "Chọn thời gian bắt đầu trước"
-                  : "Chọn thời gian kết thúc"
+                  ? t("createProductionProcess.selectStartTimeFirst")
+                  : t("createProductionProcess.selectEndTime")
               }
               disabledDate={disabledEndDate}
               disabled={!startTime}
             />
           </Form.Item>
 
-          <Form.Item name="note" label="Ghi chú">
-            <Input.TextArea rows={3} placeholder="Nhập ghi chú (nếu có)" />
+          <Form.Item name="note" label={t("common.note")}>
+            <Input.TextArea rows={3} placeholder={t("common.note")} />
           </Form.Item>
 
           <Form.Item>
             <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-2 mb-2 rounded-md shadow-sm">
-              Bạn có thể <span className="font-bold">tạo quy trình</span> ngay
-              khi các lô nguyên liệu đã được chuẩn bị!
+              {t("createProductionProcess.tipCanCreateWhenReady")}
             </div>
             <Button
               type="primary"
@@ -261,12 +279,12 @@ const ProductionProcessForm = () => {
               loading={loading}
               className="w-full"
             >
-              Tạo quy trình
+              {t("createProductionProcess.createButton")}
             </Button>
           </Form.Item>
         </Form>
         <Drawer
-          title="Chi tiết lô nguyên liệu"
+          title={t("createProductionProcess.batchDetailTitle")}
           placement="right"
           onClose={() => setDrawerVisible(false)}
           open={drawerVisible}
@@ -284,40 +302,40 @@ const ProductionProcessForm = () => {
               }}
               contentStyle={{ backgroundColor: "#ffffff" }}
             >
-              <Descriptions.Item label="Tên lô">
+              <Descriptions.Item label={t("batch.name")}>
                 {selectedBatch.batch_name}
               </Descriptions.Item>
-              <Descriptions.Item label="Mã lô">
+              <Descriptions.Item label={t("batch.code")}>
                 {selectedBatch.batch_id}
               </Descriptions.Item>
-              <Descriptions.Item label="Số lượng">
+              <Descriptions.Item label={t("batch.quantity")}>
                 {selectedBatch.quantity}
               </Descriptions.Item>
-              <Descriptions.Item label="Trạng thái">
+              <Descriptions.Item label={t("batch.status")}>
                 {selectedBatch.status}
               </Descriptions.Item>
-              <Descriptions.Item label="Ghi chú">
-                {selectedBatch.note || "Không có"}
+              <Descriptions.Item label={t("common.note")}>
+                {selectedBatch.note || t("common.emptyNote")}
               </Descriptions.Item>
-              <Descriptions.Item label="Ngày tạo">
+              <Descriptions.Item label={t("common.createdAt")}>
                 {dayjs(selectedBatch.createdAt).format("DD/MM/YYYY HH:mm")}
               </Descriptions.Item>
 
               {/* Fuel Type Info nếu có */}
               {selectedBatch.fuel_type_id && (
                 <>
-                  <Descriptions.Item label="Số lượng nguyên liệu">
+                  <Descriptions.Item label={t("fuel.quantity")}>
                     {selectedBatch.fuel_type_id.quantity}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Kho lưu trữ">
+                  <Descriptions.Item label={t("storage.name")}>
                     {selectedBatch.fuel_type_id.storage_id?.storage_name ||
-                      "Không rõ"}
+                      t("common.unknown")}
                   </Descriptions.Item>
                 </>
               )}
             </Descriptions>
           ) : (
-            <p>Đang tải...</p>
+            <p>{t("common.unknown")}</p>
           )}
         </Drawer>
       </div>
