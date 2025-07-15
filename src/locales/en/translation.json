@@ -1698,5 +1698,25 @@
     "unknown": "Unknown",
     "loading": "Loading...",
     "close": "Close"
+  },
+  "userDashboard": {
+    "title": "User Management Dashboard",
+    "totalUsers": "👥 Total Users",
+    "activeUsers": "Active Accounts",
+    "blockedUsers": "⛔Blocked Accounts",
+    "roleDistribution": "📊 User Role Distribution",
+    "noRoleData": "No role data available",
+    "latestUsers": "🆕 Latest Users",
+    "table": {
+      "fullName": "Full Name",
+      "email": "Email",
+      "role": "Role",
+      "createdAt": "Created At",
+      "unknown": "Unknown"
+    },
+    "error": {
+      "fetchUserFail": "Failed to load user data!",
+      "serverConnectionFail": "Cannot connect to server!"
+    }
   }
 }

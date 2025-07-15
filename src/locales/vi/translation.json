@@ -1694,5 +1694,25 @@
     "unknown": "Không rõ",
     "loading": "Đang tải...",
     "close": "Đóng"
+  },
+  "userDashboard": {
+    "title": "Dashboard Quản Lý Người Dùng",
+    "totalUsers": "👥 Tổng Người Dùng",
+    "activeUsers": "Tài Khoản Đang Hoạt Động",
+    "blockedUsers": "⛔Tài Khoản Bị Chặn",
+    "roleDistribution": "📊 Phân Bổ Vai Trò Người Dùng",
+    "noRoleData": "Không có dữ liệu vai trò",
+    "latestUsers": "🆕 Người Dùng Mới Nhất",
+    "table": {
+      "fullName": "Họ Tên",
+      "email": "Email",
+      "role": "Vai Trò",
+      "createdAt": "Ngày Tạo",
+      "unknown": "Không xác định"
+    },
+    "error": {
+      "fetchUserFail": "Không thể tải dữ liệu người dùng!",
+      "serverConnectionFail": "Không thể kết nối server!"
+    }
   }
 }
