@@ -64,4 +64,15 @@
       background-color: #c62828;
     }
   }
+
+   &.btn-create-process {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+
+    &:hover {
+      background-color: #15803d;
+      color: white;
+    }
+  }
 }

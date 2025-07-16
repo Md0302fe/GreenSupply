@@ -9,6 +9,7 @@ import {
   Tag,
   Input,
   Drawer,
+  Form,
 } from "antd";
 import axios from "axios";
 import {
@@ -20,8 +21,10 @@ import Highlighter from "react-highlight-words";
 import { Excel } from "antd-table-saveas-excel";
 import { EditOutlined } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
+import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 const FuelList = () => {
   const { t } = useTranslation();
@@ -420,9 +423,9 @@ const FuelList = () => {
         scroll={{ x: "max-content" }}
       />
 
-      <Drawer
+      <DrawerComponent
         title={t("fuelList.drawer.details_title")}
-        open={isDrawerOpen}
+        isOpen={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
           setSelectedFuel(null);
@@ -431,61 +434,85 @@ const FuelList = () => {
         width={400}
       >
         {selectedFuel ? (
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label={t("fuelList.columns.type_name")}>
-              {selectedFuel.type_name || t("fuelList.no_data_to_export")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.drawer.image")}>
-              {selectedFuel.fuel_type_id?.image ? (
-                <img
-                  src={selectedFuel.fuel_type_id.image}
-                  alt={selectedFuel.type_name}
-                  style={{
-                    width: "100%",
-                    maxHeight: 200,
-                    objectFit: "contain",
-                    borderRadius: 8,
-                  }}
+          <Form layout="vertical" disabled>
+            <div className="grid grid-cols-1 gap-4">
+              {/* Tên loại nguyên liệu */}
+              <Form.Item label={t("fuelList.columns.type_name")} className="!mb-0">
+                <Input value={selectedFuel.type_name || t("fuelList.no_data_to_export")} />
+              </Form.Item>
+
+              {/* Ảnh nguyên liệu */}
+              <Form.Item label={t("fuelList.drawer.image")} className="!mb-0">
+                {selectedFuel.fuel_type_id?.image ? (
+                  <img
+                    src={selectedFuel.fuel_type_id.image}
+                    alt={selectedFuel.type_name}
+                    style={{
+                      width: "100%",
+                      maxHeight: 200,
+                      objectFit: "contain",
+                      borderRadius: 8,
+                    }}
+                  />
+                ) : (
+                  <i>{t("fuelList.drawer.no_image")}</i>
+                )}
+              </Form.Item>
+
+              {/* Mô tả */}
+              <Form.Item label={t("fuelList.columns.description")} className="!mb-0">
+                <Input.TextArea
+                  rows={3}
+                  value={
+                    selectedFuel.description || t("fuelList.drawer.no_description")
+                  }
                 />
-              ) : (
-                <i>{t("fuelList.drawer.no_image")}</i>
-              )}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.columns.description")}>
-              {selectedFuel.description || t("fuelList.drawer.no_description")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.drawer.delete_status")}>
-              <Tag color={selectedFuel.is_deleted ? "red" : "green"}>
-                {selectedFuel.is_deleted
-                  ? t("fuelList.status.deleted")
-                  : t("fuelList.status.active")}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.form.placeholder_quantity")}>
-              {selectedFuel.quantity ?? "Không có"}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.drawer.storage")}>
-              {selectedFuel.storage_id ?? "Không có"}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.drawer.created_at")}>
-              {new Date(selectedFuel.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("fuelList.drawer.updated_at")}>
-              {new Date(selectedFuel.updatedAt).toLocaleString()}
-            </Descriptions.Item>
-          </Descriptions>
+              </Form.Item>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
+                {/* Số lượng */}
+                <Form.Item label={t("fuelList.form.placeholder_quantity")} className="!mb-0">
+                  <Input value={selectedFuel.quantity ?? t("fuelList.no_data_to_export")} />
+                </Form.Item>
+
+                {/* Trạng thái xóa */}
+                <Form.Item label={t("fuelList.drawer.delete_status")} className="!mb-0">
+                  <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center ">
+                    <Tag color={selectedFuel.is_deleted ? "red" : "green"}>
+                      {selectedFuel.is_deleted
+                        ? t("fuelList.status.deleted")
+                        : t("fuelList.status.active")}
+                    </Tag>
+                  </div>
+                </Form.Item>
+              </div>
+
+              {/* Kho */}
+              <Form.Item label={t("fuelList.drawer.storage")} className="!mb-0">
+                <Input value={selectedFuel.storage_id ?? t("fuelList.no_data_to_export")} />
+              </Form.Item>
+
+              {/* Ngày tạo & Ngày cập nhật */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <Form.Item label={t("fuelList.drawer.created_at")} className="!mb-0">
+                  <Input value={new Date(selectedFuel.createdAt).toLocaleString()} />
+                </Form.Item>
+
+                <Form.Item label={t("fuelList.drawer.updated_at")} className="!mb-0">
+                  <Input value={new Date(selectedFuel.updatedAt).toLocaleString()} />
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
         ) : (
-          <p>{t("fuelList.drawer.loading")}</p>
+          <p className="text-center text-gray-500">{t("fuelList.drawer.loading")}</p>
         )}
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-          >
-            {t("fuelList.closeButton")}
-          </button>
+
+        {/* Nút đóng */}
+        <div className="flex justify-end mt-6">
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
-      </Drawer>
+      </DrawerComponent>
 
       <Drawer
         title={t("fuelList.drawer.update_title")}
@@ -524,14 +551,12 @@ const FuelList = () => {
               placeholder={t("fuelList.form.placeholder_quantity")}
               className="mb-2"
             />
-            <Space style={{ marginTop: "10px" }}>
-              <Button onClick={() => setIsUpdateDrawerOpen(false)}>
-                {t("fuelList.drawer.cancel")}
-              </Button>
-              <Button type="primary" onClick={handleUpdate}>
-                {t("fuelList.drawer.save")}
-              </Button>
-            </Space>
+            <div className="flex justify-end mt-2">
+              <Space>
+                <ButtonComponent type="update" onClick={handleUpdate} />
+                <ButtonComponent type="close" onClick={() => setIsUpdateDrawerOpen(false)} />
+              </Space>
+            </div>
           </div>
         ) : (
           <p>{t("fuelList.drawer.loading")}</p>

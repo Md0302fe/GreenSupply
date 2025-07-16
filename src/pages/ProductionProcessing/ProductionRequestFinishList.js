@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Table, Input, Space, Tag, Button } from "antd";
+import { Table, Input, Space, Tag, Button, Form } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -10,12 +10,13 @@ import Loading from "../../components/LoadingComponent/Loading";
 import DrawerComponent from "../../components/DrawerComponent/DrawerComponent";
 import * as ProductionRequestServices from "../../services/ProductionRequestServices";
 import { FcTodoList } from "react-icons/fc";
-import { useLocation } from "react-router-dom"; 
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { FaG, FaGear } from "react-icons/fa6";
 import { Trans, useTranslation } from "react-i18next";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 
 // Hàm lấy danh sách Nguyên liệu
 export const getAllFuelType = async () => {
@@ -55,7 +56,7 @@ const ProductionRequestList = () => {
   const [filteredStatus, setFilteredStatus] = useState(null);
   const location = useLocation();
 
-  
+
   // 1. FETCH danh sách kế hoạch (GET)
   const fetchProductionRequests = async () => {
     const access_token = user?.access_token;
@@ -84,8 +85,8 @@ const ProductionRequestList = () => {
     console.log("Lỗi:", error);
   }
 
- const tableData = Array.isArray(data)
-  ? data
+  const tableData = Array.isArray(data)
+    ? data
       .filter((req) => {
         if (filteredStatus) {
           return req.status === filteredStatus;
@@ -93,16 +94,16 @@ const ProductionRequestList = () => {
         return req.status === "Đã duyệt" || req.status === "Đang sản xuất";
       })
       .map((req) => ({ ...req, key: req._id }))
-  : [];
+    : [];
 
   useEffect(() => {
-  const queryParams = new URLSearchParams(location.search);
-  const statusFromURL = queryParams.get("status");
+    const queryParams = new URLSearchParams(location.search);
+    const statusFromURL = queryParams.get("status");
 
-  if (statusFromURL) {
-    setFilteredStatus(statusFromURL);
-  }
- }, [location.search]);
+    if (statusFromURL) {
+      setFilteredStatus(statusFromURL);
+    }
+  }, [location.search]);
 
 
   // Search
@@ -412,117 +413,79 @@ const ProductionRequestList = () => {
         placement="right"
         width={drawerWidth}
       >
-        {/* Chế độ XEM CHI TIẾT */}
         {selectedRequest && (
-          <div className="">
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
-              <div className="grid grid-cols-2 gap-0">
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.request_name")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.request_name}
-                </div>
+          <div>
+            <Form layout="vertical" disabled>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Tên đơn - chiếm toàn dòng */}
+                <Form.Item
+                  label={t("form.request_name")}
+                  className="!mb-0 lg:col-span-2"
+                >
+                  <Input value={selectedRequest.request_name} />
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.request_type")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.request_type}
-                </div>
+                {/* Nguyên liệu - chiếm toàn dòng */}
+                <Form.Item
+                  label={t("form.material_id")}
+                  className="!mb-0 lg:col-span-2"
+                >
+                  <Input value={selectedRequest.material} />
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.material_id")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.material}
-                </div>
+                {/* Loại đơn */}
+                <Form.Item label={t("form.request_type")} className="!mb-0">
+                  <Input value={selectedRequest.request_type} />
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.product_quantity")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.product_quantity} Kg
-                </div>
+                {/* Trạng thái */}
+                <Form.Item label={t("form.status")} className="!mb-0">
+                  <div className="border border-gray-300 rounded px-2 py-1 h-[40px] flex items-center">
+                    <Tag color={statusColors[selectedRequest.status] || "default"}>
+                      {t(`status.${statusMap[selectedRequest.status]}`) || selectedRequest.status}
+                    </Tag>
+                  </div>
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.material_quantity")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.material_quantity} Kg
-                </div>
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.loss_percentage")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.loss_percentage ?? "0"}%
-                </div>
+                <Form.Item label={t("form.product_quantity")} className="!mb-0">
+                  <Input value={`${selectedRequest.product_quantity} Kg`} />
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.priority")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {selectedRequest.priority ?? "-"}
-                </div>
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.production_date")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {convertDateStringV1(selectedRequest.production_date)}
-                </div>
+                <Form.Item label={t("form.material_quantity")} className="!mb-0">
+                  <Input value={`${selectedRequest.material_quantity} Kg`} />
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.end_date")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  {convertDateStringV1(selectedRequest.end_date)}
-                </div>
+                <Form.Item label={t("form.loss_percentage")} className="!mb-0">
+                  <Input value={`${selectedRequest.loss_percentage ?? 0}%`} />
+                </Form.Item>
 
-                <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                  {t("form.status")}
-                </div>
-                <div className="p-3 border border-gray-300">
-                  <Tag
-                    color={statusColors[selectedRequest.status] || "default"}
-                  >
-                    {t(`status.${statusMap[selectedRequest.status]}`) ||
-                      selectedRequest.status}
-                  </Tag>
-                </div>
+                <Form.Item label={t("form.priority")} className="!mb-0">
+                  <Input value={selectedRequest.priority ?? "-"} />
+                </Form.Item>
+
+                <Form.Item label={t("form.production_date")} className="!mb-0">
+                  <Input value={convertDateStringV1(selectedRequest.production_date)} />
+                </Form.Item>
+
+                <Form.Item label={t("form.end_date")} className="!mb-0">
+                  <Input value={convertDateStringV1(selectedRequest.end_date)} />
+                </Form.Item>
 
                 {selectedRequest.note && (
-                  <>
-                    <div className="bg-gray-100 font-semibold p-3 border border-gray-300 text-left">
-                      {t("form.note")}
-                    </div>
-                    <div className="p-3 border border-gray-300 whitespace-pre-wrap">
-                      {selectedRequest.note}
-                    </div>
-                  </>
+                  <Form.Item label={t("form.note")} className="lg:col-span-2 !mb-0">
+                    <Input.TextArea value={selectedRequest.note} rows={3} />
+                  </Form.Item>
                 )}
               </div>
-            </div>
-            {/* Nếu đã duyệt thì có thể tạo quy trình */}
-            {selectedRequest.status === "Đã duyệt" && (
-              <div className="flex justify-between items-center gap-4 mt-6">
-                {/* Nút tạo quy trình */}
-                <Button
-                  type="primary"
-                  className="px-4 py-1 text-lg"
-                  onClick={() => navigate(`create/${selectedRequest._id}`)}
-                >
-                  {t("action.create_process")}
-                </Button>
+            </Form>
 
-                {/* Nút đóng */}
-                <button
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="bg-gray-500 text-white font-bold px-4 py-1.5 rounded hover:bg-gray-600"
-                >
-                  {t("common.close")}
-                </button>
-              </div>
-            )}
+            {/* Nút hành động */}
+            <div className="flex justify-end items-center gap-4 mt-6">
+              {selectedRequest.status === "Đã duyệt" && (
+                <ButtonComponent type="create-process" onClick={() => navigate(`create/${selectedRequest._id}`)} />
+              )}
+              <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+            </div>
           </div>
         )}
       </DrawerComponent>

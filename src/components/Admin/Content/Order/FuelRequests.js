@@ -46,7 +46,7 @@ const FuelRequestsManagement = () => {
   const statusMap = {
     "Chờ duyệt": "pending",
     "Đã duyệt": "approve",
-    "Đã huỷ": "cancelled",
+    "Đã Hủy": "cancelled",
     "Hoàn Thành": "completed",
     "Đang xử lý": "processing",
   };
@@ -379,7 +379,7 @@ const tableData =
         { text: t("status.pending"), value: "Chờ duyệt" },
         { text: t("status.processing"), value: "Đang xử lý" },
         { text: t("status.approve"), value: "Đã duyệt" },
-        { text: t("status.cancelled"), value: "Đã hủy" },
+        { text: t("status.cancelled"), value: "Đã Hủy" },
         { text: t("status.completed"), value: "Hoàn Thành" },
       ],
       onFilter: (value, record) => record.status?.trim() === value.trim(),
@@ -393,14 +393,14 @@ const tableData =
             color = "green";
             break;
           case "Đã huỷ":
-          case "Đã hủy": // đề phòng cả 2 cách viết
+          case "Đã Hủy": // đề phòng cả 2 cách viết
             color = "red";
             break;
           case "Hoàn Thành":
             color = "blue";
             break;
           case "Đang xử lý":
-            color = "blue";
+            color = "volcano";
             break;
           default:
             color = "default";

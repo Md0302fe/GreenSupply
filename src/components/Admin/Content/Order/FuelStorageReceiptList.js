@@ -262,7 +262,7 @@ const FuelStorageReceiptList = () => {
     excel
       .addSheet("Danh sách Đơn Nhập Kho")
       .addColumns([
-        { title: t("fuelStorage.columns.manager"), dataIndex: "manager" },
+        { title: t("fuelStorage.columns.receipt_id"), dataIndex: "_id" },
         {
           title: t("fuelStorage.columns.receiptType"),
           dataIndex: "receiptType",
@@ -301,14 +301,14 @@ const FuelStorageReceiptList = () => {
   const columns = [
     {
       title: (
-        <div className="text-center">{t("fuelStorage.columns.manager")}</div>
+        <div className="text-center">{t("fuelStorage.columns.receipt_id")}</div>
       ),
-      dataIndex: "manager", // thêm alias cho search
-      key: "manager",
+      dataIndex: "_id", // thêm alias cho search
+      key: "_id",
       className: "text-center",
-      ...getColumnSearchProps("manager"),
-      render: (_, record) =>
-        record.manager_id?.full_name || t("fuelStorage.unknown"),
+      ...getColumnSearchProps("_id"),
+      // render: (_, record) =>
+      //   record.manager_id?.full_name || "Admin",
     },
     {
       title: (
@@ -417,6 +417,8 @@ const FuelStorageReceiptList = () => {
       ),
     },
   ];
+
+  console.log("receipts ==> ", receipts)
 
   return (
     <div className="fuel-storage-receipt-list md:px-8">

@@ -4,10 +4,11 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-
+import { useTranslation } from "react-i18next";
 const { Option } = Select;
 
 const CreateBox = () => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const CreateBox = () => {
         );
         if (res.data.success) setCategories(res.data.data);
       } catch {
-        message.error("Lỗi khi tải danh sách loại thùng");
+        message.error(t("boxMaterial.errorLoadingCategories"));
       }
     };
     fetchCategories();
@@ -73,16 +74,17 @@ const CreateBox = () => {
     if (!limit)
       return {
         valid: false,
-        message: "Không xác định được giới hạn capacity.",
+        message: t("boxMaterial.invalidCapacityLimit"),
       };
     if (capacity > limit) {
       return {
         valid: false,
-        message: `Dung tích ${capacity}${
-          type === "túi chân không" ? "g" : "kg"
-        } vượt quá mức cho phép với size ${size.toUpperCase()} (${limit}${
-          type === "túi chân không" ? "g" : "kg"
-        })`,
+        message: t("boxMaterial.capacityExceeded", {
+          capacity,
+          unit: type === "túi chân không" ? "g" : "kg",
+          size: size.toUpperCase(),
+          limit,
+        }),
       };
     }
     return { valid: true };
@@ -137,15 +139,15 @@ const CreateBox = () => {
       );
 
       if (res.data.success) {
-        message.success("Tạo nguyên vật liệu thành công!");
+        message.success(t("boxMaterial.createSuccess"));
         navigate("/system/admin/box-list", {
           state: { categoryId: values.package_material_categories },
         });
       } else {
-        message.error("Tạo nguyên vật liệu thất bại");
+        message.error(t("boxMaterial.createFailed"));
       }
     } catch {
-      message.error("Lỗi kết nối server");
+      message.error(t("boxMaterial.serverError"));
     } finally {
       setLoading(false);
     }
@@ -174,11 +176,11 @@ const CreateBox = () => {
                 d="M15 12H3m0 0l6-6m-6 6l6 6"
               />
             </svg>
-            Quay lại
+            {t("boxMaterial.back")}
           </button>
         </div>
         <h2 className="text-2xl font-bold mb-6 text-center">
-          Tạo Nguyên Liệu Mới
+          {t("boxMaterial.title")}
         </h2>
         <Form
           form={form}
@@ -225,32 +227,34 @@ const CreateBox = () => {
           }}
         >
           <Form.Item
-            label="Tên Nguyên liệu"
+            label={t("boxMaterial.packageMaterialName")}
             name="package_material_name"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên nguyên liệu" },
-            ]}
+            rules={[{ required: true, message: t("boxMaterial.enterName") }]}
           >
             <Input size="large" />
           </Form.Item>
 
           <Form.Item
-            label="Loại Nguyên Liệu"
+            label={t("boxMaterial.type")}
             name="type"
-            rules={[
-              { required: true, message: "Vui lòng chọn loại nguyên liệu" },
-            ]}
+            rules={[{ required: true, message: t("boxMaterial.selectType") }]}
           >
             <Select size="large" onChange={(value) => setBoxType(value)}>
-              <Option value="túi chân không">Túi chân không</Option>
-              <Option value="thùng carton">Thùng carton</Option>
+              <Option value="túi chân không">
+                {t("boxMaterial.vacuumBagLabel")}
+              </Option>
+              <Option value="thùng carton">
+                {t("boxMaterial.cartonBoxLabel")}
+              </Option>
             </Select>
           </Form.Item>
 
           <Form.Item
-            label="Chọn loại bao bì"
+            label={t("boxMaterial.selectCategory")}
             name="package_material_categories"
-            rules={[{ required: true, message: "Vui lòng chọn loại bao bì" }]}
+            rules={[
+              { required: true, message: t("boxMaterial.selectCategory") },
+            ]}
           >
             <Select size="large" showSearch optionFilterProp="children">
               {categories.map((cat) => (
@@ -262,39 +266,43 @@ const CreateBox = () => {
           </Form.Item>
 
           <Form.Item
-            label="Số lượng"
+            label={t("boxMaterial.quantity")}
             name="quantity"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+            rules={[
+              { required: true, message: t("boxMaterial.enterQuantity") },
+            ]}
           >
             <Input type="number" min={0} size="large" />
           </Form.Item>
 
           <div className="flex gap-4">
             <Form.Item
-              label="Dài (cm)"
+              label={t("boxMaterial.length")}
               name="length"
               className="flex-1"
-              rules={[{ required: true, message: "Nhập chiều dài" }]}
+              rules={[
+                { required: true, message: t("boxMaterial.enterLength") },
+              ]}
             >
               <Input type="number" min={0} size="large" />
             </Form.Item>
 
             <Form.Item
-              label="Rộng (cm)"
+              label={t("boxMaterial.width")}
               name="width"
               className="flex-1"
-              rules={[{ required: true, message: "Nhập chiều rộng" }]}
+              rules={[{ required: true, message: t("boxMaterial.enterWidth") }]}
             >
               <Input type="number" min={0} size="large" />
             </Form.Item>
 
             <Form.Item
-              label="Cao (cm)"
+              label={t("boxMaterial.height")}
               name="height"
               className="flex-1"
               rules={
                 boxType === "thùng carton"
-                  ? [{ required: true, message: "Nhập chiều cao" }]
+                  ? [{ required: true, message: t("boxMaterial.enterHeight") }]
                   : []
               }
             >
@@ -304,7 +312,9 @@ const CreateBox = () => {
                 size="large"
                 disabled={boxType !== "thùng carton"}
                 placeholder={
-                  boxType !== "thùng carton" ? "Chỉ áp dụng cho thùng" : ""
+                  boxType !== "thùng carton"
+                    ? t("boxMaterial.heightPlaceholder")
+                    : ""
                 }
               />
             </Form.Item>
@@ -312,9 +322,9 @@ const CreateBox = () => {
 
           {currentSize && (
             <div className="text-sm mb-2 text-gray-600">
-              👉 Phân loại hệ thống:{" "}
+              {t("boxMaterial.systemClassification")}{" "}
               <strong>
-                Size{" "}
+                {t("boxMaterial.size")}{" "}
                 {currentSize === "nhỏ"
                   ? "S"
                   : currentSize === "trung bình"
@@ -325,37 +335,41 @@ const CreateBox = () => {
           )}
 
           <Form.Item
-            label="Dung Tích (Túi: g, Thùng: kg)"
+            label={t("boxMaterial.capacity")}
             name="capacity"
-            rules={[{ required: true, message: "Vui lòng nhập dung tích" }]}
+            rules={[
+              { required: true, message: t("boxMaterial.enterCapacity") },
+            ]}
           >
             <Input type="number" min={0} size="large" />
           </Form.Item>
 
           {currentSize && suggestedCapacity !== null && (
             <div className="text-xs text-gray-500 mb-2">
-              👉 Gợi ý dung tích cho size{" "}
-              <strong>
-                {currentSize === "nhỏ"
-                  ? "S"
-                  : currentSize === "trung bình"
-                  ? "M"
-                  : "L"}
-              </strong>
-              : khoảng <strong>{suggestedCapacity}</strong>{" "}
-              {boxType === "túi chân không" ? "g" : "kg"}
+              {t("boxMaterial.suggestedCapacity", {
+                size:
+                  currentSize === "nhỏ"
+                    ? "S"
+                    : currentSize === "trung bình"
+                    ? "M"
+                    : "L",
+                capacity: suggestedCapacity,
+                unit: boxType === "túi chân không" ? "g" : "kg",
+              })}
             </div>
           )}
 
           <Form.Item
-            label="Ảnh Nguyên Liệu"
+            label={t("boxMaterial.image")}
             name="package_img"
             valuePropName="fileList"
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-            rules={[{ required: true, message: "Vui lòng chọn ảnh" }]}
+            rules={[{ required: true, message: t("boxMaterial.selectImage") }]}
           >
             <Upload listType="picture">
-              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+              <Button icon={<UploadOutlined />}>
+                {t("boxMaterial.selectImageButton")}
+              </Button>
             </Upload>
           </Form.Item>
 
@@ -367,7 +381,7 @@ const CreateBox = () => {
               className="w-full"
               size="large"
             >
-              Tạo Nguyên Liệu
+              {t("boxMaterial.create")}
             </Button>
           </Form.Item>
         </Form>
@@ -376,17 +390,26 @@ const CreateBox = () => {
       {/* BẢNG THAM KHẢO SIZE */}
       <div className="w-full lg:w-1/3 bg-white rounded-lg shadow p-4 max-h-[520px] overflow-auto">
         <h3 className="text-lg font-semibold mb-3 text-blue-600">
-          📏 Bảng Size Tham Khảo
+          {t("boxMaterial.sizeReferenceTable")}
         </h3>
 
         {/* Túi chân không */}
-        <p className="font-medium text-gray-700 mb-1">🛍️ Túi chân không:</p>
+        <p className="font-medium text-gray-700 mb-1">
+          {t("boxMaterial.vacuumBag")}
+        </p>
         <table className="w-full text-sm border border-gray-300 mb-4">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border px-2 py-1 text-center">Size</th>
-              <th className="border px-2 py-1 text-center">Kích thước (cm)</th>
-              <th className="border px-2 py-1 text-center">Dung tích gợi ý</th>
+              <th className="border px-2 py-1 text-center">
+                {" "}
+                {t("boxMaterial.size")}
+              </th>
+              <th className="border px-2 py-1 text-center">
+                {t("boxMaterial.dimensions")}
+              </th>
+              <th className="border px-2 py-1 text-center">
+                {t("boxMaterial.suggestedCapacityColumn")}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -409,13 +432,22 @@ const CreateBox = () => {
         </table>
 
         {/* Thùng carton */}
-        <p className="font-medium text-gray-700 mb-1">📦 Thùng carton:</p>
+        <p className="font-medium text-gray-700 mb-1">
+          {t("boxMaterial.cartonBox")}
+        </p>
         <table className="w-full text-sm border border-gray-300">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border px-2 py-1 text-center">Size</th>
-              <th className="border px-2 py-1 text-center">Kích thước (cm)</th>
-              <th className="border px-2 py-1 text-center">Dung tích gợi ý</th>
+              <th className="border px-2 py-1 text-center">
+                {" "}
+                {t("boxMaterial.size")}
+              </th>
+              <th className="border px-2 py-1 text-center">
+                {t("boxMaterial.dimensions")}
+              </th>
+              <th className="border px-2 py-1 text-center">
+                {t("boxMaterial.suggestedCapacityColumn")}
+              </th>
             </tr>
           </thead>
           <tbody>
