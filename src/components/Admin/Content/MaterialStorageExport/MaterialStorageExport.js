@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { createMaterialStorageExport } from "../../../../services/MaterialStorageExportService";
 import { GoPackageDependents } from "react-icons/go";
-
+import { ArrowLeft, Package, ArrowRightFromLine } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const MaterialStorageExport = () => {
@@ -94,7 +94,7 @@ const MaterialStorageExport = () => {
         setRawMaterialBatches(filteredBatches);
         setProductionRequests(productionData);
 
-        // ✅ Nếu có batchId trên URL và nằm trong danh sách hợp lệ
+        // Nếu có batchId trên URL và nằm trong danh sách hợp lệ
         if (batchId) {
           const selectedBatch = filteredBatches.find((b) => b._id === batchId);
           if (selectedBatch) {
@@ -191,133 +191,249 @@ const MaterialStorageExport = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-0 lg:p-4">
-      <div className="w-full md:w-full bg-gray-100 p-6">
+    <div className="min-h-screen bg-white from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
+      <div className="flex justify-between items-center">
         <button
-          onClick={() => navigate(-1)} // Quay lại trang trước đó
-          className="flex mb-1 items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:opacity-70 transition duration-300"
+          onClick={() => navigate(-1)}
+          className="group flex items-center bg-white/80 backdrop-blur-sm text-gray-700 font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 border-2 border-gray-200/50"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
+          <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
           {t("harvest.back")}
         </button>
-        <div className="max-w-3xl mx-auto bg-white p-4 lg:p-6 rounded-lg shadow-lg">
-          <h2 className="text-[22px] flex items-center justify-center gap-2 lg:text-3xl font-bold text-gray-800 text-center my-4">
-            <GoPackageDependents></GoPackageDependents>{" "}
-            {t("materialExport.title")}
-          </h2>
 
-          {/* ✅ Hiển thị tên người dùng */}
-          {user && (
-            <p className="mb-4 text-lg font-semibold text-gray-700">
-              {t("materialExport.createdBy")}{" "}
-              <span className="text-blue-600">{user.full_name}</span>
+        <button
+          type="button"
+          onClick={() => navigate("/system/admin/material-storage-export-list")}
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+        >
+          {t("materialExport.viewList") || "Warehouse Exports List"}
+        </button>
+      </div>
+      <div className="max-w-4xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-5">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+              {t("materialExport.title")}
+            </h1>
+            <p className="text-gray-600 text-lg">
+              {t("materialExport.title_description")}
             </p>
-          )}
+          </div>
+        </div>
 
-          <Form form={form} layout="vertical" onFinish={handleSubmit}>
-            {/* Chọn Lô nguyên liệu */}
-            <Form.Item
-              label={t("materialExport.selectBatch")}
-              name="batch_id"
-              rules={[
-                { required: true, message: t("validation.requiredBatch") },
-              ]}
-            >
-              <Select
-                placeholder={t("materialExport.selectBatch")}
-                loading={loadingBatch}
-                onChange={handleBatchChange}
+        {/* Main Form Card */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                <ArrowRightFromLine className="h-4 w-4 text-white" />
+              </div>
+              {t("materialExport.detail")}
+            </h2>
+          </div>
+
+          {/* Form Content */}
+          <div className="p-8">
+            {/* User Info */}
+            {user && (
+              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                <p className="text-lg font-medium text-gray-700">
+                  {t("materialExport.createdBy")}{" "}
+                  <span className="text-blue-600 font-semibold">
+                    {user.full_name}
+                  </span>
+                </p>
+              </div>
+            )}
+
+            {/* <Form form={form} layout="vertical" onFinish={handleSubmit}>
+              <Form.Item 
+                label={t("materialExport.selectBatch")}
+                name="batch_id"
+                rules={[
+                  { required: true, message: t("validation.requiredBatch") },
+                ]}
               >
-                {rawMaterialBatches.map((batch) => (
-                  <Select.Option key={batch._id} value={batch._id}>
-                    {batch.batch_name} - {batch.quantity} Kg (
-                    {t(`status.${batch.statusKey || "preparing"}`)})
+                <Select
+                  placeholder={t("materialExport.selectBatch")}
+                  loading={loadingBatch}
+                  onChange={handleBatchChange}
+                >
+                  {rawMaterialBatches.map((batch) => (
+                    <Select.Option key={batch._id} value={batch._id}>
+                      {batch.batch_name} - {batch.quantity} Kg (
+                      {t(`status.${batch.statusKey || "preparing"}`)})
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item> */}
+
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSubmit}
+              className="space-y-6"
+            >
+              {/* Select Batch */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {/* <span className="text-red-500 text-base"></span> */}
+                    {t("materialExport.selectBatch")}
+                  </span>
+                }
+                name="batch_id"
+                rules={[{ required: true, message: "Please select a batch" }]}
+              >
+                <Select
+                  placeholder={t("materialExport.selectBatchPlaceholder")}
+                  loading={loadingBatch}
+                  onChange={handleBatchChange}
+                  className="custom-select"
+                  size="large"
+                >
+                  {rawMaterialBatches.map((batch) => (
+                    <Select.Option key={batch._id} value={batch._id}>
+                      {batch.batch_name} - {batch.quantity} Kg (Preparing)
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              {/* Select Production Request */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {/* <span className="text-red-500 text-base">*</span> */}
+                    {t("materialExport.selectProduction")}
+                  </span>
+                }
+                name="production_request_id"
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Please select a production request",
+                //   },
+                // ]}
+              >
+                <Select
+                  placeholder={t("materialExport.selectProductionPlaceholder")}
+                  loading={loadingProduction}
+                  className="custom-select"
+                  size="large"
+                  disabled
+                >
+                  {productionRequests.map((request) => (
+                    <Select.Option key={request._id} value={request._id}>
+                      {request.request_name} - {request.status}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              {/* Export Name */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {/* <span className="text-red-500 text-base">*</span> */}
+                    {t("materialExport.exportName")}
+                  </span>
+                }
+                name="export_name"
+                rules={[
+                  { required: true, message: "Please enter export name" },
+                ]}
+              >
+                <Input
+                  placeholder={t("materialExport.exportNamePlaceholder")}
+                  maxLength={60}
+                  className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+                  size="large"
+                />
+              </Form.Item>
+
+              {/* Export Type */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm">
+                    {t("materialExport.exportType")}
+                  </span>
+                }
+                name="type_export"
+                initialValue="Đơn sản xuất"
+              >
+                <Select disabled className="custom-select" size="large">
+                  <Select.Option value="Đơn sản xuất">
+                    {t("materialExport.productionType")}
                   </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+                </Select>
+              </Form.Item>
 
-            {/* Chọn Đơn sản xuất */}
-            <Form.Item
-              label={t("materialExport.selectProduction")}
-              name="production_request_id"
-              rules={[
-                { required: true, message: t("validation.requiredProduction") },
-              ]}
-            >
-              <Select
-                placeholder={t("materialExport.selectProduction")}
-                loading={loadingProduction}
-                disabled
+              {/* Notes */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm">
+                    {t("materialExport.note")}
+                  </span>
+                }
+                name="note"
               >
-                {productionRequests.map((request) => (
-                  <Select.Option key={request._id} value={request._id}>
-                    {request.request_name} - {request.status}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+                <Input.TextArea
+                  rows={4}
+                  placeholder={t("materialExport.notePlaceholder")}
+                  className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
+                />
+              </Form.Item>
 
-            {/* Tên đơn xuất kho */}
-            <Form.Item
-              label={t("materialExport.exportName")}
-              name="export_name"
-              rules={[
-                { required: true, message: t("validation.requiredExportName") },
-              ]}
-            >
-              <Input
-                placeholder={t("materialExport.exportNamePlaceholder")}
-                maxLength={60}
-              />
-            </Form.Item>
+              {/* Submit Button */}
+              <Form.Item className="pt-4">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-0 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Creating Export Request...
+                    </div>
+                  ) : (
+                    t("materialExport.create_btn")
+                  )}
+                </Button>
+              </Form.Item>
+            </Form>
 
-            {/* Loại đơn xuất kho */}
-            <Form.Item
-              label={t("materialExport.exportType")}
-              name="type_export"
-              initialValue="Đơn sản xuất"
-            >
-              <Select disabled>
-                <Select.Option value="Đơn sản xuất">
-                  {t("materialExport.productionType")}
-                </Select.Option>
-              </Select>
-            </Form.Item>
-
-            {/* Ghi chú */}
-            <Form.Item label={t("materialExport.note")} name="note">
-              <Input.TextArea
-                rows={4}
-                placeholder={t("materialExport.notePlaceholder")}
-              />
-            </Form.Item>
-
-            {/* Nút xác nhận */}
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="w-full py-2"
-                loading={loading}
-              >
-                {t("common.confirm")}
-              </Button>
-            </Form.Item>
-          </Form>
+            {/* Help Text */}
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl mt-6">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-blue-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-blue-700">
+                    <strong>{t("materialExport.note_require.note")}</strong>{" "}
+                    {t("materialExport.note_require.note_parent")}{" "}
+                    <span className="text-red-500 font-semibold">*</span>{" "}
+                    {t("materialExport.note_require.note_child")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { ArrowLeft, Plus } from "lucide-react";
 import { PiPlusThin } from "react-icons/pi";
 import { useTranslation } from "react-i18next";
 
@@ -195,6 +196,182 @@ const CreateFuel = () => {
       </div>
     </div>
   );
+  
+  // return (
+  //   <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
+  //     <button
+  //       onClick={() => navigate(-1)}
+  //       className="group flex items-center bg-white/80 backdrop-blur-sm text-gray-700 font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 border-2 border-gray-200/50"
+  //     >
+  //       <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+  //       {t("createFuel.back")}
+  //     </button>
+  //     <div className="max-w-2xl mx-auto">
+  //       {/* Header Section */}
+  //       <div className="mb-4">
+  //         <div className="text-center">
+  //           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+  //             {t("createFuel.title")}
+  //           </h1>
+  //           <p className="text-gray-600 text-lg">
+  //             {t("createFuel.title_description")}
+  //           </p>
+  //         </div>
+  //       </div>
+
+  //       {/* Main Form Card */}
+  //       <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
+  //         {/* Card Header */}
+  //         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+  //           <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+  //             <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+  //               <Plus className="h-4 w-4 text-white" />
+  //             </div>
+  //             {t("createFuel.detail")}
+  //           </h2>
+  //         </div>
+
+  //         {/* Form Content */}
+  //         <div className="p-8">
+  //           <Form
+  //             form={form}
+  //             layout="vertical"
+  //             onFinish={onFinish}
+  //             className="space-y-6"
+  //           >
+  //             {/* Fuel Type Name */}
+  //             <Form.Item
+  //               label={
+  //                 <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+  //                   {t("createFuel.nameLabel")}
+  //                 </span>
+  //               }
+  //               name="type_name"
+  //               rules={[
+  //                 { required: true, message: t("createFuel.nameRequired") },
+  //               ]}
+  //             >
+  //               <Input
+  //                 placeholder={t("createFuel.namePlaceholder")}
+  //                 maxLength={100}
+  //                 className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+  //                 size="large"
+  //               />
+  //             </Form.Item>
+
+  //             {/* Description */}
+  //             <Form.Item
+  //               label={
+  //                 <span className="text-gray-800 font-semibold text-sm">
+  //                   {t("createFuel.descLabel")}
+  //                 </span>
+  //               }
+  //               rules={[
+  //                 { required: true, message: t("createFuel.descRequired") },
+  //               ]}
+  //               name="description"
+  //             >
+  //               <Input.TextArea
+  //                 rows={4}
+  //                 placeholder={t("createFuel.descPlaceholder")}
+  //                 className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
+  //               />
+  //             </Form.Item>
+
+  //             {/* Image Upload */}
+  //             <Form.Item
+  //               label={
+  //                 <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+  //                   {t("createFuel.imageLabel")}
+  //                 </span>
+  //               }
+  //               name="image_url"
+  //               valuePropName="fileList"
+  //               getValueFromEvent={normFile}
+  //               rules={[
+  //                 { required: true, message: t("createFuel.imageRequired") },
+  //               ]}
+  //             >
+  //               <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300">
+  //                 <Upload
+  //                   {...uploadProps}
+  //                   onChange={handleUploadChange}
+  //                   listType="picture"
+  //                   className="w-full"
+  //                 >
+  //                   <div className="text-center">
+  //                     <Button
+  //                       icon={<UploadOutlined />}
+  //                       size="large"
+  //                       rules={[
+  //                         {
+  //                           required: true,
+  //                           message: t("createFuel.imageTypeError") || t("createFuel.imageSizeError"),
+  //                         },
+  //                       ]}
+  //                       className="border-2 border-gray-300 hover:border-blue-400 hover:text-blue-600 transition-all duration-200 rounded-lg px-6 py-3 font-medium"
+  //                     >
+  //                       {t("createFuel.chooseImage")}
+  //                     </Button>
+  //                     <p className="text-gray-500 mt-3 text-sm">
+  //                       {t("createFuel.imageDesc")}
+  //                     </p>
+  //                   </div>
+  //                 </Upload>
+  //               </div>
+  //             </Form.Item>
+
+  //             {/* Submit Button */}
+  //             <Form.Item className="pt-4">
+  //               <div className="flex flex-col sm:flex-row gap-3">
+  //                 <Button
+  //                   type="primary"
+  //                   htmlType="submit"
+  //                   loading={submitLoading}
+  //                   className="flex-1 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-0 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+  //                 >
+  //                   {submitLoading ? (
+  //                     <div className="flex items-center gap-2">
+  //                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+  //                       Creating New Material Type...
+  //                     </div>
+  //                   ) : (
+  //                     t("createFuel.create")
+  //                   )}
+  //                 </Button>
+  //               </div>
+  //             </Form.Item>
+  //           </Form>
+
+  //           {/* Help Text */}
+  //           <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl mt-6">
+  //             <div className="flex items-start">
+  //               <div className="flex-shrink-0">
+  //                 <svg
+  //                   className="h-5 w-5 text-blue-400"
+  //                   viewBox="0 0 20 20"
+  //                   fill="currentColor"
+  //                 >
+  //                   <path
+  //                     fillRule="evenodd"
+  //                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+  //                     clipRule="evenodd"
+  //                   />
+  //                 </svg>
+  //               </div>
+  //               <div className="ml-3">
+  //                 <p className="text-sm text-blue-700">
+  //                   <strong>{t("createFuel.note_require.note")}</strong> {t("createFuel.note_require.note_parent")}{" "}
+  //                   <span className="text-red-500 font-semibold">*</span> {t("createFuel.note_require.note_child")}
+  //                 </p>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default CreateFuel;
