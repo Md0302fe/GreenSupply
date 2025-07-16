@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Upload } from "antd";
+import {
+  ArrowLeft,
+  FileText,
+  UploadIcon,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 import { getBase64 } from "../../../../ultils";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
@@ -283,275 +290,361 @@ const HarvestRequestPage = () => {
   }, [data, isError, isPending, isSuccess]);
 
   return (
-    <div className="px-2">
-      {/* Bố cục chính: Flex ngang trên desktop, dọc trên mobile */}
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Form chính (80%) */}
-        <div className="w-full md:w-full bg-gray-100 p-6">
-          <button
-            onClick={() => navigate(-1)} // Quay lại trang trước đó
-            className="flex mb-1 items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:opacity-70 transition duration-300"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1" // Kích thước biểu tượng nhỏ hơn
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
-            </svg>
-            {t("harvest.back")}
-          </button>
-          
-          <div className="max-w-4xl mx-auto bg-white p-4 lg:p-6 rounded-lg shadow-lg">
-            <h2 className="text-center lg:text-left text-[18px] lg:text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center gap-2">
-              🛒 {t("harvest.title")}
-            </h2>
+    <div className="min-h-screen bg-white from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
+      <div className="flex justify-between items-center">
+        <button
+          onClick={() => navigate(-1)}
+          className="group flex items-center bg-white/80 backdrop-blur-sm text-gray-700 font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 border-2 border-gray-200/50"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+          {t("harvest.back")}
+        </button>
 
-            <div className="space-y-4">
-              {/* Tên đơn */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  <span className="text-red-600">* </span> {t("harvest.form.name")}
+        <button
+          type="button"
+          onClick={() => navigate("/system/admin/R_purchase-orders")}
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+        >
+          {t("harvest.viewList") || "Material Purchase List"}
+        </button>
+      </div>
+
+      <div className="max-w-5xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-4">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+              {t("harvest.title")}
+            </h1>
+            <p className="text-gray-600 text-lg">
+              {t("harvest.title_description")}
+            </p>
+          </div>
+        </div>
+
+        {/* Main Form Card */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                <FileText className="h-4 w-4 text-white" />
+              </div>
+              {t("harvest.detail")}
+            </h2>
+          </div>
+
+          {/* Form Content */}
+          <div className="p-8 space-y-8">
+            {/* Request Name */}
+            <div className="space-y-3">
+              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                <span className="text-red-500 text-base">*</span>
+                {t("harvest.form.name")}
+              </label>
+              <input
+                type="text"
+                name="request_name"
+                maxLength="50"
+                placeholder={t("harvest.form.name_placeholder")}
+                value={formData.request_name}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+              />
+            </div>
+
+            {/* Material Type */}
+            <div className="space-y-3">
+              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                <span className="text-red-500 text-base">*</span>
+                {t("harvest.form.fuel_type")}
+              </label>
+              <select
+                name="fuel_type"
+                value={formData.fuel_type}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50/50"
+              >
+                <option value="" disabled>
+                  {t("harvest.form.fuel_type_placeholder")}
+                </option>
+                {fuel_types && fuel_types.length > 0 ? (
+                  fuel_types.map((fuel) => (
+                    <option key={fuel._id} value={fuel._id}>
+                      {fuel?.fuel_type_id?.type_name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>{t("harvest.form.no_data")}</option>
+                )}
+              </select>
+            </div>
+
+            {/* Fuel Image */}
+            <div className="space-y-3">
+              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                <span className="text-red-500 text-base">*</span>
+                {t("harvest.form.image")}
+              </label>
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300">
+                <Upload.Dragger
+                  listType="picture-card"
+                  fileList={fileList}
+                  showUploadList={false}
+                  accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .eps"
+                  maxCount={1}
+                  beforeUpload={() => false}
+                  onChange={handleChangeFuelImage}
+                  className="border-0 bg-transparent"
+                >
+                  {fuelImage ? (
+                    <div className="relative">
+                      <img
+                        src={fuelImage || "/placeholder.svg"}
+                        alt="preview"
+                        className="max-w-[250px] max-h-[250px] object-cover rounded-lg shadow-md"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <UploadIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600 text-lg font-medium">
+                        {t("harvest.form.image_placeholder")}
+                      </p>
+                      <p className="text-gray-400 mt-2">
+                        {t("harvest.form.image_description")}
+                      </p>
+                    </div>
+                  )}
+                </Upload.Dragger>
+              </div>
+            </div>
+
+            {/* Quantity and Price Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                  <span className="text-red-500 text-base">*</span>
+                  {t("harvest.form.quantity")}
                 </label>
                 <input
-                  type="text"
-                  name="request_name"
-                  maxLength="50"
-                  placeholder={t("harvest.form.name_placeholder")}
-                  value={formData.request_name}
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  placeholder={t("harvest.form.quantity_placeholder")}
+                  value={formData.quantity}
                   onChange={handleChange}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                  onKeyDown={(e) => {
+                    if (["e", "E", "-", "."].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
                 />
               </div>
 
-              {/* Loại Nguyên liệu */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  <span className="text-red-600">* </span>{t("harvest.form.fuel_type")}
+              <div className="space-y-3">
+                <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                  <span className="text-red-500 text-base">*</span>
+                  {t("harvest.form.price")}
                 </label>
-                <select
-                  name="fuel_type"
-                  value={formData.fuel_type}
+                <input
+                  type="number"
+                  name="price"
+                  min="1"
+                  placeholder={t("harvest.form.price_placeholder")}
+                  value={formData.price}
                   onChange={handleChange}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                >
-                  <option value="" disabled>
-                    {t("harvest.form.fuel_type_placeholder")}
-                  </option>
-                  {fuel_types && fuel_types.length > 0 ? (
-                    fuel_types.map((fuel) => (
-                      <option key={fuel._id} value={fuel._id}>
-                        {fuel?.fuel_type_id?.type_name}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>{t("harvest.form.no_data")}</option>
-                  )}
-                </select>
+                  onKeyDown={(e) => {
+                    if (["e", "E", "-", "."].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+                />
               </div>
+            </div>
 
-              {/* Ảnh Nguyên liệu */}
-              <div className="">
-                <div className="flex-[0.25] w-full text-left text-gray-800 font-semibold lg:mb-2">
-                  <MDBCardText className="block text-left text-gray-800 font-semibold lg:mb-2">
-                    <span className="text-red-600">* </span> {t("harvest.form.image")}
-                  </MDBCardText>
-                </div>
-                <div>
-                  <Upload.Dragger
-                    listType="picture-card"
-                    fileList={fileList}
-                    showUploadList={false}
-                    accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .eps"
-                    maxCount={1}
-                    beforeUpload={() => false}
-                    onChange={handleChangeFuelImage}
-                  >
-                    {fuelImage ? (
-                      <img
-                        src={fuelImage}
-                        alt="preview"
-                        style={{
-                          width: "100%",
-                          height: "auto",
-                          maxWidth: "200px",
-                        }}
-                      />
-                    ) : (
-                      <div>{t("harvest.form.image_placeholder")}</div>
-                    )}
-                  </Upload.Dragger>
-                </div>
-              </div>
-
-              {/* Số lượng cần thu (Kg) */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  <span className="text-red-600">* </span> {t("harvest.form.quantity")}
-                </label>
-                <div className="relative w-full">
-                  <input
-                    type="number"
-                    name="quantity"
-                    min="1"
-                    placeholder={t("harvest.form.quantity_placeholder")}
-                    value={formData.quantity}
-                    onChange={handleChange}
-                    onKeyDown={(e) => {
-                      if (["e", "E", "-", "."].includes(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}
-                    className="border border-gray-300 p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                    Kg
-                  </span>
-                </div>
-              </div>
-
-              {/* Giá trên mỗi Kg / Đơn vị */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  <span className="text-red-600">* </span> {t("harvest.form.price")}
-                </label>
-                <div className="relative w-full">
-                  <input
-                    type="number"
-                    name="price"
-                    min="1"
-                    placeholder={t("harvest.form.price_placeholder")}
-                    value={formData.price}
-                    onChange={handleChange}
-                    onKeyDown={(e) => {
-                      if (["e", "E", "-", "."].includes(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}
-                    className="border border-gray-300 p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                    VND
-                  </span>
-                </div>
-              </div>
-
-              {/* Ngày nhận đơn */}
+            {/* Date Fields */}
+            <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Ngày bắt đầu nhận đơn */}
-                <DatePicker
-                  value={formData.start_received}
-                  onChange={(date) =>
-                    handleChange({
-                      target: { name: "start_received", value: date },
-                    })
-                  }
-                  showTime={{ format: "HH:mm" }}
-                  format="DD/MM/YYYY HH:mm"
-                  disabledDate={disabledStartDate}
-                  placeholder={t("harvest.form.start_date_placeholder")}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    {t("harvest.form.start_date")}
+                  </label>
+                  <DatePicker
+                    value={formData.start_received}
+                    onChange={(date) =>
+                      handleChange({
+                        target: { name: "start_received", value: date },
+                      })
+                    }
+                    showTime={{ format: "HH:mm" }}
+                    format="DD/MM/YYYY HH:mm"
+                    disabledDate={disabledStartDate}
+                    placeholder={t("harvest.form.start_date_placeholder")}
+                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                  />
+                </div>
 
-                <DatePicker
-                  value={formData.end_received}
-                  onChange={(date) =>
-                    handleChange({
-                      target: { name: "end_received", value: date },
-                    })
-                  }
-                  showTime={{ format: "HH:mm" }}
-                  format="DD/MM/YYYY HH:mm"
-                  disabledDate={disabledEndDate}
-                  disabled={!formData.start_received}
-                  placeholder={t("harvest.form.end_date_placeholder")}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    {t("harvest.form.end_date")}
+                  </label>
+                  <DatePicker
+                    value={formData.end_received}
+                    onChange={(date) =>
+                      handleChange({
+                        target: { name: "end_received", value: date },
+                      })
+                    }
+                    showTime={{ format: "HH:mm" }}
+                    format="DD/MM/YYYY HH:mm"
+                    disabledDate={disabledEndDate}
+                    disabled={!formData.start_received}
+                    placeholder={t("harvest.form.end_date_placeholder")}
+                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                  />
+                </div>
 
-                <DatePicker
-                  value={formData.due_date}
-                  onChange={(date) =>
-                    handleChange({ target: { name: "due_date", value: date } })
-                  }
-                  showTime={{ format: "HH:mm" }}
-                  format="DD/MM/YYYY HH:mm"
-                  disabledDate={disabledDueDate}
-                  disabled={!formData.end_received}
-                  placeholder={t("harvest.form.due_date_placeholder")}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                    {t("harvest.form.due_date")}
+                  </label>
+                  <DatePicker
+                    value={formData.due_date}
+                    onChange={(date) =>
+                      handleChange({
+                        target: { name: "due_date", value: date },
+                      })
+                    }
+                    showTime={{ format: "HH:mm" }}
+                    format="DD/MM/YYYY HH:mm"
+                    disabledDate={disabledDueDate}
+                    disabled={!formData.end_received}
+                    placeholder={t("harvest.form.due_date_placeholder")}
+                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                  />
+                </div>
               </div>
+            </div>
 
-              {/* Mức độ ưu tiên */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  <span className="text-red-600">* </span> {t("harvest.form.priority")}
-                </label>
-                <select
-                  name="priority"
-                  value={formData.priority}
-                  onChange={handleChange}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                >
-                  <option value="" disabled>
-                    {t("harvest.form.priority_placeholder")}
-                  </option>
-                  <option value="Cao">{t("harvest.priority.high")}</option>
-                  <option value="Trung bình">
-                    {t("harvest.priority.medium")}
-                  </option>
-                  <option value="Thấp">{t("harvest.priority.low")}</option>
-                </select>
-              </div>
+            {/* Priority */}
+            <div className="space-y-3">
+              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                <span className="text-red-500 text-base">*</span>
+                {t("harvest.form.priority")}
+              </label>
+              <select
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50/50"
+              >
+                <option value="" disabled>
+                  {t("harvest.form.priority_placeholder")}
+                </option>
+                <option value="Cao">{t("harvest.priority.high")}</option>
+                <option value="Trung bình">
+                  {t("harvest.priority.medium")}
+                </option>
+                <option value="Thấp">{t("harvest.priority.low")}</option>
+              </select>
+            </div>
 
-              {/* Ghi chú */}
-              <div>
-                <label className="block text-gray-800 font-semibold mb-2">
-                  {t("harvest.form.note")}
-                </label>
-                <textarea
-                  name="note"
-                  placeholder={t("harvest.form.note_placeholder")}
-                  rows="3"
-                  value={formData.note}
-                  onChange={handleChange}
-                  className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                />
-              </div>
+            {/* Notes */}
+            <div className="space-y-3">
+              <label className="block text-gray-800 font-semibold text-sm">
+                {t("harvest.form.note")}
+              </label>
+              <textarea
+                name="note"
+                placeholder={t("harvest.form.note_placeholder")}
+                rows="4"
+                value={formData.note}
+                onChange={handleChange}
+                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
+              />
+            </div>
 
-              {/* Tổng giá */}
-              <div className="font-semibold text-lg text-gray-800">
-                {t("harvest.form.total_price")} :{" "}
-                <span className="text-red-500 font-bold">
-                  {(formData.quantity * formData.price || 0).toLocaleString(
-                    "vi-VN"
-                  )}{" "}
-                  VNĐ
+            {/* Total Price Display */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-100">
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-semibold text-gray-700">
+                  {t("harvest.form.total_price")}:
                 </span>
+                <div className="text-right">
+                  <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    {(formData.quantity * formData.price || 0).toLocaleString(
+                      "vi-VN"
+                    )}{" "}
+                    VNĐ
+                  </span>
+                  {formData.priority && (
+                    <div className="mt-2">
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                          formData.priority === "Cao"
+                            ? "bg-red-100 text-red-800"
+                            : formData.priority === "Trung bình"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        {formData.priority === "Cao"
+                          ? "High"
+                          : formData.priority === "Trung bình"
+                          ? "Medium"
+                          : "Low"}{" "}
+                        Priority
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
+            </div>
 
-              {/* Nút bấm */}
-              <div className="flex flex-col md:flex-row md:justify-between gap-4">
-                <button
-                  type="button" // Tránh việc form bị submit khi nhấn nút làm mới
-                  onClick={() => setNewForm()} // Reset dữ liệu khi nhấn
-                  className="bg-yellow-400 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
-                >
-                  {t("harvest.actions.reset")}
-                </button>
-                <button
-                  onClick={() => handleSubmit()} // Gọi hàm trực tiếp, không truyền reference
-                  className="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
-                >
-                  {t("harvest.actions.submit")}
-                </button>
+            {/* Action Buttons */}
+            <div className="flex flex-col md:flex-row gap-4 pt-6">
+              <button
+                type="button"
+                onClick={() => setNewForm()}
+                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-4 rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300"
+              >
+                {t("harvest.actions.reset")}
+              </button>
+              <button
+                onClick={() => handleSubmit()}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                {t("harvest.actions.submit")}
+              </button>
+            </div>
+
+            {/* Help Text */}
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-blue-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-blue-700">
+                    <strong>{t("harvest.note_require.note")}</strong>{" "}
+                    {t("harvest.note_require.note_parent")}{" "}
+                    <span className="text-red-500 font-semibold">*</span>{" "}
+                    {t("harvest.note_require.note_child")}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

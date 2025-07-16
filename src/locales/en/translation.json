@@ -646,35 +646,47 @@
   },
   "harvest": {
     "back": "Go Back",
-    "title": "Material Provide Request",
+    "title": "Material Purchase List",
+    "title_description": "Fill in the details to create a new material provide request",
+    "detail": "Request Details",
     "form": {
       "name": "Request Name",
       "name_placeholder": "Enter request name...",
       "fuel_type": "Material type",
-      "fuel_type_placeholder": "Select Material type",
+      "fuel_type_placeholder": "Select Material Type",
       "no_data": "No data available",
-      "image": "Image",
-      "image_placeholder": "Upload your image",
+      "image": "Material Image",
+      "image_placeholder": "Click or drag file to upload",
+      "image_description": "PNG, JPG, JPEG up to 10MB",
       "quantity": "Total Quantity (Kg)",
       "quantity_placeholder": "Enter quantity...",
       "price": "Price per Kg / Unit (VND)",
       "price_placeholder": "Enter price...",
+      "start_date":"Start Date",
       "start_date_placeholder": "Select start date",
+      "end_date":"End Date",
       "end_date_placeholder": "Select end date",
+      "due_date":"Due Date",
       "due_date_placeholder": "Select due date",
       "priority": "Priority Level",
       "priority_placeholder": "Select priority",
       "note": "Note",
-      "note_placeholder": "Enter notes...",
+      "note_placeholder": "Enter any additional notes or requirements...",
       "total_price": "Total Price"
     },
+    "note_require": {
+      "note": "Note:",
+      "note_parent": "All fields marked with",
+      "note_child": "are required. Please ensure all information is accurate before submitting your harvest request."
+    },
+    "viewList": "Material Purchase List",
     "priority": {
       "high": "High",
       "medium": "Medium",
       "low": "Low"
     },
     "actions": {
-      "reset": "Reset",
+      "reset": "Reset Form",
       "submit": "Submit Request"
     },
     "validation": {
@@ -697,7 +709,7 @@
   },
   "order": {
     "back": "Go Back",
-    "title": "Materials to Import",
+    "title": "Material Purchase List",
     "drawer_title": "Material Collection Order Details",
     "update_title": "Update Material Collection Order",
     "form": {
@@ -1064,18 +1076,27 @@
     "batchPreparingWarning": "There is a batch currently in 'Preparing' status. Please wait before creating the production process."
   },
   "materialExport": {
-    "title": "Create Warehouse Export Order",
+    "detail": "Warehouse Export Details",
+    "title": "Create Warehouse Export Request",
+    "title_description": "Fill in the details to create a new warehouse export request",
     "createdBy": "Created by:",
-    "selectBatch": "Select Raw Material Batch",
+    "selectBatch": "Select raw material batch",
     "selectBatchPlaceholder": "Choose a batch",
-    "selectProduction": "Select Production Request",
+    "selectProduction": "Select production request",
     "selectProductionPlaceholder": "Choose a production request",
-    "exportName": "Export Order Name",
+    "exportName": "Export order name",
     "exportNamePlaceholder": "Enter export order name",
-    "exportType": "Export Type",
-    "productionType": "Production Order",
-    "note": "Note",
-    "notePlaceholder": "Enter note"
+    "exportType": "Export type",
+    "productionType": "Production order",
+    "note": "Additional notes",
+    "notePlaceholder": "Enter any additional notes or requirements",
+    "create_btn": "Create Export Request",
+    "note_require": {
+      "note": "Note:",
+      "note_parent": "All fields marked with",
+      "note_child": "are required. The production request will be automatically selected based on the chosen material batch."
+    },
+    "viewList": "Warehouse Exports List"
   },
   "materialExportList": {
     "title": "Warehouse Exports List",
@@ -1404,23 +1425,33 @@
     "warningEmpty": "Out of fuel!"
   },
   "createFuel": {
-    "title": "Create New Material type",
+    "title": "Create New Material Type",
     "back": "Go Back",
-    "nameLabel": "Material type Name",
-    "namePlaceholder": "Enter Material type name",
-    "nameRequired": "Please enter the Material type name",
+    "title_description": "Add a new marterial type to the warehouse",
+    "detail": "Material Type Details",
+    "nameLabel": "Material type name",
+    "namePlaceholder": "Enter material type name ...",
+    "nameRequired": "Please enter the material type name",
     "descLabel": "Description",
-    "descPlaceholder": "Enter description (optional)",
-    "imageLabel": "Material image (JPG, PNG < 2MB)",
-    "imageRequired": "Please upload a Material image",
-    "chooseImage": "Select Image",
+    "descPlaceholder": "Enter material type description ...",
+    "descRequired": "Please enter material type description",
+    "imageLabel": "Material type image",
+    "imageRequired": "Please upload a material image",
+    "chooseImage": "Choose Image",
     "submit": "Create Material type",
     "imageTypeError": "Only JPG/PNG images are supported!",
     "imageSizeError": "Image must be smaller than 2MB!",
+    "imageDesc": "JPG, PNG files up to 2MB",
     "uploadError": "Failed to read image.",
+    "create": "Create New Material Type",
     "createSuccess": "Material type created successfully!",
-    "createFail": "Material creation failed!",
-    "createError": "An error occurred while creating Material type."
+    "createFail": "Material type creation failed!",
+    "createError": "An error occurred while creating new material type.",
+    "note_require": {
+      "note": "Note:",
+      "note_parent": "All fields marked with",
+      "note_child": "are required. Please ensure the fuel type name is unique and the image is clear and representative."
+    }
   },
   "fuelList": {
     "title": "Material Type List",

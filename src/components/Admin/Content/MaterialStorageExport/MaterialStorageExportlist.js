@@ -429,7 +429,7 @@ const MaterialStorageExportList = () => {
 
         {/* Tiêu đề ở giữa */}
         <h2 className="text-center flex items-center justify-center gap-2 font-bold text-[20px] md:text-2xl flex-grow mx-4 mt-1 mb-1 text-gray-800">
-          <FaFileExport></FaFileExport>
+          {/* <FaFileExport></FaFileExport> */}
           {t("materialExportList.title")}
         </h2>
 
