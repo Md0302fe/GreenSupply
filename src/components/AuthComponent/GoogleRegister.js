@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./Login.scss";
-import backgroundRegister from "../../assets/image/background_login.png";
-import { toast } from "react-toastify";
-import * as UserServices from "../../services/UserServices";
+import { message } from "antd";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import * as UserServices from "../../services/UserServices";
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
+import backgroundRegister from "../../assets/image/background_login.png";
 
 const GoogleRegister = () => {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ const GoogleRegister = () => {
   // Submit thông tin còn thiếu
   const handleSubmit = async () => {
     if (birthDayError || !phone || !birth_day) {
-      toast.error(t("fill_valid_information"));
+      message.error(t("fill_valid_information"));
       return;
     }
     try {
@@ -55,16 +55,16 @@ const GoogleRegister = () => {
       });
 
       if (result.status === "OK") {
-        toast.success(t("register_success"));
+        message.success(t("register_success"));
         setTimeout(() => {
           window.location.href = "/login";
         }, 1500);
       } else {
-        toast.error(result.message || t("update_failed"));
+        message.error(result.message || t("update_failed"));
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật thông tin:", error.message);
-      toast.error(t("update_failed"));
+      message.error(t("update_failed"));
     }
   };
 

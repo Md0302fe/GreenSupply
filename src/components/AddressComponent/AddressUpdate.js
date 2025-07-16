@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 import {
   MDBBreadcrumb,
@@ -76,10 +76,10 @@ const AddressUpdate = () => {
         if (response.data.status === "OK") {
           setFormData(response.data.data);
         } else {
-          toast.error(response.data.message || "Không thể lấy địa chỉ!");
+          message.error(response.data.message || "Không thể lấy địa chỉ!");
         }
       } catch (error) {
-        toast.error("Lỗi khi tải địa chỉ. Vui lòng thử lại!");
+        message.error("Lỗi khi tải địa chỉ. Vui lòng thử lại!");
         console.error("Lỗi khi tải địa chỉ:", error);
       }
     };
@@ -101,10 +101,10 @@ const AddressUpdate = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("Cập nhật địa chỉ thành công!");
+      message.success("Cập nhật địa chỉ thành công!");
       setTimeout(() => navigate("/Address"), 2000);
     } catch (error) {
-      toast.error("Cập nhật địa chỉ thất bại. Vui lòng thử lại!");
+      message.error("Cập nhật địa chỉ thất bại. Vui lòng thử lại!");
       console.error("Lỗi khi cập nhật địa chỉ:", error);
     }
   };

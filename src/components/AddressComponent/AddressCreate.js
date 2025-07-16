@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { message } from "antd";
+
 import "react-toastify/dist/ReactToastify.css";
 import {
   MDBBreadcrumb,
@@ -89,12 +90,12 @@ const AddressCreate = () => {
       );
 
       // Thông báo thêm thành công
-      toast.success("Thêm địa chỉ thành công!", { position: "top-right", autoClose: 3000 });
+      message.success("Thêm địa chỉ thành công!", { position: "top-right", autoClose: 3000 });
 
       // Điều hướng về trang danh sách địa chỉ
       setTimeout(() => navigate("/Address"), 1500);
     } catch (error) {
-      toast.error("Tạo địa chỉ thất bại!", { position: "top-right", autoClose: 3000 });
+      message.error("Tạo địa chỉ thất bại!", { position: "top-right", autoClose: 3000 });
       console.error("Lỗi khi tạo địa chỉ:", error);
     }
   };

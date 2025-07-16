@@ -13,6 +13,7 @@ const initialState = {
   password: "",
 };
 
+const isAdminRoles = ["Admin", "Material Manager", "Warehouse Manager", "Process Manager"];
 
 
 
@@ -33,16 +34,19 @@ export const userSlides = createSlice({
         gender,
         password,
       } = action.payload;
+      console.log("check login => ", action.payload);
+
       state.access_token = access_token;
       state.id = _id;
       state.full_name = full_name;
       state.email = email;
       state.phone = phone;
       state.avatar = avatar;
-      state.isAdmin = role_id?.role_name;
+      state.isAdmin = isAdminRoles.includes(role_id?.role_name) ? "Admin" : "Other";
       state.birth_day = birth_day;
       state.gender = gender;
       state.password = password;
+      state.role_name = role_id?.role_name;
     },
 
     resetUser: (state) => {
@@ -56,6 +60,7 @@ export const userSlides = createSlice({
       state.birth_day = ""; 
       state.gender = "Other"; 
       state.password = ""; 
+      state.role_name = "";
     },
   },
 });

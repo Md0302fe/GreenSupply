@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import { styled } from "@mui/material/styles";
 import {
   Dialog,
   DialogTitle,
@@ -14,30 +11,24 @@ import {
 } from "@mui/material";
 import "../../../styles/css/HeaderSupplier.css";
 
-import { RiMenuUnfold4Line } from "react-icons/ri";
-import { RiMenuFold4Line } from "react-icons/ri";
-
-import { FaRegBell } from "react-icons/fa";
-import { FaRegUser } from "react-icons/fa6";
+import { FaBell } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { useSelector, useDispatch } from "react-redux";
+import { FaRegUser } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import * as UserServices from "../../../services/UserServices";
-import { resetUser } from "../../../redux/slides/userSlides";
-import { persistor } from "../../../redux/store";
-
-import { MdDashboardCustomize } from "react-icons/md";
-import LanguageSwitcher from "../../../components/TranslateComponent/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { RiMenuFold4Line } from "react-icons/ri";
+import { persistor } from "../../../redux/store";
+import { RiMenuUnfold4Line } from "react-icons/ri";
+import { MdDashboardCustomize } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import ClickAwayListener from "react-click-away-listener";
+import { resetUser } from "../../../redux/slides/userSlides";
+import * as UserServices from "../../../services/UserServices";
+import * as Notifications from "../../../services/NotificationsServices";
+import LanguageSwitcher from "../../../components/TranslateComponent/LanguageSwitcher";
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
-    right: -3,
-    top: 13,
-    border: `2px solid ${theme.palette.background.paper}`,
-    padding: "0 4px",
-  },
-}));
+import socket from "../../../socket";
+import { useQuery } from "@tanstack/react-query";
 
 const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
   const { t } = useTranslation();
@@ -47,6 +38,54 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
   const userRedux = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [dropdownOpenIndex, setDropdownOpenIndex] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotiList, setShowNotiList] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const notificationRef = useRef(null);
+
+  console.log("notifications => ", notifications);
+
+  const fetchNotifications = async () => {
+    const dataRequest = {
+      access_token: userRedux?.access_token,
+    };
+    const res = await Notifications?.getAllNotificationById(dataRequest);
+    return res?.data;
+  };
+
+  const {
+    data: dataNotifications,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["notifiocations_by_id"],
+    queryFn: fetchNotifications,
+  });
+
+  useEffect(() => {
+    const handleNewNotification = (data) => {
+      const newNoti = { ...data };
+      setNotifications((prev) => [newNoti, ...prev]);
+      setUnreadCount((count) => count + 1);
+    };
+
+    socket.on("pushNotification_Send_To_Supplier", handleNewNotification);
+    return () => {
+      socket.off("pushNotification_Send_To_Supplier", handleNewNotification);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dataNotifications && Array.isArray(dataNotifications)) {
+      setNotifications(dataNotifications);
+      const unread = dataNotifications.filter((item) => !item.is_read).length;
+      setUnreadCount(unread);
+    }
+  }, [dataNotifications]);
 
   const handleClickMyAcc = (event) => {
     setAnchorMyAcc(event.currentTarget);
@@ -89,12 +128,51 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
     setOpenUserInfo(false);
   };
 
+  const handleNotificationClick = (index) => {
+    setNotifications((prev) =>
+      prev.map((item, idx) =>
+        idx === index ? { ...item, unread: false } : item
+      )
+    );
+
+    setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  const handleDropdownToggle = (index) => {
+    setDropdownOpenIndex(dropdownOpenIndex === index ? null : index);
+  };
+
+  // Cập nhật notifications với is_read = true cho item
+  const handleMarkAsRead = async (notification_id) => {
+    const dataRequest = {
+      access_token: userRedux?.access_token,
+      notification_id,
+    };
+    const res = await Notifications.read_Notification(dataRequest);
+
+    setDropdownOpenIndex(null);
+    refetch();
+    return res;
+  };
+
+  // Xóa thông báo by notification_id
+  const handleDeleteNotification = async (notification_id) => {
+    const dataRequest = {
+      access_token: userRedux?.access_token,
+      notification_id,
+    };
+    const res = await Notifications.delete_Notification(dataRequest);
+
+    setDropdownOpenIndex(null);
+    refetch();
+    return res;
+  };
   return (
     <header
       className="
         w-full h-[auto]
-        py-2 pr-5 bg-[#fff]
-        shadow-md border-b
+        py-2 pr-5
+        border-b
         flex items-center justify-between
         fixed top-0 left-0 right-0 z-20 bg-white shadow
       "
@@ -117,12 +195,28 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
       </div>
 
       <div className="part2 w-[40%] flex items-center justify-end gap-4">
-        <IconButton aria-label="cart">
-          <StyledBadge badgeContent={4} color="secondary">
-            <FaRegBell />
-          </StyledBadge>
-        </IconButton>
         <LanguageSwitcher />
+        <div
+          ref={notificationRef}
+          className={`relative group flex flex-col justify-center items-center gap-2 cursor-pointer rounded-full p-2 transition-all duration-200 hover:bg-gray-100 ${
+            showNotiList ? "bg-blue-50" : "text-black"
+          }`}
+          onClick={() => setShowNotiList((prev) => !prev)}
+        >
+          <FaBell
+            className={`text-xl ${
+              showNotiList ? "text-blue-500" : "text-black"
+            }`}
+          />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+              {unreadCount}
+            </span>
+          )}
+          <span className="absolute bottom-[-25px] left-1/2 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition-all duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10">
+            Thông báo
+          </span>
+        </div>
 
         <div className="relative">
           <div
@@ -216,7 +310,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               </a>
             </MenuItem>
 
-            <MenuItem
+            {/* <MenuItem
               onClick={handleCloseMyAcc}
               className="flex items-center gap-3"
             >
@@ -224,7 +318,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               <a href="/system/admin" className="text-[14px]">
                 {t("system_management")}
               </a>
-            </MenuItem>
+            </MenuItem> */}
 
             <MenuItem
               onClick={() => {
@@ -271,6 +365,115 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
             </DialogActions>
           </Dialog>
         </div>
+        {showNotiList && (
+          <ClickAwayListener onClickAway={() => setShowNotiList(false)}>
+            <div
+              className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50 max-h-[800px]"
+              style={{
+                top:
+                  (notificationRef.current?.getBoundingClientRect()?.bottom ||
+                    250) +
+                  10 +
+                  window.scrollY,
+                left:
+                  (notificationRef.current?.getBoundingClientRect()?.left ||
+                    0) -
+                  370 +
+                  window.scrollX,
+              }}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h4 className="text-xl font-bold text-black">Thông báo</h4>
+                <button
+                  onClick={() => setShowNotiList(false)}
+                  className="text-gray-700 hover:text-red-500 text-xl"
+                >
+                  ✕
+                </button>
+              </div>
+              {notifications.length === 0 ? (
+                <p className="text-gray-500 text-sm">Không có thông báo nào</p>
+              ) : (
+                <ul className="space-y-2 max-h-[650px] overflow-y-auto">
+                  {notifications.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className={`text-sm text-gray-800 border-b pb-2 cursor-pointer p-2 rounded hover:bg-gray-100 relative ${
+                        item.is_read ? "text-gray-400" : "font-semibold"
+                      }`}
+                      onClick={() => handleNotificationClick(idx)}
+                    >
+                      {/* Dấu chấm xanh cho thông báo chưa đọc */}
+                      {!item.is_read && (
+                        <div className="absolute bottom-2 right-2 w-2 h-2 bg-blue-800 rounded-full"></div>
+                      )}
+
+                      {/* Button ... và dropdown menu */}
+                      <div className="absolute right-2 top-2">
+                        <button
+                          className="w-6 h-6 flex items-center justify-center rounded-full bg-white bg-opacity-50 text-gray-500 hover:bg-opacity-100 hover:text-gray-700 border border-gray-300 shadow-sm transition-all"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDropdownToggle(idx);
+                          }}
+                        >
+                          ⋯
+                        </button>
+
+                        {/* Dropdown menu - Sửa ở đây */}
+                        {dropdownOpenIndex === idx && (
+                          <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-md shadow-lg z-10 border">
+                            <div className="py-1">
+                              <button
+                                className="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMarkAsRead(item?._id);
+                                }}
+                              >
+                                Đánh dấu đã đọc
+                              </button>
+                              <button
+                                className="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteNotification(item?._id);
+                                }}
+                              >
+                                Xóa thông báo
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Phần nội dung thông báo */}
+                      <p className="text-base font-medium text-blue-600 pr-8">
+                        {" "}
+                        {/* Thêm pr-8 để tránh đè lên nút ⋯ */}
+                        {item.title}
+                      </p>
+                      {item.text_message && (
+                        <p className="text-sm text-gray-700">
+                          {item.text_message}
+                        </p>
+                      )}
+                      <div className="flex justify-between mt-1 text-xs text-gray-400">
+                        <span>
+                          {item.createdAt
+                            ? new Date(item.createdAt).toLocaleString()
+                            : item.timestamp
+                            ? new Date(item.timestamp).toLocaleString()
+                            : ""}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </ClickAwayListener>
+        )}
       </div>
     </header>
   );

@@ -8,7 +8,7 @@ import Loading from "../LoadingComponent/Loading";
 import { TbFaceIdError } from "react-icons/tb";
 import { RxCheckCircled } from "react-icons/rx";
 import OtpInput from "react-otp-input";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 
@@ -33,7 +33,7 @@ const Register = () => {
 
   useEffect(() => {
     if (isSuccess && data.status === "OK") {
-      toast.success(t('register_success'));
+      message.success(t("register_success"));
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
@@ -45,7 +45,7 @@ const Register = () => {
   const HandleSubmitFormRegister = () => {
     if (!otp || otp.length !== 6) {
       // Kiểm tra OTP
-      toast.error(t("fill_valid_information"));
+      message.error(t("fill_valid_information"));
       return;
     }
     const data = {
@@ -99,13 +99,13 @@ const Register = () => {
           });
         }, 1000);
 
-        toast.success(t('otp_sent'));
+        message.success(t("otp_sent"));
       } else {
-        toast.error(result.message || t('otp_cant_sent'));
+        message.error(result.message || t("otp_cant_sent"));
       }
     } catch (error) {
       console.error("Lỗi khi yêu cầu OTP:", error.message);
-      toast.error(t('otp_cant_sent'));
+      message.error(t("otp_cant_sent"));
     } finally {
       setLoading(false);
     }
@@ -285,9 +285,7 @@ const Register = () => {
               />
               {/* Hiển thị lỗi nếu ngày sinh không hợp lệ */}
               {date && date > new Date().toISOString().split("T")[0] && (
-                <p className="text-red-500 text-sm mt-1">
-                  {t("invalid_dob")}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{t("invalid_dob")}</p>
               )}
             </div>
 
@@ -362,9 +360,7 @@ const Register = () => {
         </div>
         <div className="hidden md:flex flex-col items-center justify-center text-center">
           <img src="image/logo-white.png" alt="" />
-          <p className="text-white font-semibold text-3xl">
-            {t("slogan")}
-          </p>
+          <p className="text-white font-semibold text-3xl">{t("slogan")}</p>
           <div className="flex items-center gap-3 justify-center mt-3">
             <img src="image/icon/fb.png" alt="" />
             <img src="image/icon/yt.png" alt="" />

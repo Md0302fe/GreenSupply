@@ -484,7 +484,7 @@
     }
   },
   "warehouse": {
-    "title": "Quản Lý Kho",
+    "title": "Quản lý kho",
     "dashboard": {
       "title": "Dashboard",
       "description": "Quản lý thông tin tổng quát kho"
@@ -946,7 +946,7 @@
       "unknown": "Không xác định"
     },
     "columns": {
-      "manager": "Người quản lý",
+      "receipt_id": "Mã đơn",
       "receiptType": "Loại đơn hàng",
       "storage": "Kho",
       "status": "Trạng thái",

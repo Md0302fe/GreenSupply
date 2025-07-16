@@ -120,7 +120,7 @@ const Router = () => {
           {/* WareHouse Management */}
           <Route path="feature_warehouse" element={<FeatureWarehouse />} />
 
-          <Route path="manage-warehouse" element={<Dashboard1 />} />
+          <Route path="manage-warehouse" element={<Dashboard1 material-storage-export-list/>} />
           <Route path="warehouse-receipt" element={<OrderViewPage />} />
           {/* Raw Material Batch Management */}
           <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>

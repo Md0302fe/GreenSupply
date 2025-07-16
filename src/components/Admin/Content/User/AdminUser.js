@@ -13,7 +13,7 @@ import { BiImageAdd } from "react-icons/bi";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getBase64 } from "../../../../ultils";
 import { converDateString } from "../../../../ultils";
@@ -102,7 +102,13 @@ const UserComponent = () => {
     } else if (dataUpdate?.role === "User") {
       dataUpdate.role = "67950f9f8465df03b29bf752";
     } else if (dataUpdate?.role === "Supplier") {
-      dataUpdate.role = "67950fec8465df03b29bf753";
+      dataUpdate.role = "686f3835d7eaed8a9fd5a8b8";
+    } else if (dataUpdate?.role === "Material_Manager") {
+      dataUpdate.role = "686f3835d7eaed8a9fd5a8b7";
+    } else if (dataUpdate?.role === "Warehouse_Manager") {
+      dataUpdate.role = "686f3835d7eaed8a9fd5a8b6";
+    } else if (dataUpdate?.role === "Process_Manager") {
+
     }
     const updatedData = {
       ...dataUpdate,
@@ -142,9 +148,9 @@ const UserComponent = () => {
     if (isSuccessDelete) {
       if (deleteRespone?.status === "OK") {
         setIsOpenDelete(false);
-        toast.success(deleteRespone?.message);
+        message.success(deleteRespone?.message);
       } else {
-        toast.success(deleteRespone?.message);
+        message.success(deleteRespone?.message);
         setIsOpenDelete(false);
       }
     }
@@ -218,10 +224,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (isSuccessUpdate) {
       if (dataRes?.status === "OK") {
-        toast.success(dataRes?.message);
+        message.success(dataRes?.message);
         handleCancelUpdate();
       } else {
-        toast.error(dataRes?.message);
+        message.error(dataRes?.message);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -692,9 +698,20 @@ const UserComponent = () => {
                 className={`border p-2 rounded w-full mb-2 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
                 disabled={isViewMode}
               >
+                {/* id Admin */}
                 <option value="67950da386a0a462d408c7b9">Admin</option>
+                {/* id Material Manager */}
+                <option value="686f3835d7eaed8a9fd5a8b8">Material_Manager</option>
+                {/* id Warehouse_Manager */}
+                <option value="686f3835d7eaed8a9fd5a8b7">Warehouse_Manager</option>
+                {/* id Production_Manager */}
+                <option value="686f3835d7eaed8a9fd5a8b6">Process_Manager</option>
+                {/* id Supplier*/}
                 <option value="67950fec8465df03b29bf753">Supplier</option>
+                {/* id  User */}
                 <option value="67950f9f8465df03b29bf752">User</option>
+
+
               </select>
             </div>
 

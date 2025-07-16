@@ -31,6 +31,7 @@ import { useSelector } from "react-redux";
 const Admin = (props) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  console.log("user => ", user);
   const [collapsed, setCollapsed] = useState(true);
 
   const [dropdownOpenIndex, setDropdownOpenIndex] = useState(null);
@@ -45,7 +46,7 @@ const Admin = (props) => {
 
   const fetchNotifications = async () => {
     const dataRequest = {
-      access_token: user?._id,
+      access_token: user?.access_token,
     };
     const res = await Notifications?.getAllNotification(dataRequest);
     return res?.data;
@@ -98,48 +99,56 @@ const Admin = (props) => {
       label: "dashboard",
       text: "Dashboard",
       href: "/system/admin",
+      isDisplay : user?.role_name === "Admin" ? true : false,
     },
     {
       icon: <FaUserGear className="text-2xl" />,
       label: "users",
       text: "Người dùng",
       href: "feature_users",
+      isDisplay : user?.role_name === "Admin" ? true : false,
     },
     {
       icon: <FaClipboard className="text-2xl" />,
       label: "purchased_orders",
       text: "Đơn thu nguyên liệu",
       href: "/system/admin/feature_purchase_orders",
+      isDisplay : (user?.role_name === "Admin" || user?.role_name === "Material Manager") ? true : false,
     },
     {
       icon: <FaShoppingCart className="text-2xl" />,
       label: "management_orders",
       text: "Q.lý đơn hàng",
       href: "feature_request_suppplier",
+      isDisplay : (user?.role_name === "Admin" || user?.role_name === "Material Manager") ? true : false,
     },
     {
       icon: <GrStorage className="text-2xl" />,
       label: "management_warehouse",
       text: "Q.lý kho",
       href: "feature_warehouse",
+      isDisplay : (user?.role_name === "Admin" || user?.role_name === "Warehouse Manager") ? true : false,
     },
     {
       icon: <FaLemon className="text-2xl" />,
       label: "management_materials",
       text: "Q.lý nguyên liệu",
       href: "feature_material_category",
+      isDisplay : (user?.role_name === "Admin" || user?.role_name === "Warehouse Manager") ? true : false,
     },
     {
       icon: <FaGear className="text-2xl" />,
       label: "management_processing",
       text: "Q.lý sản xuất",
       href: "feature_production_process",
+      isDisplay : (user?.role_name === "Admin" || user?.role_name === "Process Manager") ? true : false,
     },
     {
       icon: <FaCubes className="text-2xl" />,
       label: "finished_product",
       text: "Quản lý thành phẩm",
       href: "feature_finished_product",
+      isDisplay : (user?.role_name === "Admin" || user?.role_name === "Warehouse Manager") ? true : false,
     },
   ];
 
@@ -196,7 +205,9 @@ const Admin = (props) => {
   };
 
   const renderNavigations = () => {
-    return navigationsData.map(({ icon, label, href, text }, index) => {
+    return navigationsData
+    .filter((item) => item.isDisplay)
+    .map(({ icon, label, href, text }, index) => {
       return (
         <div
           key={index}
@@ -217,35 +228,30 @@ const Admin = (props) => {
     <div className="admin-container min-h-screen overflow-y-auto">
       <div className="admin-content w-full overflow-x-hidden">
         {/* Top Navigation Bar */}
-        <div className="flex items-center bg-gray-400 px-6 py-2 rounded-b-[50px] space-x-4 relative">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center bg-gray-400 px-6 py-2 rounded-b-[50px] relative gap-4">
           {/* Toggle Sidebar */}
-          <div className="flex-shrink-0 z-10">
+          <div className="flex-shrink-0 z-10 flex justify-center w-[200px]">
+            {" "}
+            {/* thêm w-160px để đối xứng */}
             <div className="flex flex-col justify-center items-center gap-2 cursor-pointer hover:bg-gray-200 hover:text-black p-2 transition-all duration-200 group rounded-[50%]">
               <button
                 onClick={() => setCollapsed(!collapsed)}
                 className="flex justify-center items-center"
-              >
-                {!collapsed ? (
-                  <SlArrowLeft className="text-xl" />
-                ) : (
-                  <SlArrowRight className="text-xl" />
-                )}
-              </button>
+              ></button>
             </div>
           </div>
 
-          {/* Navigation Icons */}
-          <div className="flex-1 overflow-x-auto px-0 md:px-4 scrollbar-hide">
-            <div className="flex items-center gap-[30px] min-w-max justify-center">
+          {/* Navigation Icons (Center) */}
+          <div className="overflow-x-auto px-0 md:px-4 scrollbar-hide w-full">
+            <div className="flex items-center gap-[30px] justify-center">
               {renderNavigations()}
             </div>
           </div>
 
           {/* Notification + Home */}
           {!isMobile && (
-            <div className="flex items-center gap-2 w-[160px] flex-shrink-0 z-10">
+            <div className="flex items-center gap-2 w-[200px] flex-shrink-0 z-10 justify-between">
               <LanguageSwitcher />
-
               {/* Chuông Thông Báo */}
               <div
                 ref={notificationRef}
@@ -290,7 +296,7 @@ const Admin = (props) => {
       {showNotiList && (
         <ClickAwayListener onClickAway={() => setShowNotiList(false)}>
           <div
-            className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50"
+            className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50 max-h-[800px]"
             style={{
               top:
                 (notificationRef.current?.getBoundingClientRect()?.bottom ||
@@ -315,7 +321,7 @@ const Admin = (props) => {
             {notifications.length === 0 ? (
               <p className="text-gray-500 text-sm">Không có thông báo nào</p>
             ) : (
-              <ul className="space-y-2 max-h-[1000px] overflow-y-auto">
+              <ul className="space-y-2 max-h-[650px] overflow-y-auto">
                 {notifications.map((item, idx) => (
                   <li
                     key={idx}
