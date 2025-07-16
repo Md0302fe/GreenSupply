@@ -18,6 +18,14 @@ import { useNavigate } from "react-router-dom";
 import { GrPlan } from "react-icons/gr";
 import { useTranslation } from "react-i18next";
 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Package,
+  ArrowRightFromLine,
+  Presentation,
+} from "lucide-react";
+
 // Hàm gọi API danh sách Nguyên liệu sử dụng axios
 export const getAllFuelType = async () => {
   const res = await axios.get(
@@ -334,316 +342,810 @@ const ProductionRequest = () => {
     }
   };
 
+  // return (
+  //   <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+  //     <div className="flex justify-between items-center mb-2 lg:mb-4 w-full">
+  //       <Button
+  //         onClick={() => navigate(-1)}
+  //         type="primary"
+  //         className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
+  //       >
+  //         <svg
+  //           xmlns="http://www.w3.org/2000/svg"
+  //           className="h-4 w-4 mr-1"
+  //           fill="none"
+  //           viewBox="0 0 24 24"
+  //           stroke="currentColor"
+  //         >
+  //           <path
+  //             strokeLinecap="round"
+  //             strokeLinejoin="round"
+  //             strokeWidth={2}
+  //             d="M15 12H3m0 0l6-6m-6 6l6 6"
+  //           />
+  //         </svg>
+  //         <span className="hidden md:inline">{t("common.back")}</span>
+  //       </Button>
+  //       <Button
+  //         onClick={() => navigate("/system/admin/production-request-list")}
+  //         type="default"
+  //         className="flex items-center border border-gray-400 text-gray-700 font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
+  //       >
+  //         <span className="border-b border-black border-solid">
+  //           {t("productionRequest.planList")}
+  //         </span>
+  //       </Button>
+  //     </div>
+  //     <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
+  //       <div className="flex items-center justify-center mt-2 mb-4 gap-2">
+  //         <GrPlan className="size-6" />
+  //         <h2 className="text-24px lg:text-3xl font-bold text-center">
+  //           {t("productionRequest.title")}
+  //         </h2>
+  //       </div>
+
+  //       {submitLoading && (
+  //         <div className="flex justify-center items-center mb-4">
+  //           <span className="text-lg font-medium text-blue-600">
+  //             Loading...
+  //           </span>
+  //         </div>
+  //       )}
+
+  //       <Form form={form} layout="vertical" onFinish={onFinish}>
+  //         <Form.Item
+  //           label={t("productionRequest.name")}
+  //           name="request_name"
+  //           rules={[
+  //             { required: true, message: t("validation.planNameRequired") },
+  //           ]}
+  //         >
+  //           <Input
+  //             placeholder={t("productionRequest.namePlaceholder")}
+  //             maxLength={100}
+  //             className="rounded border-gray-300"
+  //           />
+  //         </Form.Item>
+
+  //         {/* Chọn Loại Nguyên liệu và nhập Sản lượng mong muốn cùng hàng */}
+  //         <div className="flex flex-col md:flex-row md:space-x-4">
+  //           <Form.Item
+  //             label={t("productionRequest.material")}
+  //             name="material"
+  //             rules={[
+  //               { required: true, message: t("validation.materialRequired") },
+  //             ]}
+  //             className="flex-1"
+  //           >
+  //             <Select
+  //               placeholder={t("productionRequest.selectMaterial")}
+  //               className="rounded border-gray-300"
+  //               onChange={(value) => {
+  //                 const selectedFuel = fuelTypes.find((f) => f._id === value);
+  //                 if (selectedFuel) {
+  //                   setSelectedFuelAvailable(selectedFuel.quantity);
+  //                 } else {
+  //                   setSelectedFuelAvailable(null);
+  //                 }
+  //                 form.setFieldsValue({
+  //                   material_quantity: null,
+  //                   product_quantity: null,
+  //                 });
+  //               }}
+  //             >
+  //               {fuelTypes
+  //                 .filter((fuel) => fuel.quantity > 0) // Lọc ra Nguyên liệu có quantity > 0
+  //                 .map((fuel) => (
+  //                   <Select.Option key={fuel._id} value={fuel._id}>
+  //                     {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
+  //                   </Select.Option>
+  //                 ))}
+  //             </Select>
+  //           </Form.Item>
+
+  //           <Form.Item
+  //             label={t("productionRequest.materialQty")}
+  //             name="material_quantity"
+  //             rules={[
+  //               {
+  //                 required: true,
+  //                 message: t("validation.materialQtyRequired"),
+  //               },
+  //               {
+  //                 type: "number",
+  //                 min: 1,
+  //                 message: t("validation.mustBeGreaterThanZero"),
+  //               },
+  //             ]}
+  //           >
+  //             <InputNumber
+  //               min={1}
+  //               className="w-full rounded border-gray-300"
+  //               placeholder={t("productionRequest.enterMaterialQty")}
+  //               onChange={calculateProductQuantity}
+  //               parser={(value) => value.replace(/[^\d]/g, "")} // loại bỏ ký tự không phải số
+  //               onKeyPress={(e) => {
+  //                 if (!/[0-9]/.test(e.key)) {
+  //                   e.preventDefault();
+  //                 }
+  //               }}
+  //             />
+  //           </Form.Item>
+  //         </div>
+
+  //         {/* Hiển thị Số lượng nguyên liệu cần thiết ước tính (tính tự động) */}
+  //         <Form.Item
+  //           label={t("productionRequest.loss")}
+  //           name="loss_percentage"
+  //           rules={[
+  //             { required: true, message: t("validation.lossRequired") },
+  //             {
+  //               type: "number",
+  //               min: 0,
+  //               max: 100,
+  //               message: t("validation.lossPercentageRange"),
+  //             },
+  //           ]}
+  //         >
+  //           <InputNumber
+  //             min={0}
+  //             max={100}
+  //             className="w-full rounded border-gray-300"
+  //             placeholder={t("productionRequest.enterLoss")}
+  //             onChange={calculateProductQuantity}
+  //           />
+  //         </Form.Item>
+
+  //         <Form.Item
+  //           label={t("productionRequest.productQty")}
+  //           name="product_quantity"
+  //         >
+  //           <InputNumber
+  //             disabled
+  //             className="w-full rounded border-gray-300 bg-gray-50"
+  //           />
+  //         </Form.Item>
+
+  //         {/* Chọn Bao Bì */}
+  //         <Form.Item
+  //           label={t("productionRequest.selectVacuumBag")}
+  //           name="vacuumBagSelect"
+  //           rules={[
+  //             { required: true, message: t("validation.vacuumBagRequired") },
+  //           ]}
+  //         >
+  //           <Select
+  //             placeholder={t("productionRequest.needProductQtyFirst")}
+  //             disabled={!isProductQuantityCalculated}
+  //             onChange={(value) => handlePackagingSelect(value, "vacuumBag")}
+  //           >
+  //             {packagingMaterials
+  //               .filter((material) => material.type === "túi chân không")
+  //               .map((material) => (
+  //                 <Select.Option key={material._id} value={material._id}>
+  //                   {material.package_material_name} - {material.capacity}g
+  //                   (Size {getSizeLabel(material.size_category)})
+  //                 </Select.Option>
+  //               ))}
+  //           </Select>
+  //         </Form.Item>
+
+  //         <Form.Item
+  //           label={t("productionRequest.selectCartonBox")}
+  //           name="cartonSelect"
+  //           rules={[
+  //             { required: true, message: t("validation.cartonBoxRequired") },
+  //           ]}
+  //         >
+  //           <Select
+  //             placeholder={t("productionRequest.needProductQtyFirst")}
+  //             disabled={!isProductQuantityCalculated}
+  //             onChange={(value) => handlePackagingSelect(value, "carton")}
+  //           >
+  //             {packagingMaterials
+  //               .filter((material) => material.type === "thùng carton")
+  //               .map((material) => (
+  //                 <Select.Option key={material._id} value={material._id}>
+  //                   {material.package_material_name} - {material.capacity}kg
+  //                   (Size {getSizeLabel(material.size_category)})
+  //                 </Select.Option>
+  //               ))}
+  //           </Select>
+  //         </Form.Item>
+
+  //         {selectedPackaging.vacuumBag && selectedPackaging.carton && (
+  //           <div>
+  //             <p>
+  //               {t("productionRequest.suggestedVacuumBags", {
+  //                 count: calculatedPackaging.vacuumBag,
+  //               })}
+  //             </p>
+  //             <p>
+  //               {t("productionRequest.suggestedCartons", {
+  //                 count: calculatedPackaging.carton,
+  //               })}
+  //             </p>
+  //           </div>
+  //         )}
+  //         <Form.Item
+  //           label={t("productionRequest.priority")}
+  //           name="priority"
+  //           rules={[
+  //             { required: true, message: t("validation.priorityRequired") },
+  //           ]}
+  //         >
+  //           <Select
+  //             placeholder={t("productionRequest.selectPriority")}
+  //             className="rounded border-gray-300"
+  //           >
+  //             <Select.Option value={3}>{t("priority.high")}</Select.Option>
+  //             <Select.Option value={2}>{t("priority.medium")}</Select.Option>
+  //             <Select.Option value={1}>{t("priority.low")}</Select.Option>
+  //           </Select>
+  //         </Form.Item>
+  //         <Form.Item
+  //           label={t("productionRequest.productionDate")}
+  //           name="production_date"
+  //           rules={[
+  //             {
+  //               required: true,
+  //               message: t("validation.productionDateRequired"),
+  //             },
+  //           ]}
+  //         >
+  //           <DatePicker
+  //             style={{ width: "100%" }}
+  //             format="DD/MM/YYYY"
+  //             placeholder={t("productionRequest.selectProductionDate")}
+  //             className="rounded border-gray-300"
+  //             disabledDate={disabledProductionDate}
+  //             onChange={(date) => {
+  //               setProductionDate(date);
+  //               form.setFieldsValue({ production_date: date });
+  //             }}
+  //           />
+  //         </Form.Item>
+  //         <Form.Item
+  //           label={t("productionRequest.endDate")}
+  //           name="end_date"
+  //           rules={[
+  //             { required: true, message: t("validation.endDateRequired") },
+  //           ]}
+  //         >
+  //           <Form.Item noStyle dependencies={["production_date"]}>
+  //             {({ getFieldValue }) => (
+  //               <DatePicker
+  //                 style={{ width: "100%" }}
+  //                 format="DD/MM/YYYY"
+  //                 placeholder={
+  //                   !getFieldValue("production_date")
+  //                     ? t("productionRequest.selectProductionDateFirst")
+  //                     : t("productionRequest.selectEndDate")
+  //                 }
+  //                 className="rounded border-gray-300"
+  //                 disabled={!getFieldValue("production_date")} // disable if no production_date
+  //                 disabledDate={disabledEndDate} // Custom function for disabled date
+  //                 onChange={(date) => form.setFieldsValue({ end_date: date })} // Set end_date value on change
+  //               />
+  //             )}
+  //           </Form.Item>
+  //         </Form.Item>
+
+  //         <Form.Item
+  //           name="request_type"
+  //           initialValue="Đơn sản xuất"
+  //           style={{ display: "none" }}
+  //         >
+  //           <Input />
+  //         </Form.Item>
+
+  //         <Form.Item label={t("productionRequest.note")} name="note">
+  //           <Input.TextArea
+  //             rows={4}
+  //             placeholder={t("productionRequest.enterNote")}
+  //             className="rounded border-gray-300"
+  //           />
+  //         </Form.Item>
+  //         <Form.Item>
+  //           <Button type="primary" htmlType="submit" className="w-full py-2">
+  //             {t("common.confirm")}
+  //           </Button>
+  //         </Form.Item>
+  //       </Form>
+  //     </div>
+  //   </div>
+  // );
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-2 lg:mb-4 w-full">
-        <Button
+    <div className="min-h-screen bg-white from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
+      <div className="flex justify-between items-center">
+        <button
           onClick={() => navigate(-1)}
-          type="primary"
-          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
+          className="group flex items-center bg-white/80 backdrop-blur-sm text-gray-700 font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 border-2 border-gray-200/50"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-          <span className="hidden md:inline">{t("common.back")}</span>
-        </Button>
-        <Button
+          <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+          {t("harvest.back")}
+        </button>
+
+        <button
+          type="button"
           onClick={() => navigate("/system/admin/production-request-list")}
-          type="default"
-          className="flex items-center border border-gray-400 text-gray-700 font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
+          className="group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
         >
-          <span className="border-b border-black border-solid">
-            {t("productionRequest.planList")}
-          </span>
-        </Button>
+          {t("productionRequest.viewList") || "Production Plan List"}
+          <ArrowRight className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" />
+        </button>
       </div>
-      <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
-        <div className="flex items-center justify-center mt-2 mb-4 gap-2">
-          <GrPlan className="size-6" />
-          <h2 className="text-24px lg:text-3xl font-bold text-center">
-            {t("productionRequest.title")}
-          </h2>
+      <div className="max-w-4xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-4">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+              {t("productionRequest.title")}
+            </h1>
+            <p className="text-gray-600 text-lg">
+              {t("productionRequest.title_desc")}
+            </p>
+          </div>
         </div>
 
-        {submitLoading && (
-          <div className="flex justify-center items-center mb-4">
-            <span className="text-lg font-medium text-blue-600">
-              Loading...
-            </span>
+        {/* Main Form Card */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                <Presentation className="h-4 w-4 text-white" />
+              </div>
+              {t("productionRequest.detail")}
+            </h2>
           </div>
-        )}
 
-        <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item
-            label={t("productionRequest.name")}
-            name="request_name"
-            rules={[
-              { required: true, message: t("validation.planNameRequired") },
-            ]}
-          >
-            <Input
-              placeholder={t("productionRequest.namePlaceholder")}
-              maxLength={100}
-              className="rounded border-gray-300"
-            />
-          </Form.Item>
+          {/* Form Content */}
+          <div className="p-8">
+            {submitLoading && (
+              <div className="flex justify-center items-center mb-6 p-4 bg-blue-50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                  <span className="text-lg font-medium text-blue-600">
+                    Creating production plan...
+                  </span>
+                </div>
+              </div>
+            )}
 
-          {/* Chọn Loại Nguyên liệu và nhập Sản lượng mong muốn cùng hàng */}
-          <div className="flex flex-col md:flex-row md:space-x-4">
-            <Form.Item
-              label={t("productionRequest.material")}
-              name="material"
-              rules={[
-                { required: true, message: t("validation.materialRequired") },
-              ]}
-              className="flex-1"
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={onFinish}
+              className="space-y-6"
             >
-              <Select
-                placeholder={t("productionRequest.selectMaterial")}
-                className="rounded border-gray-300"
-                onChange={(value) => {
-                  const selectedFuel = fuelTypes.find((f) => f._id === value);
-                  if (selectedFuel) {
-                    setSelectedFuelAvailable(selectedFuel.quantity);
-                  } else {
-                    setSelectedFuelAvailable(null);
-                  }
-                  form.setFieldsValue({
-                    material_quantity: null,
-                    product_quantity: null,
-                  });
-                }}
+              {/* Request Name */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.name")}
+                  </span>
+                }
+                name="request_name"
+                rules={[
+                  { required: true, message: "Please enter request name" },
+                ]}
               >
-                {fuelTypes
-                  .filter((fuel) => fuel.quantity > 0) // Lọc ra Nguyên liệu có quantity > 0
-                  .map((fuel) => (
-                    <Select.Option key={fuel._id} value={fuel._id}>
-                      {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label={t("productionRequest.materialQty")}
-              name="material_quantity"
-              rules={[
-                {
-                  required: true,
-                  message: t("validation.materialQtyRequired"),
-                },
-                {
-                  type: "number",
-                  min: 1,
-                  message: t("validation.mustBeGreaterThanZero"),
-                },
-              ]}
-            >
-              <InputNumber
-                min={1}
-                className="w-full rounded border-gray-300"
-                placeholder={t("productionRequest.enterMaterialQty")}
-                onChange={calculateProductQuantity}
-                parser={(value) => value.replace(/[^\d]/g, "")} // loại bỏ ký tự không phải số
-                onKeyPress={(e) => {
-                  if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
-              />
-            </Form.Item>
-          </div>
-
-          {/* Hiển thị Số lượng nguyên liệu cần thiết ước tính (tính tự động) */}
-          <Form.Item
-            label={t("productionRequest.loss")}
-            name="loss_percentage"
-            rules={[
-              { required: true, message: t("validation.lossRequired") },
-              {
-                type: "number",
-                min: 0,
-                max: 100,
-                message: t("validation.lossPercentageRange"),
-              },
-            ]}
-          >
-            <InputNumber
-              min={0}
-              max={100}
-              className="w-full rounded border-gray-300"
-              placeholder={t("productionRequest.enterLoss")}
-              onChange={calculateProductQuantity}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label={t("productionRequest.productQty")}
-            name="product_quantity"
-          >
-            <InputNumber
-              disabled
-              className="w-full rounded border-gray-300 bg-gray-50"
-            />
-          </Form.Item>
-
-          {/* Chọn Bao Bì */}
-          <Form.Item
-            label={t("productionRequest.selectVacuumBag")}
-            name="vacuumBagSelect"
-            rules={[
-              { required: true, message: t("validation.vacuumBagRequired") },
-            ]}
-          >
-            <Select
-              placeholder={t("productionRequest.needProductQtyFirst")}
-              disabled={!isProductQuantityCalculated}
-              onChange={(value) => handlePackagingSelect(value, "vacuumBag")}
-            >
-              {packagingMaterials
-                .filter((material) => material.type === "túi chân không")
-                .map((material) => (
-                  <Select.Option key={material._id} value={material._id}>
-                    {material.package_material_name} - {material.capacity}g
-                    (Size {getSizeLabel(material.size_category)})
-                  </Select.Option>
-                ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label={t("productionRequest.selectCartonBox")}
-            name="cartonSelect"
-            rules={[
-              { required: true, message: t("validation.cartonBoxRequired") },
-            ]}
-          >
-            <Select
-              placeholder={t("productionRequest.needProductQtyFirst")}
-              disabled={!isProductQuantityCalculated}
-              onChange={(value) => handlePackagingSelect(value, "carton")}
-            >
-              {packagingMaterials
-                .filter((material) => material.type === "thùng carton")
-                .map((material) => (
-                  <Select.Option key={material._id} value={material._id}>
-                    {material.package_material_name} - {material.capacity}kg
-                    (Size {getSizeLabel(material.size_category)})
-                  </Select.Option>
-                ))}
-            </Select>
-          </Form.Item>
-
-          {selectedPackaging.vacuumBag && selectedPackaging.carton && (
-            <div>
-              <p>
-                {t("productionRequest.suggestedVacuumBags", {
-                  count: calculatedPackaging.vacuumBag,
-                })}
-              </p>
-              <p>
-                {t("productionRequest.suggestedCartons", {
-                  count: calculatedPackaging.carton,
-                })}
-              </p>
-            </div>
-          )}
-          <Form.Item
-            label={t("productionRequest.priority")}
-            name="priority"
-            rules={[
-              { required: true, message: t("validation.priorityRequired") },
-            ]}
-          >
-            <Select
-              placeholder={t("productionRequest.selectPriority")}
-              className="rounded border-gray-300"
-            >
-              <Select.Option value={3}>{t("priority.high")}</Select.Option>
-              <Select.Option value={2}>{t("priority.medium")}</Select.Option>
-              <Select.Option value={1}>{t("priority.low")}</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label={t("productionRequest.productionDate")}
-            name="production_date"
-            rules={[
-              {
-                required: true,
-                message: t("validation.productionDateRequired"),
-              },
-            ]}
-          >
-            <DatePicker
-              style={{ width: "100%" }}
-              format="DD/MM/YYYY"
-              placeholder={t("productionRequest.selectProductionDate")}
-              className="rounded border-gray-300"
-              disabledDate={disabledProductionDate}
-              onChange={(date) => {
-                setProductionDate(date);
-                form.setFieldsValue({ production_date: date });
-              }}
-            />
-          </Form.Item>
-          <Form.Item
-            label={t("productionRequest.endDate")}
-            name="end_date"
-            rules={[
-              { required: true, message: t("validation.endDateRequired") },
-            ]}
-          >
-            <Form.Item noStyle dependencies={["production_date"]}>
-              {({ getFieldValue }) => (
-                <DatePicker
-                  style={{ width: "100%" }}
-                  format="DD/MM/YYYY"
-                  placeholder={
-                    !getFieldValue("production_date")
-                      ? t("productionRequest.selectProductionDateFirst")
-                      : t("productionRequest.selectEndDate")
-                  }
-                  className="rounded border-gray-300"
-                  disabled={!getFieldValue("production_date")} // disable if no production_date
-                  disabledDate={disabledEndDate} // Custom function for disabled date
-                  onChange={(date) => form.setFieldsValue({ end_date: date })} // Set end_date value on change
+                <Input
+                  placeholder={t("productionRequest.namePlaceholder")}
+                  maxLength={100}
+                  className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+                  size="large"
                 />
+              </Form.Item>
+
+              {/* Material Selection and Quantity */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Form.Item
+                  label={
+                    <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                      {t("productionRequest.material")}
+                    </span>
+                  }
+                  name="material"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("productionRequest.materialRequired"),
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder={t("productionRequest.selectMaterial")}
+                    className="custom-select"
+                    size="large"
+                    onChange={(value) => {
+                      const selectedFuel = fuelTypes.find(
+                        (f) => f._id === value
+                      );
+                      if (selectedFuel) {
+                        setSelectedFuelAvailable(selectedFuel.quantity);
+                      } else {
+                        setSelectedFuelAvailable(null);
+                      }
+                      form.setFieldsValue({
+                        material_quantity: null,
+                        product_quantity: null,
+                      });
+                    }}
+                  >
+                    {fuelTypes
+                      .filter((fuel) => fuel.quantity > 0)
+                      .map((fuel) => (
+                        <Select.Option key={fuel._id} value={fuel._id}>
+                          {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
+                        </Select.Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                      {t("productionRequest.materialQty")}
+                    </span>
+                  }
+                  name="material_quantity"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("productionRequest.materialQtyRequired"),
+                    },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: t("productionRequest.materialNumRequired"),
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    min={1}
+                    className="w-full border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-gray-50/50"
+                    placeholder={t("productionRequest.enterMaterialQty")}
+                    onChange={calculateProductQuantity}
+                    parser={(value) => value?.replace(/[^\d]/g, "")}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    size="large"
+                  />
+                </Form.Item>
+              </div>
+
+              {/* Loss Percentage */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.loss")}
+                  </span>
+                }
+                name="loss_percentage"
+                rules={[
+                  {
+                    required: true,
+                    message: t("productionRequest.lossRequired"),
+                  },
+                  {
+                    type: "number",
+                    min: 0,
+                    max: 100,
+                    message: t("productionRequest.lossMinMax"),
+                  },
+                ]}
+              >
+                <InputNumber
+                  min={0}
+                  max={100}
+                  className="w-full border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-gray-50/50"
+                  placeholder={t("productionRequest.enterLoss")}
+                  onChange={calculateProductQuantity}
+                  size="large"
+                />
+              </Form.Item>
+
+              {/* Product Quantity (Calculated) */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm">
+                    {t("productionRequest.productQty")}
+                  </span>
+                }
+                name="product_quantity"
+              >
+                <InputNumber
+                  disabled
+                  className="w-full border-2 border-gray-200 rounded-xl bg-gray-100 text-gray-600"
+                  size="large"
+                />
+              </Form.Item>
+
+              {/* Packaging Selection */}
+              <div className="">
+                <Form.Item
+                  label={
+                    <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                      {t("productionRequest.vacuumBag")}
+                    </span>
+                  }
+                  name="vacuumBagSelect"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("productionRequest.selectVacuumBag"),
+                    },
+                  ]}
+                >
+                  <div className="relative">
+                    <Select
+                      placeholder={
+                        !isProductQuantityCalculated
+                          ? t("productionRequest.needProductQtyFirst")
+                          : t("productionRequest.selectVacuumBag")
+                      }
+                      disabled={!isProductQuantityCalculated}
+                      onChange={(value) =>
+                        handlePackagingSelect(value, "vacuumBag")
+                      }
+                      className="custom-select"
+                      size="large"
+                    >
+                      {packagingMaterials
+                        .filter(
+                          (material) => material.type === "túi chân không"
+                        )
+                        .map((material) => (
+                          <Select.Option
+                            key={material._id}
+                            value={material._id}
+                          >
+                            {material.package_material_name} -{" "}
+                            {material.capacity}g (Size{" "}
+                            {getSizeLabel(material.size_category)})
+                          </Select.Option>
+                        ))}
+                    </Select>
+                  </div>
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                      {t("productionRequest.cartonBox")}
+                    </span>
+                  }
+                  name="cartonSelect"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("productionRequest.selectCartonBox"),
+                    },
+                  ]}
+                >
+                  <div className="relative">
+                    <Select
+                      placeholder={
+                        !isProductQuantityCalculated
+                          ? t("productionRequest.needProductQtyFirst")
+                          : t("productionRequest.selectCartonBox")
+                      }
+                      disabled={!isProductQuantityCalculated}
+                      onChange={(value) =>
+                        handlePackagingSelect(value, "carton")
+                      }
+                      className="custom-select"
+                      size="large"
+                    >
+                      {packagingMaterials
+                        .filter((material) => material.type === "thùng carton")
+                        .map((material) => (
+                          <Select.Option
+                            key={material._id}
+                            value={material._id}
+                          >
+                            {material.package_material_name} -{" "}
+                            {material.capacity}kg (Size{" "}
+                            {getSizeLabel(material.size_category)})
+                          </Select.Option>
+                        ))}
+                    </Select>
+                  </div>
+                </Form.Item>
+              </div>
+
+              {/* Packaging Summary */}
+              {selectedPackaging.vacuumBag && selectedPackaging.carton && (
+                <div className=" mt-4 bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-2">
+                    {t("productionRequest.suggestedTitle")}
+                  </h4>
+                  <div className="space-y-1 text-green-700">
+                    <p>
+                      {t("productionRequest.vacuumNeed")}{" "}
+                      {calculatedPackaging.vacuumBag}{" "}
+                      {t("productionRequest.units")}
+                    </p>
+                    <p>
+                      {t("productionRequest.cartonBoxNeed")}{" "}
+                      {calculatedPackaging.carton}{" "}
+                      {t("productionRequest.units")}
+                    </p>
+                  </div>
+                </div>
               )}
-            </Form.Item>
-          </Form.Item>
 
-          <Form.Item
-            name="request_type"
-            initialValue="Đơn sản xuất"
-            style={{ display: "none" }}
-          >
-            <Input />
-          </Form.Item>
+              {/* Priority */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.priority")}
+                  </span>
+                }
+                name="priority"
+                rules={[
+                  {
+                    required: true,
+                    message: t("productionRequest.priorityRequired"),
+                  },
+                ]}
+              >
+                <Select
+                  placeholder={t("productionRequest.selectPriority")}
+                  className="custom-select"
+                  size="large"
+                >
+                  <Select.Option value={3}>{t("priority.high")}</Select.Option>
+                  <Select.Option value={2}>
+                    {t("priority.medium")}
+                  </Select.Option>
+                  <Select.Option value={1}>{t("priority.low")}</Select.Option>
+                </Select>
+              </Form.Item>
 
-          <Form.Item label={t("productionRequest.note")} name="note">
-            <Input.TextArea
-              rows={4}
-              placeholder={t("productionRequest.enterNote")}
-              className="rounded border-gray-300"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full py-2">
-              {t("common.confirm")}
-            </Button>
-          </Form.Item>
-        </Form>
+              {/* Date Selection */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Form.Item
+                  label={
+                    <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                      {t("productionRequest.productionDate")}
+                    </span>
+                  }
+                  name="production_date"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("productionRequest.productionDateRequired"),
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="DD/MM/YYYY"
+                    placeholder={t("productionRequest.selectProductionDate")}
+                    className="h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                    disabledDate={disabledProductionDate}
+                    onChange={(date) => {
+                      setProductionDate(date);
+                      form.setFieldsValue({ production_date: date });
+                    }}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label={
+                    <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                      {t("productionRequest.endDate")}
+                    </span>
+                  }
+                  name="end_date"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("productionRequest.endDateRequired"),
+                    },
+                  ]}
+                >
+                  <Form.Item noStyle dependencies={["production_date"]}>
+                    {({ getFieldValue }) => (
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        format="DD/MM/YYYY"
+                        placeholder={
+                          !getFieldValue("production_date")
+                            ? t("productionRequest.productionDateFirst")
+                            : t("productionRequest.selectEndDate")
+                        }
+                        className="h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                        disabled={!getFieldValue("production_date")}
+                        disabledDate={disabledEndDate}
+                        onChange={(date) =>
+                          form.setFieldsValue({ end_date: date })
+                        }
+                      />
+                    )}
+                  </Form.Item>
+                </Form.Item>
+              </div>
+
+              {/* Hidden Request Type */}
+              <Form.Item
+                name="request_type"
+                initialValue="Đơn sản xuất"
+                style={{ display: "none" }}
+              >
+                <Input />
+              </Form.Item>
+
+              {/* Notes */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm">
+                    {t("productionRequest.note")}
+                  </span>
+                }
+                name="note"
+              >
+                <Input.TextArea
+                  rows={4}
+                  placeholder={t("productionRequest.enterNote")}
+                  className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
+                />
+              </Form.Item>
+
+              {/* Submit Button */}
+              <Form.Item className="pt-4">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={submitLoading}
+                  className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-0 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  {submitLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Creating Production Plan...
+                    </div>
+                  ) : (
+                    t("productionRequest.create")
+                  )}
+                </Button>
+              </Form.Item>
+            </Form>
+
+            {/* Help Text */}
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl mt-6">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-blue-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-blue-700">
+                    <strong>{t("productionRequest.note_require.note")}</strong>{" "}
+                    {t("productionRequest.note_require.note_parent")}{" "}
+                    <span className="text-red-500 font-semibold">*</span>{" "}
+                    {t("productionRequest.note_require.note_child")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

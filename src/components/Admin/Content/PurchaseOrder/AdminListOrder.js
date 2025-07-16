@@ -456,6 +456,7 @@ const UserComponent = () => {
           if (!filterStatus) return true;
           return item.status === filterStatus;
         })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .map((purchaseOrder) => ({
           ...purchaseOrder,
           key: purchaseOrder._id || "",
@@ -819,7 +820,7 @@ const UserComponent = () => {
 
           {/* Title căn giữa */}
           <h5 className="text-center font-bold text-2xl md:text-2xl flex-grow mx-4 text-gray-800">
-            🛒 {t("order.title")}
+            {t("order.title")}
           </h5>
 
           {/* Phần tử trống bên phải để cân bằng nút quay lại */}
