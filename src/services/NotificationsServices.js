@@ -6,7 +6,6 @@ export const getAllNotification = async (dataRequest) => {
   const { access_token } = dataRequest;
   const res = await axiosJWT.get(
     `${process.env.REACT_APP_API_URL}/notifications/getNotifications`,
-    dataRequest,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,

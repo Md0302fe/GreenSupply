@@ -39,7 +39,6 @@ const UserComponent = () => {
         />
 
       </div>
-      
     </div>
   );
 };

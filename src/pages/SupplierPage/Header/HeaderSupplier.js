@@ -46,7 +46,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
 
   const notificationRef = useRef(null);
 
-  console.log("notifications => ", notifications)
+  console.log("notifications => ", notifications);
 
   const fetchNotifications = async () => {
     const dataRequest = {
@@ -73,9 +73,9 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
       setUnreadCount((count) => count + 1);
     };
 
-    socket.on("pushNotification", handleNewNotification);
+    socket.on("pushNotification_Send_To_Supplier", handleNewNotification);
     return () => {
-      socket.off("pushNotification", handleNewNotification);
+      socket.off("pushNotification_Send_To_Supplier", handleNewNotification);
     };
   }, []);
 
@@ -310,7 +310,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               </a>
             </MenuItem>
 
-            <MenuItem
+            {/* <MenuItem
               onClick={handleCloseMyAcc}
               className="flex items-center gap-3"
             >
@@ -318,7 +318,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               <a href="/system/admin" className="text-[14px]">
                 {t("system_management")}
               </a>
-            </MenuItem>
+            </MenuItem> */}
 
             <MenuItem
               onClick={() => {
@@ -368,7 +368,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
         {showNotiList && (
           <ClickAwayListener onClickAway={() => setShowNotiList(false)}>
             <div
-              className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50"
+              className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50 max-h-[800px]"
               style={{
                 top:
                   (notificationRef.current?.getBoundingClientRect()?.bottom ||
@@ -394,7 +394,7 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               {notifications.length === 0 ? (
                 <p className="text-gray-500 text-sm">Không có thông báo nào</p>
               ) : (
-                <ul className="space-y-2 max-h-[1000px] overflow-y-auto">
+                <ul className="space-y-2 max-h-[650px] overflow-y-auto">
                   {notifications.map((item, idx) => (
                     <li
                       key={idx}

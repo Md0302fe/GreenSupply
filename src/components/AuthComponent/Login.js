@@ -141,6 +141,10 @@ const Login = () => {
   // USER INFOMATIONS
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserServices.getDetailsUser(id, token);
+    const user = {
+       ...res?.data,
+       access_token: token 
+    }
     dishpatch(updateUser({ ...res?.data, access_token: token }));
   };
 
