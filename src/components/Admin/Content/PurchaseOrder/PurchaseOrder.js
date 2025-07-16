@@ -3,6 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Upload } from "antd";
 import {
   ArrowLeft,
+  ArrowRight,
   FileText,
   UploadIcon,
   AlertCircle,
@@ -292,6 +293,7 @@ const HarvestRequestPage = () => {
   return (
     <div className="min-h-screen bg-white from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
       <div className="flex justify-between items-center">
+        {/* Nút Back */}
         <button
           onClick={() => navigate(-1)}
           className="group flex items-center bg-white/80 backdrop-blur-sm text-gray-700 font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 border-2 border-gray-200/50"
@@ -300,12 +302,14 @@ const HarvestRequestPage = () => {
           {t("harvest.back")}
         </button>
 
+        {/* Nút tới danh sách */}
         <button
           type="button"
           onClick={() => navigate("/system/admin/R_purchase-orders")}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+          className="group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
         >
           {t("harvest.viewList") || "Material Purchase List"}
+          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
         </button>
       </div>
 
@@ -349,7 +353,7 @@ const HarvestRequestPage = () => {
                 placeholder={t("harvest.form.name_placeholder")}
                 value={formData.request_name}
                 onChange={handleChange}
-                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+                className="w-full border-2 border-gray-200 py-2.5 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
               />
             </div>
 
@@ -363,7 +367,7 @@ const HarvestRequestPage = () => {
                 name="fuel_type"
                 value={formData.fuel_type}
                 onChange={handleChange}
-                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50/50"
+                className="w-full border-2 border-gray-200 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50/50"
               >
                 <option value="" disabled>
                   {t("harvest.form.fuel_type_placeholder")}
@@ -386,7 +390,7 @@ const HarvestRequestPage = () => {
                 <span className="text-red-500 text-base">*</span>
                 {t("harvest.form.image")}
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300">
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 md:p-6 hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300 w-full max-w-md mx-auto">
                 <Upload.Dragger
                   listType="picture-card"
                   fileList={fileList}
@@ -402,16 +406,16 @@ const HarvestRequestPage = () => {
                       <img
                         src={fuelImage || "/placeholder.svg"}
                         alt="preview"
-                        className="max-w-[250px] max-h-[250px] object-cover rounded-lg shadow-md"
+                        className="max-w-[200px] max-h-[200px] object-cover rounded-lg shadow"
                       />
                     </div>
                   ) : (
-                    <div className="text-center py-12">
-                      <UploadIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 text-lg font-medium">
+                    <div className="text-center py-6">
+                      <UploadIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 text-base font-medium">
                         {t("harvest.form.image_placeholder")}
                       </p>
-                      <p className="text-gray-400 mt-2">
+                      <p className="text-gray-400 mt-1 text-sm">
                         {t("harvest.form.image_description")}
                       </p>
                     </div>
@@ -439,7 +443,7 @@ const HarvestRequestPage = () => {
                       e.preventDefault();
                     }
                   }}
-                  className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+                  className="w-full border-2 border-gray-200 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
                 />
               </div>
 
@@ -460,7 +464,7 @@ const HarvestRequestPage = () => {
                       e.preventDefault();
                     }
                   }}
-                  className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
+                  className="w-full border-2 border-gray-200 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
                 />
               </div>
             </div>
@@ -483,7 +487,7 @@ const HarvestRequestPage = () => {
                     format="DD/MM/YYYY HH:mm"
                     disabledDate={disabledStartDate}
                     placeholder={t("harvest.form.start_date_placeholder")}
-                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                    className="w-full rounded-xl border-2 px-3 h-10 border-gray-200 focus:border-blue-500 transition-all duration-200"
                   />
                 </div>
 
@@ -503,7 +507,7 @@ const HarvestRequestPage = () => {
                     disabledDate={disabledEndDate}
                     disabled={!formData.start_received}
                     placeholder={t("harvest.form.end_date_placeholder")}
-                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                    className="w-full rounded-xl border-2 px-3 h-10 border-gray-200 focus:border-blue-500 transition-all duration-200"
                   />
                 </div>
 
@@ -523,7 +527,7 @@ const HarvestRequestPage = () => {
                     disabledDate={disabledDueDate}
                     disabled={!formData.end_received}
                     placeholder={t("harvest.form.due_date_placeholder")}
-                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
+                    className="w-full rounded-xl border-2 px-3 h-10 border-gray-200 focus:border-blue-500 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -539,7 +543,7 @@ const HarvestRequestPage = () => {
                 name="priority"
                 value={formData.priority}
                 onChange={handleChange}
-                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50/50"
+                className="w-full border-2 border-gray-200 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 bg-gray-50/50"
               >
                 <option value="" disabled>
                   {t("harvest.form.priority_placeholder")}
@@ -563,27 +567,29 @@ const HarvestRequestPage = () => {
                 rows="4"
                 value={formData.note}
                 onChange={handleChange}
-                className="w-full border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
+                className="w-full border-2 border-gray-200 px-3 py-1 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
               />
             </div>
 
             {/* Total Price Display */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-100">
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-semibold text-gray-700">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 md:p-4 rounded-xl border border-blue-100 max-w-lg mx-auto">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <span className="text-base md:text-lg font-semibold text-gray-700">
                   {t("harvest.form.total_price")}:
                 </span>
+
                 <div className="text-right">
-                  <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                     {(formData.quantity * formData.price || 0).toLocaleString(
                       "vi-VN"
                     )}{" "}
                     VNĐ
                   </span>
+
                   {formData.priority && (
-                    <div className="mt-2">
+                    <div className="mt-1 md:mt-2">
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                           formData.priority === "Cao"
                             ? "bg-red-100 text-red-800"
                             : formData.priority === "Trung bình"
@@ -609,13 +615,14 @@ const HarvestRequestPage = () => {
               <button
                 type="button"
                 onClick={() => setNewForm()}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-4 rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300"
+                className="flex-1 bg-gray-100 hover:bg-gray-200 px-3 py-1 text-gray-700 font-semibold rounded-xl transition-all duration-200 shadow-sm hover:shadow-sm transform hover:-translate-y-0.5 border-2 border-gray-200 hover:border-gray-300"
               >
                 {t("harvest.actions.reset")}
               </button>
+
               <button
                 onClick={() => handleSubmit()}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="flex-1 bg-gradient-to-r px-3 py-1 from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 {t("harvest.actions.submit")}
               </button>

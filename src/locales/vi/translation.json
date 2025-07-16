@@ -452,16 +452,16 @@
       "description": "Thông tin phân tích quản lý nguyên liệu cần nhập"
     },
     "create": {
-      "title": "Tạo yêu cầu",
-      "description": "Tạo yêu cầu nhập nguyên liệu mới"
+      "title": "Tạo yêu cầu cung cấp",
+      "description": "Tạo yêu cầu cung cấp nguyên liệu mới" 
     },
     "manage": {
-      "title": "Quản lý yêu cầu",
-      "description": "Quản lý thông tin, các yêu cầu nhập nguyên liệu đã tạo"
+      "title": "Danh sách yêu cầu cung cấp",
+      "description": "Quản lý thông tin, các yêu cầu cung cấp nguyên liệu đã tạo"
     },
     "completed": {
       "title": "Hoàn thành",
-      "description": "D.sách yêu cầu nhập nguyên liệu đã hoàn thành"
+      "description": "D.sách yêu cầu cung cấp nguyên liệu đã hoàn thành"
     }
   },
   "supplierRequest": {
@@ -702,7 +702,7 @@
   },
   "order": {
     "back": "Quay lại",
-    "title": "Nguyên liệu cần nhập",
+    "title": "Danh sách yêu cầu nhập nguyên liệu",
     "drawer_title": "Chi Tiết Đơn Thu Nguyên liệu",
     "update_title": "Cập Nhật Đơn Thu Nguyên liệu",
     "form": {
@@ -734,7 +734,7 @@
     },
     "table": {
       "image": "Mặt hàng",
-      "request_name": "Yêu cầu",
+      "request_name": "Tên yêu cầu",
       "quantity_remain": "Tiến độ còn thu",
       "total_quantity": "Tổng thu (Kg)",
       "start_date": "Ngày bắt đầu nhận đơn",
@@ -1125,34 +1125,64 @@
     "chartTitle": "Biểu đồ trạng thái quy trình"
   },
   "productionRequest": {
-    "title": "Lập kế hoạch sản xuất",
-    "planList": "Danh sách kế hoạch",
-    "name": "Tên kế hoạch",
-    "namePlaceholder": "Nhập tên kế hoạch",
-    "material": "Loại nguyên liệu",
-    "selectMaterial": "Chọn loại nguyên liệu",
-    "materialQty": "Số lượng nguyên liệu (kg)",
-    "enterMaterialQty": "Nhập số lượng nguyên liệu",
-    "loss": "Tỷ lệ hao hụt (%)",
-    "enterLoss": "Nhập tỷ lệ hao hụt",
-    "productQty": "Sản lượng thành phẩm ước tính (kg)",
-    "priority": "Mức độ ưu tiên",
-    "selectPriority": "Chọn mức độ ưu tiên",
-    "productionDate": "Ngày sản xuất",
-    "selectProductionDate": "Chọn ngày sản xuất",
-    "endDate": "Ngày kết thúc",
-    "note": "Ghi chú",
-    "enterNote": "Nhập ghi chú (nếu có)",
-    "selectVacuumBag": "Chọn Túi chân không",
-    "selectCartonBox": "Chọn Thùng carton",
-    "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
-    "suggestedVacuumBags": "Số lượng túi chân không gợi ý: {{count}} túi",
-    "suggestedCartons": "Số lượng thùng carton gợi ý: {{count}} thùng",
-    "vacuumBag": "Túi chân không",
-    "cartonBox": "Thùng carton",
-    "selectEndDate": "Chọn ngày kết thúc",
-    "selectProductionDateFirst": "Chọn ngày bắt đầu trước"
-  },
+  "title": "Lập kế hoạch sản xuất",
+  "title_desc": "Lập kế hoạch và lịch trình cho yêu cầu sản xuất",
+  "detail": "Chi tiết kế hoạch sản xuất",
+  "planList": "Danh sách kế hoạch",
+  "name": "Tên kế hoạch",
+  "namePlaceholder": "Nhập tên kế hoạch",
+  "material": "Loại nguyên liệu",
+  "selectMaterial": "Chọn loại nguyên liệu",
+  "materialRequired": "Vui lòng chọn loại nguyên liệu",
+  
+  "materialQty": "Số lượng nguyên liệu (kg)",
+  "enterMaterialQty": "Nhập số lượng nguyên liệu",
+  "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
+  "materialNumRequired": "Phải lớn hơn 0",
+  
+  "loss": "Tỷ lệ hao hụt (%)",
+  "enterLoss": "Nhập tỷ lệ hao hụt",
+  "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
+  "lossMinMax": "Phải nằm trong khoảng từ 0-100%",
+  
+  "productQty": "Sản lượng thành phẩm ước tính (kg)",
+  
+  "priority": "Mức độ ưu tiên",
+  "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+  "selectPriority": "Chọn mức độ ưu tiên",
+  
+  "productionDate": "Ngày sản xuất",
+  "productionDateRequired": "Vui lòng chọn ngày sản xuất",
+  "selectProductionDate": "Chọn ngày sản xuất",
+  
+  "endDate": "Ngày kết thúc",
+  "endDateRequired": "Vui lòng chọn ngày kết thúc",
+  "selectEndDate": "Chọn ngày kết thúc",
+  "productionDateFirst": "Chọn ngày sản xuất trước",
+  
+  "note": "Ghi chú",
+  "enterNote": "Nhập ghi chú (nếu có)",
+  "selectVacuumBag": "Vui lòng chọn túi chân không",
+  "selectCartonBox": "Vui lòng chọn thùng carton",
+  "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
+  
+  "suggestedTitle": "Yêu cầu đóng gói:",
+  "vacuumNeed": "• Túi chân không cần: ",
+  "cartonBoxNeed": "• Thùng carton cần: ",
+  "units": "đơn vị",
+  
+  "suggestedVacuumBags": "Số lượng túi chân không gợi ý: {{count}} túi",
+  "suggestedCartons": "Số lượng thùng carton gợi ý: {{count}} thùng",
+  "vacuumBag": "Túi chân không",
+  "cartonBox": "Thùng carton",
+  "create": "Tạo kế hoạch sản xuất",
+  "viewList": "Kế hoạch sản xuất",
+  "note_require": {
+    "note": "Lưu ý:",
+    "note_parent": "Tất cả các trường có dấu *",
+    "note_child": "là bắt buộc. Số lượng sản phẩm sẽ được tự động tính toán dựa trên số lượng nguyên liệu và tỷ lệ hao hụt."
+  }
+},
   "priority": {
     "high": "Cao",
     "medium": "Trung bình",

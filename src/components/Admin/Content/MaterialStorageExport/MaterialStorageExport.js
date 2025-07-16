@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { createMaterialStorageExport } from "../../../../services/MaterialStorageExportService";
 import { GoPackageDependents } from "react-icons/go";
-import { ArrowLeft, Package, ArrowRightFromLine } from "lucide-react";
+import { ArrowLeft, Package, ArrowRightFromLine, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const MaterialStorageExport = () => {
@@ -193,6 +193,7 @@ const MaterialStorageExport = () => {
   return (
     <div className="min-h-screen bg-white from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
       <div className="flex justify-between items-center">
+        {/* Nút quay lại */}
         <button
           onClick={() => navigate(-1)}
           className="group flex items-center bg-white/80 backdrop-blur-sm text-gray-700 font-medium py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 border-2 border-gray-200/50"
@@ -201,12 +202,14 @@ const MaterialStorageExport = () => {
           {t("harvest.back")}
         </button>
 
+        {/* Nút chuyển đến danh sách xuất kho */}
         <button
           type="button"
           onClick={() => navigate("/system/admin/material-storage-export-list")}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+          className="group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
         >
           {t("materialExport.viewList") || "Warehouse Exports List"}
+          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
         </button>
       </div>
       <div className="max-w-4xl mx-auto">

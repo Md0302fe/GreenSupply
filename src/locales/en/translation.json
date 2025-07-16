@@ -200,7 +200,7 @@
     "detail_title": "Material collection request Details",
     "name": "Request Name",
     "quantity": "Quantity (kg)",
-    "price": "Price per Unit (VND)",
+    "price": "Price per unit (VND)",
     "total_price": "Total Price",
     "address": "Pickup Address",
     "note": "Note",
@@ -650,29 +650,29 @@
     "title_description": "Fill in the details to create a new material provide request",
     "detail": "Request Details",
     "form": {
-      "name": "Request Name",
+      "name": "Request ame",
       "name_placeholder": "Enter request name...",
       "fuel_type": "Material type",
-      "fuel_type_placeholder": "Select Material Type",
+      "fuel_type_placeholder": "Select material type",
       "no_data": "No data available",
-      "image": "Material Image",
+      "image": "Material image",
       "image_placeholder": "Click or drag file to upload",
       "image_description": "PNG, JPG, JPEG up to 10MB",
-      "quantity": "Total Quantity (Kg)",
+      "quantity": "Total quantity (Kg)",
       "quantity_placeholder": "Enter quantity...",
       "price": "Price per Kg / Unit (VND)",
       "price_placeholder": "Enter price...",
-      "start_date":"Start Date",
+      "start_date":"Start date",
       "start_date_placeholder": "Select start date",
-      "end_date":"End Date",
+      "end_date":"End date",
       "end_date_placeholder": "Select end date",
-      "due_date":"Due Date",
+      "due_date":"Due date",
       "due_date_placeholder": "Select due date",
-      "priority": "Priority Level",
+      "priority": "Priority level",
       "priority_placeholder": "Select priority",
       "note": "Note",
       "note_placeholder": "Enter any additional notes or requirements...",
-      "total_price": "Total Price"
+      "total_price": "Total price"
     },
     "note_require": {
       "note": "Note:",
@@ -741,7 +741,7 @@
     },
     "table": {
       "image": "Product",
-      "request_name": "Request",
+      "request_name": "Request Name",
       "quantity_remain": "Remaining",
       "total_quantity": "Total (Kg)",
       "start_date": "Start Date",
@@ -1134,32 +1134,65 @@
   },
   "productionRequest": {
     "title": "Create Production Plan",
+    "title_desc": "Plan and schedule your production requirements",
+    "detail": "Production Plan Details",
     "planList": "Plan List",
     "name": "Plan Name",
-    "namePlaceholder": "Enter plan name",
-    "material": "Material Type",
-    "selectMaterial": "Select material",
-    "materialQty": "Material Quantity (kg)",
-    "enterMaterialQty": "Enter material quantity",
+    "namePlaceholder": "Enter plan name ...",
+    "material": "Material type",
+    "selectMaterial": "Select material type",
+    "materialRequired": "Please select material type",
+
+    "materialQty": "Material Quantity (Kg)",
+    "enterMaterialQty": "Enter material quantity ...",
+    "materialQtyRequired": "Please enter material quantity",
+    "materialNumRequired": "Must be greater than 0",
+
+
     "loss": "Loss Percentage (%)",
-    "enterLoss": "Enter loss percentage",
-    "productQty": "Estimated Product Output (kg)",
+    "enterLoss": "Enter loss percentage ...",
+    "lossRequired": "Please enter loss percentage",
+    "lossMinMax": "Must be between 0-100%",
+
+    "productQty": "Estimated Product Output (Kg)",
+
     "priority": "Priority",
+    "priorityRequired": "Please select priority",
     "selectPriority": "Select priority level",
+
     "productionDate": "Production Date",
+    "productionDateRequired": "Please select production date",
     "selectProductionDate": "Select production date",
+
     "endDate": "End Date",
-    "note": "Note",
-    "enterNote": "Enter note (optional)",
-    "selectVacuumBag": "Select Vacuum Bag",
-    "selectCartonBox": "Select Carton Box",
-    "needProductQtyFirst": "Enter product quantity first",
+    "endDateRequired": "Please select end date",
+    "selectEndDate": "Select end date",
+    "productionDateFirst": "Select production date first",
+
+    "note": "Additional Notes",
+    "enterNote": "Enter any additional notes or requirements ...",
+    "selectVacuumBag": "Please select vacuum bag",
+    "selectCartonBox": "Please select Carton Box",
+    "needProductQtyFirst": "Calculate product quantity first",
+
+    
+    "suggestedTitle": "Packaging Requirements:",
+    "vacuumNeed": "• Vacuum bags needed:",
+    "cartonBoxNeed": "• Carton boxes needed:",
+    "units": "units",
+
+
     "suggestedVacuumBags": "Suggested vacuum bags: {{count}} bags",
     "suggestedCartons": "Suggested carton boxes: {{count}} boxes",
     "vacuumBag": "Vacuum Bag",
     "cartonBox": "Carton Box",
-    "selectEndDate": "Select end date",
-    "selectProductionDateFirst": "Select production date first"
+    "create": "Create Production Plan",
+    "viewList": "Production Plan List",
+    "note_require": {
+      "note": "Note:",
+      "note_parent": "All fields marked with",
+      "note_child": "are required. The product quantity will be automatically calculated based on material quantity and loss percentage."
+    }
   },
   "priority": {
     "high": "High",
