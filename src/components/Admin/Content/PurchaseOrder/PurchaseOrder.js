@@ -338,7 +338,7 @@ const HarvestRequestPage = () => {
           <div className="p-8 space-y-8">
             {/* Request Name */}
             <div className="space-y-3">
-              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+              <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                 <span className="text-red-500 text-base">*</span>
                 {t("harvest.form.name")}
               </label>
@@ -355,7 +355,7 @@ const HarvestRequestPage = () => {
 
             {/* Material Type */}
             <div className="space-y-3">
-              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+              <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                 <span className="text-red-500 text-base">*</span>
                 {t("harvest.form.fuel_type")}
               </label>
@@ -382,7 +382,7 @@ const HarvestRequestPage = () => {
 
             {/* Fuel Image */}
             <div className="space-y-3">
-              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+              <label className=" text-gray-800 font-semibold text-sm flex items-center gap-1">
                 <span className="text-red-500 text-base">*</span>
                 {t("harvest.form.image")}
               </label>
@@ -423,7 +423,7 @@ const HarvestRequestPage = () => {
             {/* Quantity and Price Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                   <span className="text-red-500 text-base">*</span>
                   {t("harvest.form.quantity")}
                 </label>
@@ -444,7 +444,7 @@ const HarvestRequestPage = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+                <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                   <span className="text-red-500 text-base">*</span>
                   {t("harvest.form.price")}
                 </label>
@@ -531,7 +531,7 @@ const HarvestRequestPage = () => {
 
             {/* Priority */}
             <div className="space-y-3">
-              <label className="block text-gray-800 font-semibold text-sm flex items-center gap-1">
+              <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                 <span className="text-red-500 text-base">*</span>
                 {t("harvest.form.priority")}
               </label>
