@@ -19,6 +19,7 @@ import {
 } from "@ant-design/icons";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { VscPackage } from "react-icons/vsc";
+import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
 import { useSelector } from "react-redux";
 import { Modal } from "antd";
@@ -202,9 +203,9 @@ const PackageCategoryList = () => {
     onFilter: (value, record) =>
       record.categories_name
         ? record.categories_name
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
   });
 
@@ -416,40 +417,83 @@ const PackageCategoryList = () => {
         width={400}
       >
         {selectedCategory ? (
-          <Descriptions column={1} bordered>
-            <Descriptions.Item label={t("packageCategory.details.name")}>
-              {selectedCategory.categories_name}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("packageCategory.details.description")}>
-              {selectedCategory.Descriptions || t("fuelStorage.noData")}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("packageCategory.details.quantity")}>
-              {selectedCategory.quantity}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("packageCategory.details.status")}>
-              <Tag color={selectedCategory.is_delete ? "orange" : "green"}>
-                {selectedCategory.is_delete
-                  ? t("packageCategory.status_deleted")
-                  : t("packageCategory.actions")}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label={t("packageCategory.details.created")}>
-              {new Date(selectedCategory.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label={t("packageCategory.details.updated")}>
-              {new Date(selectedCategory.updatedAt).toLocaleString()}
-            </Descriptions.Item>
-          </Descriptions>
+          <Form layout="vertical" disabled>
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {/* Tên loại đóng gói */}
+              <Form.Item
+                label={t("packageCategory.details.name")}
+                className="!mt-0 md:col-span-2"
+              >
+                <Input value={selectedCategory.categories_name} />
+              </Form.Item>
+
+              {/* Mô tả */}
+              <Form.Item
+                label={t("packageCategory.details.description")}
+                className="!mt-0 md:col-span-2"
+              >
+                <Input.TextArea
+                  rows={3}
+                  value={
+                    selectedCategory.Descriptions || t("fuelStorage.noData")
+                  }
+                />
+              </Form.Item>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+                {/* Số lượng */}
+                <Form.Item
+                  label={t("packageCategory.details.quantity")}
+                  className="!mt-0"
+                >
+                  <Input value={selectedCategory.quantity} />
+                </Form.Item>
+
+                {/* Trạng thái */}
+                <Form.Item
+                  label={t("packageCategory.details.status")}
+                  className="!mt-0"
+                >
+                  <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center">
+                    <Tag color={selectedCategory.is_delete ? "orange" : "green"}>
+                      {selectedCategory.is_delete
+                        ? t("packageCategory.status_deleted")
+                        : t("packageCategory.actions")}
+                    </Tag>
+                  </div>
+                </Form.Item>
+              </div>
+
+              {/* Ngày tạo & cập nhật - cùng hàng */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+                <Form.Item
+                  label={t("packageCategory.details.created")}
+                  className="!mt-0"
+                >
+                  <Input
+                    value={new Date(selectedCategory.createdAt).toLocaleString()}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={t("packageCategory.details.updated")}
+                  className="!mt-0"
+                >
+                  <Input
+                    value={new Date(selectedCategory.updatedAt).toLocaleString()}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
         ) : (
-          <p>{t("packageCategory.details.loading")}</p>
+          <p className="text-center text-gray-500">
+            {t("packageCategory.details.loading")}
+          </p>
         )}
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-          >
-            {t("packageCategory.details.close")}
-          </button>
+
+        {/* Nút đóng */}
+        <div className="flex justify-end mt-2">
+          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
       </Drawer>
 
@@ -490,16 +534,9 @@ const PackageCategoryList = () => {
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          <div className="flex justify-end">
-            <Button
-              onClick={() => setIsEditDrawerOpen(false)}
-              style={{ marginRight: 8 }}
-            >
-              {t("packageCategory.edit.cancel")}
-            </Button>
-            <Button type="primary" htmlType="submit">
-              {t("packageCategory.edit.submit")}
-            </Button>
+          <div className="flex justify-end mt-2 gap-2">
+            <ButtonComponent type="update" />
+            <ButtonComponent type="close" onClick={() => setIsEditDrawerOpen(false)} />
           </div>
         </Form>
       </Drawer>

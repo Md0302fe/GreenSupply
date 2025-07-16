@@ -1593,7 +1593,8 @@
     "approve": "Chấp nhận",
     "close": "Đóng",
     "approve_order": "Duyệt đơn",
-    "cancel_order": "Hủy đơn"
+    "cancel_order": "Hủy đơn",
+    "create_process": "Tạo quy trình"
   },
   "boxMaterial": {
     "back": "Quay lại",

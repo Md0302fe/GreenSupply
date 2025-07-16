@@ -1597,7 +1597,8 @@
     "approve": "Approve",
     "close": "Close",
     "approve_order": "Approve Order",
-    "cancel_order": "Reject Order"
+    "cancel_order": "Reject Order",
+    "create_process": "Create Process"
   },
   "boxMaterial": {
     "back": "Back",

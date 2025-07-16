@@ -753,7 +753,7 @@ const UserComponent = () => {
             {isEditMode && (
               <>
                 <ButtonComponent type="update" onClick={onFinishUpdate} />
-                <ButtonComponent type="cancel" onClick={() => setDrawerMode(null)} />
+                <ButtonComponent type="close" onClick={() => setDrawerMode(null)} />
               </>
             )}
             {isViewMode && (
