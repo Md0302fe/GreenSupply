@@ -212,6 +212,7 @@ const CreateBox = () => {
               },
             };
 
+            // Cập nhật dung tích gợi ý khi thay đổi các giá trị
             setSuggestedCapacity(suggest[type]?.[size] || null);
 
             if (capacity !== undefined && capacity !== null) {
@@ -349,29 +350,28 @@ const CreateBox = () => {
               />
             </Form.Item>
 
-           <Form.Item
-  label={t("boxMaterial.height")}
-  name="height"
-  className="flex-1"
-  rules={
-    boxType === "thùng carton"
-      ? [{ required: true, message: t("boxMaterial.enterHeight") }]
-      : []
-  }
->
-  <Input
-    type="number"
-    min={0}
-    size="large"
-    disabled={boxType !== "thùng carton"}
-    placeholder={
-      boxType === "thùng carton"
-        ? t("boxMaterial.heightPlaceholder1")  
-        : t("boxMaterial.heightPlaceholder")   
-    }
-  />
-</Form.Item>
-
+            <Form.Item
+              label={t("boxMaterial.height")}
+              name="height"
+              className="flex-1"
+              rules={
+                boxType === "thùng carton"
+                  ? [{ required: true, message: t("boxMaterial.enterHeight") }]
+                  : []
+              }
+            >
+              <Input
+                type="number"
+                min={0}
+                size="large"
+                disabled={boxType !== "thùng carton"}
+                placeholder={
+                  boxType === "thùng carton"
+                    ? t("boxMaterial.heightPlaceholder1")
+                    : t("boxMaterial.heightPlaceholder")
+                }
+              />
+            </Form.Item>
           </div>
 
           {currentSize && (
@@ -393,6 +393,16 @@ const CreateBox = () => {
             name="capacity"
             rules={[
               { required: true, message: t("boxMaterial.enterCapacity") },
+              {
+                validator: (_, value) => {
+                  if (value < 0) {
+                    return Promise.reject(
+                      t("boxMaterial.negativeCapacityError")
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
             <Input
