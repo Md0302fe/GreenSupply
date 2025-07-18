@@ -1084,7 +1084,7 @@
     "selectBatchPlaceholder": "Chọn lô nguyên liệu",
     "selectProduction": "Chọn đơn sản xuất",
     "selectProductionPlaceholder": "Chọn đơn sản xuất",
-    "exportName": "Tên đơn xuất kho",
+    "exportName": "Mã đơn xuất kho",
     "exportNamePlaceholder": "Nhập tên đơn xuất kho",
     "exportType": "Loại đơn",
     "productionType": "Đơn sản xuất",
@@ -1108,7 +1108,7 @@
     "createdBy": "Người tạo đơn",
     "batchName": "Tên lô",
     "batchId": "Mã lô",
-    "exportName": "Tên xuất kho",
+    "exportName": "Mã xuất kho",
     "createdDate": "Ngày tạo đơn",
     "note": "Ghi chú"
   },

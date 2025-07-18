@@ -16,7 +16,6 @@ import { useTranslation } from "react-i18next";
 import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 import { FaFileExport } from "react-icons/fa6";
 
-
 const statusColors = {
   "Chờ duyệt": "gold",
   "Đã duyệt": "green",
@@ -66,7 +65,6 @@ const MaterialStorageExportList = () => {
           },
         }
       );
-
       if (response.data.success) {
         setExports(response.data.exports);
       } else {
@@ -180,9 +178,9 @@ const MaterialStorageExportList = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase())
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -227,19 +225,18 @@ const MaterialStorageExportList = () => {
     {
       title: (
         <div style={{ textAlign: "left", width: "100%" }}>
-          {t("materialExportList.productionRequest")}
+          {t("materialExportList.exportName")}
         </div>
       ),
-      key: "production_request",
+      key: "exportName",
       align: "left",
-      ...getColumnSearchProps(["production_request_id", "request_name"], "Tìm yêu cầu sản xuất"),
-      sorter: (a, b) =>
-        (a.production_request_id?.request_name || "").localeCompare(
-          b.production_request_id?.request_name || ""
-        ),
-      render: (_, record) => (
-        <span>{record?.production_request_id?.request_name || "Không rõ"}</span>
+      ...getColumnSearchProps(
+        ["exportName", "export_name"],
+        "Tìm yêu cầu sản xuất"
       ),
+      sorter: (a, b) =>
+        (a?.export_name || "").localeCompare(b?.export_name || ""),
+      render: (_, record) => <span>{record?.export_name || "Không rõ"}</span>,
     },
     {
       title: (
@@ -251,7 +248,9 @@ const MaterialStorageExportList = () => {
       align: "left",
       ...getColumnSearchProps(["batch_id", "batch_name"], "Tìm lô nguyên liệu"),
       sorter: (a, b) =>
-        (a.batch_id?.batch_name || "").localeCompare(b.batch_id?.batch_name || ""),
+        (a.batch_id?.batch_name || "").localeCompare(
+          b.batch_id?.batch_name || ""
+        ),
       render: (_, record) => (
         <span>{record?.batch_id?.batch_name || "Không rõ"}</span>
       ),
@@ -276,9 +275,11 @@ const MaterialStorageExportList = () => {
       render: (status) => {
         const color = statusColors[status] || "default";
         return (
-          <Tag color={color}>
-            {t(`status.${statusMap[status]}`) || status}
-          </Tag>
+          <div className="flex justify-center">
+            <Tag color={color}>
+              {t(`status.${statusMap[status]}`) || status}
+            </Tag>
+          </div>
         );
       },
     },
@@ -291,15 +292,20 @@ const MaterialStorageExportList = () => {
       key: "action",
       align: "center",
       render: (_, record) => (
-        <Button
-          type="link"
-          icon={<HiOutlineDocumentSearch style={{ fontSize: "20px", color: "dodgerblue" }} />}
-          onClick={() => showExportDetails(record._id)}
-        />
+        <div className="flex justify-center">
+          <Button
+            type="link"
+            icon={
+              <HiOutlineDocumentSearch
+                style={{ fontSize: "20px", color: "dodgerblue" }}
+              />
+            }
+            onClick={() => showExportDetails(record._id)}
+          />
+        </div>
       ),
     },
   ];
-
 
   const handleTableChange = (pagination, filters, sorter) => {
     if (filters.status) {
@@ -401,9 +407,7 @@ const MaterialStorageExportList = () => {
   return (
     <div className="material-storage-export-list md:px-8  ">
       {/* Tiêu đề và nút quay lại */}
-      <div
-        className="flex items-center justify-between my-8"
-      >
+      <div className="flex items-center justify-between my-8">
         {/* Nút quay lại bên trái */}
         <Button
           onClick={() => navigate(-1)}
@@ -469,43 +473,9 @@ const MaterialStorageExportList = () => {
                 <input
                   type="text"
                   disabled
-                  value={selectedExport?.user_id?.full_name || t("common.no_data")}
-                  className="border p-2 rounded w-full bg-gray-100"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1">
-                  {t("materialExportList.productionRequest")}
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value={selectedExport?.production_request_id?.request_name || t("common.no_data")}
-                  className="border p-2 rounded w-full bg-gray-100"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1">
-                  {t("materialExportList.batchName")}
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value={selectedExport?.batch_id?.batch_name || t("common.no_data")}
-                  className="border p-2 rounded w-full bg-gray-100"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1">
-                  {t("materialExportList.batchId")}
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value={selectedExport?.batch_id?.batch_id || t("common.no_data")}
+                  value={
+                    selectedExport?.user_id?.full_name || t("common.no_data")
+                  }
                   className="border p-2 rounded w-full bg-gray-100"
                 />
               </div>
@@ -518,6 +488,34 @@ const MaterialStorageExportList = () => {
                   type="text"
                   disabled
                   value={selectedExport?.export_name || t("common.no_data")}
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.batchName")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={
+                    selectedExport?.batch_id?.batch_name || t("common.no_data")
+                  }
+                  className="border p-2 rounded w-full bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1">
+                  {t("materialExportList.batchId")}
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={
+                    selectedExport?.batch_id?.batch_id || t("common.no_data")
+                  }
                   className="border p-2 rounded w-full bg-gray-100"
                 />
               </div>
@@ -540,8 +538,11 @@ const MaterialStorageExportList = () => {
                     {t("materialExportList.status")}
                   </label>
                   <div className="border p-2 rounded w-full bg-gray-100">
-                    <Tag color={statusColors[selectedExport.status] || "default"}>
-                      {t(`status.${statusMap[selectedExport.status]}`) || selectedExport.status}
+                    <Tag
+                      color={statusColors[selectedExport.status] || "default"}
+                    >
+                      {t(`status.${statusMap[selectedExport.status]}`) ||
+                        selectedExport.status}
                     </Tag>
                   </div>
                 </div>
@@ -554,7 +555,11 @@ const MaterialStorageExportList = () => {
                 <input
                   type="text"
                   disabled
-                  value={selectedExport?.createdAt ? new Date(selectedExport.createdAt).toLocaleString() : t("common.no_data")}
+                  value={
+                    selectedExport?.createdAt
+                      ? new Date(selectedExport.createdAt).toLocaleString()
+                      : t("common.no_data")
+                  }
                   className="border p-2 rounded w-full bg-gray-100"
                 />
               </div>
@@ -582,7 +587,10 @@ const MaterialStorageExportList = () => {
                 <ButtonComponent type="cancel-order" onClick={handleReject} />
               </>
             )}
-            <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+            <ButtonComponent
+              type="close"
+              onClick={() => setIsDrawerOpen(false)}
+            />
           </div>
         </div>
       </DrawerComponent>

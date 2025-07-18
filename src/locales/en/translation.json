@@ -1084,7 +1084,7 @@
     "selectBatchPlaceholder": "Choose a batch",
     "selectProduction": "Select production request",
     "selectProductionPlaceholder": "Choose a production request",
-    "exportName": "Export order name",
+    "exportName": "Export order code",
     "exportNamePlaceholder": "Enter export order name",
     "exportType": "Export type",
     "productionType": "Production order",
@@ -1108,7 +1108,7 @@
     "createdBy": "Created by",
     "batchName": "Batch Name",
     "batchId": "Batch ID",
-    "exportName": "Export Name",
+    "exportName": "Export Code",
     "createdDate": "Created Date",
     "note": "Note"
   },
