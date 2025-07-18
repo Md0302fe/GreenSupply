@@ -87,9 +87,16 @@ const HarvestRequestPage = () => {
   };
 
   const disabledDueDate = (current) => {
-    if (!formData.end_received)
+    if (!formData.end_received) {
+      // Nếu chưa chọn ngày kết thúc thì chặn các ngày trước hôm nay
       return current && current < moment().startOf("day");
-    return current && current < formData.end_received;
+    }
+
+    // Chặn các ngày nhỏ hơn hoặc bằng ngày kết thúc (end_received)
+    // Tính từ 00:00 của ngày hôm sau
+    const nextDay = moment(formData.end_received).add(2, "day").startOf("day");
+
+    return current && current < nextDay;
   };
 
   // Tuy nguyên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
@@ -320,20 +327,17 @@ const HarvestRequestPage = () => {
         {/* Header Section */}
         <div className="mb-4">
           <div className="text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
               {t("harvest.title")}
             </h1>
-            <p className="text-gray-600 text-lg">
-              {t("harvest.title_description")}
-            </p>
           </div>
         </div>
 
         {/* Main Form Card */}
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                 <FileText className="h-4 w-4 text-white" />
               </div>
@@ -388,12 +392,13 @@ const HarvestRequestPage = () => {
             </div>
 
             {/* Fuel Image */}
-            <div className="space-y-3">
-              <label className=" text-gray-800 font-semibold text-sm flex items-center gap-1">
+            <div className="space-y-3 flex items-center">
+              <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                 <span className="text-red-500 text-base">*</span>
                 {t("harvest.form.image")}
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 md:p-6 hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300 w-full max-w-md mx-auto">
+
+              <div className="border-2 border-dashed border-gray-300 rounded-xl p-3 hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300 w-full max-w-xs mx-auto">
                 <Upload.Dragger
                   listType="picture-card"
                   fileList={fileList}
@@ -405,20 +410,20 @@ const HarvestRequestPage = () => {
                   className="border-0 bg-transparent"
                 >
                   {fuelImage ? (
-                    <div className="relative">
+                    <div className="relative flex justify-center">
                       <img
                         src={fuelImage || "/placeholder.svg"}
                         alt="preview"
-                        className="max-w-[200px] max-h-[200px] object-cover rounded-lg shadow"
+                        className="w-[100px] h-[100px] object-cover rounded-md shadow"
                       />
                     </div>
                   ) : (
-                    <div className="text-center py-6">
-                      <UploadIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600 text-base font-medium">
+                    <div className="text-center py-3">
+                      <UploadIcon className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-600 text-sm font-medium">
                         {t("harvest.form.image_placeholder")}
                       </p>
-                      <p className="text-gray-400 mt-1 text-sm">
+                      <p className="text-gray-400 mt-1 text-xs leading-tight">
                         {t("harvest.form.image_description")}
                       </p>
                     </div>

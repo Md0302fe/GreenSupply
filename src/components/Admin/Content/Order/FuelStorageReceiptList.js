@@ -109,11 +109,13 @@ const FuelStorageReceiptList = () => {
   const confirmUpdateStatus = (id, newStatus) => {
     Modal.confirm({
       title: t(
-        `fuelStorage.confirmTitle.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmTitle.${
+          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       content: t(
-        `fuelStorage.confirmContent.${newStatus === "Nhập kho thành công" ? "approve" : "cancel"
+        `fuelStorage.confirmContent.${
+          newStatus === "Nhập kho thành công" ? "approve" : "cancel"
         }`
       ),
       okText: t("fuelStorage.confirm.okText"),
@@ -205,9 +207,9 @@ const FuelStorageReceiptList = () => {
     onFilter: (value, record) =>
       record.manager_id?.full_name
         ? record.manager_id.full_name
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase())
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -418,7 +420,7 @@ const FuelStorageReceiptList = () => {
     },
   ];
 
-  console.log("receipts ==> ", receipts)
+  console.log("receipts ==> ", receipts);
 
   return (
     <div className="fuel-storage-receipt-list md:px-8">
@@ -524,7 +526,10 @@ const FuelStorageReceiptList = () => {
           <Form layout="vertical" disabled>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Người quản lý - full width */}
-              <Form.Item label={t("fuelStorage.columns.manager")} className="col-span-1 lg:col-span-2 !mb-0">
+              <Form.Item
+                label={t("fuelStorage.columns.manager")}
+                className="col-span-1 lg:col-span-2 !mb-0"
+              >
                 <Input
                   value={
                     selectedReceipt.manager_id?.full_name ||
@@ -534,7 +539,10 @@ const FuelStorageReceiptList = () => {
               </Form.Item>
 
               {/* Tên nguyên liệu - full width */}
-              <Form.Item label={t("fuelProvide.fuelName")} className="col-span-1 lg:col-span-2 !mb-0">
+              <Form.Item
+                label={t("fuelProvide.fuelName")}
+                className="col-span-1 lg:col-span-2 !mb-0"
+              >
                 <Input
                   value={
                     selectedReceipt.receipt_request_id?.fuel_name ||
@@ -545,7 +553,10 @@ const FuelStorageReceiptList = () => {
               </Form.Item>
 
               {/* Loại đơn hàng */}
-              <Form.Item label={t("fuelStorage.columns.receiptType")} className="!mb-0">
+              <Form.Item
+                label={t("fuelStorage.columns.receiptType")}
+                className="!mb-0"
+              >
                 <Input
                   value={
                     selectedReceipt.receipt_supply_id
@@ -556,7 +567,10 @@ const FuelStorageReceiptList = () => {
               </Form.Item>
 
               {/* Kho */}
-              <Form.Item label={t("fuelStorage.columns.storage")}className="!mb-0">
+              <Form.Item
+                label={t("fuelStorage.columns.storage")}
+                className="!mb-0"
+              >
                 <Input
                   value={
                     selectedReceipt.storage_id?.name_storage ||
@@ -566,20 +580,25 @@ const FuelStorageReceiptList = () => {
               </Form.Item>
 
               {/* Đơn giá */}
-              <Form.Item label={t("fuelProvide.price")}className="!mb-0">
+              <Form.Item label={t("fuelProvide.price")} className="!mb-0">
                 <Input
                   value={
                     selectedReceipt.receipt_request_id?.price !== undefined
-                      ? selectedReceipt.receipt_request_id.price.toLocaleString() + " VNĐ"
+                      ? selectedReceipt.receipt_request_id.price.toLocaleString() +
+                        " VNĐ"
                       : selectedReceipt.receipt_supply_id?.price !== undefined
-                        ? selectedReceipt.receipt_supply_id.price.toLocaleString() + " VNĐ"
-                        : t("fuelStorage.noDataShort")
+                      ? selectedReceipt.receipt_supply_id.price.toLocaleString() +
+                        " VNĐ"
+                      : t("fuelStorage.noDataShort")
                   }
                 />
               </Form.Item>
 
               {/* Số lượng */}
-              <Form.Item label={t("fuelStorage.columns.quantity")}className="!mb-0">
+              <Form.Item
+                label={t("fuelStorage.columns.quantity")}
+                className="!mb-0"
+              >
                 <Input
                   value={
                     selectedReceipt.receipt_request_id?.quantity ||
@@ -590,25 +609,33 @@ const FuelStorageReceiptList = () => {
               </Form.Item>
 
               {/* Tổng giá và Trạng thái - cùng hàng trên màn hình lớn */}
-                {/* Thành tiền */}
-                <Form.Item label={t("fuelProvide.totalPrice")} className="!mb-0">
-                  <Input
-                    value={
-                      selectedReceipt.receipt_request_id?.total_price !== undefined
-                        ? selectedReceipt.receipt_request_id.total_price.toLocaleString() + " VNĐ"
-                        : selectedReceipt.receipt_supply_id?.total_price !== undefined
-                          ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() + " VNĐ"
-                          : t("fuelStorage.noDataShort")
-                    }
-                  />
-                </Form.Item>
+              {/* Thành tiền */}
+              <Form.Item label={t("fuelProvide.totalPrice")} className="!mb-0">
+                <Input
+                  value={
+                    selectedReceipt.receipt_request_id?.total_price !==
+                    undefined
+                      ? selectedReceipt.receipt_request_id.total_price.toLocaleString() +
+                        " VNĐ"
+                      : selectedReceipt.receipt_supply_id?.total_price !==
+                        undefined
+                      ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() +
+                        " VNĐ"
+                      : t("fuelStorage.noDataShort")
+                  }
+                />
+              </Form.Item>
 
-                {/* Trạng thái */}
-                {selectedReceipt?.status && (
-                  <Form.Item label={t("fuelStorage.columns.status")} className="!mb-0">
-                    <div className="w-full h-[32px] border border-gray-300 rounded px-2 flex items-center justify-center">
-                      <Tag
-                        color={{
+              {/* Trạng thái */}
+              {selectedReceipt?.status && (
+                <Form.Item
+                  label={t("fuelStorage.columns.status")}
+                  className="!mb-0"
+                >
+                  <div className="w-full h-[32px] border border-gray-300 rounded px-2 flex items-center justify-center">
+                    <Tag
+                      color={
+                        {
                           pending: "gold",
                           processing: "orange",
                           imported: "blue",
@@ -622,24 +649,30 @@ const FuelStorageReceiptList = () => {
                             "Nhập kho thất bại": "importFailed",
                             "Đã huỷ": "cancelled",
                           }[selectedReceipt.status] || "default"
-                        ]}
-                      >
-                        {t(
-                          `status.${{
+                        ]
+                      }
+                    >
+                      {t(
+                        `status.${
+                          {
                             "Chờ duyệt": "pending",
                             "Đang xử lý": "processing",
                             "Nhập kho thành công": "imported",
                             "Nhập kho thất bại": "importFailed",
                             "Đã huỷ": "cancelled",
-                          }[selectedReceipt.status]}`
-                        ) || selectedReceipt.status}
-                      </Tag>
-                    </div>
-                  </Form.Item>
-                )}
+                          }[selectedReceipt.status]
+                        }`
+                      ) || selectedReceipt.status}
+                    </Tag>
+                  </div>
+                </Form.Item>
+              )}
 
               {/* Địa chỉ */}
-              <Form.Item label={t("fuelProvide.address")} className="col-span-1 lg:col-span-2 !mb-0">
+              <Form.Item
+                label={t("fuelProvide.address")}
+                className="col-span-1 lg:col-span-2 !mb-0"
+              >
                 <Input
                   value={
                     selectedReceipt.receipt_request_id?.address ||
@@ -650,32 +683,37 @@ const FuelStorageReceiptList = () => {
               </Form.Item>
 
               {/* Ngày tạo và cập nhật - shared row */}
-              <Form.Item label={t("fuelStorage.columns.createdAt")}className="!mb-0">
+              <Form.Item
+                label={t("fuelStorage.columns.createdAt")}
+                className="!mb-0"
+              >
                 <Input value={converDateString(selectedReceipt.createdAt)} />
               </Form.Item>
-              <Form.Item label={t("fuelStorage.columns.updatedAt")}className="!mb-0">
+              <Form.Item
+                label={t("fuelStorage.columns.updatedAt")}
+                className="!mb-0"
+              >
                 <Input value={converDateString(selectedReceipt.updatedAt)} />
               </Form.Item>
 
               {/* Ghi chú - nếu có */}
               {(selectedReceipt.receipt_request_id?.note ||
                 selectedReceipt.receipt_supply_id?.note) && (
-                  <Form.Item
-                    label={t("fuelStorage.columns.note")}
-                    className="col-span-1 lg:col-span-2 !mb-0"
-                  >
-                    <Input.TextArea
-                      value={
-                        selectedReceipt.receipt_request_id?.note ||
-                        selectedReceipt.receipt_supply_id?.note
-                      }
-                      rows={3}
-                    />
-                  </Form.Item>
-                )}
+                <Form.Item
+                  label={t("fuelStorage.columns.note")}
+                  className="col-span-1 lg:col-span-2 !mb-0"
+                >
+                  <Input.TextArea
+                    value={
+                      selectedReceipt.receipt_request_id?.note ||
+                      selectedReceipt.receipt_supply_id?.note
+                    }
+                    rows={3}
+                  />
+                </Form.Item>
+              )}
             </div>
           </Form>
-
         ) : (
           <p className="text-center text-gray-500">
             {t("fuelStorage.loadingDetails")}
@@ -684,37 +722,33 @@ const FuelStorageReceiptList = () => {
 
         {/* Nút hành động */}
         <div className="flex justify-end gap-3 mt-4">
+          {selectedReceipt?.status === "Chờ duyệt" && (
+            <>
+              <ButtonComponent
+                type="approve-order"
+                onClick={() =>
+                  confirmUpdateStatus(
+                    selectedReceipt?._id,
+                    "Nhập kho thành công"
+                  )
+                }
+                disabled={loading}
+              />
+              <ButtonComponent
+                type="cancel-order"
+                onClick={() =>
+                  confirmUpdateStatus(selectedReceipt?._id, "Đã huỷ")
+                }
+                disabled={loading}
+              />
+            </>
+          )}
           <ButtonComponent
-            type="approve-order"
-            onClick={() =>
-              confirmUpdateStatus(selectedReceipt?._id, "Nhập kho thành công")
-            }
-            disabled={
-              loading ||
-              !selectedReceipt ||
-              ["Đã duyệt", "Nhập kho thành công", "Đã huỷ"].includes(
-                selectedReceipt.status
-              )
-            }
+            type="close"
+            onClick={() => setIsDrawerOpen(false)}
           />
-
-          <ButtonComponent
-            type="cancel-order"
-            onClick={() =>
-              confirmUpdateStatus(selectedReceipt?._id, "Đã huỷ")
-            }
-            disabled={
-              loading ||
-              !selectedReceipt ||
-              ["Đã duyệt", "Nhập kho thành công", "Đã huỷ"].includes(
-                selectedReceipt.status
-              )
-            }
-          />
-          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
         </div>
       </DrawerComponent>
-
     </div>
   );
 };
