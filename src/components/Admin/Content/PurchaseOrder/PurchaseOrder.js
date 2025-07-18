@@ -78,9 +78,12 @@ const HarvestRequestPage = () => {
   };
 
   const disabledEndDate = (current) => {
-    if (!formData.start_received)
+    if (!formData.start_received) {
       return current && current < moment().startOf("day");
-    return current && current < formData.start_received;
+    }
+    return (
+      current && current <= moment(formData.start_received).startOf("minute")
+    );
   };
 
   const disabledDueDate = (current) => {
