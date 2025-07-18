@@ -1034,7 +1034,15 @@
     "lossPercentageRange": "Phần trăm phải từ 0 đến 100",
     "checkFieldsBeforeSubmit": "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận.",
     "vacuumBagRequired": "Vui lòng chọn túi chân không.",
-    "cartonBoxRequired": "Vui lòng chọn thùng carton."
+    "cartonBoxRequired": "Vui lòng chọn thùng carton.",
+    "vacuumBagQtyRequired": "Vui lòng nhập số lượng túi chân không.",
+    "cartonQtyRequired": "Vui lòng nhập số lượng thùng carton.",
+    "vacuumBagAboveLimit": "Không được nhập quá {{max}} túi chân không.",
+    "vacuumBagStockExceeded": "Chỉ còn {{available}} túi chân không trong kho.",
+    "cartonAboveLimit": "Không được nhập quá {{max}} thùng carton.",
+    "cartonStockExceeded": "Chỉ còn {{available}} thùng carton trong kho.",
+    "needSuggestedVacuumBagFirst": "Cần có số túi gợi ý",
+    "needSuggestedCartonFirst": "Cần có số thùng gợi ý"
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1134,7 +1142,12 @@
     "material": "Loại nguyên liệu",
     "selectMaterial": "Chọn loại nguyên liệu",
     "materialRequired": "Vui lòng chọn loại nguyên liệu",
-
+    "enterVacuumBagQty": "Nhập số lượng túi chân không",
+    "enterCartonQty": "Nhập số lượng thùng carton",
+    "warnings": {
+      "vacuumBagBelowRecommended": "Bạn đang nhập ít hơn số túi gợi ý ({{suggested}} túi). Khuyến nghị nên từ {{suggested}} trở lên.",
+      "cartonBelowRecommended": "Bạn đang nhập ít hơn số thùng gợi ý ({{suggested}} thùng). Khuyến nghị nên từ {{suggested}} trở lên."
+    },
     "materialQty": "Số lượng nguyên liệu (kg)",
     "enterMaterialQty": "Nhập số lượng nguyên liệu",
     "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
@@ -1451,13 +1464,15 @@
     "warningEmpty": "Hết nhiên liệu!"
   },
   "createFuel": {
-    "title": "Tạo Loại Nguyên liệu Mới",
+    "title": "Tạo Loại Nguyên Liệu Mới",
     "back": "Quay lại",
+    "viewList": "Xem danh sách nguyên liệu",
+    "nameAlreadyExists": "Tên loại nhiên liệu đã tồn tại!",
     "nameLabel": "Tên loại nguyên liệu",
     "namePlaceholder": "Nhập tên loại nguyên liệu",
     "nameRequired": "Vui lòng nhập tên loại Nguyên liệu",
     "descLabel": "Mô tả",
-    "descPlaceholder": "Nhập mô tả (không bắt buộc)",
+    "descPlaceholder": "Nhập mô tả ( bắt buộc)",
     "imageLabel": "Ảnh loại nguyên liệu (JPG, PNG < 2MB)",
     "imageRequired": "Vui lòng chọn ảnh loại Nguyên liệu",
     "chooseImage": "Chọn ảnh",
@@ -1467,7 +1482,8 @@
     "uploadError": "Lỗi khi đọc ảnh.",
     "createSuccess": "Tạo loại nguyên liệu mới thành công!",
     "createFail": "Tạo nguyên liệu thất bại!",
-    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới."
+    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới.",
+    "descRequired": "Vui lòng nhập mô tả nguyên liệu"
   },
   "fuelList": {
     "title": "Danh Sách Loại Nguyên Liệu",
@@ -1522,9 +1538,9 @@
     }
   },
   "boxList": {
-    "title": "Danh sách vật liệu theo loại",
+    "title": "Danh Sách Vật Liệu Theo Loại",
     "back": "Quay lại",
-    "create": "+ Tạo vật liệu mới",
+    "create": "+ Tạo Vật Liệu Mới",
     "image": "Ảnh",
     "no_image": "Chưa có ảnh",
     "name": "Tên Nguyên Vật Liệu",
@@ -1565,7 +1581,8 @@
       "validate_quantity": "Vui lòng nhập số lượng",
       "update_success": "Cập nhật thành công!",
       "update_fail": "Cập nhật thất bại!",
-      "update_error": "Lỗi khi cập nhật."
+      "update_error": "Lỗi khi cập nhật.",
+      "validate_positive": "Số lượng không được nhỏ hơn 0"
     },
     "sizes": {
       "small": "Size S",
@@ -1575,7 +1592,7 @@
     }
   },
   "packageCategory": {
-    "title": "Danh Sách loại vật Liệu",
+    "title": "Danh Sách Loại Vật Liệu",
     "back": "Quay lại",
     "create": "+ Tạo loại Vật Liệu",
     "name": "Tên Loại Vật Liệu",
@@ -1635,7 +1652,8 @@
     "submit": "Tạo loại Nguyên Vật Liệu",
     "success": "Tạo loại thùng thành công!",
     "fail": "Tạo thất bại!",
-    "error": "Lỗi kết nối đến server!"
+    "error": "Lỗi kết nối đến server!",
+    "name_already_exists": "Tên loại thùng đã tồn tại!"
   },
   "button": {
     "cancel": "Hủy",
@@ -1650,6 +1668,15 @@
   "boxMaterial": {
     "back": "Quay lại",
     "title": "Tạo Nguyên Liệu Mới",
+    "onlyNumber": "Số lượng nguyên liệu không được âm",
+    "namePlaceholder": "Nhập tên vật liệu (ví dụ: Túi 12x19)",
+    "typePlaceholder": "Chọn loại nguyên liệu",
+    "categoryPlaceholder": "Chọn loại bao bì ",
+    "quantityPlaceholder": "Nhập số lượng ",
+    "lengthPlaceholder": "Nhập chiều dài (cm)",
+    "widthPlaceholder": "Nhập chiều rộng (cm)",
+    "heightPlaceholder1": "Nhập chiều cao (cm)",
+    "capacityPlaceholder": "Nhập dung tích cho nguyên liệu ",
     "packageMaterialName": "Tên Nguyên liệu",
     "type": "Loại Nguyên Liệu",
     "selectType": "Vui lòng chọn loại nguyên liệu",

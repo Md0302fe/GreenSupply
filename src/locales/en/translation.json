@@ -1142,7 +1142,12 @@
     "material": "Material type",
     "selectMaterial": "Select material type",
     "materialRequired": "Please select material type",
-
+    "enterVacuumBagQty": "Enter number of vacuum bags",
+    "enterCartonQty": "Enter number of carton boxes",
+    "warnings": {
+    "vacuumBagBelowRecommended": "You entered fewer vacuum bags than recommended ({{suggested}} bags). It's recommended to use at least {{suggested}}.",
+    "cartonBelowRecommended": "You entered fewer carton boxes than recommended ({{suggested}} boxes). It's recommended to use at least {{suggested}}."
+},
     "materialQty": "Material Quantity (Kg)",
     "enterMaterialQty": "Enter material quantity ...",
     "materialQtyRequired": "Please enter material quantity",
@@ -1194,6 +1199,18 @@
       "note_child": "are required. The product quantity will be automatically calculated based on material quantity and loss percentage."
     }
   },
+  "validation": {
+  "vacuumBagQtyRequired": "Please enter the number of vacuum bags.",
+  "cartonQtyRequired": "Please enter the number of carton boxes.",
+  "vacuumBagAboveLimit": "Cannot exceed {{max}} vacuum bags.",
+  "vacuumBagStockExceeded": "Only {{available}} vacuum bags are available in stock.",
+  "cartonAboveLimit": "Cannot exceed {{max}} carton boxes.",
+  "cartonStockExceeded": "Only {{available}} carton boxes are available in stock.",
+  "mustBeGreaterThanZero": "Value must be greater than 0.",
+  "mustBeGreaterThanZero": "Value must be greater than 0.",
+  "needSuggestedVacuumBagFirst": "Suggested vacuum bag quantity required",
+  "needSuggestedCartonFirst": "Suggested carton quantity required"
+},
   "priority": {
     "high": "High",
     "medium": "Medium",
@@ -1460,6 +1477,8 @@
   "createFuel": {
     "title": "Create New Material Type",
     "back": "Go Back",
+    "viewList": "View Materail list",
+    "nameAlreadyExists": "Material type name already exists!",
     "title_description": "Add a new marterial type to the warehouse",
     "detail": "Material Type Details",
     "nameLabel": "Material type name",
@@ -1582,7 +1601,8 @@
       "validate_quantity": "Please enter quantity",
       "update_success": "Updated successfully!",
       "update_fail": "Update failed!",
-      "update_error": "Error updating box."
+      "update_error": "Error updating box.",
+      "validate_positive": "Quantity cannot be less than 0"
     },
     "sizes": {
       "small": "Size S",
@@ -1652,7 +1672,8 @@
     "submit": "Create Material Category",
     "success": "Category created successfully!",
     "fail": "Creation failed!",
-    "error": "Server connection error!"
+    "error": "Server connection error!",
+    "name_already_exists": "Category name already exists!"
   },
   "button": {
     "cancel": "Cancel",
@@ -1667,6 +1688,15 @@
   "boxMaterial": {
     "back": "Back",
     "title": "Create New Material",
+    "onlyNumber": "Quantity must be a non-negative number",
+    "namePlaceholder": "Enter material name (e.g. Bag 12x19)",
+    "typePlaceholder": "Select material type",
+    "categoryPlaceholder": "Select packaging category",
+    "quantityPlaceholder": "Enter quantity",
+    "lengthPlaceholder": "Enter length (cm)",
+    "widthPlaceholder": "Enter width (cm)",
+    "heightPlaceholder1": "Enter height (cm)",
+    "capacityPlaceholder": "Enter capacity for this material",
     "packageMaterialName": "Material Name",
     "type": "Material Type",
     "selectType": "Please select material type",

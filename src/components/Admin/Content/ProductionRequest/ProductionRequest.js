@@ -49,6 +49,12 @@ const ProductionRequest = () => {
     vacuumBag: null,
     carton: null,
   });
+
+  const [userInputPackaging, setUserInputPackaging] = useState({
+    vacuumBag: null,
+    carton: null,
+  });
+
   const [isProductQuantityCalculated, setIsProductQuantityCalculated] =
     useState(false);
   const [productQuantity, setProductQuantity] = useState(0);
@@ -303,8 +309,9 @@ const ProductionRequest = () => {
         : null,
       end_date: values.end_date ? values.end_date.toISOString() : null,
       packaging: {
-        vacuumBag: calculatedPackaging.vacuumBag,
-        carton: calculatedPackaging.carton,
+        vacuumBag:
+          userInputPackaging.vacuumBag ?? calculatedPackaging.vacuumBag,
+        carton: userInputPackaging.carton ?? calculatedPackaging.carton,
         vacuumBagBoxId: selectedPackaging.vacuumBag?._id,
         cartonBoxId: selectedPackaging.carton?._id,
       },
@@ -979,6 +986,175 @@ const ProductionRequest = () => {
                   </div>
                 </div>
               )}
+
+              {/* Vacuum Bag Quantity Inputs */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.enterVacuumBagQty")}
+                  </span>
+                }
+                name="vacuumBag_quantity"
+                rules={[
+                  {
+                    required: true,
+                    message: t("validation.vacuumBagQtyRequired"),
+                  },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: t("validation.mustBeGreaterThanZero"),
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      const suggested = calculatedPackaging.vacuumBag;
+                      const selected = selectedPackaging.vacuumBag;
+
+                      if (value > suggested + 20) {
+                        return Promise.reject(
+                          t("validation.vacuumBagAboveLimit", {
+                            max: suggested + 20,
+                          })
+                        );
+                      }
+
+                      if (selected && value > selected.quantity) {
+                        return Promise.reject(
+                          t("validation.vacuumBagStockExceeded", {
+                            available: selected.quantity,
+                          })
+                        );
+                      }
+
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
+                validateStatus={
+                  form.getFieldValue("vacuumBag_quantity") <
+                  calculatedPackaging.vacuumBag
+                    ? "error"
+                    : undefined
+                }
+                help={
+                  form.getFieldValue("vacuumBag_quantity") <
+                  calculatedPackaging.vacuumBag
+                    ? t(
+                        "productionRequest.warnings.vacuumBagBelowRecommended",
+                        {
+                          suggested: calculatedPackaging.vacuumBag,
+                        }
+                      )
+                    : null
+                }
+              >
+                <InputNumber
+                  min={1}
+                  placeholder={
+                    !calculatedPackaging.vacuumBag
+                      ? t("validation.needSuggestedVacuumBagFirst")
+                      : t("validation.enterVacuumBagQty")
+                  }
+                  className="w-full rounded border-gray-300"
+                  size="large"
+                  disabled={!calculatedPackaging.vacuumBag}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(value) =>
+                    setUserInputPackaging((prev) => ({
+                      ...prev,
+                      vacuumBag: value,
+                    }))
+                  }
+                />
+              </Form.Item>
+
+              {/* Carton Quantity Input */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.enterCartonQty")}
+                  </span>
+                }
+                name="carton_quantity"
+                rules={[
+                  {
+                    required: true,
+                    message: t("validation.cartonQtyRequired"),
+                  },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: t("validation.mustBeGreaterThanZero"),
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      const suggested = calculatedPackaging.carton;
+                      const selected = selectedPackaging.carton;
+
+                      if (value > suggested + 2) {
+                        return Promise.reject(
+                          t("validation.cartonAboveLimit", {
+                            max: suggested + 2,
+                          })
+                        );
+                      }
+
+                      if (selected && value > selected.quantity) {
+                        return Promise.reject(
+                          t("validation.cartonStockExceeded", {
+                            available: selected.quantity,
+                          })
+                        );
+                      }
+
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
+                validateStatus={
+                  form.getFieldValue("carton_quantity") &&
+                  form.getFieldValue("carton_quantity") <
+                    calculatedPackaging.carton
+                    ? "error"
+                    : undefined
+                }
+                help={
+                  form.getFieldValue("carton_quantity") &&
+                  form.getFieldValue("carton_quantity") <
+                    calculatedPackaging.carton
+                    ? t("productionRequest.warnings.cartonBelowRecommended", {
+                        suggested: calculatedPackaging.carton,
+                      })
+                    : null
+                }
+              >
+                <InputNumber
+                  min={1}
+                  placeholder={
+                    !calculatedPackaging.carton
+                      ? t("validation.needSuggestedCartonFirst")
+                      : t("validation.enterCartonQty")
+                  }
+                  className="w-full   rounded border-gray-300"
+                  size="large"
+                  disabled={!calculatedPackaging.carton}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault(); // chặn ký tự khác số
+                    }
+                  }}
+                  onChange={(value) =>
+                    setUserInputPackaging((prev) => ({
+                      ...prev,
+                      carton: value,
+                    }))
+                  }
+                />
+              </Form.Item>
 
               {/* Priority */}
               <Form.Item
