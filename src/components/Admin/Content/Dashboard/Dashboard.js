@@ -16,10 +16,9 @@ import { RiProductHuntLine, RiBarChartGroupedLine } from "react-icons/ri";
 import { RxBarChart } from "react-icons/rx";
 import { FcProcess } from "react-icons/fc";
 
-import * as FuelStorageReceiptService from "../../../../services/FuelStorageReceiptService";
-import * as MaterialStorageExportService from "../../../../services/MaterialStorageExportService";
-import * as RawMaterialBatchServices from "../../../../services/RawMaterialBatch";
-import * as ProductionRequestServices from "../../../../services/ProductionRequestServices";
+import axios from "axios";
+import { getDashboardOverview } from "../../../../services/DashboardService";
+
 
 import {
   PieChart,
@@ -136,95 +135,6 @@ const DashboardComponent = () => {
   );
   const [productionChartData, setProductionChartData] = useState([]);
 
-  useEffect(() => {
-    const fetchTotalExportOrders = async () => {
-      try {
-        // Lấy dữ liệu đơn nhập kho
-        const receiptData =
-          await FuelStorageReceiptService.getTotalFuelStorageReceipts();
-        setTotalReceipts(receiptData.totalReceipts);
-        setDateRange(receiptData.dateRange);
-
-        // Lấy dữ liệu đơn xuất kho
-        const exportData =
-          await MaterialStorageExportService.getTotalMaterialStorageExports();
-        setTotalExports(exportData.totalExports);
-
-        // Lấy dữ liệu lô nguyên liệu
-        const batchData =
-          await RawMaterialBatchServices.getTotalRawMaterialBatches();
-        setTotalBatches(batchData.totalBatches);
-      } catch (error) {
-        console.error("Không thể tải dữ liệu yêu cầu xuất kho:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTotalExportOrders();
-  }, []);
-
-  useEffect(() => {
-    const fetchStockData = async () => {
-      try {
-        // Lấy dữ liệu nhập kho và xuất kho
-        const importData =
-          await FuelStorageReceiptService.getStockImportByDate();
-        const exportDataByDate =
-          await MaterialStorageExportService.getStockImportByDate();
-
-        // Tạo dữ liệu cho biểu đồ
-        const formattedData = importData.map((item) => ({
-          name: item._id, // Ngày
-          NhậpKho: item.totalImports, // Số đơn nhập kho trong ngày
-          XuấtKho: 0, // Ban đầu XuấtKho bằng 0, sẽ cập nhật sau
-          Total: item.totalImports, // Tính tổng NhậpKho và XuấtKho sau
-        }));
-
-        // Cập nhật số lượng xuất kho cho mỗi ngày
-        exportDataByDate.forEach((item) => {
-          const existingItem = formattedData.find(
-            (data) => data.name === item._id
-          );
-          if (existingItem) {
-            existingItem.XuấtKho = item.totalExports; // Cập nhật số đơn xuất kho
-            existingItem.Total += item.totalExports; // Cộng thêm số đơn xuất kho vào tổng
-          } else {
-            // Nếu ngày xuất kho chưa có trong dữ liệu nhập kho, thêm vào
-            formattedData.push({
-              name: item._id,
-              NhậpKho: 0,
-              XuấtKho: item.totalExports,
-              Total: item.totalExports, // Cộng thêm số đơn xuất kho vào tổng
-            });
-          }
-        });
-
-        // Lưu dữ liệu cho biểu đồ
-        setStockData(formattedData);
-
-        // Tính tổng số đơn nhập kho và xuất kho
-        const totalImports = importData.reduce(
-          (acc, item) => acc + item.totalImports,
-          0
-        );
-        const totalExports = exportDataByDate.reduce(
-          (acc, item) => acc + item.totalExports,
-          0
-        );
-
-        setTotalReceipts(totalImports);
-        setTotalExports(totalExports);
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu nhập/xuất kho:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStockData();
-  }, []);
-
   const getMaxValue = (data) => {
     let maxValue = 0;
     data.forEach((item) => {
@@ -232,32 +142,68 @@ const DashboardComponent = () => {
     });
     return maxValue;
   };
+
   const maxYValue = getMaxValue(stockData);
-
   useEffect(() => {
-    const fetchCompletedImportExportData = async () => {
+    const fetchDashboardOverview = async () => {
       try {
-        const importCompletedData =
-          await FuelStorageReceiptService.getStockImportCompletedByDate();
-        const exportCompletedData =
-          await MaterialStorageExportService.getStockExportCompletedByDate();
+        const res = await axios.get("http://localhost:3001/api/dashboard/overview");
 
-        const formattedData = [];
+        const data = res.data.data;
 
-        importCompletedData.forEach((item) => {
-          formattedData.push({
+        // ✅ Nhập kho - xuất kho - lô
+        setTotalReceipts(data.totalReceipts);
+        setTotalExports(data.totalExports);
+        setTotalBatches(data.totalBatches);
+
+        // ✅ Date range
+        setDateRange(data.receiptDateRange); // hoặc ghép cả 3 nếu bạn muốn hiển thị riêng
+
+        // ✅ Biểu đồ đường nhập/xuất kho
+        const stockByDateFormatted = data.stockImportByDate.map((item) => ({
+          name: item._id,
+          NhậpKho: item.totalImports,
+          XuấtKho: 0,
+          Total: item.totalImports,
+        }));
+
+        data.stockExportCompletedByDate.forEach((item) => {
+          const existing = stockByDateFormatted.find((x) => x.name === item._id);
+          if (existing) {
+            existing.XuấtKho = item.totalExports;
+            existing.Total += item.totalExports;
+          } else {
+            stockByDateFormatted.push({
+              name: item._id,
+              NhậpKho: 0,
+              XuấtKho: item.totalExports,
+              Total: item.totalExports,
+            });
+          }
+        });
+
+        setStockData(stockByDateFormatted);
+
+        // ✅ Biểu đồ cột - đã hoàn thành nhập xuất
+        const completedData = [];
+
+        data.stockImportCompletedByDate.forEach((item) => {
+          completedData.push({
             name: item._id,
             NhậpKho: item.totalImports,
             XuấtKho: 0,
           });
         });
+        console.log("✅ completedData:", completedData);
+console.log("✅ stockData:", stockByDateFormatted);
 
-        exportCompletedData.forEach((item) => {
-          const existing = formattedData.find((i) => i.name === item._id);
+
+        data.stockExportCompletedByDate.forEach((item) => {
+          const existing = completedData.find((x) => x.name === item._id);
           if (existing) {
             existing.XuấtKho = item.totalExports;
           } else {
-            formattedData.push({
+            completedData.push({
               name: item._id,
               NhậpKho: 0,
               XuấtKho: item.totalExports,
@@ -266,38 +212,27 @@ const DashboardComponent = () => {
         });
 
         setCompletedImportExportData(
-          formattedData.sort((a, b) => new Date(a.name) - new Date(b.name))
+          completedData.sort((a, b) => new Date(a.name) - new Date(b.name))
         );
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu hoàn thành nhập/xuất kho:", error);
-      }
-    };
 
-    fetchCompletedImportExportData();
-  }, []);
-
-  useEffect(() => {
-    const fetchProductionChartData = async () => {
-      try {
-        const token = JSON.parse(localStorage.getItem("access_token"));
-        const res = await ProductionRequestServices.getProductionChartData({
-          access_token: token,
-        });
-
-        const formatted = res.data.map((item) => ({
+        // ✅ Biểu đồ yêu cầu sản xuất
+        const prodData = data.productionChartData.map((item) => ({
           day: item.date,
           ChờDuyệt: item["Đang sản xuất"] || 0,
           ĐãDuyệt: item["Đã duyệt"] || 0,
         }));
+        setProductionChartData(prodData);
 
-        setProductionChartData(formatted);
-      } catch (error) {
-        console.error("Lỗi khi tải biểu đồ yêu cầu sản xuất:", error);
+      } catch (err) {
+        console.error("Lỗi khi tải tổng quan dashboard:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchProductionChartData();
+    fetchDashboardOverview();
   }, []);
+
 
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
