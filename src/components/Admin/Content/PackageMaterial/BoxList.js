@@ -1,6 +1,7 @@
 // (Phần import giữ nguyên)
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { InputNumber } from "antd";
 import {
   Image,
   Table,
@@ -266,10 +267,10 @@ const BoxList = () => {
               value === "Size S"
                 ? "green"
                 : value === "Size M"
-                  ? "blue"
-                  : value === "Size L"
-                    ? "orange"
-                    : "default"
+                ? "blue"
+                : value === "Size L"
+                ? "orange"
+                : "default"
             }
           >
             {value}
@@ -444,7 +445,9 @@ const BoxList = () => {
             <div className="grid grid-cols-1 gap-0">
               {/* Tên bao bì */}
               <Form.Item
-                label={<span className="!mt-0">{t("boxList.details.name")}</span>}
+                label={
+                  <span className="!mt-0">{t("boxList.details.name")}</span>
+                }
               >
                 <Input value={selectedBox.package_material_name} />
               </Form.Item>
@@ -475,22 +478,25 @@ const BoxList = () => {
                   label={<span className="!mt-0">{t("boxList.capacity")}</span>}
                 >
                   <Input
-                    value={`${selectedBox.capacity} ${selectedBox.type === "túi chân không" ? "g" : "kg"
-                      }`}
+                    value={`${selectedBox.capacity} ${
+                      selectedBox.type === "túi chân không" ? "g" : "kg"
+                    }`}
                   />
                 </Form.Item>
                 <Form.Item
-                  label={<span className="!mt-0">{t("boxList.details.size")}</span>}
+                  label={
+                    <span className="!mt-0">{t("boxList.details.size")}</span>
+                  }
                 >
                   <Input
                     value={
                       selectedBox.size_category === "nhỏ"
                         ? "Size S"
                         : selectedBox.size_category === "trung bình"
-                          ? "Size M"
-                          : selectedBox.size_category === "lớn"
-                            ? "Size L"
-                            : t("boxList.sizes.unknown")
+                        ? "Size M"
+                        : selectedBox.size_category === "lớn"
+                        ? "Size L"
+                        : t("boxList.sizes.unknown")
                     }
                   />
                 </Form.Item>
@@ -499,24 +505,41 @@ const BoxList = () => {
               {/* Ngày tạo và Ngày cập nhật */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <Form.Item
-                  label={<span className="!mt-0">{t("boxList.details.created")}</span>}
+                  label={
+                    <span className="!mt-0">
+                      {t("boxList.details.created")}
+                    </span>
+                  }
                 >
-                  <Input value={new Date(selectedBox.createdAt).toLocaleString()} />
+                  <Input
+                    value={new Date(selectedBox.createdAt).toLocaleString()}
+                  />
                 </Form.Item>
                 <Form.Item
-                  label={<span className="!mt-0">{t("boxList.details.updated")}</span>}
+                  label={
+                    <span className="!mt-0">
+                      {t("boxList.details.updated")}
+                    </span>
+                  }
                 >
-                  <Input value={new Date(selectedBox.updatedAt).toLocaleString()} />
+                  <Input
+                    value={new Date(selectedBox.updatedAt).toLocaleString()}
+                  />
                 </Form.Item>
               </div>
             </div>
           </Form>
         ) : (
-          <p className="text-center text-gray-500">{t("boxList.details.loading")}</p>
+          <p className="text-center text-gray-500">
+            {t("boxList.details.loading")}
+          </p>
         )}
 
         <div className="flex justify-end mt-2">
-          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+          <ButtonComponent
+            type="close"
+            onClick={() => setIsDrawerOpen(false)}
+          />
         </div>
       </Drawer>
 
@@ -548,10 +571,29 @@ const BoxList = () => {
                 required: true,
                 message: t("boxList.update.validate_quantity"),
               },
+              {
+                validator: (_, value) => {
+                  if (value < 0) {
+                    return Promise.reject(
+                      t("boxList.update.validate_positive")
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
-            <Input type="number" min={0} />
+            <Input
+              type="number"
+              min={0}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e") {
+                  e.preventDefault();
+                }
+              }}
+            />
           </Form.Item>
+          
           {/* 
           <Form.Item label="Ảnh mới">
             <Input
@@ -576,13 +618,13 @@ const BoxList = () => {
               fileList={
                 base64Image
                   ? [
-                    {
-                      uid: "-1",
-                      name: "Ảnh đã chọn",
-                      status: "done",
-                      url: base64Image,
-                    },
-                  ]
+                      {
+                        uid: "-1",
+                        name: "Ảnh đã chọn",
+                        status: "done",
+                        url: base64Image,
+                      },
+                    ]
                   : []
               }
               onChange={async ({ fileList }) => {
@@ -603,21 +645,21 @@ const BoxList = () => {
             </Upload>
           </Form.Item>
 
-          {base64Image && (
-            <div style={{ textAlign: "center", marginBottom: 16 }}>
-              <Image
-                src={base64Image}
-                alt="preview"
-                width={100}
-                style={{ objectFit: "cover", borderRadius: 4 }}
-              />
-              <p>{t("boxList.update.preview")}</p>
-            </div>
-          )}
-
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <Image
+              src={base64Image || selectedBox?.package_img}
+              alt="preview"
+              width={100}
+              style={{ objectFit: "cover", borderRadius: 4 }}
+              fallback="https://via.placeholder.com/100"
+            />
+          </div>
           <div className="flex justify-end gap-3">
             <ButtonComponent type="update" htmlType="submit" />
-            <ButtonComponent type="close" onClick={() => setIsEditDrawerOpen(false)} />
+            <ButtonComponent
+              type="close"
+              onClick={() => setIsEditDrawerOpen(false)}
+            />
           </div>
         </Form>
       </Drawer>

@@ -153,6 +153,7 @@ const FuelList = () => {
     fetchFuels();
   }, []);
 
+  
   // Handle Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -544,12 +545,15 @@ const FuelList = () => {
             />
             <Input
               value={updateData.quantity}
-              type="number"
-              onChange={(e) =>
-                setUpdateData({ ...updateData, quantity: e.target.value })
-              }
-              placeholder={t("fuelList.form.placeholder_quantity")}
-              className="mb-2"
+               inputMode="numeric"
+              min={1} 
+              onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+               // Chỉ cho phép số không âm
+               setUpdateData({ ...updateData, quantity: value });
+                }
+              }}
             />
             <div className="flex justify-end mt-2">
               <Space>
