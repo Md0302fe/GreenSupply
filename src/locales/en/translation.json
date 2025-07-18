@@ -137,7 +137,10 @@
     "notEnded": "Not yet ended",
     "note": "Note",
     "createdAt": "Created At",
-    "loading": "Loading data..."
+    "loading": "Loading data...",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -662,11 +665,11 @@
       "quantity_placeholder": "Enter quantity...",
       "price": "Price per Kg / Unit (VND)",
       "price_placeholder": "Enter price...",
-      "start_date":"Start date",
+      "start_date": "Start date",
       "start_date_placeholder": "Select start date",
-      "end_date":"End date",
+      "end_date": "End date",
       "end_date_placeholder": "Select end date",
-      "due_date":"Due date",
+      "due_date": "Due date",
       "due_date_placeholder": "Select due date",
       "priority": "Priority level",
       "priority_placeholder": "Select priority",
@@ -1073,7 +1076,13 @@
     "requestNotFound": "Production plan not found!",
     "loadRequestError": "Failed to load production plans.",
     "loadBatchError": "Failed to load material batches!",
-    "batchPreparingWarning": "There is a batch currently in 'Preparing' status. Please wait before creating the production process."
+    "batchPreparingWarning": "There is a batch currently in 'Preparing' status. Please wait before creating the production process.",
+    "update_success": "Update successful!",
+    "update_fail": "Update failed. Please try again.",
+    "update_error": "An error occurred during the update. Please try again.",
+    "delete_success": "Delete successful!",
+    "delete_fail": "Delete failed. Please try again.",
+    "delete_error": "An error occurred during the delete operation. Please try again."
   },
   "materialExport": {
     "detail": "Warehouse Export Details",
@@ -1145,14 +1154,13 @@
     "enterVacuumBagQty": "Enter number of vacuum bags",
     "enterCartonQty": "Enter number of carton boxes",
     "warnings": {
-    "vacuumBagBelowRecommended": "You entered fewer vacuum bags than recommended ({{suggested}} bags). It's recommended to use at least {{suggested}}.",
-    "cartonBelowRecommended": "You entered fewer carton boxes than recommended ({{suggested}} boxes). It's recommended to use at least {{suggested}}."
-},
+      "vacuumBagBelowRecommended": "You entered fewer vacuum bags than recommended ({{suggested}} bags). It's recommended to use at least {{suggested}}.",
+      "cartonBelowRecommended": "You entered fewer carton boxes than recommended ({{suggested}} boxes). It's recommended to use at least {{suggested}}."
+    },
     "materialQty": "Material Quantity (Kg)",
     "enterMaterialQty": "Enter material quantity ...",
     "materialQtyRequired": "Please enter material quantity",
     "materialNumRequired": "Must be greater than 0",
-
 
     "loss": "Loss Percentage (%)",
     "enterLoss": "Enter loss percentage ...",
@@ -1180,12 +1188,10 @@
     "selectCartonBox": "Please select Carton Box",
     "needProductQtyFirst": "Calculate product quantity first",
 
-    
     "suggestedTitle": "Packaging Requirements:",
     "vacuumNeed": "• Vacuum bags needed:",
     "cartonBoxNeed": "• Carton boxes needed:",
     "units": "units",
-
 
     "suggestedVacuumBags": "Suggested vacuum bags: {{count}} bags",
     "suggestedCartons": "Suggested carton boxes: {{count}} boxes",
@@ -1200,17 +1206,17 @@
     }
   },
   "validation": {
-  "vacuumBagQtyRequired": "Please enter the number of vacuum bags.",
-  "cartonQtyRequired": "Please enter the number of carton boxes.",
-  "vacuumBagAboveLimit": "Cannot exceed {{max}} vacuum bags.",
-  "vacuumBagStockExceeded": "Only {{available}} vacuum bags are available in stock.",
-  "cartonAboveLimit": "Cannot exceed {{max}} carton boxes.",
-  "cartonStockExceeded": "Only {{available}} carton boxes are available in stock.",
-  "mustBeGreaterThanZero": "Value must be greater than 0.",
-  "mustBeGreaterThanZero": "Value must be greater than 0.",
-  "needSuggestedVacuumBagFirst": "Suggested vacuum bag quantity required",
-  "needSuggestedCartonFirst": "Suggested carton quantity required"
-},
+    "vacuumBagQtyRequired": "Please enter the number of vacuum bags.",
+    "cartonQtyRequired": "Please enter the number of carton boxes.",
+    "vacuumBagAboveLimit": "Cannot exceed {{max}} vacuum bags.",
+    "vacuumBagStockExceeded": "Only {{available}} vacuum bags are available in stock.",
+    "cartonAboveLimit": "Cannot exceed {{max}} carton boxes.",
+    "cartonStockExceeded": "Only {{available}} carton boxes are available in stock.",
+    "mustBeGreaterThanZero": "Value must be greater than 0.",
+    "mustBeGreaterThanZero": "Value must be greater than 0.",
+    "needSuggestedVacuumBagFirst": "Suggested vacuum bag quantity required",
+    "needSuggestedCartonFirst": "Suggested carton quantity required"
+  },
   "priority": {
     "high": "High",
     "medium": "Medium",
@@ -1690,7 +1696,7 @@
     "title": "Create New Material",
     "onlyNumber": "Quantity must be a non-negative number",
     "namePlaceholder": "Enter material name (e.g. Bag 12x19)",
-     "negativeCapacityError": "Capacity cannot be a negative number",
+    "negativeCapacityError": "Capacity cannot be a negative number",
     "typePlaceholder": "Select material type",
     "categoryPlaceholder": "Select packaging category",
     "quantityPlaceholder": "Enter quantity",

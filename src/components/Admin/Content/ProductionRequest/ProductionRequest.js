@@ -686,20 +686,17 @@ const ProductionRequest = () => {
         {/* Header Section */}
         <div className="mb-4">
           <div className="text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
               {t("productionRequest.title")}
             </h1>
-            <p className="text-gray-600 text-lg">
-              {t("productionRequest.title_desc")}
-            </p>
           </div>
         </div>
 
         {/* Main Form Card */}
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                 <Presentation className="h-4 w-4 text-white" />
               </div>

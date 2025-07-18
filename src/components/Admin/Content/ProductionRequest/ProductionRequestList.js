@@ -87,7 +87,6 @@ const ProductionRequestList = () => {
     }
   }, [selectedRequest, isEditMode, form]);
 
-
   const navigate = useNavigate();
 
   // Search
@@ -152,17 +151,17 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.updateProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success(t("message.update_success"));
+        message.success(t("messages.update_success"));
         refetchRequests();
         setIsEditMode(false);
         setIsDrawerOpen(false);
       } else {
-        message.error(t("message.update_fail"));
+        message.error(t("messages.update_fail"));
       }
     },
     onError: (err) => {
       console.log("Update error:", err);
-      message.error(t("message.update_error"));
+      message.error(t("messages.update_error"));
     },
   });
 
@@ -171,15 +170,15 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.deleteProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success(t("message.delete_success"));
+        message.success(t("messages.delete_success"));
         refetchRequests(); // gọi lại để cập nhật danh sách
       } else {
-        message.error(t("message.delete_fail"));
+        message.error(t("messages.delete_fail"));
       }
     },
     onError: (err) => {
       console.log("Delete error:", err);
-      message.error(t("message.delete_error"));
+      message.error(t("messages.delete_error"));
     },
   });
 
@@ -511,7 +510,6 @@ const ProductionRequestList = () => {
             }}
           />
         </div>
-
       ),
     },
   ];
@@ -619,7 +617,7 @@ const ProductionRequestList = () => {
       </Loading>
 
       <DrawerComponent
-        title={t("drawer.detail_title")}
+        title={isEditMode ? t("form.update_title") : t("drawer.detail_title")}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
@@ -630,7 +628,10 @@ const ProductionRequestList = () => {
           <Form layout="vertical">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Tên đơn - hàng riêng */}
-              <Form.Item label={t("form.request_name")} className="!mb-0 lg:col-span-2">
+              <Form.Item
+                label={t("form.request_name")}
+                className="!mb-0 lg:col-span-2"
+              >
                 <Input value={selectedRequest.request_name} disabled />
               </Form.Item>
 
@@ -640,23 +641,34 @@ const ProductionRequestList = () => {
               </Form.Item>
               <Form.Item label={t("form.status")} className="!mb-0">
                 <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center">
-                  <Tag color={statusColors[selectedRequest.status] || "default"}>
+                  <Tag
+                    color={statusColors[selectedRequest.status] || "default"}
+                  >
                     {t(`status.${statusMap[selectedRequest.status]}`)}
                   </Tag>
                 </div>
               </Form.Item>
 
               {/* Nguyên liệu - hàng riêng */}
-              <Form.Item label={t("form.material")} className="!mb-0 lg:col-span-2">
+              <Form.Item
+                label={t("form.material")}
+                className="!mb-0 lg:col-span-2"
+              >
                 <Input value={selectedRequest.material} disabled />
               </Form.Item>
 
               {/* Thành phẩm + Nguyên liệu */}
               <Form.Item label={t("form.product_quantity")} className="!mb-0">
-                <Input value={`${selectedRequest.product_quantity} Kg`} disabled />
+                <Input
+                  value={`${selectedRequest.product_quantity} Kg`}
+                  disabled
+                />
               </Form.Item>
               <Form.Item label={t("form.material_quantity")} className="!mb-0">
-                <Input value={`${selectedRequest.material_quantity} Kg`} disabled />
+                <Input
+                  value={`${selectedRequest.material_quantity} Kg`}
+                  disabled
+                />
               </Form.Item>
 
               {/* Hao hụt + Ưu tiên */}
@@ -669,16 +681,29 @@ const ProductionRequestList = () => {
 
               {/* Ngày sản xuất + Ngày kết thúc */}
               <Form.Item label={t("form.production_date")} className="!mb-0">
-                <Input value={convertDateStringV1(selectedRequest.production_date)} disabled />
+                <Input
+                  value={convertDateStringV1(selectedRequest.production_date)}
+                  disabled
+                />
               </Form.Item>
               <Form.Item label={t("form.end_date")} className="!mb-0">
-                <Input value={convertDateStringV1(selectedRequest.end_date)} disabled />
+                <Input
+                  value={convertDateStringV1(selectedRequest.end_date)}
+                  disabled
+                />
               </Form.Item>
 
               {/* Ghi chú nếu có */}
               {selectedRequest.note && (
-                <Form.Item label={t("form.note")} className="lg:col-span-2 !mb-0">
-                  <Input.TextArea value={selectedRequest.note} rows={3} disabled />
+                <Form.Item
+                  label={t("form.note")}
+                  className="lg:col-span-2 !mb-0"
+                >
+                  <Input.TextArea
+                    value={selectedRequest.note}
+                    rows={3}
+                    disabled
+                  />
                 </Form.Item>
               )}
             </div>
@@ -691,10 +716,12 @@ const ProductionRequestList = () => {
                   onClick={() => handleApprove(selectedRequest)}
                 />
               )}
-              <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+              <ButtonComponent
+                type="close"
+                onClick={() => setIsDrawerOpen(false)}
+              />
             </div>
           </Form>
-
         )}
 
         {/* Chế độ CHỈNH SỬA */}
@@ -707,18 +734,6 @@ const ProductionRequestList = () => {
               boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
             }}
           >
-            <h2
-              style={{
-                marginBottom: "16px",
-                fontSize: "18px",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                color: "#333",
-              }}
-            >
-              {t("form.update_title")}
-            </h2>
-
             <Form form={form} layout="vertical">
               {/* Tên đơn (bắt buộc) */}
               <Form.Item
@@ -733,7 +748,7 @@ const ProductionRequestList = () => {
 
               {/* Loại đơn: có thể cho sửa nếu muốn */}
               <Form.Item label={t("form.request_type")} name="request_type">
-                <Input />
+                <Input disabled />
               </Form.Item>
 
               {/* Chọn Nguyên liệu */}
@@ -742,10 +757,7 @@ const ProductionRequestList = () => {
                 name="material"
                 rules={[{ required: true, message: t("validate.material") }]}
               >
-                <Select
-                  placeholder={t("placeholder.select_material")}
-                  onChange={handleFuelChange}
-                >
+                <Select placeholder={t("placeholder.select_material")} disabled>
                   {fuelTypes.map((fuel) => (
                     <Select.Option key={fuel._id} value={fuel._id}>
                       {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg)
@@ -781,14 +793,16 @@ const ProductionRequestList = () => {
               <Form.Item
                 label={t("form.loss_percentage")}
                 name="loss_percentage"
-                rules={[{ required: true, message: t("validate.loss_percentage") }]}
+                rules={[
+                  { required: true, message: t("validate.loss_percentage") },
+                ]}
               >
                 <InputNumber
                   className="w-full"
                   min={0}
                   max={100}
                   formatter={(value) => `${value}%`}
-                  parser={(value) => value.replace('%', '')}
+                  parser={(value) => value.replace("%", "")}
                 />
               </Form.Item>
 
@@ -798,12 +812,12 @@ const ProductionRequestList = () => {
                 name="priority"
                 rules={[{ required: true, message: t("validate.priority") }]}
               >
-                <InputNumber
-                  className="w-full"
-                  min={1}
-                  max={10}
-                  step={1}
-                />
+                <Select className="w-full">
+                  {/* Mặc định truyền vào giá trị là 1, 2, 3 nhưng hiển thị là "Thấp", "Trung bình", "Cao" */}
+                  <Select.Option value={3}>{t("common.high")}</Select.Option>
+                  <Select.Option value={2}>{t("common.medium")}</Select.Option>
+                  <Select.Option value={1}>{t("common.low")}</Select.Option>
+                </Select>
               </Form.Item>
 
               {/* Ngày sản xuất -> DatePicker */}
