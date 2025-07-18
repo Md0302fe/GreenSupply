@@ -1669,6 +1669,7 @@
     "back": "Quay lại",
     "title": "Tạo Nguyên Liệu Mới",
     "onlyNumber": "Số lượng nguyên liệu không được âm",
+    "negativeCapacityError": "Dung tích không thể là số âm",
     "namePlaceholder": "Nhập tên vật liệu (ví dụ: Túi 12x19)",
     "typePlaceholder": "Chọn loại nguyên liệu",
     "categoryPlaceholder": "Chọn loại bao bì ",
