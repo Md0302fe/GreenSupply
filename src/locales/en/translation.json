@@ -1690,6 +1690,7 @@
     "title": "Create New Material",
     "onlyNumber": "Quantity must be a non-negative number",
     "namePlaceholder": "Enter material name (e.g. Bag 12x19)",
+     "negativeCapacityError": "Capacity cannot be a negative number",
     "typePlaceholder": "Select material type",
     "categoryPlaceholder": "Select packaging category",
     "quantityPlaceholder": "Enter quantity",
