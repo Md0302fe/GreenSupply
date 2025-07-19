@@ -1799,7 +1799,9 @@
     "noNote": "No note",
     "unknown": "Unknown",
     "loading": "Loading...",
-    "close": "Close"
+    "close": "Close",
+    "selectMaterialType": "Select material type"
+
   },
   "userDashboard": {
     "title": "User Management Dashboard",

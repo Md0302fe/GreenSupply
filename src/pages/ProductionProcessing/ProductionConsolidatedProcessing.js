@@ -42,7 +42,8 @@ const ProductionProcessForm = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const startTime = Form.useWatch("start_time", form);
   const [numberOfPreparingBatch, setNumberOfPreparingBatch] = useState(0);
-
+  const [materialTypes, setMaterialTypes] = useState([]);
+  const [selectedMaterialType, setSelectedMaterialType] = useState(null);
   const prevCheckRef = useRef([]);
 
   const { id: requestIdFromURL } = useParams();
@@ -65,7 +66,16 @@ const ProductionProcessForm = () => {
           user?.access_token
         );
         setRequests(productionRequestData);
-
+        const uniqueTypes = Array.from(
+          new Set(
+            productionRequestData.map(
+              (r) => r.material?.fuel_type_id?.type_name
+            )
+          )
+        );
+        setMaterialTypes(uniqueTypes);
+        setSelectedMaterialType(uniqueTypes[0] || null);
+        console.log("materialTypes", materialTypes);
         // Nếu có id truyền vào từ URL, set sẵn vào form + load batch
         if (requestIdFromURL) {
           const matched = productionRequestData.find(
@@ -100,6 +110,12 @@ const ProductionProcessForm = () => {
     if (!start) return current && current < dayjs().startOf("day");
     return current && current.isBefore(start, "minute");
   };
+
+  const filteredRequests = selectedMaterialType
+    ? requests.filter(
+        (r) => r.material?.fuel_type_id?.type_name === selectedMaterialType
+      )
+    : [];
   const onFinish = async (values) => {
     const payload = {
       ...values,
@@ -315,6 +331,32 @@ const ProductionProcessForm = () => {
             {/* Cột trái: Kế hoạch sản xuất */}
             <div className="mb-0 lg:mb-4">
               <Form.Item
+                label={t("createConsolidatedProcess.selectMaterialType")}
+                required
+              >
+                <select
+                  value={selectedMaterialType || ""}
+                  onChange={(e) => {
+                    setSelectedMaterialType(e.target.value);
+                    form.setFieldsValue({ production_request_id: [] });
+                    prevCheckRef.current = [];
+                    setBatchs([]);
+                    setConsolidated({
+                      total_raw_material: 0,
+                      total_loss_percentage: 0,
+                      total_finish_product: 0,
+                    });
+                  }}
+                  className="border rounded px-2 py-1 w-full"
+                >
+                  {materialTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </Form.Item>
+              <Form.Item
                 name="production_request_id"
                 label={t("createConsolidatedProcess.selectPlans")}
                 rules={[
@@ -326,7 +368,7 @@ const ProductionProcessForm = () => {
               >
                 <Checkbox.Group
                   className="flex flex-col flex-nowrap space-y-2 max-h-64 overflow-y-auto rounded-lg border border-black border-solid p-2"
-                  options={requests.map((r) => ({
+                  options={filteredRequests.map((r) => ({
                     label: r.request_name,
                     value: r._id,
                   }))}

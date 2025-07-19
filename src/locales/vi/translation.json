@@ -1782,7 +1782,9 @@
     "noNote": "Không có",
     "unknown": "Không rõ",
     "loading": "Đang tải...",
-    "close": "Đóng"
+    "close": "Đóng",
+    "selectMaterialType": "Chọn loại nguyên liệu"
+
   },
   "userDashboard": {
     "title": "Dashboard Quản Lý Người Dùng",
