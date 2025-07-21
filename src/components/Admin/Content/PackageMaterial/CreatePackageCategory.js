@@ -12,37 +12,49 @@ const CreatePackageCategory = () => {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
-  const onFinish = async (values) => {
-    try {
-      setLoading(true);
-      const payload = {
-        categories_name: values.name,
-        Descriptions: values.description || "Không có mô tả",
-      };
+ const onFinish = async (values) => {
+  try {
+    setLoading(true);
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/package-material/box-categories`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`,
-          },
-        }
-      );
+    const payload = {
+      categories_name: values.name.trim(),
+      Descriptions: values.description?.trim() || "Không có mô tả",
+    };
 
-      if (res.data.success) {
-        message.success(t("createPackageCategory.success"));
-        form.resetFields();
-        navigate(-1);
-      } else {
-        message.error(t("createPackageCategory.fail"));
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/package-material/box-categories`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+        },
       }
-    } catch (err) {
-      message.error(t("createPackageCategory.error"));
-    } finally {
-      setLoading(false);
+    );
+
+    if (res.data.success) {
+      message.success(t("createPackageCategory.success"));
+      form.resetFields();
+      navigate(-1);
+    } else {
+      message.error(t("createPackageCategory.fail"));
     }
-  };
+  } catch (err) {
+    if (err.response?.data?.message === "DUPLICATE_CATEGORY_NAME") {
+      form.setFields([
+        {
+          name: "name",
+          errors: [t("createPackageCategory.name_already_exists")],
+        },
+      ]);
+    } else {
+      console.error("Lỗi tạo loại thùng:", err);
+      message.error(t("createPackageCategory.error"));
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">

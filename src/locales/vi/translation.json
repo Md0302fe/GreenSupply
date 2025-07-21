@@ -134,7 +134,10 @@
     "notEnded": "Chưa kết thúc",
     "note": "Ghi chú",
     "createdAt": "Ngày tạo",
-    "loading": "Đang tải dữ liệu..."
+    "loading": "Đang tải dữ liệu...",
+    "high": "Cao",
+    "medium": "Trung bình",
+    "low": "Thấp"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -453,7 +456,7 @@
     },
     "create": {
       "title": "Tạo yêu cầu cung cấp",
-      "description": "Tạo yêu cầu cung cấp nguyên liệu mới" 
+      "description": "Tạo yêu cầu cung cấp nguyên liệu mới"
     },
     "manage": {
       "title": "Danh sách yêu cầu cung cấp",
@@ -638,41 +641,41 @@
     "required_role": "Vui lòng chọn vai trò!"
   },
   "harvest": {
-  "back": "Quay lại",
-  "title": "Đơn Yêu Cầu Cung Cấp Nguyên Liệu",
-  "title_description": "Điền đầy đủ thông tin để tạo đơn yêu cầu cung cấp nguyên liệu mới",
-  "detail": "Chi tiết đơn yêu cầu",
-  "form": {
-    "name": "Tên đơn",
-    "name_placeholder": "Nhập tên đơn yêu cầu...",
-    "fuel_type": "Loại nguyên liệu",
-    "fuel_type_placeholder": "Chọn loại nguyên liệu",
-    "no_data": "Không có dữ liệu",
-    "image": "Hình ảnh nguyên liệu",
-    "image_placeholder": "Nhấn hoặc kéo tệp vào để tải lên",
-    "image_description": "Hỗ trợ PNG, JPG, JPEG dung lượng tối đa 10MB",
-    "quantity": "Tổng số lượng cần thu (Kg)",
-    "quantity_placeholder": "Nhập số lượng...",
-    "price": "Giá trên mỗi Kg / Đơn vị (VND)",
-    "price_placeholder": "Nhập giá...",
-    "start_date": "Ngày bắt đầu",
-    "start_date_placeholder": "Chọn ngày bắt đầu nhận đơn",
-    "end_date": "Ngày kết thúc",
-    "end_date_placeholder": "Chọn ngày kết thúc",
-    "due_date": "Hạn chót",
-    "due_date_placeholder": "Chọn hạn chót hoàn thành",
-    "priority": "Mức độ ưu tiên",
-    "priority_placeholder": "Chọn mức độ ưu tiên",
-    "note": "Ghi chú",
-    "note_placeholder": "Nhập ghi chú hoặc yêu cầu bổ sung...",
-    "total_price": "Tổng giá"
-  },
-  "note_require": {
-    "note": "Lưu ý:",
-    "note_parent": "Các trường có dấu",
-    "note_child": "là bắt buộc. Vui lòng đảm bảo mọi thông tin là chính xác trước khi gửi yêu cầu."
-  },
-  "viewList": "Yêu cầu cung cấp",
+    "back": "Quay lại",
+    "title": "Lập Kế Hoạch Cung Cấp Nguyên Liệu",
+    "title_description": "Điền đầy đủ thông tin để tạo đơn yêu cầu cung cấp nguyên liệu mới",
+    "detail": "Chi tiết đơn yêu cầu",
+    "form": {
+      "name": "Tên đơn",
+      "name_placeholder": "Nhập tên đơn yêu cầu...",
+      "fuel_type": "Loại nguyên liệu",
+      "fuel_type_placeholder": "Chọn loại nguyên liệu",
+      "no_data": "Không có dữ liệu",
+      "image": "Hình ảnh nguyên liệu",
+      "image_placeholder": "Nhấn hoặc kéo tệp vào để tải lên",
+      "image_description": "Hỗ trợ PNG, JPG, JPEG dung lượng tối đa 10MB",
+      "quantity": "Tổng số lượng cần thu (Kg)",
+      "quantity_placeholder": "Nhập số lượng...",
+      "price": "Giá trên mỗi Kg / Đơn vị (VND)",
+      "price_placeholder": "Nhập giá...",
+      "start_date": "Ngày bắt đầu",
+      "start_date_placeholder": "Chọn ngày bắt đầu nhận đơn",
+      "end_date": "Ngày kết thúc",
+      "end_date_placeholder": "Chọn ngày kết thúc",
+      "due_date": "Hạn chót",
+      "due_date_placeholder": "Chọn hạn chót hoàn thành",
+      "priority": "Mức độ ưu tiên",
+      "priority_placeholder": "Chọn mức độ ưu tiên",
+      "note": "Ghi chú",
+      "note_placeholder": "Nhập ghi chú hoặc yêu cầu bổ sung...",
+      "total_price": "Tổng giá"
+    },
+    "note_require": {
+      "note": "Lưu ý:",
+      "note_parent": "Các trường có dấu",
+      "note_child": "là bắt buộc. Vui lòng đảm bảo mọi thông tin là chính xác trước khi gửi yêu cầu."
+    },
+    "viewList": "Yêu cầu cung cấp",
     "priority": {
       "high": "Cao",
       "medium": "Trung bình",
@@ -1034,7 +1037,15 @@
     "lossPercentageRange": "Phần trăm phải từ 0 đến 100",
     "checkFieldsBeforeSubmit": "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận.",
     "vacuumBagRequired": "Vui lòng chọn túi chân không.",
-    "cartonBoxRequired": "Vui lòng chọn thùng carton."
+    "cartonBoxRequired": "Vui lòng chọn thùng carton.",
+    "vacuumBagQtyRequired": "Vui lòng nhập số lượng túi chân không.",
+    "cartonQtyRequired": "Vui lòng nhập số lượng thùng carton.",
+    "vacuumBagAboveLimit": "Không được nhập quá {{max}} túi chân không.",
+    "vacuumBagStockExceeded": "Chỉ còn {{available}} túi chân không trong kho.",
+    "cartonAboveLimit": "Không được nhập quá {{max}} thùng carton.",
+    "cartonStockExceeded": "Chỉ còn {{available}} thùng carton trong kho.",
+    "needSuggestedVacuumBagFirst": "Cần có số túi gợi ý",
+    "needSuggestedCartonFirst": "Cần có số thùng gợi ý"
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1065,31 +1076,37 @@
     "loadRequestError": "Không thể tải danh sách Kế hoạch sản xuất.",
     "loadBatchError": "Không thể tải danh sách lô nguyên liệu!",
     "batchPreparingWarning": "Có lô nguyên liệu đang trong trạng thái 'Đang chuẩn bị'. Vui lòng chờ trước khi tạo quy trình sản xuất.",
-    "createFail": "Tạo đơn thất bại!"
+    "createFail": "Tạo đơn thất bại!",
+    "update_success": "Cập nhật thành công!",
+    "update_fail": "Cập nhật thất bại. Vui lòng thử lại.",
+    "update_error": "Có lỗi xảy ra khi cập nhật. Vui lòng thử lại.",
+    "delete_success": "Xóa thành công!",
+    "delete_fail": "Xóa thất bại. Vui lòng thử lại.",
+    "delete_error": "Có lỗi xảy ra khi xóa. Vui lòng thử lại."
   },
   "materialExport": {
-  "detail": "Chi tiết yêu cầu xuất kho",
-  "title": "Tạo Yêu Cầu Xuất Kho",
-  "title_description": "Điền thông tin để tạo một yêu cầu xuất kho mới",
-  "createdBy": "Người tạo yêu cầu:",
-  "selectBatch": "Chọn lô nguyên liệu",
-  "selectBatchPlaceholder": "Chọn lô nguyên liệu",
-  "selectProduction": "Chọn đơn sản xuất",
-  "selectProductionPlaceholder": "Chọn đơn sản xuất",
-  "exportName": "Tên đơn xuất kho",
-  "exportNamePlaceholder": "Nhập tên đơn xuất kho",
-  "exportType": "Loại đơn",
-  "productionType": "Đơn sản xuất",
-  "note": "Ghi chú bổ sung",
-  "notePlaceholder": "Nhập ghi chú hoặc yêu cầu khác",
-  "create_btn": "Tạo Yêu Cầu Xuất Kho",
-  "note_require": {
-    "note": "Lưu ý:",
-    "note_parent": "Các trường có dấu",
-    "note_child": "là bắt buộc. Đơn sản xuất sẽ được chọn tự động dựa trên lô nguyên liệu đã chọn."
-  },
+    "detail": "Chi tiết yêu cầu xuất kho",
+    "title": "Tạo Yêu Cầu Xuất Kho",
+    "title_description": "Điền thông tin để tạo một yêu cầu xuất kho mới",
+    "createdBy": "Người tạo yêu cầu:",
+    "selectBatch": "Chọn lô nguyên liệu",
+    "selectBatchPlaceholder": "Chọn lô nguyên liệu",
+    "selectProduction": "Chọn đơn sản xuất",
+    "selectProductionPlaceholder": "Chọn đơn sản xuất",
+    "exportName": "Mã đơn xuất kho",
+    "exportNamePlaceholder": "Nhập tên đơn xuất kho",
+    "exportType": "Loại đơn",
+    "productionType": "Đơn sản xuất",
+    "note": "Ghi chú bổ sung",
+    "notePlaceholder": "Nhập ghi chú hoặc yêu cầu khác",
+    "create_btn": "Tạo Yêu Cầu Xuất Kho",
+    "note_require": {
+      "note": "Lưu ý:",
+      "note_parent": "Các trường có dấu",
+      "note_child": "là bắt buộc. Đơn sản xuất sẽ được chọn tự động dựa trên lô nguyên liệu đã chọn."
+    },
     "viewList": "Danh sách xuất kho"
-},
+  },
   "materialExportList": {
     "title": "Danh sách yêu cầu xuất kho",
     "exportType": "Loại xuất kho",
@@ -1100,7 +1117,7 @@
     "createdBy": "Người tạo đơn",
     "batchName": "Tên lô",
     "batchId": "Mã lô",
-    "exportName": "Tên xuất kho",
+    "exportName": "Mã xuất kho",
     "createdDate": "Ngày tạo đơn",
     "note": "Ghi chú"
   },
@@ -1125,64 +1142,69 @@
     "chartTitle": "Biểu đồ trạng thái quy trình"
   },
   "productionRequest": {
-  "title": "Lập kế hoạch sản xuất",
-  "title_desc": "Lập kế hoạch và lịch trình cho yêu cầu sản xuất",
-  "detail": "Chi tiết kế hoạch sản xuất",
-  "planList": "Danh sách kế hoạch",
-  "name": "Tên kế hoạch",
-  "namePlaceholder": "Nhập tên kế hoạch",
-  "material": "Loại nguyên liệu",
-  "selectMaterial": "Chọn loại nguyên liệu",
-  "materialRequired": "Vui lòng chọn loại nguyên liệu",
-  
-  "materialQty": "Số lượng nguyên liệu (kg)",
-  "enterMaterialQty": "Nhập số lượng nguyên liệu",
-  "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
-  "materialNumRequired": "Phải lớn hơn 0",
-  
-  "loss": "Tỷ lệ hao hụt (%)",
-  "enterLoss": "Nhập tỷ lệ hao hụt",
-  "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
-  "lossMinMax": "Phải nằm trong khoảng từ 0-100%",
-  
-  "productQty": "Sản lượng thành phẩm ước tính (kg)",
-  
-  "priority": "Mức độ ưu tiên",
-  "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
-  "selectPriority": "Chọn mức độ ưu tiên",
-  
-  "productionDate": "Ngày sản xuất",
-  "productionDateRequired": "Vui lòng chọn ngày sản xuất",
-  "selectProductionDate": "Chọn ngày sản xuất",
-  
-  "endDate": "Ngày kết thúc",
-  "endDateRequired": "Vui lòng chọn ngày kết thúc",
-  "selectEndDate": "Chọn ngày kết thúc",
-  "productionDateFirst": "Chọn ngày sản xuất trước",
-  
-  "note": "Ghi chú",
-  "enterNote": "Nhập ghi chú (nếu có)",
-  "selectVacuumBag": "Vui lòng chọn túi chân không",
-  "selectCartonBox": "Vui lòng chọn thùng carton",
-  "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
-  
-  "suggestedTitle": "Yêu cầu đóng gói:",
-  "vacuumNeed": "• Túi chân không cần: ",
-  "cartonBoxNeed": "• Thùng carton cần: ",
-  "units": "đơn vị",
-  
-  "suggestedVacuumBags": "Số lượng túi chân không gợi ý: {{count}} túi",
-  "suggestedCartons": "Số lượng thùng carton gợi ý: {{count}} thùng",
-  "vacuumBag": "Túi chân không",
-  "cartonBox": "Thùng carton",
-  "create": "Tạo kế hoạch sản xuất",
-  "viewList": "Kế hoạch sản xuất",
-  "note_require": {
-    "note": "Lưu ý:",
-    "note_parent": "Tất cả các trường có dấu *",
-    "note_child": "là bắt buộc. Số lượng sản phẩm sẽ được tự động tính toán dựa trên số lượng nguyên liệu và tỷ lệ hao hụt."
-  }
-},
+    "title": "Lập kế hoạch sản xuất",
+    "title_desc": "Lập kế hoạch và lịch trình cho yêu cầu sản xuất",
+    "detail": "Chi tiết kế hoạch sản xuất",
+    "planList": "Danh sách kế hoạch",
+    "name": "Tên kế hoạch",
+    "namePlaceholder": "Nhập tên kế hoạch",
+    "material": "Loại nguyên liệu",
+    "selectMaterial": "Chọn loại nguyên liệu",
+    "materialRequired": "Vui lòng chọn loại nguyên liệu",
+    "enterVacuumBagQty": "Nhập số lượng túi chân không",
+    "enterCartonQty": "Nhập số lượng thùng carton",
+    "warnings": {
+      "vacuumBagBelowRecommended": "Bạn đang nhập ít hơn số túi gợi ý ({{suggested}} túi). Khuyến nghị nên từ {{suggested}} trở lên.",
+      "cartonBelowRecommended": "Bạn đang nhập ít hơn số thùng gợi ý ({{suggested}} thùng). Khuyến nghị nên từ {{suggested}} trở lên."
+    },
+    "materialQty": "Số lượng nguyên liệu (kg)",
+    "enterMaterialQty": "Nhập số lượng nguyên liệu",
+    "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
+    "materialNumRequired": "Phải lớn hơn 0",
+
+    "loss": "Tỷ lệ hao hụt (%)",
+    "enterLoss": "Nhập tỷ lệ hao hụt",
+    "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
+    "lossMinMax": "Phải nằm trong khoảng từ 0-100%",
+
+    "productQty": "Sản lượng thành phẩm ước tính (kg)",
+
+    "priority": "Mức độ ưu tiên",
+    "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+    "selectPriority": "Chọn mức độ ưu tiên",
+
+    "productionDate": "Ngày sản xuất",
+    "productionDateRequired": "Vui lòng chọn ngày sản xuất",
+    "selectProductionDate": "Chọn ngày sản xuất",
+
+    "endDate": "Ngày kết thúc",
+    "endDateRequired": "Vui lòng chọn ngày kết thúc",
+    "selectEndDate": "Chọn ngày kết thúc",
+    "productionDateFirst": "Chọn ngày sản xuất trước",
+
+    "note": "Ghi chú",
+    "enterNote": "Nhập ghi chú (nếu có)",
+    "selectVacuumBag": "Vui lòng chọn túi chân không",
+    "selectCartonBox": "Vui lòng chọn thùng carton",
+    "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
+
+    "suggestedTitle": "Yêu cầu đóng gói:",
+    "vacuumNeed": "• Túi chân không cần: ",
+    "cartonBoxNeed": "• Thùng carton cần: ",
+    "units": "đơn vị",
+
+    "suggestedVacuumBags": "Số lượng túi chân không gợi ý: {{count}} túi",
+    "suggestedCartons": "Số lượng thùng carton gợi ý: {{count}} thùng",
+    "vacuumBag": "Túi chân không",
+    "cartonBox": "Thùng carton",
+    "create": "Tạo kế hoạch sản xuất",
+    "viewList": "Kế hoạch sản xuất",
+    "note_require": {
+      "note": "Lưu ý:",
+      "note_parent": "Tất cả các trường có dấu *",
+      "note_child": "là bắt buộc. Số lượng sản phẩm sẽ được tự động tính toán dựa trên số lượng nguyên liệu và tỷ lệ hao hụt."
+    }
+  },
   "priority": {
     "high": "Cao",
     "medium": "Trung bình",
@@ -1451,13 +1473,15 @@
     "warningEmpty": "Hết nhiên liệu!"
   },
   "createFuel": {
-    "title": "Tạo Loại Nguyên liệu Mới",
+    "title": "Tạo Loại Nguyên Liệu Mới",
     "back": "Quay lại",
+    "viewList": "Xem danh sách nguyên liệu",
+    "nameAlreadyExists": "Tên loại nhiên liệu đã tồn tại!",
     "nameLabel": "Tên loại nguyên liệu",
     "namePlaceholder": "Nhập tên loại nguyên liệu",
     "nameRequired": "Vui lòng nhập tên loại Nguyên liệu",
     "descLabel": "Mô tả",
-    "descPlaceholder": "Nhập mô tả (không bắt buộc)",
+    "descPlaceholder": "Nhập mô tả ( bắt buộc)",
     "imageLabel": "Ảnh loại nguyên liệu (JPG, PNG < 2MB)",
     "imageRequired": "Vui lòng chọn ảnh loại Nguyên liệu",
     "chooseImage": "Chọn ảnh",
@@ -1467,7 +1491,8 @@
     "uploadError": "Lỗi khi đọc ảnh.",
     "createSuccess": "Tạo loại nguyên liệu mới thành công!",
     "createFail": "Tạo nguyên liệu thất bại!",
-    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới."
+    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới.",
+    "descRequired": "Vui lòng nhập mô tả nguyên liệu"
   },
   "fuelList": {
     "title": "Danh Sách Loại Nguyên Liệu",
@@ -1522,9 +1547,9 @@
     }
   },
   "boxList": {
-    "title": "Danh sách vật liệu theo loại",
+    "title": "Danh Sách Vật Liệu Theo Loại",
     "back": "Quay lại",
-    "create": "+ Tạo vật liệu mới",
+    "create": "+ Tạo Vật Liệu Mới",
     "image": "Ảnh",
     "no_image": "Chưa có ảnh",
     "name": "Tên Nguyên Vật Liệu",
@@ -1565,7 +1590,8 @@
       "validate_quantity": "Vui lòng nhập số lượng",
       "update_success": "Cập nhật thành công!",
       "update_fail": "Cập nhật thất bại!",
-      "update_error": "Lỗi khi cập nhật."
+      "update_error": "Lỗi khi cập nhật.",
+      "validate_positive": "Số lượng không được nhỏ hơn 0"
     },
     "sizes": {
       "small": "Size S",
@@ -1575,7 +1601,7 @@
     }
   },
   "packageCategory": {
-    "title": "Danh Sách loại vật Liệu",
+    "title": "Danh Sách Loại Vật Liệu",
     "back": "Quay lại",
     "create": "+ Tạo loại Vật Liệu",
     "name": "Tên Loại Vật Liệu",
@@ -1635,7 +1661,8 @@
     "submit": "Tạo loại Nguyên Vật Liệu",
     "success": "Tạo loại thùng thành công!",
     "fail": "Tạo thất bại!",
-    "error": "Lỗi kết nối đến server!"
+    "error": "Lỗi kết nối đến server!",
+    "name_already_exists": "Tên loại thùng đã tồn tại!"
   },
   "button": {
     "cancel": "Hủy",
@@ -1650,6 +1677,16 @@
   "boxMaterial": {
     "back": "Quay lại",
     "title": "Tạo Nguyên Liệu Mới",
+    "onlyNumber": "Số lượng nguyên liệu không được âm",
+    "negativeCapacityError": "Dung tích không thể là số âm",
+    "namePlaceholder": "Nhập tên vật liệu (ví dụ: Túi 12x19)",
+    "typePlaceholder": "Chọn loại nguyên liệu",
+    "categoryPlaceholder": "Chọn loại bao bì ",
+    "quantityPlaceholder": "Nhập số lượng ",
+    "lengthPlaceholder": "Nhập chiều dài (cm)",
+    "widthPlaceholder": "Nhập chiều rộng (cm)",
+    "heightPlaceholder1": "Nhập chiều cao (cm)",
+    "capacityPlaceholder": "Nhập dung tích cho nguyên liệu ",
     "packageMaterialName": "Tên Nguyên liệu",
     "type": "Loại Nguyên Liệu",
     "selectType": "Vui lòng chọn loại nguyên liệu",
@@ -1745,7 +1782,9 @@
     "noNote": "Không có",
     "unknown": "Không rõ",
     "loading": "Đang tải...",
-    "close": "Đóng"
+    "close": "Đóng",
+    "selectMaterialType": "Chọn loại nguyên liệu"
+
   },
   "userDashboard": {
     "title": "Dashboard Quản Lý Người Dùng",

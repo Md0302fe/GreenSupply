@@ -6,7 +6,12 @@ import { jwtDecode } from "jwt-decode";
 import * as RawMaterialBatches from "../../../../services/RawMaterialBatch";
 import { createMaterialStorageExport } from "../../../../services/MaterialStorageExportService";
 import { GoPackageDependents } from "react-icons/go";
-import { ArrowLeft, Package, ArrowRightFromLine, ArrowRight } from "lucide-react";
+import {
+  ArrowLeft,
+  Package,
+  ArrowRightFromLine,
+  ArrowRight,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const MaterialStorageExport = () => {
@@ -128,15 +133,24 @@ const MaterialStorageExport = () => {
   //   }
   // };
 
+  const generateExportCode = () => {
+    // Tạo một chuỗi 8 số ngẫu nhiên
+    const randomNumber = Math.floor(10000000 + Math.random() * 90000000); // Tạo số ngẫu nhiên từ 10000000 đến 99999999
+    return `EXP-${randomNumber}`;
+  };
+
   const handleBatchChange = (value) => {
     const selectedBatch = rawMaterialBatches.find((b) => b._id === value);
 
-    if (selectedBatch?.production_request_id) {
+    // Nếu chọn lô nguyên liệu, tự động tạo mã và cập nhật vào form
+    if (selectedBatch) {
+      const exportName = generateExportCode(selectedBatch); // Tạo mã xuất kho từ lô nguyên liệu
       form.setFieldsValue({
         production_request_id: selectedBatch.production_request_id,
+        export_name: exportName, // Cập nhật giá trị export_name trong form
       });
     } else {
-      form.setFieldsValue({ production_request_id: null });
+      form.setFieldsValue({ production_request_id: null, export_name: "" });
     }
   };
 
@@ -214,22 +228,19 @@ const MaterialStorageExport = () => {
       </div>
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <div className="mb-5">
+        <div className="">
           <div className="text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
               {t("materialExport.title")}
             </h1>
-            <p className="text-gray-600 text-lg">
-              {t("materialExport.title_description")}
-            </p>
           </div>
         </div>
 
         {/* Main Form Card */}
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                 <ArrowRightFromLine className="h-4 w-4 text-white" />
               </div>
@@ -340,7 +351,6 @@ const MaterialStorageExport = () => {
               <Form.Item
                 label={
                   <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
-                    {/* <span className="text-red-500 text-base">*</span> */}
                     {t("materialExport.exportName")}
                   </span>
                 }
@@ -350,7 +360,8 @@ const MaterialStorageExport = () => {
                 ]}
               >
                 <Input
-                  placeholder={t("materialExport.exportNamePlaceholder")}
+                  value={form.getFieldValue("export_name")} // Hiển thị giá trị tự động cập nhật
+                  disabled
                   maxLength={60}
                   className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
                   size="large"

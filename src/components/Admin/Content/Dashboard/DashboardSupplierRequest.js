@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Table } from "antd";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import { getAllFuelEntry } from "../../../../services/FuelEntryServices";
 
 const DashboardSupplyRequest = () => {
   const { t } = useTranslation();
@@ -18,21 +19,32 @@ const DashboardSupplyRequest = () => {
   const [allOrders, setAllOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [filterType, setFilterType] = useState("day");
+  const user = useSelector((state) => state.user);
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/purchase-order/dashboard-supplyrequest`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const access_token = user?.access_token;
+      const user_id = user?.id;
+      const response = await getAllFuelEntry({}, access_token, user_id);
 
-      if (res.data.status === "SUCCESS") {
-        setDashboardData(res.data.data);
+      if (response.status === "OK") {
+        const now = Date.now();
+        const validOrders = response.data.filter(
+          (order) =>
+            !order.is_deleted && new Date(order.end_received).getTime() > now
+        );
+
+        // Gom nhóm theo trạng thái
+        const dashboardSummary = {
+          total: validOrders.length,
+          pending: validOrders.filter((o) => o.status === "Chờ duyệt").length,
+          completed: validOrders.filter((o) => o.status === "Đã Hoàn Thành")
+            .length,
+          processingList: validOrders.filter((o) => o.status === "Đang xử lý"),
+        };
+        console.log(dashboardSummary)
+        setDashboardData(dashboardSummary);
       } else {
         message.error(t("dashboard.error_fetch_data"));
       }
@@ -115,7 +127,9 @@ const DashboardSupplyRequest = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="bg-gradient-to-r from-yellow-500 to-green-500 text-white p-6 rounded mb-4 md:mb-6">
-        <h1 className="text-[18px] md:text-3xl font-bold">{t("dashboard.title")}</h1>
+        <h1 className="text-[18px] md:text-3xl font-bold">
+          {t("dashboard.title")}
+        </h1>
       </header>
 
       {/* 🔹 Thống kê nhanh */}
@@ -170,7 +184,7 @@ const DashboardSupplyRequest = () => {
               {/* Hình ảnh */}
               <div className="flex-shrink-0">
                 <img
-                  src={item.image || "https://via.placeholder.com/50"}
+                  src={item.fuel_image || "https://via.placeholder.com/50"}
                   alt={item.name}
                   className="w-14 h-14 object-cover rounded shadow"
                 />
@@ -218,29 +232,32 @@ const DashboardSupplyRequest = () => {
         {/* Bộ lọc thời gian */}
         <div className="flex justify-center mb-4 space-x-2">
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${filterType === "day"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-l whitespace-nowrap ${
+              filterType === "day"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-              }`}
+            }`}
             onClick={() => setFilterType("day")}
           >
             {t("dashboard.filter_day")}
           </button>
 
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${filterType === "week"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 whitespace-nowrap ${
+              filterType === "week"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-              }`}
+            }`}
             onClick={() => setFilterType("week")}
           >
             {t("dashboard.filter_week")}
           </button>
           <button
-            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${filterType === "month"
+            className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${
+              filterType === "month"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-700"
-              }`}
+            }`}
             onClick={() => setFilterType("month")}
           >
             {t("dashboard.filter_month")}
@@ -263,21 +280,31 @@ const DashboardSupplyRequest = () => {
               key: "request_name",
             },
             {
-              title: <div className="text-center">{t("dashboard.table.status")}</div>,
+              title: (
+                <div className="text-center">{t("dashboard.table.status")}</div>
+              ),
               dataIndex: "status",
               key: "status",
               align: "center",
               className: "text-center",
             },
             {
-              title: <div className="text-center">{t("dashboard.table.quantity")}</div>,
+              title: (
+                <div className="text-center">
+                  {t("dashboard.table.quantity")}
+                </div>
+              ),
               dataIndex: "quantity",
               key: "quantity",
               align: "center",
               className: "text-center",
             },
             {
-              title: <div className="text-center">{t("dashboard.table.created_at")}</div>,
+              title: (
+                <div className="text-center">
+                  {t("dashboard.table.created_at")}
+                </div>
+              ),
               dataIndex: "createdAt",
               key: "createdAt",
               align: "center",

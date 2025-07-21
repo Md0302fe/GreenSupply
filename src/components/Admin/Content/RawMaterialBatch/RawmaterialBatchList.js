@@ -26,7 +26,6 @@ import { useTranslation } from "react-i18next";
 import { converDateString } from "../../../../ultils";
 import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 
-
 const statusColors = {
   "Đang chuẩn bị": "gold",
   "Chờ xuất kho": "blue",
@@ -131,10 +130,10 @@ const RawMaterialBatchList = () => {
 
   const tableData = Array.isArray(fuelBatchs)
     ? fuelBatchs.map((batch) => ({
-      ...batch,
-      key: batch._id,
-      fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
-    }))
+        ...batch,
+        key: batch._id,
+        fuel_name: batch?.fuel_type_id?.fuel_type_id?.type_name,
+      }))
     : [];
 
   // Search trong bảng
@@ -343,12 +342,11 @@ const RawMaterialBatchList = () => {
           )}
         </div>
       ),
-    }
+    },
   ];
 
   const handleViewDetail = (record) => {
     setSelectedBatch(record);
-    console.log(selectedBatch);
     setIsEditMode(false); // Đảm bảo chế độ xem chi tiết không phải chỉnh sửa
     setIsDrawerOpen(true); // Mở Drawer
     form.resetFields(); // Reset form khi mở Drawer
@@ -560,178 +558,262 @@ const RawMaterialBatchList = () => {
         </div>
       </Loading>
       <DrawerComponent
-  title={
-    isEditMode
-      ? t("materialBatch.updateTitle")
-      : t("materialBatch.detailTitle")
-  }
-  isOpen={isDrawerOpen}
-  onClose={handleCloseDrawer}
-  placement="right"
-  width={drawerWidth}
->
-  {selectedBatch && (
-    <>
-      {isEditMode ? (
-        <>
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{
-              batch_id: selectedBatch?.batch_id,
-              batch_name: selectedBatch?.batch_name,
-              fuel_type_id: selectedBatch?.fuel_type_id,
-              quantity: selectedBatch?.quantity,
-              storage_id: selectedBatch?.fuel_type_id?.storage_id,
-              status: selectedBatch?.status,
-              note: selectedBatch?.note,
-              createdAt: converDateString(selectedBatch?.createdAt),
-              updatedAt: converDateString(selectedBatch?.updatedAt),
-            }}
-            onFinish={handleSaveUpdate}
-          >
-            <Form.Item label={t("materialBatch.batchId")} name="batch_id" rules={[{ required: true, message: t("validation.requiredBatchId") }]} className="!mb-1">
-              <Input disabled />
-            </Form.Item>
+        title={
+          isEditMode
+            ? t("materialBatch.updateTitle")
+            : t("materialBatch.detailTitle")
+        }
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        placement="right"
+        width={drawerWidth}
+      >
+        {selectedBatch && (
+          <>
+            {isEditMode ? (
+              <>
+                <Form
+                  form={form}
+                  layout="vertical"
+                  initialValues={{
+                    batch_id: selectedBatch?.batch_id,
+                    batch_name: selectedBatch?.batch_name,
+                    fuel_type_id: selectedBatch?.fuel_type_id,
+                    quantity: selectedBatch?.quantity,
+                    storage_id: selectedBatch?.fuel_type_id?.storage_id,
+                    status: selectedBatch?.status,
+                    note: selectedBatch?.note,
+                    createdAt: converDateString(selectedBatch?.createdAt),
+                    updatedAt: converDateString(selectedBatch?.updatedAt),
+                  }}
+                  onFinish={handleSaveUpdate}
+                >
+                  <Form.Item
+                    label={t("materialBatch.batchId")}
+                    name="batch_id"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("validation.requiredBatchId"),
+                      },
+                    ]}
+                    className="!mb-1"
+                  >
+                    <Input disabled />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.batchName")} name="batch_name" rules={[{ required: true, message: t("validation.requiredBatchName") }]} className="!mb-1">
-              <Input />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.batchName")}
+                    name="batch_name"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("validation.requiredBatchName"),
+                      },
+                    ]}
+                    className="!mb-1"
+                  >
+                    <Input />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.fuelType")} name="fuel_type_id" rules={[{ required: true, message: t("validation.requiredFuelType") }]} className="!mb-1">
-              <Select
-                placeholder={t("materialBatch.selectFuelType")}
-                className="rounded border-gray-300"
-                onChange={handleFuelTypeChange}
-              >
-                {fuel_managements
-                  ?.filter((fuel) => fuel.quantity > 0)
-                  .map((fuel) => (
-                    <Select.Option key={fuel._id} value={fuel._id}>
-                      {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.fuelType")}
+                    className="!mb-1"
+                  >
+                    <Input
+                      value={
+                        selectedBatch?.fuel_type_id?.fuel_type_id?.type_name ||
+                        t("common.noData")
+                      }
+                      disabled
+                    />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.estimatedProduction")} name="quantity" rules={[{ required: true, message: t("validation.requiredProductionOrder") }]} className="!mb-1">
-              <InputNumber
-                min={null}
-                className="w-full rounded border-gray-300"
-                placeholder={t("materialBatch.enterEstimatedProduction")}
-                onChange={handleEstimatedProductionChange}
-                onKeyDown={handleKeyDown}
-                onBlur={() => {
-                  const currentValue = form.getFieldValue("quantity");
-                  if (!currentValue) {
-                    form.setFieldsValue({ quantity: null });
-                  }
-                }}
-                disabled={!isFuelSelected}
-              />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.estimatedProduction")}
+                    name="quantity"
+                    rules={[
+                      {
+                        required: true,
+                        message: t("validation.requiredProductionOrder"),
+                      },
+                    ]}
+                    className="!mb-1"
+                  >
+                    <InputNumber
+                      min={null}
+                      className="w-full rounded border-gray-300"
+                      placeholder={t("materialBatch.enterEstimatedProduction")}
+                      onChange={handleEstimatedProductionChange}
+                      onKeyDown={handleKeyDown}
+                      onBlur={() => {
+                        const currentValue = form.getFieldValue("quantity");
+                        if (!currentValue) {
+                          form.setFieldsValue({ quantity: null });
+                        }
+                      }}
+                      disabled={!isFuelSelected}
+                    />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.requiredMaterialEstimate")} className="!mb-1">
-              <InputNumber disabled className="w-full rounded border-gray-300 bg-gray-50" value={requiredMaterial} />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.storage")}
+                    className="!mb-1"
+                  >
+                    <Input
+                      value={
+                        selectedBatch?.fuel_type_id?.storage_id?.name_storage ||
+                        t("common.noData")
+                      }
+                      disabled
+                    />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.storage")} name="storage_id" rules={[{ required: true, message: t("validation.requiredStorage") }]} className="!mb-1">
-              <Select
-                placeholder={t("materialBatch.selectStorage")}
-                onChange={handleChangeStorage}
-                value={storageId || storages[0]?._id}
-              >
-                {storages.map((storage) => (
-                  <Select.Option key={storage._id} value={storage._id}>
-                    {storage?.name_storage}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.status")}
+                    name="status"
+                    className="!mb-1"
+                  >
+                    <Input value={selectedBatch?.status} disabled />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.status")} name="status" className="!mb-1">
-              <Input value={selectedBatch?.status} disabled />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.note")}
+                    name="note"
+                    className="!mb-1"
+                  >
+                    <Input.TextArea rows={4} />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.note")} name="note" className="!mb-1">
-              <Input.TextArea rows={4} />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.createdAt")}
+                    name="createdAt"
+                    className="!mb-1"
+                  >
+                    <Input disabled />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.createdAt")} name="createdAt" className="!mb-1">
-              <Input disabled />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.updatedAt")}
+                    name="updatedAt"
+                    className="!mb-1"
+                  >
+                    <Input disabled />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.updatedAt")} name="updatedAt" className="!mb-1">
-              <Input disabled />
-            </Form.Item>
+                  <div className="flex justify-end gap-3 mt-6">
+                    <ButtonComponent type="update" onClick={handleSaveUpdate} />
+                    <ButtonComponent type="close" onClick={handleCloseDrawer} />
+                  </div>
+                </Form>
+              </>
+            ) : (
+              <Form layout="vertical" disabled>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <Form.Item
+                    label={t("materialBatch.batchId")}
+                    className="md:col-span-2 !mb-1"
+                  >
+                    <Input value={selectedBatch.batch_id} />
+                  </Form.Item>
 
-            <div className="flex justify-end gap-3 mt-6">
-              <ButtonComponent type="update" onClick={handleSaveUpdate} />
-              <ButtonComponent type="close" onClick={handleCloseDrawer} />
-            </div>
-          </Form>
-        </>
-      ) : (
-        <Form layout="vertical" disabled>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <Form.Item label={t("materialBatch.batchId")} className="md:col-span-2 !mb-1">
-              <Input value={selectedBatch.batch_id} />
-            </Form.Item>
+                  <Form.Item
+                    label={t("materialBatch.batchName")}
+                    className="md:col-span-2 !mb-1"
+                  >
+                    <Input value={selectedBatch.batch_name} />
+                  </Form.Item>
 
-            <Form.Item label={t("materialBatch.batchName")} className="md:col-span-2 !mb-1">
-              <Input value={selectedBatch.batch_name} />
-            </Form.Item>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+                    <Form.Item
+                      label={t("materialBatch.fuelType")}
+                      className="!mb-1"
+                    >
+                      <Input
+                        value={
+                          selectedBatch?.fuel_type_id?.fuel_type_id
+                            ?.type_name || "N/A"
+                        }
+                      />
+                    </Form.Item>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
-              <Form.Item label={t("materialBatch.fuelType")} className="!mb-1">
-                <Input value={selectedBatch?.fuel_type_id?.fuel_type_id?.type_name || "N/A"} />
-              </Form.Item>
+                    <Form.Item
+                      label={t("materialBatch.quantity")}
+                      className="!mb-1"
+                    >
+                      <Input value={selectedBatch.quantity} />
+                    </Form.Item>
+                  </div>
 
-              <Form.Item label={t("materialBatch.quantity")} className="!mb-1">
-                <Input value={selectedBatch.quantity} />
-              </Form.Item>
-            </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+                    <Form.Item
+                      label={t("materialBatch.storage")}
+                      className="!mb-1"
+                    >
+                      <Input
+                        value={
+                          selectedBatch.fuel_type_id?.storage_id
+                            ?.name_storage || "N/A"
+                        }
+                      />
+                    </Form.Item>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
-              <Form.Item label={t("materialBatch.storage")} className="!mb-1">
-                <Input value={selectedBatch.fuel_type_id?.storage_id?.name_storage || "N/A"} />
-              </Form.Item>
+                    <Form.Item
+                      label={t("materialBatch.status")}
+                      className="!mb-1"
+                    >
+                      <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center">
+                        <Tag color={statusColors[selectedBatch.status]}>
+                          {t(
+                            statusMap[selectedBatch.status] ||
+                              selectedBatch.status
+                          )}
+                        </Tag>
+                      </div>
+                    </Form.Item>
+                  </div>
 
-              <Form.Item label={t("materialBatch.status")} className="!mb-1">
-                <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center">
-                  <Tag color={statusColors[selectedBatch.status]}>
-                    {t(statusMap[selectedBatch.status] || selectedBatch.status)}
-                  </Tag>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
+                    <Form.Item
+                      label={t("materialBatch.createdAt")}
+                      className="!mb-1"
+                    >
+                      <Input
+                        value={converDateString(selectedBatch.createdAt)}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label={t("materialBatch.updatedAt")}
+                      className="!mb-1"
+                    >
+                      <Input
+                        value={converDateString(selectedBatch.updatedAt)}
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <Form.Item
+                    label={t("materialBatch.note")}
+                    className="md:col-span-2 !mb-1"
+                  >
+                    <Input.TextArea
+                      value={selectedBatch.note || "N/A"}
+                      rows={3}
+                    />
+                  </Form.Item>
                 </div>
-              </Form.Item>
-            </div>
+              </Form>
+            )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:col-span-2">
-              <Form.Item label={t("materialBatch.createdAt")} className="!mb-1">
-                <Input value={converDateString(selectedBatch.createdAt)} />
-              </Form.Item>
-
-              <Form.Item label={t("materialBatch.updatedAt")} className="!mb-1">
-                <Input value={converDateString(selectedBatch.updatedAt)} />
-              </Form.Item>
-            </div>
-
-            <Form.Item label={t("materialBatch.note")} className="md:col-span-2 !mb-1">
-              <Input.TextArea value={selectedBatch.note || "N/A"} rows={3} />
-            </Form.Item>
-          </div>
-        </Form>
-      )}
-
-      {!isEditMode && (
-        <div className="flex justify-end mt-2">
-          <ButtonComponent type="close" onClick={handleCloseDrawer} />
-        </div>
-      )}
-    </>
-  )}
-</DrawerComponent>
-
+            {!isEditMode && (
+              <div className="flex justify-end mt-2">
+                <ButtonComponent type="close" onClick={handleCloseDrawer} />
+              </div>
+            )}
+          </>
+        )}
+      </DrawerComponent>
 
       {/* messageContainer */}
       <messageContainer
