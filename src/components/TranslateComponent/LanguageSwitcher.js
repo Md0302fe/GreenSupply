@@ -17,7 +17,7 @@ const LanguageSwitcher = ({ onlyIcon = false }) => {
   return (
     <button
       onClick={toggleLanguage}
-      className={`rounded hover:bg-gray-300 flex items-center transition-all duration-200 ${onlyIcon ? "p-1" : "px-2 py-1 bg-gray-200 text-sm gap-2"
+      className={`rounded hover:bg-gray-300 flex items-center transition-all duration-200 ${onlyIcon ? "p-1" : "px-3 py-1 bg-gray-200 text-sm gap-2"
         }`}
       title="Change language"
     >
