@@ -85,6 +85,9 @@
   "enterOldPassword": "Vui lòng nhập mật khẩu cũ của bạn",
   "enterNewPassword": "Vui lòng nhập mật khẩu mới của bạn",
   "confirmNewPassword": "Vui lòng nhập lại mật khẩu mới của bạn",
+  "fill_all_fields": "Vui lòng điền đầy đủ thông tin.",
+  "choose_gender": "Vui lòng chọn giới tính.",
+  "must_be_18_years_old": "Bạn phải từ 18 tuổi trở lên.",
   "carousel": {
     "view_more": "Xem thêm",
     "title_2": "TUYỂN CHỌN KỸ CÀNG",

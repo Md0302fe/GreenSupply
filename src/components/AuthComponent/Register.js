@@ -71,6 +71,35 @@ const Register = () => {
   // Hàm xử lý gửi OTP
   const requestOtp = async () => {
     if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
+
+    if (!name || !email || !password || !confirmPassword || !phone || !date) {
+      message.error(t("fill_all_fields"));
+      return;
+    }
+
+    // Validate số điện thoại: phải bắt đầu bằng số 0 và đủ 10 số
+    if (!/^0\d{9}$/.test(phone)) {
+      message.error(t("invalid_phone"));
+      return;
+    }
+
+    // Validate giới tính
+    if (!gender) {
+      message.error(t("choose_gender"));
+      return;
+    }
+
+    // Validate tuổi >= 18
+    const birthYear = new Date(date).getFullYear();
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthYear;
+    if (age < 18) {
+      message.error(t("must_be_18_years_old"));
+      return;
+    }
+
+    if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
+    
     setLoading(true);
     try {
       const result = await UserServices.sendOtp({

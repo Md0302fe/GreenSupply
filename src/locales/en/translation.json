@@ -48,7 +48,6 @@
   "resend_otp": "Resend",
   "resend_otp_after": "Resend after {{count}}s",
   "register_success": "Account created successfully!",
-  "invalid_phone": "Invalid phone number.",
   "invalid_password_length": "Password must be at least 6 characters.",
   "password_mismatch": "Passwords do not match.",
   "invalid_dob": "Birth date cannot be in the future.",
@@ -88,6 +87,10 @@
   "enterOldPassword": "Please enter your current password",
   "enterNewPassword": "Please enter your new password",
   "confirmNewPassword": "Please confirm your new password",
+  "fill_all_fields": "Please fill in all required fields.",
+  "choose_gender": "Please select your gender.",
+  "must_be_18_years_old": "You must be at least 18 years old.",
+  "invalid_phone": "Invalid phone number. It must start with 0 and contain exactly 10 digits.",
   "carousel": {
     "view_more": "View more",
     "title_2": "CAREFUL SELECTION",
