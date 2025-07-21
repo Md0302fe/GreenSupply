@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import logo from "../../assets/NewProject/Logo/modified_logo_1.png";
+import logo from "../../assets/NewProject/Logo/GreenSupply.png";
 import { Badge, Button, Col, Popover, Row } from "antd";
 import { WrapperContentPopup } from "./styles";
 import { AiOutlineUser } from "react-icons/ai";
