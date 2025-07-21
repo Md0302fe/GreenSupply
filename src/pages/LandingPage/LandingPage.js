@@ -18,7 +18,7 @@ const Navbar = () => {
         <div className="max-sm:hidden flex flex-col items-center ">
           <img
             src={MangovateLogo}
-            className="relative top-[-50px] w-[300px] scale-125"
+            className="relative top-[-50px] w-[255px] scale-125"
             alt=""
           />
         </div>
