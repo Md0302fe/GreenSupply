@@ -60,6 +60,7 @@ import FeatureFinishedProduct from "../components/FeatureComponent/FeatureFinish
 import FeatureUser from "../components/FeatureComponent/FeatureUser";
 import FeatureWarehouse from "../components/FeatureComponent/FeatureWarehouse";
 import FeatureProductOrders from "../components/FeatureComponent/FeatureProductOrders";
+import MangoClassification from "../components/FeatureComponent/MangoClassification";
 import DashboardSupplierOrder from "../components/Admin/Content/Dashboard/DashboardSupplierOrder";
 import ProductionProcessing from "../pages/ProductionProcessing/ProductionProcessing";
 import ProductionConsolidatedProcessing from "../pages/ProductionProcessing/ProductionConsolidatedProcessing";
@@ -164,13 +165,15 @@ const Router = () => {
           {/* Dashboar finishedProduct */}
           <Route path="dashboard-finished-product" element={<DashboardfinishedProduct />} />
 
+          {/* Predict Mango Maturity Stages */}
+          <Route path="/system/admin/feature_mango_classification" element={<MangoClassification />} />
+
           {/* Production Process Management */}
           <Route path="feature_production_process" element={<FeatureProductProcess />} />
           <Route path="production-request" element={<ProductionRequest />} />
           <Route path="production-request-list" element={<ProductionRequestList />} />
-         
 
-            {/* Danh sách quy trình sản xuất */}
+          {/* Danh sách quy trình sản xuất */}
           <Route path="production-processing-list" element={<ProductionProcessingList />} />
           <Route path="production-processing" element={<ProductionRequestFinishList />} />
           {/* single process */}

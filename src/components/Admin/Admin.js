@@ -25,6 +25,7 @@ import {
   FaLemon,
   FaCubes,
 } from "react-icons/fa6";
+import { RiRobot2Fill } from "react-icons/ri";
 
 import { useSelector } from "react-redux";
 
@@ -149,6 +150,14 @@ const Admin = (props) => {
       text: "Quản lý thành phẩm",
       href: "feature_finished_product",
       isDisplay : (user?.role_name === "Admin" || user?.role_name === "Warehouse Manager") ? true : false,
+    },
+    {
+      icon: <RiRobot2Fill className="text-2xl" />,
+      label: "predict_mango",
+      text: "Phân loại trạng thái sinh lý của xoài",
+      href: "/system/admin/feature_mango_classification",
+      isDisplay : user?.role_name === "Admin" ? true : false,
+      isExternal: true,
     },
   ];
 
