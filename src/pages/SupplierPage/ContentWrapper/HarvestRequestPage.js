@@ -30,8 +30,14 @@ const HarvestRequestPage = () => {
 
   // Tính tổng giá
   const totalPrice = () => {
-    const q = Number(formData.quantity) || 0;
-    const p = Number(formData.price) || 0;
+    const q = Number(formData.quantity);
+    const p = Number(formData.price);
+
+    // Nếu vượt ngưỡng cho phép thì trả về 0
+    if (isNaN(q) || isNaN(p) || q > 1000000 || p > 9999999) {
+      return 0;
+    }
+
     return q * p;
   };
 
@@ -40,39 +46,52 @@ const HarvestRequestPage = () => {
     const { name, value } = e.target;
     let newErrors = { ...errors };
 
-    // Kiểm tra Tên yêu cầu(Không chứa ký tự đặc biệt)
     if (name === "fuel_name") {
-      if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9\u0100-\u017F]+$/.test(value)) {
-        newErrors.fuel_name = "Tên yêu cầu chỉ chứa chữ, số và khoảng trắng!";
+      const trimmedValue = value.trim();
+
+      if (trimmedValue.length < 5) {
+        newErrors.fuel_name = t("harvestRequest.request_name_min_length");
+      } else if (trimmedValue.length > 100) {
+        newErrors.fuel_name = t("harvestRequest.request_name_max_length");
       } else {
         delete newErrors.fuel_name;
       }
+
       setFormData((prev) => ({ ...prev, [name]: value }));
       setErrors(newErrors);
       return;
     }
+
     if (name === "fuel_type") {
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
-    if ((name === "quantity" || name === "price") && value === "0") {
-      return;
+
+    if (name === "quantity") {
+      const quantityValue = Number(value);
+      if (isNaN(quantityValue) || quantityValue > 1000000) {
+        newErrors.quantity = t("harvestRequest.invalid_quantity");
+      } else {
+        delete newErrors.quantity;
+      }
     }
 
-    if (name === "address") {
-      if (!/^[a-zA-Z0-9\s\u00C0-\u1EF9,.-]+$/.test(value)) {
-        newErrors.address = "Địa chỉ không được chứa ký tự đặc biệt!";
+    if (name === "price") {
+      const priceValue = Number(value);
+      if (isNaN(priceValue) || priceValue > 9999999) {
+        newErrors.price = t("harvestRequest.invalid_price");
       } else {
-        delete newErrors.address;
+        delete newErrors.price;
       }
     }
 
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors(newErrors);
   };
+
   const fetchUserAddresses = async () => {
     try {
-      const res = await getUserAddresses(userRedux.id); // giả sử API trả về { addresses }
+      const res = await getUserAddresses(userRedux.id);
       setAddresses(res.addresses || []);
       if (res.addresses.length > 0) {
         setSelectedAddressId(res.addresses[0]._id);
@@ -82,6 +101,18 @@ const HarvestRequestPage = () => {
       console.error("Lỗi lấy địa chỉ người dùng:", error);
     }
   };
+
+  useEffect(() => {
+    if (selectedAddressId) {
+      const addrObj = addresses.find((a) => a._id === selectedAddressId);
+      if (addrObj) {
+        setFormData((prev) => ({
+          ...prev,
+          address: addrObj.address,
+        }));
+      }
+    }
+  }, [selectedAddressId, addresses]);
 
   const fetchListFuelType = async () => {
     try {
@@ -111,12 +142,12 @@ const HarvestRequestPage = () => {
     fetchListFuelType();
     fetchUserAddresses();
   }, []);
-  // 🕒 Tự động ẩn lỗi sau 3 giây
+  // Tự động ẩn lỗi sau 5 giây
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       setFadeOut(false);
       const fadeTimer = setTimeout(() => setFadeOut(true), 2500); // Sau 2.5s bắt đầu mờ dần
-      const removeTimer = setTimeout(() => setErrors({}), 3000); // Sau 3s xoá lỗi
+      const removeTimer = setTimeout(() => setErrors({}), 5000); // Sau 3s xoá lỗi
 
       return () => {
         clearTimeout(fadeTimer);
@@ -129,24 +160,54 @@ const HarvestRequestPage = () => {
   const handleSubmit = async () => {
     let newErrors = {};
 
-    // Kiểm tra dữ liệu trước khi gửi
-    if (!formData.fuel_name.trim())
+    const quantityValue = Number(formData.quantity);
+    const priceValue = Number(formData.price);
+    const trimmedFuelName = formData.fuel_name.trim();
+
+    if (!trimmedFuelName) {
       newErrors.fuel_name = t("harvestRequest.empty_request_name");
-    if (!formData.fuel_type.trim())
+    } else if (trimmedFuelName.length < 5) {
+      newErrors.fuel_name = t("harvestRequest.request_name_min_length");
+    } else if (trimmedFuelName.length > 100) {
+      newErrors.fuel_name = t("harvestRequest.request_name_max_length");
+    }
+
+    if (!formData.fuel_type.trim()) {
       newErrors.fuel_type = t("harvestRequest.empty_material_type");
-    if (!formData.quantity.trim())
+    }
+
+    if (!formData.quantity.trim()) {
       newErrors.quantity = t("harvestRequest.empty_quantity");
-    if (!formData.price.trim())
+    } else if (
+      isNaN(quantityValue) ||
+      quantityValue > 1000000 ||
+      !isFinite(quantityValue)
+    ) {
+      newErrors.quantity = t("harvestRequest.invalid_quantity");
+    }
+
+    if (!formData.price.trim()) {
       newErrors.price = t("harvestRequest.empty_price");
-    if (!formData.address.trim())
+    } else if (
+      isNaN(priceValue) ||
+      priceValue > 9999999 ||
+      !isFinite(priceValue)
+    ) {
+      newErrors.price = t("harvestRequest.invalid_price");
+    }
+
+    if (!formData.address.trim()) {
       newErrors.address = t("harvestRequest.empty_address");
-    // Không gửi form nếu có lỗi
+    }
+
+    // Nếu có lỗi thì không submit
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    // Thêm tiền tố "Yêu cầu thu hàng"
-    let fuelNameWithPrefix = formData.fuel_name.trim();
+
+    // Thêm tiền tố nếu chưa có
+    let fuelNameWithPrefix = trimmedFuelName;
     if (!fuelNameWithPrefix.startsWith("Yêu cầu thu hàng")) {
       fuelNameWithPrefix = `Yêu cầu thu hàng ${fuelNameWithPrefix}`;
     }
@@ -154,26 +215,30 @@ const HarvestRequestPage = () => {
     const fuelRequest = {
       supplier_id: userRedux.id,
       fuel_name: fuelNameWithPrefix,
-      quantity: Number(formData.quantity),
-      price: Number(formData.price),
-      total_price: totalPrice(),
+      quantity: quantityValue,
+      price: priceValue,
+      total_price: quantityValue * priceValue,
       address: formData.address,
       note: formData.note,
       status: "Chờ duyệt",
       fuel_type: formData.fuel_type,
     };
+
     try {
       await createHarvestRequest(fuelRequest);
       message.success(t("harvestRequest.create_success"));
 
+      // Reset form
+      const defaultAddress = addresses[0] || {};
       setFormData({
         fuel_name: "",
         quantity: "",
         price: "",
-        address: "",
+        address: defaultAddress.address || "",
         note: "",
         fuel_type: "",
       });
+      setSelectedAddressId(defaultAddress._id || "");
       setErrors({});
     } catch (error) {
       console.error("Lỗi khi tạo yêu cầu:", error);
@@ -261,6 +326,7 @@ const HarvestRequestPage = () => {
               type="number"
               name="quantity"
               min="1"
+              max="1000000"
               placeholder={t("harvestRequest.quantity_placeholder")}
               value={formData.quantity}
               onChange={handleChange}
@@ -285,6 +351,7 @@ const HarvestRequestPage = () => {
               type="number"
               name="price"
               min="1"
+              max="9999999"
               placeholder={t("harvestRequest.price")}
               value={formData.price}
               onChange={handleChange}
@@ -385,15 +452,18 @@ const HarvestRequestPage = () => {
             {t("harvestRequest.submit_button")}
           </button>
           <button
-            onClick={() =>
+            onClick={() => {
+              const defaultAddress = addresses[0] || {};
               setFormData({
                 fuel_name: "",
                 quantity: "",
                 price: "",
-                address: "",
+                address: defaultAddress.address || "",
                 note: "",
-              })
-            }
+                fuel_type: "",
+              });
+              setSelectedAddressId(defaultAddress._id || "");
+            }}
             className="bg-[#006838] flex items-center text-white font-bold px-3 py-2 rounded hover:bg-[#028A48] w-full md:w-auto gap-2"
           >
             <FiRefreshCw />

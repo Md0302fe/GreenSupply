@@ -256,7 +256,12 @@
     "empty_address": "Địa chỉ không được để trống!",
     "create_success": "Tạo yêu cầu thu hàng thành công!",
     "create_fail": "Tạo yêu cầu thất bại! Vui lòng thử lại.",
-    "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!"
+    "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!",
+    "request_name_min_length": "Tên yêu cầu phải có ít nhất 5 ký tự.",
+    "request_name_max_length": "Tên yêu cầu không được vượt quá 100 ký tự.",
+    "invalid_quantity": "Khối lượng phải nhỏ hơn 1.000.000 kg.",
+    "invalid_price": "Giá phải nhỏ hơn 9.999.999 VNĐ."
+
   },
   "status": {
     "pending": "Chờ duyệt",
