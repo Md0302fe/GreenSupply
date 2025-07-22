@@ -34,6 +34,7 @@ const ProvideRequestManagement = () => {
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const [note, setNote] = useState("");
 
   const fetchGetAllRequests = async () => {
     const access_token = user?.access_token;
@@ -94,7 +95,14 @@ const ProvideRequestManagement = () => {
   };
 
   const onFinishUpdate = (values) => {
-    mutationUpdate.mutate({ id: rowSelected, data: values });
+    const fullValues = {
+      ...values,
+      quantity: formUpdate.getFieldValue("quantity"),
+      price: formUpdate.getFieldValue("price"),
+      note: note,
+    };
+
+    mutationUpdate.mutate({ id: rowSelected, data: fullValues });
   };
 
   // Handle Cancel Edit Drawer
@@ -107,18 +115,20 @@ const ProvideRequestManagement = () => {
   const handleEdit = async (record) => {
     setRowSelected(record._id);
     try {
-      const res = await FuelEntryServices.getFuelEntryDetail(record.request_id);
+      const res = await FuelSupplyRequestService.getFuelSupplyRequestById(
+        user?.access_token,
+        record._id
+      );
+
       if (res) {
         setIsDrawerOpen(true);
         formUpdate.setFieldsValue({
-          fuel_name: record.fuel_name,
-          quantity: record.quantity,
-          note: record.note || "",
-          price: record.price,
+          fuel_name: res.fuel_name,
+          quantity: res.quantity,
+          price: res.price,
+          note: res.note || "",
         });
-        console.log(res);
-        // Save `quantity_remain` in state for validation later
-        setQuantityRemain(res.res.quantity_remain);
+        setNote(res.note || "");
       }
     } catch (error) {
       console.log(error);
@@ -490,6 +500,7 @@ const ProvideRequestManagement = () => {
         </Loading>
       </DrawerComponent> */}
 
+      {/* Update Request */}
       <DrawerComponent
         title={
           <div style={{ textAlign: "center" }}>
@@ -502,117 +513,147 @@ const ProvideRequestManagement = () => {
         onClose={handleCancelUpdate}
       >
         <Loading isPending={mutationUpdate.isPending}>
-          <Form
-            name="update-form"
-            form={formUpdate}
-            onFinish={onFinishUpdate}
-            layout="vertical"
-          >
-            <Form.Item
-              label={t("harvestRequest.name_request")}
-              name="fuel_name"
+          <div className="w-full p-6 bg-white rounded-md shadow">
+            <Form
+              form={formUpdate}
+              name="update-form"
+              onFinish={onFinishUpdate}
+              layout="vertical"
             >
-              <Input value={selectedRequest.fuel_name} disabled />
-            </Form.Item>
+              {/* Request Name */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.request_name")}
+                </label>
+                <Input
+                  value={formUpdate.getFieldValue("fuel_name")}
+                  readOnly
+                  className="bg-white text-black cursor-default w-full"
+                  style={{ cursor: "default" }}
+                />
+              </div>
 
-            <Form.Item>
+              {/* Quantity (hiển thị nhưng không cho sửa) */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.enter_quantity")}
+                </label>
+                <Input
+                  value={formUpdate.getFieldValue("quantity")}
+                  readOnly
+                  className="bg-white text-black cursor-default w-full"
+                  style={{ cursor: "default" }}
+                />
+              </div>
+
+              {/* Quantity remain (nếu cần)
               {quantityRemain !== null && (
-                <div style={{ fontSize: "14px", color: "gray" }}>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "gray",
+                    marginBottom: "12px",
+                  }}
+                >
                   <strong>
                     {t("provideRequest.quantityRemain")} {quantityRemain} KG
                   </strong>
                 </div>
-              )}
-            </Form.Item>
+              )} */}
 
-            <Form.Item
-              name="quantity"
-              label={t("provideRequest.enter_quantity")}
-              rules={[
-                {
-                  required: true,
-                  message: t("provideRequest.enter_quantity_required"),
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.resolve();
-                    }
-                    if (value > quantityRemain) {
-                      return Promise.reject(
-                        new Error(
-                          new Error(
-                            t("provideRequest.exceed_quantity", {
-                              quantity: quantityRemain,
-                            })
-                          )
-                        )
-                      );
-                    }
-                    if (value % 10 !== 0) {
-                      return Promise.reject(
-                        new Error(t("provideRequest.must_divisible_by_10"))
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-            >
-              <Input
-                type="number"
-                min={10}
-                onKeyDown={(e) => {
-                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
-                    e.preventDefault();
+              {/* Unit Price */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.unit_price")}
+                </label>
+                <Input
+                  value={formUpdate.getFieldValue("price")}
+                  readOnly
+                  className="bg-white text-black cursor-default w-full"
+                  style={{ cursor: "default" }}
+                />
+              </div>
+
+              {/* Total Price */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.total_price")}
+                </label>
+                <Input
+                  readOnly
+                  value={
+                    formUpdate.getFieldValue("quantity") &&
+                    formUpdate.getFieldValue("price")
+                      ? (
+                          Number(formUpdate.getFieldValue("quantity")) *
+                          Number(formUpdate.getFieldValue("price"))
+                        ).toLocaleString("vi-VN") + " VNĐ"
+                      : "Chưa tính"
                   }
-                }}
-                onChange={(e) => {
-                  const quantity = e.target.value;
-                  formUpdate.setFieldsValue({ quantity });
-                  updateTotalPrice(quantity, formUpdate.getFieldValue("price"));
-                }}
-              />
-            </Form.Item>
+                />
+              </div>
 
-            <Form.Item label={t("provideRequest.unit_price")} name="price">
-              <Input disabled />
-            </Form.Item>
+              {/* Updated At */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.updated_at")}
+                </label>
+                <Input
+                  readOnly
+                  value={converDateString(selectedRequest?.updatedAt)}
+                />
+              </div>
 
-            <Form.Item label={t("provideRequest.note")} name="note">
-              <Input.TextArea rows={3} placeholder={t("provideRequest.note")} />
-            </Form.Item>
+              {/* Note */}
+              <Form.Item label={t("provideRequest.note")} name="note">
+                <Input.TextArea
+                  rows={3}
+                  placeholder={t("provideRequest.note")}
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </Form.Item>
 
-            <div
-              style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
-            >
-              <span>{t("provideRequest.total_price_display")}</span>
-              {
-                // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
-                formUpdate.getFieldValue("quantity") &&
-                formUpdate.getFieldValue("price")
-                  ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
-                    (
-                      Number(formUpdate.getFieldValue("quantity")) *
-                      Number(formUpdate.getFieldValue("price"))
-                    ).toLocaleString("vi-VN")
-                  : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
-              }
-            </div>
+              {/* Status */}
+              <div className="flex items-center gap-2 mb-4">
+                <label className="font-semibold block">
+                  {t("provideRequest.status")}:
+                </label>
+                {(() => {
+                  const { color, label } = statusMap[
+                    selectedRequest?.status
+                  ] || {
+                    color: "default",
+                    label: selectedRequest?.status,
+                  };
+                  return <Tag color={color}>{label}</Tag>;
+                })()}
+              </div>
 
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={mutationUpdate.isPending}
-                style={{ width: "100%" }}
-              >
-                {mutationUpdate.isPending
-                  ? t("common.updating")
-                  : t("common.update")}
-              </Button>
-            </Form.Item>
-          </Form>
+              {/* Submit Button */}
+              <div className="flex flex-col md:flex-row justify-end gap-4 mt-4">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={mutationUpdate.isPending}
+                  className="w-full md:w-auto"
+                >
+                  {mutationUpdate.isPending
+                    ? t("common.updating")
+                    : t("common.update")}
+                </Button>
+
+                <Button
+                  type="default"
+                  danger
+                  onClick={handleCancelUpdate}
+                  className="w-full md:w-auto"
+                >
+                  {t("common.cancel")}
+                </Button>
+              </div>
+            </Form>
+          </div>
         </Loading>
       </DrawerComponent>
 
@@ -628,8 +669,13 @@ const ProvideRequestManagement = () => {
         <p>{t("provideRequest.deleteConfirmMessage")}</p>
       </Modal>
 
+      {/* Request Detail */}
       <DrawerComponent
-        title={t("provideRequest.detail_title")}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("provideRequest.detail_title")}
+          </div>
+        }
         isOpen={isDetailDrawerOpen}
         placement="right"
         width={drawerWidth} // Điều chỉnh chiều rộng Drawer nếu cần
@@ -703,7 +749,7 @@ const ProvideRequestManagement = () => {
                   {t("provideRequest.note")}
                 </label>
                 <textarea
-                  value={detailData.note || "Không có ghi chú"}
+                  value={detailData.note}
                   readOnly
                   className="w-full h-auto border p-2 rounded"
                 />

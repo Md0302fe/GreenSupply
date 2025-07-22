@@ -69,7 +69,12 @@ const HarvestRequestPage = () => {
 
     if (name === "quantity") {
       const quantityValue = Number(value);
-      if (isNaN(quantityValue) || quantityValue > 1000000) {
+
+      if (!value.trim()) {
+        newErrors.quantity = t("harvestRequest.empty_quantity");
+      } else if (isNaN(quantityValue) || !isFinite(quantityValue)) {
+        newErrors.quantity = t("harvestRequest.invalid_quantity");
+      } else if (quantityValue > 1000000) {
         newErrors.quantity = t("harvestRequest.invalid_quantity");
       } else {
         delete newErrors.quantity;
@@ -78,7 +83,12 @@ const HarvestRequestPage = () => {
 
     if (name === "price") {
       const priceValue = Number(value);
-      if (isNaN(priceValue) || priceValue > 9999999) {
+
+      if (!value.trim()) {
+        newErrors.price = t("harvestRequest.empty_price");
+      } else if (isNaN(priceValue) || !isFinite(priceValue)) {
+        newErrors.price = t("harvestRequest.invalid_price");
+      } else if (priceValue > 9999999) {
         newErrors.price = t("harvestRequest.invalid_price");
       } else {
         delete newErrors.price;
@@ -331,7 +341,7 @@ const HarvestRequestPage = () => {
               value={formData.quantity}
               onChange={handleChange}
               onKeyDown={(e) => {
-                if (["e", "E", "-", "+", "."].includes(e.key)) {
+                if (["e", "E", "+", "-", "."].includes(e.key)) {
                   e.preventDefault();
                 }
               }}
