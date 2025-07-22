@@ -7,6 +7,7 @@ import MangovateLogo from "../../assets/Logo_Mangovate/Logo_Rmb.png";
 
 import MangoVateSlider from "./MangovateSlider";
 import ServicesSection from "./LandingServices";
+import Header from "./LandingPageHeader";
 import Footer from "./LandingPageFooter";
 
 const Navbar = () => {
@@ -73,14 +74,20 @@ const Navbar = () => {
 const Banner = () => {
   const { t } = useTranslation();
   return (
-    <div className="container mx-auto px-4 py-8 bg-slate-50">
-      {/* <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-green-800 mb-4">MangoVate</h1>
+    <div className="container mx-auto px-4 bg-slate-50">
+      <div className="container mx-auto px-4 py-4">
+        <div className="text-center mb-4">
+          <div className="py-4 font-serif">
+            <span className="text-4xl md:text-6xl font-bold text-black mb-4">Man</span>
+            <span className="text-4xl md:text-6xl font-bold text-[#923522] mb-4">g</span>
+            <span className="text-4xl md:text-6xl font-bold text-[#f09d2b] mb-4">ovate</span>
+          </div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Hệ thống quản lý sản xuất xoài sấy dẻo thông minh và toàn diện
           </p>
-        </div> */}
-      <MangoVateSlider />
+        </div>
+        <MangoVateSlider />
+      </div>
     </div>
   );
 };
@@ -121,32 +128,11 @@ const Card = () => {
   );
 };
 
-const About = () => {
-  const { t } = useTranslation();
-  return (
-    <div
-      className="h-[600px] bg-cover bg-no-repeat mt-8 flex justify-end md:pr-12 pr-3 pl-3"
-      style={{ backgroundImage: "url(/image/landing/about-bg.png)" }}
-    >
-      <div className="flex flex-col justify-center items-start">
-        <img src="/image/landing/about.png" alt="" className="w-56" />
-        <p className="text-white max-w-[420px] text-xl text-justify mt-4">
-          {t("about.description")}
-        </p>
-        <div className="sm:w-[400px] w-[300px] h-[2px] border-b-4 border-supply-primary py-2"></div>
-        <button className="bg-supply-primary rounded-b-xl rounded-tr-xl mt-4 flex gap-2 text-white px-3 py-2">
-          <span>{t("about.see_more")}</span>
-          <img src="/image/icon/right.png" alt="" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
 const LandingPage = () => {
   return (
-    <div>
-      <Navbar />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-orange-50">
+      {/* <Navbar /> */}
+      <Header></Header>
       <Banner />
       {/* Services Section */}
       <ServicesSection />
