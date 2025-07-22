@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useNavigate } from "react-router-dom"
-import { Package, Truck, Headphones, ArrowRight, Sparkles } from "lucide-react"
-import { useSelector } from "react-redux"
-import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom";
+import { Package, Truck, Headphones, ArrowRight, Sparkles } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const ImprovedFeatureButtons = () => {
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const user = useSelector((state) => state.user)
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
   // Mock translation function
   const mockT = (key) => {
@@ -16,50 +16,47 @@ const ImprovedFeatureButtons = () => {
       "feature_buttons.order_management": "Quản lý đơn hàng",
       "feature_buttons.harvest_request": "Yêu cầu thu hàng",
       "feature_buttons.provide_material": "Cung cấp nguyên liệu",
-    }
-    return translations[key] || key
-  }
+    };
+    return translations[key] || key;
+  };
 
   const features = [
     {
       id: 1,
       icon: Package,
-      iconSrc: "/placeholder.svg?height=64&width=64&text=Order",
-      text: mockT("feature_buttons.order_management"),
+      textKey: "feature_buttons.order_management",
+      descriptionKey: "feature_buttons.order_management_description",
       path: "/supplier/harvest-request-management",
       color: "from-blue-500 to-blue-600",
       hoverColor: "hover:from-blue-600 hover:to-blue-700",
       bgColor: "bg-blue-50",
-      description: "Quản lý và theo dõi đơn hàng",
     },
     {
       id: 2,
       icon: Truck,
-      iconSrc: "/placeholder.svg?height=64&width=64&text=Truck",
-      text: mockT("feature_buttons.harvest_request"),
+      textKey: "feature_buttons.harvest_request",
+      descriptionKey: "feature_buttons.harvest_request_description",
       path: "/supplier/harvest-request",
       color: "from-green-500 to-green-600",
       hoverColor: "hover:from-green-600 hover:to-green-700",
       bgColor: "bg-green-50",
-      description: "Tạo yêu cầu thu hàng mới",
     },
     {
       id: 3,
       icon: Headphones,
-      iconSrc: "/placeholder.svg?height=64&width=64&text=Support",
-      text: mockT("feature_buttons.provide_material"),
+      textKey: "feature_buttons.provide_material",
+      descriptionKey: "feature_buttons.provide_material_description",
       path: "/supplier/provide-request",
       color: "from-orange-500 to-orange-600",
       hoverColor: "hover:from-orange-600 hover:to-orange-700",
       bgColor: "bg-orange-50",
-      description: "Cung cấp nguyên liệu sản xuất",
     },
-  ]
+  ];
 
   const handleFeatureClick = (feature) => {
     // Add any authentication checks here if needed
-    navigate(feature.path)
-  }
+    navigate(feature.path);
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-2">
@@ -67,18 +64,20 @@ const ImprovedFeatureButtons = () => {
       <div className="text-center mb-4">
         <div className="flex items-center justify-center mb-4">
           <Sparkles className="w-6 h-6 text-yellow-500 mr-2" />
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Tính năng chính</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            {t("feature_buttons.title")}
+          </h2>
           <Sparkles className="w-6 h-6 text-yellow-500 ml-2" />
         </div>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Khám phá các tính năng mạnh mẽ giúp các nhà cung ứng dễ dàng sử dụng dịch vụ
+          {t("feature_buttons.description")}
         </p>
       </div>
 
       {/* Feature Buttons Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
         {features.map((feature, index) => {
-          const IconComponent = feature.icon
+          const IconComponent = feature.icon;
 
           return (
             <div key={feature.id} className="group relative">
@@ -110,10 +109,12 @@ const ImprovedFeatureButtons = () => {
                   </div>
 
                   {/* Text */}
-                  <h3 className="text-lg lg:text-xl font-bold text-center mb-2 leading-tight">{feature.text}</h3>
+                  <h3 className="text-lg lg:text-xl font-bold text-center mb-2 leading-tight">
+                    {t(feature.textKey)}
+                  </h3>
 
                   <p className="text-sm text-white/80 text-center mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {feature.description}
+                    {t(feature.descriptionKey)}
                   </p>
 
                   {/* Arrow Icon */}
@@ -133,21 +134,21 @@ const ImprovedFeatureButtons = () => {
                 </div>
               )}
             </div>
-          )
+          );
         })}
       </div>
 
       {/* Bottom CTA */}
       <div className="text-center mt-12">
         <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full text-gray-700 text-sm font-medium">
-          <span>Cần hỗ trợ thêm?</span>
+          <span>{t("feature_buttons.need_help")}</span>
           <button className="ml-3 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-            Liên hệ ngay →
+            {t("feature_buttons.contact_now")}
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ImprovedFeatureButtons
+export default ImprovedFeatureButtons;

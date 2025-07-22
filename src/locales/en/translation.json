@@ -17,7 +17,7 @@
   "resend_after": "Resend after {{count}}s",
   "resend": "Resend",
   "slogan": "Effective solution for your agricultural products",
-  "copyright": "@2025 copyright by Green supply",
+  "copyright": "@2025 copyright by Mangovate",
   "not_receive_code": "Not receive code?",
   "login_success": "Login successful!",
   "login_fail": "Login failed.",
@@ -104,15 +104,21 @@
   "emailNotExist": "Email does not exist.",
   "carousel": {
     "view_more": "View more",
-    "title_2": "CAREFUL SELECTION",
-    "desc_1": "A transparent, sustainable, smart mango supply chain platform that connects farms to consumers effectively.",
-    "desc_2": "Selected from the biggest, ripest, and sweetest mangoes for domestic and export markets.",
-    "title_3": "STANDARDIZED",
-    "desc_3": "Mangoes are managed by QR code for easy traceability of harvest time and origin.",
-    "desc_4": "Green production process – Connecting farmers across provinces."
+    "slide1_title": "Welcome to Mangovate",
+    "slide1_description": "A smart and sustainable dried mango supply chain management system",
+
+    "slide2_title": "Advanced Technology",
+    "slide2_description": "Applying AI and IoT in production management",
+
+    "slide3_title": "Comprehensive Solutions",
+    "slide3_description": "From production to distribution, we provide solutions for every need",
+
+    "slide4_title": "Trusted Partner",
+    "slide4_description": "Trusted by over 1000+ businesses"
   },
   "import_product_list": {
     "title": "Material Purchase List",
+    "note": "Manage and follow raw material need to be provided",
     "view_more": "View more",
     "empty": "There are currently no requests to supply.",
     "quantity": "Quantity",
@@ -120,7 +126,8 @@
     "total_price": "Total price",
     "remaining": "Remaining",
     "expired": "Supply expired",
-    "create_order": "Create Order"
+    "create_order": "Create Order",
+    "urgent": "Urgent"
   },
   "common": {
     "days": "days",
@@ -179,20 +186,27 @@
     "article_3_title": "Building Vietnam’s mango value chain to serve the domestic market and key export markets"
   },
   "feature_buttons": {
-    "order_management": "ORDER MANAGEMENT",
-    "harvest_request": "MATERIAL COLLECTION",
-    "provide_material": "MATERIAL PROVIDE"
+    "order_management": "Order Management",
+    "harvest_request": "Material collection",
+    "provide_material": "Material provide",
+    "title": "Key Features",
+    "description": "Explore powerful features to help suppliers easily use the service",
+    "order_management_description": "Manage and track orders",
+    "harvest_request_description": "Create a new collection request",
+    "provide_material_description": "Provide production materials",
+    "need_help": "Need more help?",
+    "contact_now": "Contact now →"
   },
   "footer": {
     "intro": "Introduction",
-    "company_name": "Green Supply Co., Ltd",
+    "company_name": "Mangovate Co., Ltd",
     "office": "Office",
     "address": "Address: 120 Nguyen Van Cu Street, Long Tuyen Ward, Binh Thuy District - Can Tho",
     "contact": "Contact information",
-    "email": "Email: Greensupply@gmail.com",
+    "email": "Email: Mangovate@gmail.com",
     "phone": "Phone: 0976 000 000",
     "description": "A smart, transparent, and sustainable mango supply chain management platform that effectively connects farms to consumers.",
-    "copyright": "Greensupply.com.vn"
+    "copyright": "Mangovate.com.vn"
   },
   "sidebar": {
     "created_orders": "Created requests",
@@ -212,7 +226,7 @@
     "footer": "minhduc.lmd Dev"
   },
   "harvestRequest": {
-    "title": "Material Collection Request",
+    "title": "Material Collection Requests",
     "edit_title": "Edit Material collection request",
     "detail_title": "Material collection request Details",
     "name": "Request Name",
@@ -311,7 +325,7 @@
     "see_more": "See More"
   },
   "provideRequest": {
-    "title": "PROVIDE REQUEST",
+    "title": "Material Provide Requests",
     "editTitle": "Update Provide Request",
     "confirmDelete": "Delete Request",
     "deleteConfirmMessage": "Are you sure you want to delete this request?",
