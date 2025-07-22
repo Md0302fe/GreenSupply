@@ -27,7 +27,7 @@ const Footer = () => {
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
           <img
             src={MangovateLogo}
-            alt="Green Supply Logo"
+            alt="Mangovate Logo"
             className="w-36 md:w-48 mb-2"
           />
           <h1 className="text-xl md:text-3xl font-bold mb-4">

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Popover } from "antd";
 import {
@@ -114,8 +113,8 @@ const ImprovedHeader = () => {
                 <div className="max-sm:hidden flex flex-col items-center ">
                   <img
                     src={MangovateLogo}
-                    className="relative top-0 w-[130px] scale-150"
-                    alt=""
+                    className="h-[100px] md:h-[120px] w-auto object-contain cursor-pointer"
+                    alt="Mangovate logo"
                   />
                 </div>
                 {/* Fallback logo */}
@@ -365,7 +364,7 @@ const ImprovedHeader = () => {
               </div>
             </div>
           )}
-          
+
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
             <div className="md:hidden bg-white border-t border-gray-200">

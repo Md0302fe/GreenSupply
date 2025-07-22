@@ -145,6 +145,17 @@ const ProvideRequestManagement = () => {
     }
   };
 
+  const statusMap = {
+    "Chờ duyệt": { color: "orange", label: t("status.pending") },
+    "Đã duyệt": { color: "green", label: t("status.approve") },
+    "Hoàn Thành": { color: "gold", label: t("status.completed") },
+    "Đang xử lý": { color: "blue", label: t("status.completed") },
+    "Đã huỷ": { color: "red", label: t("status.cancelled") },
+    "Đã hủy": { color: "red", label: t("status.cancelled") },
+    "Thất bại": { color: "magenta", label: t("status.failed") },
+    "Vô hiệu hóa": { color: "gray", label: t("status.disable") },
+  };
+
   const getStatusClasses = (status) => {
     if (status === "Chờ duyệt") return "bg-yellow-100 text-yellow-800";
     if (status === "Đã duyệt") return "bg-green-100 text-green-800";
@@ -302,25 +313,11 @@ const ProvideRequestManagement = () => {
       key: "status",
       className: "text-center",
       render: (status) => {
-        let displayText = status;
-        let color = "orange"; // Mặc định là "Chờ duyệt"
-        if (status === "Đã duyệt") {
-          color = "green";
-          displayText = t("status.approve");
-        }
-        if (status === "Hoàn Thành" || status === "Đang xử lý") {
-          color = "yellow";
-          displayText = t("status.completed"); // Hiển thị "Hoàn Thành" cho cả 2 status
-        }
-        if (status === "Đã huỷ") {
-          color = "red";
-          displayText = t("status.cancelled");
-        }
-        if (status === "Chờ duyệt") {
-          displayText = t("status.pending");
-        }
-
-        return <Tag color={color}>{displayText}</Tag>;
+        const { color, label } = statusMap[status] || {
+          color: "default",
+          label: status,
+        };
+        return <Tag color={color}>{label}</Tag>;
       },
       onFilter: (value, record) => {
         // Kiểm tra xem giá trị status có phải là "Hoàn Thành" hay "Đang xử lý" không
@@ -337,6 +334,8 @@ const ProvideRequestManagement = () => {
         { text: t("status.approve"), value: "Đã duyệt" },
         { text: t("status.cancelled"), value: "Đã huỷ" },
         { text: t("status.completed"), value: "Hoàn Thành" },
+        { text: t("status.failed"), value: "Thất bại" },
+        { text: t("status.disable"), value: "Vô hiệu hóa" },
       ],
     },
   ];
@@ -624,6 +623,7 @@ const ProvideRequestManagement = () => {
         onCancel={() => setIsOpenDelete(false)}
         onOk={handleConfirmDelete}
         confirmLoading={mutationDelete.isPending}
+        okButtonProps={{ danger: true }}
       >
         <p>{t("provideRequest.deleteConfirmMessage")}</p>
       </Modal>
@@ -714,24 +714,13 @@ const ProvideRequestManagement = () => {
                 <label className="block font-semibold">
                   {t("provideRequest.status")}{" "}
                 </label>
-                <span
-                  className={`ml-2 px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap ${getStatusClasses(
-                    detailData.status
-                  )}`}
-                >
-                  {
-                    detailData.status === "Chờ duyệt"
-                      ? t("status.pending")
-                      : detailData.status === "Đã duyệt"
-                      ? t("status.approve")
-                      : detailData.status === "Hoàn Thành" ||
-                        detailData.status === "Đang xử lý"
-                      ? t("status.completed")
-                      : detailData.status === "Đã huỷ"
-                      ? t("status.cancelled")
-                      : detailData.status // fallback nếu không có trạng thái nào trùng khớp
-                  }
-                </span>
+                {(() => {
+                  const { color, label } = statusMap[detailData.status] || {
+                    color: "default",
+                    label: detailData.status,
+                  };
+                  return <Tag color={color}>{label}</Tag>;
+                })()}
               </div>
             </div>
 
@@ -741,12 +730,12 @@ const ProvideRequestManagement = () => {
                 onClick={() => setIsDetailDrawerOpen(false)}
                 className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
               >
-                {t('close')}
+                {t("close")}
               </Button>
             </div>
           </div>
         ) : (
-          <p>{t('no_data')}</p>
+          <p>{t("no_data")}</p>
         )}
       </DrawerComponent>
     </div>

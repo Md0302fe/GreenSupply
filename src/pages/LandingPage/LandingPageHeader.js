@@ -38,12 +38,12 @@ export default function Header() {
         {/* Top Bar */}
         <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="max-sm:hidden flex flex-col items-center ">
+          <div className="flex items-center space-x-3 my-2">
+            <div className="max-sm:hidden flex flex-col items-center">
               <img
                 src={MangovateLogo}
-                className="relative top-0 w-[130px] scale-150"
-                alt=""
+                className="h-[100px] md:h-[120px] w-auto object-contain cursor-pointer"
+                alt="Mangovate logo"
               />
             </div>
             {/* Text logo as additional fallback */}

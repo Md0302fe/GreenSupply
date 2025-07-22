@@ -17,6 +17,8 @@ import Highlighter from "react-highlight-words";
 import { convertPrice } from "../../../ultils";
 import { useTranslation } from "react-i18next";
 
+import { Modal } from "antd";
+
 // Định nghĩa hàm quản lý yêu cầu thu hoạch
 const HarvestRequestManagement = () => {
   const { t } = useTranslation();
@@ -67,14 +69,6 @@ const HarvestRequestManagement = () => {
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
-  };
-
-  const getStatusClasses = (status) => {
-    if (status === "Chờ duyệt") return "bg-yellow-100 text-yellow-800";
-    if (status === "Đã duyệt") return "bg-green-100 text-green-800";
-    if (status === "Đã huỷ") return "bg-red-100 text-red-800";
-    if (status === "Hoàn thành") return "bg-red-100 text-green-800";
-    return "bg-gray-100 text-gray-800";
   };
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -271,25 +265,11 @@ const HarvestRequestManagement = () => {
       key: "status",
       className: "text-center",
       render: (status) => {
-        let displayText = status;
-        let color = "orange"; // Mặc định là "Chờ duyệt"
-        if (status === "Đã duyệt") {
-          color = "green";
-          displayText = t("status.approve");
-        }
-        if (status === "Hoàn Thành" || status === "Đang xử lý") {
-          color = "yellow";
-          displayText = t("status.completed"); // Hiển thị "Hoàn Thành" cho cả 2 status
-        }
-        if (status === "Đã huỷ") {
-          color = "red";
-          displayText = t("status.cancelled");
-        }
-        if (status === "Chờ duyệt") {
-          displayText = t("status.pending");
-        }
-
-        return <Tag color={color}>{displayText}</Tag>;
+        const { color, label } = statusMap[status] || {
+          color: "default",
+          label: status,
+        };
+        return <Tag color={color}>{label}</Tag>;
       },
       onFilter: (value, record) => {
         // Kiểm tra xem giá trị status có phải là "Hoàn Thành" hay "Đang xử lý" không
@@ -309,6 +289,17 @@ const HarvestRequestManagement = () => {
       ],
     },
   ];
+
+  const statusMap = {
+    "Chờ duyệt": { color: "orange", label: t("status.pending") },
+    "Đã duyệt": { color: "green", label: t("status.approve") },
+    "Hoàn Thành": { color: "gold", label: t("status.completed") },
+    "Đang xử lý": { color: "gold", label: t("status.completed") },
+    "Đã huỷ": { color: "red", label: t("status.cancelled") },
+    "Đã hủy": { color: "red", label: t("status.cancelled") },
+    "Từ chối": { color: "magenta", label: t("status.rejected") },
+    "Đang chuẩn bị": { color: "blue", label: t("status.preparing") },
+  };
 
   const actionColumn = {
     title: (
@@ -342,13 +333,13 @@ const HarvestRequestManagement = () => {
   // Chọn cột hiển thị tùy theo thiết bị
   const columns = isMobile
     ? [
-      allColumns[0],
-      allColumns[1],
-      allColumns[2],
-      allColumns[3],
-      allColumns[4],
-      actionColumn,
-    ] // Tên yêu cầu, Trạng thái, Hành động
+        allColumns[0],
+        allColumns[1],
+        allColumns[2],
+        allColumns[3],
+        allColumns[4],
+        actionColumn,
+      ] // Tên yêu cầu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
   const handleViewDetail = (record) => {
@@ -468,7 +459,8 @@ const HarvestRequestManagement = () => {
                 <span className="font-semibold mr-2">
                   {t("harvestRequest.total_price_display")}:
                 </span>
-                {(editForm.quantity * editForm.price).toLocaleString("vi-VN")} VNĐ
+                {(editForm.quantity * editForm.price).toLocaleString("vi-VN")}{" "}
+                VNĐ
               </p>
             </div>
 
@@ -559,7 +551,8 @@ const HarvestRequestManagement = () => {
                 <input
                   type="text"
                   value={
-                    viewDetailRequest.total_price.toLocaleString("vi-VN") + " VNĐ"
+                    viewDetailRequest.total_price.toLocaleString("vi-VN") +
+                    " VNĐ"
                   }
                   readOnly
                   className="border p-2 rounded w-full mb-1"
@@ -596,24 +589,15 @@ const HarvestRequestManagement = () => {
                 <label className="font-semibold">
                   {t("harvestRequest.status")}:
                 </label>
-                <span
-                  className={`px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap ${getStatusClasses(
+                {(() => {
+                  const { color, label } = statusMap[
                     viewDetailRequest.status
-                  )}`}
-                >
-                  {
-                    viewDetailRequest.status === "Chờ duyệt"
-                      ? t("status.pending")
-                      : viewDetailRequest.status === "Đã duyệt"
-                        ? t("status.approve")
-                        : viewDetailRequest.status === "Hoàn Thành" ||
-                          viewDetailRequest.status === "Đang xử lý"
-                          ? t("status.completed")
-                          : viewDetailRequest.status === "Đã huỷ"
-                            ? t("status.cancelled")
-                            : viewDetailRequest.status
-                  }
-                </span>
+                  ] || {
+                    color: "default",
+                    label: viewDetailRequest.status,
+                  };
+                  return <Tag color={color}>{label}</Tag>;
+                })()}
               </div>
             </div>
 
@@ -633,27 +617,17 @@ const HarvestRequestManagement = () => {
       </DrawerComponent>
 
       {/* Modal Popup cho hủy yêu cầu */}
-      {isCancelPopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow p-6 w-80">
-            <p className="mb-4">{t("harvestRequest.cancel_confirm_msg")}</p>
-            <div className="flex justify-between gap-4">
-              <button
-                onClick={() => setIsCancelPopupOpen(false)}
-                className="bg-gray-400 text-white px-4 py-2 rounded"
-              >
-                {t("harvestRequest.close")}
-              </button>
-              <button
-                onClick={handleCancelRequest}
-                className="bg-red-600 text-white px-4 py-2 rounded"
-              >
-                {t("harvestRequest.confirm")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        open={isCancelPopupOpen}
+        onCancel={() => setIsCancelPopupOpen(false)}
+        onOk={handleCancelRequest}
+        okText={t("harvestRequest.confirm")}
+        cancelText={t("harvestRequest.close")}
+        title={t("harvestRequest.cancel_confirm_msg")}
+        okButtonProps={{ danger: true }}
+      >
+        <p>{t("harvestRequest.cancel_confirm_msg")}</p>
+      </Modal>
     </div>
   );
 };

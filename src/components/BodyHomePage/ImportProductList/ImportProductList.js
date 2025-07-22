@@ -100,7 +100,9 @@ const ImportProductList = () => {
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
                 {t("import_product_list.title")}
               </h2>
-              <p className="text-gray-600">Quản lý và theo dõi các sản phẩm nhập khẩu</p>
+              <p className="text-gray-600">
+                {t("import_product_list.note")}
+              </p>
             </div>
             <button
               onClick={handleCreateOrder}
@@ -225,7 +227,7 @@ const ProductItem = ({ product }) => {
         {isUrgent && (
           <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-lg">
             <Clock className="w-3 h-3 mr-1" />
-            Gấp
+            {t("import_product_list.urgent")}
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -233,7 +235,7 @@ const ProductItem = ({ product }) => {
 
       {/* Content Section - Improved */}
       <div className="p-4">
-        <h3 className="text-base font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="text-base font-semibold text-gray-900 min-h-[48px]">
           {product.request_name}
         </h3>
 
