@@ -151,7 +151,7 @@ const SideBar = ({ onItemClick }) => {
             </ul>
           </Collapse>
         </li>
-        <li>
+        {/* <li>
           <Button
             onClick={() => {
               navigate("/supplier/tracking-shipment");
@@ -162,7 +162,7 @@ const SideBar = ({ onItemClick }) => {
             <IoBagCheckOutline className="text-[20px]" />
             <span>{t("sidebar.track_shipment")}</span>
           </Button>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

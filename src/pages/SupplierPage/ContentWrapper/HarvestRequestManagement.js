@@ -4,8 +4,9 @@ import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as HarverstRequestService from "../../../services/HarvestRequestService";
+import { getUserAddresses } from "../../../services/UserService";
 // import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 import DrawerComponent from "../../../components/DrawerComponent/DrawerComponent";
 import { useRef } from "react";
@@ -22,7 +23,8 @@ import { Modal } from "antd";
 // Định nghĩa hàm quản lý yêu cầu thu hoạch
 const HarvestRequestManagement = () => {
   const { t } = useTranslation();
-
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const user = useSelector((state) => state.user);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false);
@@ -53,6 +55,28 @@ const HarvestRequestManagement = () => {
       user_id
     );
     return res;
+  };
+
+  const mutationUpdate = useMutation({
+    mutationFn: (updatedData) =>
+      HarverstRequestService.updateHarvestRequest(
+        updatedData.id,
+        updatedData.data
+      ),
+    onSuccess: () => {
+      message.success(t("harvestRequest.success_update"));
+      queryClient.invalidateQueries(["harvestRequests"]);
+      handleCancelUpdate();
+    },
+    onError: (error) => {
+      message.error(t("harvestRequest.fail_update") + `: ${error.message}`);
+    },
+  });
+
+  // Handle Cancel Edit Drawer
+  const handleCancelUpdate = () => {
+    setIsDrawerOpen(false);
+    setSelectedRequest(null);
   };
 
   const { data: requests, isLoading } = useQuery({
@@ -143,8 +167,21 @@ const HarvestRequestManagement = () => {
       ),
   });
 
+  const totalPrice = () => {
+    const q = Number(editForm.quantity);
+    const p = Number(editForm.price);
+
+    if (isNaN(q) || isNaN(p) || q > 1000000 || p > 9999999) {
+      return 0;
+    }
+
+    return q * p;
+  };
+
   // Handle Edit click
   const handleEdit = (record) => {
+    const matched = addresses.find((a) => a.address === record.address);
+    if (matched) setSelectedAddressId(matched._id);
     setSelectedRequest(record);
     setEditForm({
       fuel_name: record.fuel_name,
@@ -165,12 +202,56 @@ const HarvestRequestManagement = () => {
 
   // Handle Submit form
   const handleEditSubmit = async () => {
+    let newErrors = {};
+    const trimmedFuelName = editForm.fuel_name.trim();
+    const quantityValue = Number(editForm.quantity);
+    const priceValue = Number(editForm.price);
+
+    // Validate fuel_name
+    if (!trimmedFuelName) {
+      newErrors.fuel_name = t("harvestRequest.empty_request_name");
+    } else if (trimmedFuelName.length < 5) {
+      newErrors.fuel_name = t("harvestRequest.request_name_min_length");
+    } else if (trimmedFuelName.length > 100) {
+      newErrors.fuel_name = t("harvestRequest.request_name_max_length");
+    }
+
+    // Validate quantity
+    if (!editForm.quantity) {
+      newErrors.quantity = t("harvestRequest.empty_quantity");
+    } else if (isNaN(quantityValue) || !isFinite(quantityValue)) {
+      newErrors.quantity = t("harvestRequest.invalid_quantity");
+    } else if (quantityValue > 1000000) {
+      newErrors.quantity = t("harvestRequest.invalid_quantity");
+    }
+
+    // Validate price
+    if (!editForm.price) {
+      newErrors.price = t("harvestRequest.empty_price");
+    } else if (
+      isNaN(priceValue) ||
+      priceValue > 9999999 ||
+      !isFinite(priceValue)
+    ) {
+      newErrors.price = t("harvestRequest.invalid_price");
+    }
+
+    // Validate address
+    if (!selectedAddressId || !editForm.address.trim()) {
+      newErrors.address = t("harvestRequest.empty_address");
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const updatedData = {
-      fuel_name: editForm.fuel_name,
-      quantity: Number(editForm.quantity),
-      price: Number(editForm.price),
-      total_price: Number(editForm.quantity) * Number(editForm.price),
-      address: editForm.address,
+      fuel_name: trimmedFuelName,
+      quantity: quantityValue,
+      price: priceValue,
+      total_price: quantityValue * priceValue,
+      address: editForm.address.trim(),
       note: editForm.note,
     };
 
@@ -180,12 +261,25 @@ const HarvestRequestManagement = () => {
         updatedData
       );
       message.success(t("harvestRequest.success_update"));
-      queryClient.invalidateQueries("harvestRequests");
+      queryClient.invalidateQueries(["harvestRequests"]);
       setIsDrawerOpen(false);
     } catch (error) {
       message.error(t("harvestRequest.fail_update") + `: ${error.message}`);
     }
   };
+
+  useEffect(() => {
+    const fetchUserAddresses = async () => {
+      try {
+        const res = await getUserAddresses(user.id);
+        setAddresses(res.addresses || []);
+      } catch (err) {
+        console.error("Lỗi lấy địa chỉ:", err);
+      }
+    };
+
+    fetchUserAddresses();
+  }, [user.id]);
 
   const handleCancelClick = (requestId, status) => {
     if (status !== "Chờ duyệt") {
@@ -366,7 +460,11 @@ const HarvestRequestManagement = () => {
 
       {/* Drawer Update Request */}
       <DrawerComponent
-        title={t("harvestRequest.edit_title")}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("harvestRequest.edit_title")}
+          </div>
+        }
         isOpen={isDrawerOpen}
         placement="right"
         width={drawerWidth}
@@ -383,7 +481,7 @@ const HarvestRequestManagement = () => {
                 <input
                   type="text"
                   name="fuel_name"
-                  maxLength="50"
+                  maxLength="100"
                   placeholder={t("harvestRequest.name")}
                   value={editForm.fuel_name}
                   onChange={handleEditChange}
@@ -436,17 +534,29 @@ const HarvestRequestManagement = () => {
               {/* Địa chỉ */}
               <div>
                 <label className="block mb-1 font-semibold">
-                  {t("harvestRequest.address")}
+                  {t("harvestRequest.select_address")}
                 </label>
-                <input
-                  type="text"
+                <select
                   name="address"
-                  maxLength="120"
-                  placeholder={t("harvestRequest.address")}
-                  value={editForm.address}
-                  onChange={handleEditChange}
+                  value={selectedAddressId}
+                  onChange={(e) => {
+                    const addrId = e.target.value;
+                    setSelectedAddressId(addrId);
+                    const addrObj = addresses.find((a) => a._id === addrId);
+                    setEditForm((prev) => ({
+                      ...prev,
+                      address: addrObj ? addrObj.address : "",
+                    }));
+                  }}
                   className="border p-2 rounded w-full mb-1"
-                />
+                >
+                  <option value="">{t("harvestRequest.select_address")}</option>
+                  {addresses.map((addr) => (
+                    <option key={addr._id} value={addr._id}>
+                      {addr.address}
+                    </option>
+                  ))}
+                </select>
                 {errors.address && (
                   <p className="text-red-500 text-xs">{errors.address}</p>
                 )}
@@ -456,11 +566,10 @@ const HarvestRequestManagement = () => {
             {/* Tổng giá */}
             <div className="mt-4 mb-4">
               <p>
-                <span className="font-semibold mr-2">
+                <span className="font-semibold mr-2 text-black">
                   {t("harvestRequest.total_price_display")}:
                 </span>
-                {(editForm.quantity * editForm.price).toLocaleString("vi-VN")}{" "}
-                VNĐ
+                {totalPrice().toLocaleString("vi-VN")} VNĐ
               </p>
             </div>
 
@@ -480,11 +589,25 @@ const HarvestRequestManagement = () => {
             </div>
 
             <div className="flex flex-col md:flex-row justify-end gap-4 mt-4">
-              <ButtonComponent type="update" onClick={handleEditSubmit} />
-              <ButtonComponent
-                type="cancel"
-                onClick={() => setIsDrawerOpen(false)}
-              />
+              <Button
+                type="primary"
+                onClick={handleEditSubmit}
+                loading={mutationUpdate.isPending}
+                className="w-full md:w-auto font-semibold"
+              >
+                {mutationUpdate.isPending
+                  ? t("common.updating")
+                  : t("common.update")}
+              </Button>
+
+              <Button
+                type="default"
+                danger
+                onClick={handleCancelUpdate}
+                className="w-full md:w-auto font-semibold"
+              >
+                {t("common.cancel")}
+              </Button>
             </div>
           </div>
         ) : (
@@ -494,7 +617,11 @@ const HarvestRequestManagement = () => {
 
       {/* Drawer View Detail */}
       <DrawerComponent
-        title={t("harvestRequest.detail_title")}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("harvestRequest.detail_title")}
+          </div>
+        }
         isOpen={isViewDrawerOpen}
         placement="right"
         width={drawerWidth}
@@ -623,7 +750,7 @@ const HarvestRequestManagement = () => {
         onOk={handleCancelRequest}
         okText={t("harvestRequest.confirm")}
         cancelText={t("harvestRequest.close")}
-        title={t("harvestRequest.cancel_confirm_msg")}
+        title={t("harvestRequest.confirmDelete")}
         okButtonProps={{ danger: true }}
       >
         <p>{t("harvestRequest.cancel_confirm_msg")}</p>

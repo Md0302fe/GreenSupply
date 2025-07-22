@@ -224,8 +224,8 @@
   },
   "harvestRequest": {
     "title": "ĐƠN YÊU CẦU THU NGUYÊN LIỆU",
-    "edit_title": "Chỉnh sửa yêu cầu thu nguyên liệu",
-    "detail_title": "Chi tiết yêu cầu thu nguyên liệu",
+    "edit_title": "Chỉnh sửa đơn yêu cầu thu nguyên liệu",
+    "detail_title": "Chi tiết đơn yêu cầu thu nguyên liệu",
     "name": "Tên yêu cầu",
     "quantity": "Số lượng (kg)",
     "price": "Giá mỗi đơn vị (VNĐ)",
@@ -234,13 +234,13 @@
     "note": "Ghi chú",
     "note_limit": "Ghi chú (tối đa 200 ký tự)",
     "status": "Trạng thái",
-    "total_price_display": "Tổng giá:",
+    "total_price_display": "Tổng giá",
     "update": "Cập nhật",
     "close": "Đóng",
     "cancel_confirm_msg": "Bạn có chắc chắn muốn hủy yêu cầu này?",
     "confirm": "Xác nhận",
     "action": "Hành động",
-    "success_update": "Cập nhật yêu cầu thành công!",
+    "success_update": "Cập nhật yêu cầu thu nguyên liệu thành công!",
     "fail_update": "Cập nhật yêu cầu thất bại",
     "success_cancel": "Yêu cầu đã được hủy thành công!",
     "fail_cancel": "Hủy yêu cầu thất bại",
@@ -268,6 +268,7 @@
     "empty_quantity": "Số lượng không được để trống!",
     "empty_price": "Giá không được để trống!",
     "empty_address": "Địa chỉ không được để trống!",
+    "select_address": "Chọn địa chỉ lấy hàng",
     "create_success": "Tạo yêu cầu thu hàng thành công!",
     "create_fail": "Tạo yêu cầu thất bại! Vui lòng thử lại.",
     "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!",
@@ -276,7 +277,6 @@
     "request_name_max_length": "Tên yêu cầu không được vượt quá 100 ký tự.",
     "invalid_quantity": "Khối lượng phải nhỏ hơn 1.000.000 kg.",
     "invalid_price": "Giá phải nhỏ hơn 9.999.999 VNĐ."
-
   },
   "status": {
     "pending": "Chờ duyệt",
@@ -323,8 +323,8 @@
     "see_more": "Xem thêm"
   },
   "provideRequest": {
-    "title": "ĐƠN CUNG CẤP NGUYÊN LIỆU",
-    "editTitle": "Cập Nhật Đơn Cung Cấp",
+    "title": "ĐƠN YÊU CẦU CUNG CẤP NGUYÊN LIỆU",
+    "editTitle": "Chỉnh Sửa Đơn Yêu Cầu Cung Cấp",
     "confirmDelete": "Xóa Yêu Cầu",
     "deleteConfirmMessage": "Bạn có chắc muốn xóa yêu cầu này?",
     "delete_success": "Yêu cầu đã bị xóa!",
@@ -342,7 +342,7 @@
     "enter_quantity": "Số lượng muốn cung cấp",
     "enter_quantity_required": "Vui lòng nhập số lượng!",
     "actions": "Hành động",
-    "detail_title": "Chi Tiết Đơn Cung Cấp",
+    "detail_title": "Chi Tiết Đơn Yêu Cầu Cung Cấp",
     "updated_at": "Ngày Cập Nhật",
     "exceed_quantity": "Số lượng không được vượt quá {{quantity}}!",
     "must_divisible_by_10": "Số lượng phải chia hết cho 10!",
