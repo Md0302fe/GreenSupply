@@ -109,7 +109,7 @@
     "desc_4": "Quy trình sản xuất xanh - Kết nối với nông dân đa tỉnh thành."
   },
   "import_product_list": {
-    "title": "Mặt hàng cần nhập",
+    "title": "Danh Sách Nguyên Liệu Cần Nhập",
     "view_more": "Xem thêm",
     "empty": "Hiện tại chưa có đơn cần cung cấp.",
     "quantity": "Số lượng",
@@ -195,7 +195,7 @@
     "created_orders": "Đơn Đã Tạo",
     "harvest_orders": "Đơn Thu Nguyên Liệu",
     "provide_orders": "Đơn Cung Cấp Nguyên Liệu",
-    "create_harvest_request": "Tạo yêu cầu thu hàng",
+    "create_harvest_request": "Tạo đơn thu hàng",
     "create_provide_order": "Tạo đơn cung cấp hàng",
     "order_history": "Lịch sử đơn",
     "history_harvest": "L.s Đơn yêu cầu thu nguyên liệu",
@@ -257,6 +257,7 @@
     "create_success": "Tạo yêu cầu thu hàng thành công!",
     "create_fail": "Tạo yêu cầu thất bại! Vui lòng thử lại.",
     "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!",
+    "request_prefix": "Yêu cầu thu hàng",
     "request_name_min_length": "Tên yêu cầu phải có ít nhất 5 ký tự.",
     "request_name_max_length": "Tên yêu cầu không được vượt quá 100 ký tự.",
     "invalid_quantity": "Khối lượng phải nhỏ hơn 1.000.000 kg.",

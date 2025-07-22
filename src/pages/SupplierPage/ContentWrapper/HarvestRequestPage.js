@@ -446,12 +446,6 @@ const HarvestRequestPage = () => {
         {/* Nút bấm */}
         <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-4">
           <button
-            onClick={handleSubmit}
-            className="bg-[#FFE814] text-[#F14A00] font-bold px-4 py-2 rounded hover:bg-[#FBC02D] w-full md:w-auto"
-          >
-            {t("harvestRequest.submit_button")}
-          </button>
-          <button
             onClick={() => {
               const defaultAddress = addresses[0] || {};
               setFormData({
@@ -464,10 +458,17 @@ const HarvestRequestPage = () => {
               });
               setSelectedAddressId(defaultAddress._id || "");
             }}
-            className="bg-[#006838] flex items-center text-white font-bold px-3 py-2 rounded hover:bg-[#028A48] w-full md:w-auto gap-2"
+            className="bg-[#FFE814] flex items-center text-[#F14A00] font-bold px-3 py-2 rounded  hover:bg-[#FBC02D] w-full md:w-auto gap-2"
           >
             <FiRefreshCw />
             {t("harvestRequest.reset_button")}
+          </button>
+
+          <button
+            onClick={handleSubmit}
+            className="bg-[#006838] text-white font-bold px-4 py-2 rounded hover:bg-[#028A48] w-full md:w-auto"
+          >
+            {t("harvestRequest.submit_button")}
           </button>
         </div>
       </div>

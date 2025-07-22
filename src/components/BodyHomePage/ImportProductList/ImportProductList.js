@@ -68,7 +68,7 @@ const ImportProductList = () => {
   return (
     <div className="max-w-[1400px] mx-auto p-6 bg-[#F4F4F4] border border-gray-800 shadow-inner mb-4 mt-[5rem]">
       <div className="flex justify-between items-center mb-4 mt-3 mx-4">
-        <h2 className="text-[16px] sm:text-2xl lg:text-3xl font-bold text-orange-500 font-instrument">
+        <h2 className="text-[16px] sm:text-2xl lg:text-3xl font-semibold text-orange-500 font-nunito">
           {t("import_product_list.title")}
         </h2>
         <button

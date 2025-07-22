@@ -49,7 +49,7 @@ const Carousel = () => {
                     {t(item.descriptionKey)}
                   </h2>
                   <button className="flex items-center bg-[#FFE814] text-[#F14A00] px-3 sm:px-4 py-2 rounded-lg font-bold text-xs sm:text-sm ml-6 sm:ml-10 hover:bg-[#FBC02D] hover:scale-105 transition duration-300">
-                    Xem thêm
+                    {t("carousel.view_more")}
                     <span className="flex items-center justify-center ml-2 sm:ml-3 w-5 sm:w-6 h-5 sm:h-6 bg-[#F14A00] text-white rounded-full hover:bg-[#D84315]">
                       <i className="fa-solid fa-chevron-right text-xs"></i>
                     </span>
@@ -68,7 +68,7 @@ const Carousel = () => {
                   <div className="w-[200px] sm:w-[350px] h-[2px] sm:h-[3px] bg-white mx-auto mb-4"></div>
                   <div className="flex justify-center mt-4">
                     <button className="flex items-center bg-[#FFE814] text-[#F14A00] px-3 sm:px-4 py-2 rounded-lg font-bold text-xs sm:text-sm hover:bg-[#FBC02D] hover:scale-105 transition duration-300">
-                      Xem thêm
+                      {t("carousel.view_more")}
                       <span className="flex items-center justify-center ml-2 sm:ml-3 w-5 sm:w-6 h-5 sm:h-6 bg-[#F14A00] text-white rounded-full hover:bg-[#D84315]">
                         <i className="fa-solid fa-chevron-right text-xs"></i>
                       </span>

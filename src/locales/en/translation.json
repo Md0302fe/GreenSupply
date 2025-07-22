@@ -112,7 +112,7 @@
     "desc_4": "Green production process – Connecting farmers across provinces."
   },
   "import_product_list": {
-    "title": "Products to Import",
+    "title": "Material Purchase List",
     "view_more": "View more",
     "empty": "There are currently no requests to supply.",
     "quantity": "Quantity",
@@ -180,8 +180,8 @@
   },
   "feature_buttons": {
     "order_management": "ORDER MANAGEMENT",
-    "harvest_request": "Material collection request",
-    "provide_material": "SUPPLY MATERIALS"
+    "harvest_request": "MATERIAL COLLECTION",
+    "provide_material": "MATERIAL PROVIDE"
   },
   "footer": {
     "intro": "Introduction",
@@ -260,6 +260,7 @@
     "create_success": "Material collection request created successfully!",
     "create_fail": "Failed to create request! Please try again.",
     "invalid_address": "Address must not contain special characters!",
+    "request_prefix": "Material collection request",
     "request_name_min_length": "Request name must be at least 5 characters.",
     "request_name_max_length": "Request name must not exceed 100 characters.",
     "invalid_quantity": "Enter quantity less than 1,000,000 kg.",
@@ -369,7 +370,7 @@
     "noData": "No data available."
   },
   "historyHarvestRequestOrder": {
-    "title": "Material collection request HISTORY",
+    "title": "Material collection request history",
     "loading": "Loading data...",
     "itemName": "Request Name",
     "quantity": "Quantity",
