@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Input, message, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -19,6 +19,7 @@ const getBase64 = (file) =>
 
 const CreateFuel = () => {
   const { t } = useTranslation();
+  const [fuelTypes, setFuelTypes] = useState([]);
 
   const [form] = Form.useForm();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -58,7 +59,7 @@ const CreateFuel = () => {
     try {
       const payload = {
         type_name: values.type_name,
-        description: values.description || "",
+        description: values.description?.trim() || "Không có mô tả",
         image_url: imageBase64,
       };
 
@@ -71,7 +72,6 @@ const CreateFuel = () => {
           },
         }
       );
-
       if (res.data.success) {
         message.success(t("createFuel.createSuccess"));
         form.resetFields();
@@ -80,12 +80,37 @@ const CreateFuel = () => {
         message.error(t("createFuel.createFail"));
       }
     } catch (error) {
-      console.error("Lỗi khi tạo nguyên liệu:", error);
-      message.error(t("createFuel.createError"));
+      if (error.response?.data?.message === "DUPLICATE_NAME") {
+        form.setFields([
+          {
+            name: "type_name",
+            errors: [t("createFuel.nameAlreadyExists")],
+          },
+        ]);
+      } else {
+        console.error("Lỗi khi tạo nguyên liệu:", error);
+        message.error(t("createFuel.createError"));
+      }
     } finally {
       setSubmitLoading(false);
     }
   };
+
+  useEffect(() => {
+  const fetchFuelTypes = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`);
+      if (res.data?.requests) {
+        setFuelTypes(res.data.requests);
+      }
+    } catch (err) {
+      console.error("Lỗi khi lấy danh sách nhiên liệu", err);
+    }
+  };
+
+  fetchFuelTypes();
+}, []);
+
 
   const uploadProps = {
     beforeUpload: (file) => {
@@ -102,6 +127,7 @@ const CreateFuel = () => {
       }
       return isValidType && isLt2M;
     },
+    customRequest: ({ onSuccess }) => setTimeout(() => onSuccess("ok"), 0),
     onRemove: () => setImageBase64(null),
     maxCount: 1,
   };
@@ -109,28 +135,31 @@ const CreateFuel = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">
       {/* Nút quay lại - đặt riêng, full width, căn trái */}
-      <div className="w-full mb-2 lg:mb-4">
-        <div className="max-w-xl ml-0">
+      <div className="w-full mb-2 lg:mb-4 flex justify-between items-center">
+        {/* Nút Quay lại */}
+        <div>
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
+            className="group flex items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
             type="button"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
-            </svg>
-            {t("createFuel.back")}
+            <span className="group-hover:-translate-x-1 transition-transform duration-200">
+              ←
+            </span>
+            <span className="ml-2">{t("createFuel.back")}</span>
+          </button>
+        </div>
+
+        {/* Nút Xem danh sách */}
+        <div>
+          <button
+            onClick={() => navigate("/system/admin/fuel-list")}
+            className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow-sm transition duration-300"
+          >
+            {t("createFuel.viewList") || "Xem danh sách"}
+            <span className="group-hover:translate-x-1 transition-transform duration-200">
+              →
+            </span>
           </button>
         </div>
       </div>
@@ -147,7 +176,26 @@ const CreateFuel = () => {
           <Form.Item
             label={t("createFuel.nameLabel")}
             name="type_name"
-            rules={[{ required: true, message: t("createFuel.nameRequired") }]}
+            rules={[
+              { required: true, message: t("createFuel.nameRequired") },
+              {
+                validator: (_, value) => {
+                  if (!value || !value.trim()) {
+                    return Promise.resolve();
+                  }
+
+                  const exists = fuelTypes.some(
+                    (fuel) =>
+                      fuel.fuel_type_id?.type_name.trim().toLowerCase() ===
+                      value.trim().toLowerCase()
+                  );
+
+                  return exists
+                    ? Promise.reject(t("createFuel.nameAlreadyExists"))
+                    : Promise.resolve();
+                },
+              },
+            ]}
           >
             <Input
               placeholder={t("createFuel.namePlaceholder")}
@@ -156,7 +204,11 @@ const CreateFuel = () => {
             />
           </Form.Item>
 
-          <Form.Item label={t("createFuel.descLabel")} name="description">
+          <Form.Item
+            label={t("createFuel.descLabel")}
+            name="description"
+            rules={[{ required: true, message: t("createFuel.descRequired") }]}
+          >
             <Input.TextArea
               rows={3}
               placeholder={t("createFuel.descPlaceholder")}
@@ -175,6 +227,7 @@ const CreateFuel = () => {
               {...uploadProps}
               onChange={handleUploadChange}
               listType="picture"
+              accept="image/jpeg, image/png"
             >
               <Button icon={<UploadOutlined />}>
                 {t("createFuel.chooseImage")}
@@ -196,7 +249,7 @@ const CreateFuel = () => {
       </div>
     </div>
   );
-  
+
   // return (
   //   <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
   //     <button

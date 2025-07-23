@@ -12,7 +12,7 @@ import {
   MDBBreadcrumbItem,
 } from "mdb-react-ui-kit";
 
-import { Upload , message } from "antd";
+import { Upload, message } from "antd";
 import { getBase64 } from "../../ultils";
 import { updateUser } from "../../redux/slides/userSlides";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,7 +35,7 @@ import {
 
 import userImage from "../../assets/DefaultUser.jpg";
 import OTPInput from "react-otp-input";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 const ProfilePage = () => {
   const { t } = useTranslation();
   // 1: Variables
@@ -59,12 +59,12 @@ const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setconfirmNewPassword] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
-  const [otp, setOtp] = useState('');
-  const [otpPopupVisible, setOtpPopupVisible] = useState('');
+  const [otp, setOtp] = useState("");
+  const [otpPopupVisible, setOtpPopupVisible] = useState("");
   const [isChagePassword, setIsChangePassword] = useState(false);
   const [isSubmitEmail, setIsSubmitEmail] = useState(false);
   const [emailSubmit, setEmailSubmit] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [sendOtpLoading, setsendOtpLoading] = useState(false);
   const [havePassword, setHavepassword] = useState(false);
 
@@ -134,8 +134,6 @@ const ProfilePage = () => {
       return "Số điện thoại phải có đúng 10 số.";
     }
 
-
-
     return ""; // Hợp lệ
   };
 
@@ -147,7 +145,9 @@ const ProfilePage = () => {
       return "Giới tính không được để trống.";
     }
 
-    const formattedGender = gender.trim().charAt(0).toUpperCase() + gender.trim().slice(1).toLowerCase(); // Chuyển chữ cái đầu thành viết hoa
+    const formattedGender =
+      gender.trim().charAt(0).toUpperCase() +
+      gender.trim().slice(1).toLowerCase(); // Chuyển chữ cái đầu thành viết hoa
 
     if (!validGenders.includes(formattedGender)) {
       return "Giới tính chỉ có thể là 'Nam', 'Nữ' hoặc 'Khác'.";
@@ -155,7 +155,6 @@ const ProfilePage = () => {
 
     return ""; // Hợp lệ
   };
-
 
   // 3: useEffect
   useEffect(() => {
@@ -230,7 +229,7 @@ const ProfilePage = () => {
 
     try {
       const result = await UserServices.sendOtp({
-        password
+        password,
       });
 
       if (result.status === "OK") {
@@ -248,26 +247,28 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        message.success("OTP đã được gửi!");
+        message.success(t('otpSent'));
       } else {
         message.error(result.message || "Không thể gửi OTP.");
       }
     } catch (error) {
       console.error("Lỗi khi yêu cầu OTP:", error.message);
-      message.error("Không thể gửi OTP. Vui lòng thử lại.");
+      message.error(t('otpSendFailRetry'));
     }
   };
   // Click Submit Sau Khi Điền Form
   const HandleSubmitForm = async () => {
-    if (!otp || otp.length !== 6) { // Kiểm tra OTP
-      message.error("Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.");
+    if (!otp || otp.length !== 6) {
+      // Kiểm tra OTP
+      message.error(t('invalidOtp'));
       return;
     }
     if (havePassword) {
       const data = { email, otp };
       const res = await UserServices.checkOtpChangePassword(data);
       if (res.status === "OK") {
-        console.log(newPassword)
+        console.log(newPassword);
+        setOtpPopupVisible(false);
         handleChangePassword();
       }
     } else {
@@ -276,24 +277,25 @@ const ProfilePage = () => {
     }
   };
   const handleCheckPassword = async () => {
+    if (!newPassword || !password || !confirmNewPassword) {
+      message.error(t('fieldsRequired'));
+      return;
+    }
     if (newPassword !== confirmNewPassword) {
-      message.error("Mật khẩu không trùng khớp");
+      message.error(t('passwordMismatch'));
       return;
     }
     if (password === newPassword) {
-      message.error("Mật khẩu mới không được trùng với mật khẩu cũ");
+      message.error(t('passwordSameAsOld'));
       return;
     }
     if (!havePassword) {
       handleChangePassword();
       return;
     }
-    if (!newPassword || !password || !confirmNewPassword) {
-      message.error("Các trường thông tin không được để trống.");
-      return;
-    }
+
     setsendOtpLoading(true);
-    setErrorMessage('');
+    setErrorMessage("");
     try {
       const res = await UserServices.checkPassword({ email, password });
       if (res.status === "ERROR") {
@@ -312,18 +314,18 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        message.success("OTP đã được gửi!");
+        message.success(t('otpSent'));
       }
     } catch (error) {
       console.error("API call failed:", error);
-      setErrorMessage("Something went wrong. Please try again.");
+      message.error(t('emailNotExist'));
     } finally {
       setsendOtpLoading(false);
     }
-  }
+  };
   const handleCheckEmail = async () => {
     setsendOtpLoading(true);
-    setErrorMessage('');
+    setErrorMessage("");
     try {
       const res = await UserServices.checkEmail({ emailForgot: emailSubmit });
       if (res.status === "ERROR") {
@@ -350,23 +352,27 @@ const ProfilePage = () => {
     } finally {
       setsendOtpLoading(false);
     }
-  }
+  };
   const handleChagePasswordModal = () => {
     if (havePassword) {
       setIsChangePassword(true);
     } else {
       setIsSubmitEmail(true);
     }
-  }
+  };
   const handleChangePassword = async () => {
     const access_token = userRedux.access_token;
-    const res2 = await UserServices.updatePassword({ newPassword, email, access_token });
+    const res2 = await UserServices.updatePassword({
+      newPassword,
+      email,
+      access_token,
+    });
     if (res2.status === "OK") {
-      message.success("Thay đổi mật khẩu thành công.");
+      message.success(t('passwordChangedSuccess'));
       handleGetDetailsUser(userRedux?.id, userRedux?.access_token);
       window.location.reload();
     }
-  }
+  };
   // get value redux after userRedux change
   useEffect(() => {
     setFullName(userRedux?.full_name);
@@ -398,7 +404,7 @@ const ProfilePage = () => {
     setPhoneError(error);
   };
   const handleCloseOtpPopup = () => {
-    setOtp('');
+    setOtp("");
     setOtpPopupVisible(false);
     setResendTimer(0);
   };
@@ -680,11 +686,18 @@ const ProfilePage = () => {
       {isSubmitEmail && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <div onClick={() => setIsSubmitEmail(false)} className="absolute top-4 right-4 cursor-pointer">
+            <div
+              onClick={() => setIsSubmitEmail(false)}
+              className="absolute top-4 right-4 cursor-pointer"
+            >
               <img src="/image/icon/close.png" alt="" className="w-4" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-700">{t("confirmEmail")}</h2>
-            <p className="text-gray-500 text-sm mb-4">{t("pleaseEnterEmail")}</p>
+            <h2 className="text-lg font-semibold text-gray-700">
+              {t("confirmEmail")}
+            </h2>
+            <p className="text-gray-500 text-sm mb-4">
+              {t("pleaseEnterEmail")}
+            </p>
             <input
               type="email"
               required
@@ -695,18 +708,32 @@ const ProfilePage = () => {
             {errorMessage && (
               <p className="text-red-500 mt-2 ml-2">{errorMessage}</p>
             )}
-            <button onClick={() => handleCheckEmail()} disabled={sendOtpLoading} className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition">
+            <button
+              onClick={() => handleCheckEmail()}
+              disabled={sendOtpLoading}
+              className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
+            >
               {sendOtpLoading === true ? (
                 <div role="status" className="w-fit mx-auto">
-                  <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                  <svg
+                    aria-hidden="true"
+                    className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
                   </svg>
                 </div>
               ) : (
-                <span>
-                  {t("sendRequest")}
-                </span>
+                <span>{t("sendRequest")}</span>
               )}
             </button>
 
@@ -715,17 +742,23 @@ const ProfilePage = () => {
                 onClick={() => setIsSubmitEmail(false)}
                 className="absolute top-3 right-3 cursor-pointer"
               >
-                <img src="/image/icon/close.png" alt="Đóng" className="w-4 opacity-70 hover:opacity-100 transition" />
+                <img
+                  src="/image/icon/close.png"
+                  alt="Đóng"
+                  className="w-4 opacity-70 hover:opacity-100 transition"
+                />
               </div>
             )}
           </div>
-
         </div>
       )}
       {otpPopupVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
-            <div onClick={handleCloseOtpPopup} className="absolute top-4 right-4 cursor-pointer">
+            <div
+              onClick={handleCloseOtpPopup}
+              className="absolute top-4 right-4 cursor-pointer"
+            >
               <img src="/image/icon/close.png" alt="" className="w-4" />
             </div>
             <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6 mt-2">
@@ -760,29 +793,38 @@ const ProfilePage = () => {
             <p className="text-sm text-gray-500 text-center mt-4">
               {t("notReceiveOtp")}{" "}
               <span
-                className={`cursor-pointer ${resendTimer > 0
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-indigo-600 hover:underline"
-                  }`}
+                className={`cursor-pointer ${
+                  resendTimer > 0
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-indigo-600 hover:underline"
+                }`}
                 onClick={resendTimer === 0 ? requestOtp : undefined}
               >
-                {resendTimer > 0 ? t("resendIn", { seconds: resendTimer }) : t("resendNow")}
+                {resendTimer > 0
+                  ? t("resendIn", { seconds: resendTimer })
+                  : t("resendNow")}
               </span>
             </p>
           </div>
         </div>
-
       )}
       {isChagePassword && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <div onClick={() => setIsChangePassword(false)} className="absolute top-4 right-4 cursor-pointer">
+            <div
+              onClick={() => setIsChangePassword(false)}
+              className="absolute top-4 right-4 cursor-pointer"
+            >
               <img src="/image/icon/close.png" alt="" className="w-4" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-700">{t("changePassword")}</h2>
+            <h2 className="text-lg font-semibold text-gray-700">
+              {t("changePassword")}
+            </h2>
             {havePassword && (
               <div>
-                <p className="text-gray-500 text-sm my-2 mt-3">{t("enterOldPassword")}</p>
+                <p className="text-gray-500 text-sm my-2 mt-3">
+                  {t("enterOldPassword")}
+                </p>
                 <input
                   type="password"
                   required
@@ -792,7 +834,9 @@ const ProfilePage = () => {
                 />
               </div>
             )}
-            <p className="text-gray-500 text-sm my-2 mt-3">{t("enterNewPassword")}</p>
+            <p className="text-gray-500 text-sm my-2 mt-3">
+              {t("enterNewPassword")}
+            </p>
             <input
               type="password"
               required
@@ -800,7 +844,9 @@ const ProfilePage = () => {
               onChange={(event) => setNewPassword(event.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
             />
-            <p className="text-gray-500 text-sm my-2 mt-3">{t("confirmNewPassword")}</p>
+            <p className="text-gray-500 text-sm my-2 mt-3">
+              {t("confirmNewPassword")}
+            </p>
             <input
               type="password"
               required
@@ -811,18 +857,32 @@ const ProfilePage = () => {
             {errorMessage && (
               <p className="text-red-500 mt-2 ml-2">{errorMessage}</p>
             )}
-            <button onClick={() => handleCheckPassword()} disabled={sendOtpLoading} className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition">
+            <button
+              onClick={() => handleCheckPassword()}
+              disabled={sendOtpLoading}
+              className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
+            >
               {sendOtpLoading === true ? (
                 <div role="status" className="w-fit mx-auto">
-                  <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                  <svg
+                    aria-hidden="true"
+                    className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
                   </svg>
                 </div>
               ) : (
-                <span>
-                  {t("sendRequest")}
-                </span>
+                <span>{t("sendRequest")}</span>
               )}
             </button>
 
@@ -831,11 +891,14 @@ const ProfilePage = () => {
                 onClick={() => setIsChangePassword(false)}
                 className="absolute top-3 right-3 cursor-pointer"
               >
-                <img src="/image/icon/close.png" alt="Đóng" className="w-4 opacity-70 hover:opacity-100 transition" />
+                <img
+                  src="/image/icon/close.png"
+                  alt="Đóng"
+                  className="w-4 opacity-70 hover:opacity-100 transition"
+                />
               </div>
             )}
           </div>
-
         </div>
       )}
     </div>

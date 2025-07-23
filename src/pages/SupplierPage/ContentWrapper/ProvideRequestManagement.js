@@ -34,6 +34,7 @@ const ProvideRequestManagement = () => {
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const [note, setNote] = useState("");
 
   const fetchGetAllRequests = async () => {
     const access_token = user?.access_token;
@@ -94,7 +95,14 @@ const ProvideRequestManagement = () => {
   };
 
   const onFinishUpdate = (values) => {
-    mutationUpdate.mutate({ id: rowSelected, data: values });
+    const fullValues = {
+      ...values,
+      quantity: formUpdate.getFieldValue("quantity"),
+      price: formUpdate.getFieldValue("price"),
+      note: note,
+    };
+
+    mutationUpdate.mutate({ id: rowSelected, data: fullValues });
   };
 
   // Handle Cancel Edit Drawer
@@ -107,18 +115,20 @@ const ProvideRequestManagement = () => {
   const handleEdit = async (record) => {
     setRowSelected(record._id);
     try {
-      const res = await FuelEntryServices.getFuelEntryDetail(record.request_id);
+      const res = await FuelSupplyRequestService.getFuelSupplyRequestById(
+        user?.access_token,
+        record._id
+      );
+
       if (res) {
         setIsDrawerOpen(true);
         formUpdate.setFieldsValue({
-          fuel_name: record.fuel_name,
-          quantity: record.quantity,
-          note: record.note || "",
-          price: record.price,
+          fuel_name: res.fuel_name,
+          quantity: res.quantity,
+          price: res.price,
+          note: res.note || "",
         });
-        console.log(res);
-        // Save `quantity_remain` in state for validation later
-        setQuantityRemain(res.res.quantity_remain);
+        setNote(res.note || "");
       }
     } catch (error) {
       console.log(error);
@@ -143,6 +153,17 @@ const ProvideRequestManagement = () => {
     } catch (error) {
       console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
     }
+  };
+
+  const statusMap = {
+    "Chờ duyệt": { color: "orange", label: t("status.pending") },
+    "Đã duyệt": { color: "green", label: t("status.approve") },
+    "Hoàn Thành": { color: "gold", label: t("status.completed") },
+    "Đang xử lý": { color: "blue", label: t("status.completed") },
+    "Đã huỷ": { color: "red", label: t("status.cancelled") },
+    "Đã hủy": { color: "red", label: t("status.cancelled") },
+    "Thất bại": { color: "magenta", label: t("status.failed") },
+    "Vô hiệu hóa": { color: "gray", label: t("status.disable") },
   };
 
   const getStatusClasses = (status) => {
@@ -302,25 +323,11 @@ const ProvideRequestManagement = () => {
       key: "status",
       className: "text-center",
       render: (status) => {
-        let displayText = status;
-        let color = "orange"; // Mặc định là "Chờ duyệt"
-        if (status === "Đã duyệt") {
-          color = "green";
-          displayText = t("status.approve");
-        }
-        if (status === "Hoàn Thành" || status === "Đang xử lý") {
-          color = "yellow";
-          displayText = t("status.completed"); // Hiển thị "Hoàn Thành" cho cả 2 status
-        }
-        if (status === "Đã huỷ") {
-          color = "red";
-          displayText = t("status.cancelled");
-        }
-        if (status === "Chờ duyệt") {
-          displayText = t("status.pending");
-        }
-
-        return <Tag color={color}>{displayText}</Tag>;
+        const { color, label } = statusMap[status] || {
+          color: "default",
+          label: status,
+        };
+        return <Tag color={color}>{label}</Tag>;
       },
       onFilter: (value, record) => {
         // Kiểm tra xem giá trị status có phải là "Hoàn Thành" hay "Đang xử lý" không
@@ -337,6 +344,8 @@ const ProvideRequestManagement = () => {
         { text: t("status.approve"), value: "Đã duyệt" },
         { text: t("status.cancelled"), value: "Đã huỷ" },
         { text: t("status.completed"), value: "Hoàn Thành" },
+        { text: t("status.failed"), value: "Thất bại" },
+        { text: t("status.disable"), value: "Vô hiệu hóa" },
       ],
     },
   ];
@@ -491,6 +500,7 @@ const ProvideRequestManagement = () => {
         </Loading>
       </DrawerComponent> */}
 
+      {/* Update Request */}
       <DrawerComponent
         title={
           <div style={{ textAlign: "center" }}>
@@ -503,117 +513,147 @@ const ProvideRequestManagement = () => {
         onClose={handleCancelUpdate}
       >
         <Loading isPending={mutationUpdate.isPending}>
-          <Form
-            name="update-form"
-            form={formUpdate}
-            onFinish={onFinishUpdate}
-            layout="vertical"
-          >
-            <Form.Item
-              label={t("harvestRequest.name_request")}
-              name="fuel_name"
+          <div className="w-full p-6 bg-white rounded-md shadow">
+            <Form
+              form={formUpdate}
+              name="update-form"
+              onFinish={onFinishUpdate}
+              layout="vertical"
             >
-              <Input value={selectedRequest.fuel_name} disabled />
-            </Form.Item>
+              {/* Request Name */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.request_name")}
+                </label>
+                <Input
+                  value={formUpdate.getFieldValue("fuel_name")}
+                  readOnly
+                  className="bg-white text-black cursor-default w-full"
+                  style={{ cursor: "default" }}
+                />
+              </div>
 
-            <Form.Item>
+              {/* Quantity (hiển thị nhưng không cho sửa) */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.enter_quantity")}
+                </label>
+                <Input
+                  value={formUpdate.getFieldValue("quantity")}
+                  readOnly
+                  className="bg-white text-black cursor-default w-full"
+                  style={{ cursor: "default" }}
+                />
+              </div>
+
+              {/* Quantity remain (nếu cần)
               {quantityRemain !== null && (
-                <div style={{ fontSize: "14px", color: "gray" }}>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "gray",
+                    marginBottom: "12px",
+                  }}
+                >
                   <strong>
                     {t("provideRequest.quantityRemain")} {quantityRemain} KG
                   </strong>
                 </div>
-              )}
-            </Form.Item>
+              )} */}
 
-            <Form.Item
-              name="quantity"
-              label={t("provideRequest.enter_quantity")}
-              rules={[
-                {
-                  required: true,
-                  message: t("provideRequest.enter_quantity_required"),
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.resolve();
-                    }
-                    if (value > quantityRemain) {
-                      return Promise.reject(
-                        new Error(
-                          new Error(
-                            t("provideRequest.exceed_quantity", {
-                              quantity: quantityRemain,
-                            })
-                          )
-                        )
-                      );
-                    }
-                    if (value % 10 !== 0) {
-                      return Promise.reject(
-                        new Error(t("provideRequest.must_divisible_by_10"))
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                }),
-              ]}
-            >
-              <Input
-                type="number"
-                min={10}
-                onKeyDown={(e) => {
-                  if (["-", "e", "E", "+", ".", ","].includes(e.key)) {
-                    e.preventDefault();
+              {/* Unit Price */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.unit_price")}
+                </label>
+                <Input
+                  value={formUpdate.getFieldValue("price")}
+                  readOnly
+                  className="bg-white text-black cursor-default w-full"
+                  style={{ cursor: "default" }}
+                />
+              </div>
+
+              {/* Total Price */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.total_price")}
+                </label>
+                <Input
+                  readOnly
+                  value={
+                    formUpdate.getFieldValue("quantity") &&
+                    formUpdate.getFieldValue("price")
+                      ? (
+                          Number(formUpdate.getFieldValue("quantity")) *
+                          Number(formUpdate.getFieldValue("price"))
+                        ).toLocaleString("vi-VN") + " VNĐ"
+                      : "Chưa tính"
                   }
-                }}
-                onChange={(e) => {
-                  const quantity = e.target.value;
-                  formUpdate.setFieldsValue({ quantity });
-                  updateTotalPrice(quantity, formUpdate.getFieldValue("price"));
-                }}
-              />
-            </Form.Item>
+                />
+              </div>
 
-            <Form.Item label={t("provideRequest.unit_price")} name="price">
-              <Input disabled />
-            </Form.Item>
+              {/* Updated At */}
+              <div className="mb-4">
+                <label className="font-semibold block mb-1">
+                  {t("provideRequest.updated_at")}
+                </label>
+                <Input
+                  readOnly
+                  value={converDateString(selectedRequest?.updatedAt)}
+                />
+              </div>
 
-            <Form.Item label={t("provideRequest.note")} name="note">
-              <Input.TextArea rows={3} placeholder={t("provideRequest.note")} />
-            </Form.Item>
+              {/* Note */}
+              <Form.Item label={t("provideRequest.note")} name="note">
+                <Input.TextArea
+                  rows={3}
+                  placeholder={t("provideRequest.note")}
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </Form.Item>
 
-            <div
-              style={{ marginBottom: 10, fontSize: "16px", fontWeight: "bold" }}
-            >
-              <span>{t("provideRequest.total_price_display")}</span>
-              {
-                // Kiểm tra và tính toán tổng giá khi cả quantity và price đều có giá trị hợp lệ
-                formUpdate.getFieldValue("quantity") &&
-                formUpdate.getFieldValue("price")
-                  ? // Chuyển đổi giá trị quantity và price thành số và tính tổng
-                    (
-                      Number(formUpdate.getFieldValue("quantity")) *
-                      Number(formUpdate.getFieldValue("price"))
-                    ).toLocaleString("vi-VN")
-                  : "Chưa tính" // Hiển thị nếu chưa tính được tổng giá
-              }
-            </div>
+              {/* Status */}
+              <div className="flex items-center gap-2 mb-4">
+                <label className="font-semibold block">
+                  {t("provideRequest.status")}:
+                </label>
+                {(() => {
+                  const { color, label } = statusMap[
+                    selectedRequest?.status
+                  ] || {
+                    color: "default",
+                    label: selectedRequest?.status,
+                  };
+                  return <Tag color={color}>{label}</Tag>;
+                })()}
+              </div>
 
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={mutationUpdate.isPending}
-                style={{ width: "100%" }}
-              >
-                {mutationUpdate.isPending
-                  ? t("common.updating")
-                  : t("common.update")}
-              </Button>
-            </Form.Item>
-          </Form>
+              {/* Submit Button */}
+              <div className="flex flex-col md:flex-row justify-end gap-4 mt-4">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={mutationUpdate.isPending}
+                  className="w-full md:w-auto"
+                >
+                  {mutationUpdate.isPending
+                    ? t("common.updating")
+                    : t("common.update")}
+                </Button>
+
+                <Button
+                  type="default"
+                  danger
+                  onClick={handleCancelUpdate}
+                  className="w-full md:w-auto"
+                >
+                  {t("common.cancel")}
+                </Button>
+              </div>
+            </Form>
+          </div>
         </Loading>
       </DrawerComponent>
 
@@ -624,12 +664,18 @@ const ProvideRequestManagement = () => {
         onCancel={() => setIsOpenDelete(false)}
         onOk={handleConfirmDelete}
         confirmLoading={mutationDelete.isPending}
+        okButtonProps={{ danger: true }}
       >
         <p>{t("provideRequest.deleteConfirmMessage")}</p>
       </Modal>
 
+      {/* Request Detail */}
       <DrawerComponent
-        title={t("provideRequest.detail_title")}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("provideRequest.detail_title")}
+          </div>
+        }
         isOpen={isDetailDrawerOpen}
         placement="right"
         width={drawerWidth} // Điều chỉnh chiều rộng Drawer nếu cần
@@ -703,7 +749,7 @@ const ProvideRequestManagement = () => {
                   {t("provideRequest.note")}
                 </label>
                 <textarea
-                  value={detailData.note || "Không có ghi chú"}
+                  value={detailData.note}
                   readOnly
                   className="w-full h-auto border p-2 rounded"
                 />
@@ -714,24 +760,13 @@ const ProvideRequestManagement = () => {
                 <label className="block font-semibold">
                   {t("provideRequest.status")}{" "}
                 </label>
-                <span
-                  className={`ml-2 px-4 py-2 rounded text-sm font-medium inline-block w-30 text-center whitespace-nowrap ${getStatusClasses(
-                    detailData.status
-                  )}`}
-                >
-                  {
-                    detailData.status === "Chờ duyệt"
-                      ? t("status.pending")
-                      : detailData.status === "Đã duyệt"
-                      ? t("status.approve")
-                      : detailData.status === "Hoàn Thành" ||
-                        detailData.status === "Đang xử lý"
-                      ? t("status.completed")
-                      : detailData.status === "Đã huỷ"
-                      ? t("status.cancelled")
-                      : detailData.status // fallback nếu không có trạng thái nào trùng khớp
-                  }
-                </span>
+                {(() => {
+                  const { color, label } = statusMap[detailData.status] || {
+                    color: "default",
+                    label: detailData.status,
+                  };
+                  return <Tag color={color}>{label}</Tag>;
+                })()}
               </div>
             </div>
 
@@ -741,12 +776,12 @@ const ProvideRequestManagement = () => {
                 onClick={() => setIsDetailDrawerOpen(false)}
                 className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
               >
-                {t('close')}
+                {t("close")}
               </Button>
             </div>
           </div>
         ) : (
-          <p>{t('no_data')}</p>
+          <p>{t("no_data")}</p>
         )}
       </DrawerComponent>
     </div>

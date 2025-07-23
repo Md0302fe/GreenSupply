@@ -1,3 +1,6 @@
+import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 // check JSON string
 export const isJsonString = (data) => {
   try {
@@ -63,3 +66,7 @@ export const convertDateStringV1 = (dateString) => {
     return ""; // Tránh lỗi hiển thị nếu có lỗi
   }
 };
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs))
+}

@@ -212,6 +212,7 @@ const CreateBox = () => {
               },
             };
 
+            // Cập nhật dung tích gợi ý khi thay đổi các giá trị
             setSuggestedCapacity(suggest[type]?.[size] || null);
 
             if (capacity !== undefined && capacity !== null) {
@@ -231,7 +232,10 @@ const CreateBox = () => {
             name="package_material_name"
             rules={[{ required: true, message: t("boxMaterial.enterName") }]}
           >
-            <Input size="large" />
+            <Input
+              size="large"
+              placeholder={t("boxMaterial.namePlaceholder")}
+            />
           </Form.Item>
 
           <Form.Item
@@ -239,7 +243,11 @@ const CreateBox = () => {
             name="type"
             rules={[{ required: true, message: t("boxMaterial.selectType") }]}
           >
-            <Select size="large" onChange={(value) => setBoxType(value)}>
+            <Select
+              size="large"
+              onChange={(value) => setBoxType(value)}
+              placeholder={t("boxMaterial.typePlaceholder")}
+            >
               <Option value="túi chân không">
                 {t("boxMaterial.vacuumBagLabel")}
               </Option>
@@ -256,7 +264,12 @@ const CreateBox = () => {
               { required: true, message: t("boxMaterial.selectCategory") },
             ]}
           >
-            <Select size="large" showSearch optionFilterProp="children">
+            <Select
+              size="large"
+              showSearch
+              optionFilterProp="children"
+              placeholder={t("boxMaterial.categoryPlaceholder")}
+            >
               {categories.map((cat) => (
                 <Option key={cat._id} value={cat._id}>
                   {cat.categories_name}
@@ -269,10 +282,41 @@ const CreateBox = () => {
             label={t("boxMaterial.quantity")}
             name="quantity"
             rules={[
-              { required: true, message: t("boxMaterial.enterQuantity") },
+              {
+                required: true,
+                message: t("boxMaterial.enterQuantity"),
+              },
+              {
+                validator: (_, value) => {
+                  if (value === undefined || value === "") {
+                    return Promise.resolve();
+                  }
+                  if (/^\d+$/.test(value)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(t("boxMaterial.onlyNumber"));
+                },
+              },
             ]}
           >
-            <Input type="number" min={0} size="large" />
+            <Input
+              size="large"
+              inputMode="numeric"
+              maxLength={6}
+              type="text"
+              onChange={(e) => {
+                const value = e.target.value;
+
+                //  Chỉ set lại nếu là số nguyên dương hoặc chuỗi rỗng
+                if (/^\d*$/.test(value)) {
+                  form.setFieldsValue({ quantity: value });
+
+                  //  Xóa lỗi thủ công nếu người dùng vừa sửa lại hợp lệ
+                  form.validateFields(["quantity"]).catch(() => {});
+                }
+              }}
+              placeholder={t("boxMaterial.quantityPlaceholder")}
+            />
           </Form.Item>
 
           <div className="flex gap-4">
@@ -284,7 +328,12 @@ const CreateBox = () => {
                 { required: true, message: t("boxMaterial.enterLength") },
               ]}
             >
-              <Input type="number" min={0} size="large" />
+              <Input
+                type="number"
+                min={0}
+                size="large"
+                placeholder={t("boxMaterial.lengthPlaceholder")}
+              />
             </Form.Item>
 
             <Form.Item
@@ -293,7 +342,12 @@ const CreateBox = () => {
               className="flex-1"
               rules={[{ required: true, message: t("boxMaterial.enterWidth") }]}
             >
-              <Input type="number" min={0} size="large" />
+              <Input
+                type="number"
+                min={0}
+                size="large"
+                placeholder={t("boxMaterial.widthPlaceholder")}
+              />
             </Form.Item>
 
             <Form.Item
@@ -312,9 +366,9 @@ const CreateBox = () => {
                 size="large"
                 disabled={boxType !== "thùng carton"}
                 placeholder={
-                  boxType !== "thùng carton"
-                    ? t("boxMaterial.heightPlaceholder")
-                    : ""
+                  boxType === "thùng carton"
+                    ? t("boxMaterial.heightPlaceholder1")
+                    : t("boxMaterial.heightPlaceholder")
                 }
               />
             </Form.Item>
@@ -339,9 +393,24 @@ const CreateBox = () => {
             name="capacity"
             rules={[
               { required: true, message: t("boxMaterial.enterCapacity") },
+              {
+                validator: (_, value) => {
+                  if (value < 0) {
+                    return Promise.reject(
+                      t("boxMaterial.negativeCapacityError")
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
-            <Input type="number" min={0} size="large" />
+            <Input
+              type="number"
+              min={0}
+              size="large"
+              placeholder={t("boxMaterial.capacityPlaceholder")}
+            />
           </Form.Item>
 
           {currentSize && suggestedCapacity !== null && (
@@ -366,7 +435,11 @@ const CreateBox = () => {
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
             rules={[{ required: true, message: t("boxMaterial.selectImage") }]}
           >
-            <Upload listType="picture">
+            <Upload
+              listType="picture"
+              beforeUpload={() => false}
+              accept="image/*"
+            >
               <Button icon={<UploadOutlined />}>
                 {t("boxMaterial.selectImageButton")}
               </Button>

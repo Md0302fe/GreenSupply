@@ -2,12 +2,14 @@ import FeatureButtons from "../../components/BodyHomePage/FeatureButtons/Feature
 import ImportProductList from "../../components/BodyHomePage/ImportProductList/ImportProductList.js";
 import "./HomPage.scss";
 
-import LogoOrange from "../../assets/NewProject/Logo/logo-orange.png";
 import Carousel from "../../components/BodyHomePage/CarouselComponent/Carousel.js";
 import Farmer from "../../../src/assets/NewProject/Carousel/farmer.png";
 import MangoOrange from "../../../src/assets/NewProject/Carousel/mango-orange.png";
 import MangoBackground from "../../assets/NewProject/ProductList/background-1.png";
 import StoreProduct from "../../components/BodyHomePage/StoreProduct/StoreProduct.js";
+
+import MangovateLogo from "../../assets/Logo_Mangovate/Logo_Rmb.png";
+
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -20,9 +22,9 @@ import { useTranslation } from "react-i18next";
 const HomePage = () => {
   return (
     <div>
-      <div className="relative mb-35 lg:mb-40">
+      <div className="relative mb-35 lg:mb-40 pt-4 bg-slate-50">
         <Carousel />
-        <div className="absolute -bottom-[4rem] md:-bottom-[4.5rem] lg:-bottom-[9rem] right-1/2 translate-x-1/2">
+        <div className="relative -bottom-[1rem] md:-bottom-[2.5rem] lg:-bottom-[5rem] right-1/2 translate-x-1/2">
           <FeatureButtons />
         </div>
       </div>
@@ -84,7 +86,7 @@ const AboutSupplyChain = () => {
       <div className="mx-4 md:mx-10 lg:mx-20">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-center lg:text-left">
           <div className="flex flex-col lg:flex-row items-center gap-4">
-            <img src={LogoOrange} alt="Logo" className="w-[140px] lg:w-[200px] h-auto mx-auto lg:mx-0" />
+            <img src={MangovateLogo} alt="Logo" className="w-[140px] lg:w-[200px] h-auto mx-auto lg:mx-0 scale-150" />
             <div className="text-[#FF8B00] font-semibold text-base lg:text-lg lg:mt-0">
               {t("slogan")}
             </div>

@@ -1,11 +1,13 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import LogoYellow from "../../assets/NewProject/Logo/logo-yellow.png";
 import logoWhite from "../../assets/NewProject/Logo/logo-white.png";
 import FacebookIcon from "../../assets/NewProject/Icon-GreenSupply/Facebook.png";
 import YoutubeIcon from "../../assets/NewProject/Icon-GreenSupply/YouTube.png";
 import TiktokIcon from "../../assets/NewProject/Icon-GreenSupply/TikTok.png";
 import BackgroundFooter from "../../assets/NewProject/ProductList/background-footer.png";
+
+import MangovateLogo from "../../assets/Logo_Mangovate/Logo_Rmb.png";
+
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -24,8 +26,8 @@ const Footer = () => {
         {/* Overlay Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
           <img
-            src={LogoYellow}
-            alt="Green Supply Logo"
+            src={MangovateLogo}
+            alt="Mangovate Logo"
             className="w-36 md:w-48 mb-2"
           />
           <h1 className="text-xl md:text-3xl font-bold mb-4">

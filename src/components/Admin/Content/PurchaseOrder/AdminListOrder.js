@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Order.scss";
 
-import { Button, Form, Input, Space, Upload , message } from "antd";
+import { Button, Form, Input, Space, Upload, message } from "antd";
 
 import * as UserServices from "../../../../services/UserServices";
 import * as PurchaseOrderServices from "../../../../services/PurchaseOrderServices";
@@ -228,8 +228,24 @@ const UserComponent = () => {
       errors.push("Vui lòng chọn hạn chót hoàn thành đơn!");
     }
 
-    // Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
-    // Điều kiện 1: Ngày bắt đầu phải <= ngày kết thúc
+    // So sánh ngày bắt đầu < ngày kết thúc
+    if (purchaseDetails.start_received && purchaseDetails.end_received) {
+      const start = new Date(purchaseDetails.start_received).getTime();
+      const end = new Date(purchaseDetails.end_received).getTime();
+      if (start >= end) {
+        errors.push("Ngày kết thúc phải sau ngày bắt đầu.");
+      }
+    }
+
+    // So sánh ngày kết thúc < hạn chót (không được trùng)
+    if (purchaseDetails.end_received && purchaseDetails.due_date) {
+      const end = new Date(purchaseDetails.end_received).setHours(0, 0, 0, 0);
+      const due = new Date(purchaseDetails.due_date).setHours(0, 0, 0, 0);
+      if (end >= due) {
+        errors.push("Hạn chót phải sau ngày kết thúc (không được trùng).");
+      }
+    }
+
     return errors;
   };
 
@@ -449,6 +465,27 @@ const UserComponent = () => {
   //       // end_received: convertDateStringV1(purchaseOrder.end_received),
   //     }))
   //   : [];
+
+  // Không cho chọn ngày trong quá khứ
+  const disabledStartDate = (current) => {
+    return current && current < new Date().setHours(0, 0, 0, 0);
+  };
+
+  // end_received phải > start_received
+  const disabledEndDate = (current) => {
+    if (!purchaseDetails.start_received) {
+      return current && current < new Date().setHours(0, 0, 0, 0);
+    }
+    return current && current <= new Date(purchaseDetails.start_received);
+  };
+
+  // due_date phải > end_received
+  const disabledDueDate = (current) => {
+    if (!purchaseDetails.end_received) {
+      return current && current < new Date().setHours(0, 0, 0, 0);
+    }
+    return current && current <= new Date(purchaseDetails.end_received);
+  };
 
   const tableData = Array.isArray(data_purchase?.data)
     ? data_purchase.data
@@ -848,7 +885,7 @@ const UserComponent = () => {
       {/* DRAWER - Update Product */}
       <DrawerComponent
         title={
-          <span className="text-[14px] lg:text-lg font-semibold text-gray-800">
+          <span className="text-[14px] lg:text-lg font-semibold">
             {t("order.drawer_title")}
           </span>
         }
@@ -862,9 +899,6 @@ const UserComponent = () => {
           {/* Form cập nhật đơn thu nguyên liệu */}
           <div className="w-full bg-gray-100 p-0 lg:p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-[16px] sm:text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                🚀 {t("order.update_title")}
-              </h2>
               <div className="space-y-4">
                 {/* Tên đơn */}
                 <div>
@@ -957,6 +991,14 @@ const UserComponent = () => {
                       placeholder={t("order.form.quantity_placeholder")}
                       value={purchaseDetails.quantity}
                       onChange={handleChange}
+                      onKeyDown={(e) => {
+                        if (
+                          ["e", "E", "+", "-", ".", ","].includes(e.key) ||
+                          (!/^\d$/.test(e.key) && e.key.length === 1)
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300"
                     />
                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
@@ -978,6 +1020,14 @@ const UserComponent = () => {
                       placeholder={t("order.form.price_placeholder")}
                       value={purchaseDetails.price}
                       onChange={handleChange}
+                      onKeyDown={(e) => {
+                        if (
+                          ["e", "E", "+", "-", ".", ","].includes(e.key) ||
+                          (!/^\d$/.test(e.key) && e.key.length === 1)
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300"
                     />
                     <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
@@ -992,49 +1042,74 @@ const UserComponent = () => {
                     <label className="block text-gray-800 font-semibold mb-2">
                       {t("order.form.start_date")}
                     </label>
-                    <DatePicker
-                      selected={purchaseDetails.start_received}
-                      onChange={(date) =>
-                        handleChange({
-                          target: { name: "start_received", value: date },
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                      placeholderText={t("order.form.date_placeholder")}
-                    />
+                    <div className="border border-gray-300 p-2 rounded w-full focus-within:ring focus-within:ring-yellow-300">
+                      <DatePicker
+                        selected={purchaseDetails.start_received}
+                        onChange={(date) =>
+                          handleChange({
+                            target: { name: "start_received", value: date },
+                          })
+                        }
+                        dateFormat="dd/MM/yyyy"
+                        placeholderText={t("order.form.date_placeholder")}
+                        className="w-full outline-none bg-transparent"
+                        minDate={new Date()}
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
                       {t("order.form.end_date")}
                     </label>
-                    <DatePicker
-                      selected={purchaseDetails.end_received}
-                      onChange={(date) =>
-                        handleChange({
-                          target: { name: "end_received", value: date },
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                      placeholderText={t("order.form.date_placeholder")}
-                    />
+                    <div className="border border-gray-300 p-2 rounded w-full focus-within:ring focus-within:ring-yellow-300">
+                      <DatePicker
+                        selected={purchaseDetails.end_received}
+                        onChange={(date) =>
+                          handleChange({
+                            target: { name: "end_received", value: date },
+                          })
+                        }
+                        dateFormat="dd/MM/yyyy"
+                        className="..."
+                        placeholderText={t("order.form.date_placeholder")}
+                        minDate={
+                          purchaseDetails.start_received
+                            ? new Date(
+                                new Date(
+                                  purchaseDetails.start_received
+                                ).getTime() + 86400000
+                              )
+                            : new Date()
+                        }
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
                       {t("order.form.due_date")}
                     </label>
-                    <DatePicker
-                      selected={purchaseDetails.due_date}
-                      onChange={(date) =>
-                        handleChange({
-                          target: { name: "due_date", value: date },
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                      placeholderText={t("order.form.date_placeholder")}
-                    />
+                    <div className="border border-gray-300 p-2 rounded w-full focus-within:ring focus-within:ring-yellow-300">
+                      <DatePicker
+                        selected={purchaseDetails.due_date}
+                        onChange={(date) =>
+                          handleChange({
+                            target: { name: "due_date", value: date },
+                          })
+                        }
+                        dateFormat="dd/MM/yyyy"
+                        className="..."
+                        placeholderText={t("order.form.date_placeholder")}
+                        minDate={
+                          purchaseDetails.end_received
+                            ? new Date(
+                                new Date(
+                                  purchaseDetails.end_received
+                                ).getTime() + 86400000
+                              )
+                            : new Date()
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -1085,38 +1160,41 @@ const UserComponent = () => {
                     VNĐ
                   </span>
                 </div>
-                <div className="flex justify-end mt-4">
-                  <button
-                    onClick={() => setIsDrawerOpen(false)}
-                    className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    Đóng
-                  </button>
-                </div>
 
                 {/* Nút bấm */}
                 {purchaseDetails?.status === "Chờ duyệt" && (
-                  <div className="flex flex-col md:flex-row md:justify-between gap-4">
+                  <div className="flex flex-wrap md:flex-nowrap justify-end gap-3 mt-4">
+                    {/* Nút cập nhật */}
                     <button
                       onClick={handleOpenConfirmUpdate}
-                      className="bg-yellow-200 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+                      className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-all duration-200 w-full md:w-auto"
                     >
                       {t("order.actions.update")}
                     </button>
 
+                    {/* Nút chấp nhận */}
                     <button
                       onClick={handleOpenConfirmAccept}
-                      className="bg-green-600 text-gray-800 font-bold px-4 py-2 rounded hover:bg-yellow-500 w-full md:w-auto"
+                      className="bg-[#134afe] hover:bg-[#0e3bd1] text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-all duration-200 w-full md:w-auto"
                     >
                       {t("order.actions.accept")}
                     </button>
 
+                    {/* Nút huỷ */}
                     <button
                       type="button"
-                      onClick={handleOpenConfirmCancel} // Chỉ đóng form, không cập nhật
-                      className="bg-red-600 text-white font-bold px-4 py-2 rounded hover:bg-gray-700 w-full md:w-auto"
+                      onClick={handleOpenConfirmCancel}
+                      className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-all duration-200 w-full md:w-auto"
                     >
                       {t("order.actions.cancel")}
+                    </button>
+
+                    {/* Nút đóng */}
+                    <button
+                      onClick={() => setIsDrawerOpen(false)}
+                      className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-all duration-200 w-full md:w-auto"
+                    >
+                      {t("common.close")}
                     </button>
                   </div>
                 )}

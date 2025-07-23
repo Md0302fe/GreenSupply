@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../assets/NewProject/Logo/logo-green.png";
+// import logo from "../../../assets/NewProject/Logo/logo-green.png";
+import MangovateLogo from "../../../assets/Logo_Mangovate/Logo_Rmb.png";
 import { Button } from "@mui/material";
 import { RxDashboard } from "react-icons/rx";
 import { MdOutlineBorderColor } from "react-icons/md";
@@ -28,10 +29,10 @@ const SideBar = ({ onItemClick }) => {
 
   return (
     <div className="sidebar w-full h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-3 bg-[#fff]">
-      <div className="py-2 w-full flex justify-center">
+      <div className="py-2 w-full  flex justify-center">
         <img
-          src={logo}
-          className="w-[150px] cursor-pointer"
+          src={MangovateLogo}
+          className="w-[200px] relative cursor-pointer"
           onClick={() => navigate("/home")}
         />
       </div>
@@ -150,7 +151,7 @@ const SideBar = ({ onItemClick }) => {
             </ul>
           </Collapse>
         </li>
-        <li>
+        {/* <li>
           <Button
             onClick={() => {
               navigate("/supplier/tracking-shipment");
@@ -161,7 +162,7 @@ const SideBar = ({ onItemClick }) => {
             <IoBagCheckOutline className="text-[20px]" />
             <span>{t("sidebar.track_shipment")}</span>
           </Button>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

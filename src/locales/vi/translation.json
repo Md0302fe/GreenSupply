@@ -17,7 +17,7 @@
   "resend_after": "Gửi lại sau {{count}}s",
   "resend": "Gửi lại",
   "slogan": "Giải pháp hiệu quả dành cho nông sản của bạn",
-  "copyright": "@2025 bản quyền thuộc về Green supply",
+  "copyright": "@2025 bản quyền thuộc về Mangovate",
   "not_receive_code": "Không nhận được mã?",
   "login_success": "Đăng nhập thành công!",
   "login_fail": "Đăng nhập thất bại.",
@@ -85,17 +85,37 @@
   "enterOldPassword": "Vui lòng nhập mật khẩu cũ của bạn",
   "enterNewPassword": "Vui lòng nhập mật khẩu mới của bạn",
   "confirmNewPassword": "Vui lòng nhập lại mật khẩu mới của bạn",
+  "fill_all_fields": "Vui lòng điền đầy đủ thông tin.",
+  "choose_gender": "Vui lòng chọn giới tính.",
+  "must_be_18_years_old": "Bạn phải từ 18 tuổi trở lên.",
+  "updateSuccess": "Cập nhật thành công.",
+  "updateError": "Cập nhật thất bại.",
+  "otpSent": "OTP đã được gửi!",
+  "otpSendFail": "Không thể gửi OTP.",
+  "otpSendFailRetry": "Không thể gửi OTP. Vui lòng thử lại.",
+  "invalidOtp": "Vui lòng nhập mã OTP hợp lệ trước khi tiếp tục.",
+  "fieldsRequired": "Các trường thông tin không được để trống.",
+  "passwordMismatch": "Mật khẩu không trùng khớp",
+  "passwordSameAsOld": "Mật khẩu mới không được trùng với mật khẩu cũ",
+  "passwordChangedSuccess": "Thay đổi mật khẩu thành công.",
+  "emailNotExist": "Email không tồn tại",
   "carousel": {
     "view_more": "Xem thêm",
-    "title_2": "TUYỂN CHỌN KỸ CÀNG",
-    "desc_1": "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
-    "desc_2": "Được lựa chọn từ những trái xoài to nhất, có độ chín đều ngon ngọt để cho ra thị trường Việt Nam và xuất khẩu.",
-    "title_3": "TIÊU CHUẨN",
-    "desc_3": "Những trái xoài đều được quản lý bằng QR Code dễ dàng truy xuất được thời điểm thu hoạch và vùng trồng sản phẩm.",
-    "desc_4": "Quy trình sản xuất xanh - Kết nối với nông dân đa tỉnh thành."
+    "slide1_title": "Chào mừng đến với Mangovate",
+    "slide1_description": "Hệ thống quản lý chuỗi cung ứng xoài xấy thông minh và bền vững",
+
+    "slide2_title": "Công nghệ tiên tiến",
+    "slide2_description": "Ứng dụng AI và IoT trong quản lý sản xuất",
+
+    "slide3_title": "Giải pháp toàn diện",
+    "slide3_description": "Từ sản xuất đến phân phối, chúng tôi có giải pháp cho mọi nhu cầu",
+
+    "slide4_title": "Đối tác tin cậy",
+    "slide4_description": "Hơn 1000+ doanh nghiệp tin tưởng sử dụng"
   },
   "import_product_list": {
-    "title": "Mặt hàng cần nhập",
+    "title": "Danh Sách Nguyên Liệu Cần Nhập",
+    "note": "Quản lý và theo dõi các sản phẩm cần cung cấp",
     "view_more": "Xem thêm",
     "empty": "Hiện tại chưa có đơn cần cung cấp.",
     "quantity": "Số lượng",
@@ -103,7 +123,8 @@
     "total_price": "Tổng giá",
     "remaining": "Còn lại",
     "expired": "Đã hết hạn cung cấp",
-    "create_order": "Tạo đơn"
+    "create_order": "Tạo đơn",
+    "urgent": "Gấp"
   },
   "common": {
     "days": "ngày",
@@ -134,7 +155,10 @@
     "notEnded": "Chưa kết thúc",
     "note": "Ghi chú",
     "createdAt": "Ngày tạo",
-    "loading": "Đang tải dữ liệu..."
+    "loading": "Đang tải dữ liệu...",
+    "high": "Cao",
+    "medium": "Trung bình",
+    "low": "Thấp"
   },
   "homepage": {
     "mango_desc_1": "Nhắc đến các loại trái cây miền nhiệt đới không thể nào không nhắc đến quả xoài. Tại Việt Nam, xoài được trồng từ Nam chí Bắc, vùng trồng xoài tập trung từ Bình Định trở vào, và được trồng nhiều nhất ở các tỉnh Đồng bằng Sông Cửu Long như Bến Tre, Tiền Giang, Đồng Tháp, Vĩnh Long, Cần Thơ,… Việt Nam là nước đứng thứ 13 về sản xuất xoài trên thế giới.",
@@ -159,26 +183,33 @@
     "article_3_title": "Xây dựng chuỗi giá trị xoài Việt Nam phục vụ thị trường trong nước và các thị trường xuất khẩu chủ lực"
   },
   "feature_buttons": {
-    "order_management": "QUẢN LÝ ĐƠN",
-    "harvest_request": "YÊU CẦU THU HÀNG",
-    "provide_material": "CUNG CẤP NGUYÊN LIỆU"
+    "order_management": "Quản lý đơn hàng",
+    "harvest_request": "Yêu cầu thu hàng",
+    "provide_material": "Cung cấp nguyên liệu",
+    "title": "Tính năng chính",
+    "description": "Khám phá các tính năng mạnh mẽ giúp các nhà cung ứng dễ dàng sử dụng dịch vụ",
+    "order_management_description": "Quản lý và theo dõi đơn hàng",
+    "harvest_request_description": "Tạo yêu cầu thu hàng mới",
+    "provide_material_description": "Cung cấp nguyên liệu sản xuất",
+    "need_help": "Cần hỗ trợ thêm?",
+    "contact_now": "Liên hệ ngay →"
   },
   "footer": {
     "intro": "Giới thiệu",
-    "company_name": "Công ty TNHH Green Supply",
+    "company_name": "Công ty TNHH Mangovate",
     "office": "Văn phòng",
     "address": "Địa chỉ: 120 đường Nguyễn Văn Cừ, phường Long Tuyền, quận Bình Thủy - Cần Thơ",
     "contact": "Thông tin liên lạc",
-    "email": "Email: Greensupply@gmail.com",
+    "email": "Email: Mangovate@gmail.com",
     "phone": "Điện thoại: 0976 000 000",
     "description": "Nền tảng quản lý chuỗi cung ứng xoài thông minh, minh bạch và bền vững, giúp kết nối từ nông trại đến tay người tiêu dùng một cách hiệu quả.",
-    "copyright": "Greensupply.com.vn"
+    "copyright": "Mangovate.com.vn"
   },
   "sidebar": {
     "created_orders": "Đơn Đã Tạo",
     "harvest_orders": "Đơn Thu Nguyên Liệu",
     "provide_orders": "Đơn Cung Cấp Nguyên Liệu",
-    "create_harvest_request": "Tạo yêu cầu thu hàng",
+    "create_harvest_request": "Tạo đơn thu hàng",
     "create_provide_order": "Tạo đơn cung cấp hàng",
     "order_history": "Lịch sử đơn",
     "history_harvest": "L.s Đơn yêu cầu thu nguyên liệu",
@@ -193,8 +224,8 @@
   },
   "harvestRequest": {
     "title": "ĐƠN YÊU CẦU THU NGUYÊN LIỆU",
-    "edit_title": "Chỉnh sửa yêu cầu thu nguyên liệu",
-    "detail_title": "Chi tiết yêu cầu thu nguyên liệu",
+    "edit_title": "Chỉnh sửa đơn yêu cầu thu nguyên liệu",
+    "detail_title": "Chi tiết đơn yêu cầu thu nguyên liệu",
     "name": "Tên yêu cầu",
     "quantity": "Số lượng (kg)",
     "price": "Giá mỗi đơn vị (VNĐ)",
@@ -203,13 +234,13 @@
     "note": "Ghi chú",
     "note_limit": "Ghi chú (tối đa 200 ký tự)",
     "status": "Trạng thái",
-    "total_price_display": "Tổng giá:",
+    "total_price_display": "Tổng giá",
     "update": "Cập nhật",
     "close": "Đóng",
     "cancel_confirm_msg": "Bạn có chắc chắn muốn hủy yêu cầu này?",
     "confirm": "Xác nhận",
     "action": "Hành động",
-    "success_update": "Cập nhật yêu cầu thành công!",
+    "success_update": "Cập nhật yêu cầu thu nguyên liệu thành công!",
     "fail_update": "Cập nhật yêu cầu thất bại",
     "success_cancel": "Yêu cầu đã được hủy thành công!",
     "fail_cancel": "Hủy yêu cầu thất bại",
@@ -237,9 +268,15 @@
     "empty_quantity": "Số lượng không được để trống!",
     "empty_price": "Giá không được để trống!",
     "empty_address": "Địa chỉ không được để trống!",
+    "select_address": "Chọn địa chỉ lấy hàng",
     "create_success": "Tạo yêu cầu thu hàng thành công!",
     "create_fail": "Tạo yêu cầu thất bại! Vui lòng thử lại.",
-    "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!"
+    "invalid_address": "Địa chỉ không được chứa ký tự đặc biệt!",
+    "request_prefix": "Yêu cầu thu hàng",
+    "request_name_min_length": "Tên yêu cầu phải có ít nhất 5 ký tự.",
+    "request_name_max_length": "Tên yêu cầu không được vượt quá 100 ký tự.",
+    "invalid_quantity": "Khối lượng phải nhỏ hơn 1.000.000 kg.",
+    "invalid_price": "Giá phải nhỏ hơn 9.999.999 VNĐ."
   },
   "status": {
     "pending": "Chờ duyệt",
@@ -286,8 +323,8 @@
     "see_more": "Xem thêm"
   },
   "provideRequest": {
-    "title": "ĐƠN CUNG CẤP NGUYÊN LIỆU",
-    "editTitle": "Cập Nhật Đơn Cung Cấp",
+    "title": "ĐƠN YÊU CẦU CUNG CẤP NGUYÊN LIỆU",
+    "editTitle": "Chỉnh Sửa Đơn Yêu Cầu Cung Cấp",
     "confirmDelete": "Xóa Yêu Cầu",
     "deleteConfirmMessage": "Bạn có chắc muốn xóa yêu cầu này?",
     "delete_success": "Yêu cầu đã bị xóa!",
@@ -305,7 +342,7 @@
     "enter_quantity": "Số lượng muốn cung cấp",
     "enter_quantity_required": "Vui lòng nhập số lượng!",
     "actions": "Hành động",
-    "detail_title": "Chi Tiết Đơn Cung Cấp",
+    "detail_title": "Chi Tiết Đơn Yêu Cầu Cung Cấp",
     "updated_at": "Ngày Cập Nhật",
     "exceed_quantity": "Số lượng không được vượt quá {{quantity}}!",
     "must_divisible_by_10": "Số lượng phải chia hết cho 10!",
@@ -369,8 +406,8 @@
   },
   "dashboard": {
     "title": "Tổng Quan Hệ Thống",
-    "subtitle": "GreenSupply🌿",
-    "description": "Đây là trang Dashboard dành cho quản trị viên của hệ thống GreenSupply, nơi bạn có thể theo dõi và quản lý các chỉ số quan trọng trong quy trình sản xuất, tồn kho và phân phối xoài.",
+    "subtitle": "Mangovate🌿",
+    "description": "Đây là trang Dashboard dành cho quản trị viên của hệ thống Mangovate, nơi bạn có thể theo dõi và quản lý các chỉ số quan trọng trong quy trình sản xuất, tồn kho và phân phối xoài.",
     "button": {
       "createPurchase": "Tạo yêu cầu cung cấp",
       "createProduction": "Tạo yêu cầu sản xuất",
@@ -700,7 +737,7 @@
   },
   "harvest": {
     "back": "Quay lại",
-    "title": "Đơn Yêu Cầu Cung Cấp Nguyên Liệu",
+    "title": "Lập Kế Hoạch Cung Cấp Nguyên Liệu",
     "title_description": "Điền đầy đủ thông tin để tạo đơn yêu cầu cung cấp nguyên liệu mới",
     "detail": "Chi tiết đơn yêu cầu",
     "form": {
@@ -779,8 +816,8 @@
       "price": "Giá trên mỗi Kg / Đơn vị (VND)",
       "price_placeholder": "Nhập giá...",
       "start_date": "Ngày bắt đầu nhận đơn",
-      "end_date": "Ngày kết thúc nhận đơn",
-      "due_date": "Hạn chót hoàn thành đơn",
+      "end_date": "Ngày kết thúc nhận",
+      "due_date": "Hạn chót hoàn thành",
       "date_placeholder": "Chọn ngày",
       "priority": "Mức độ ưu tiên",
       "priority_placeholder": "Chọn mức độ ưu tiên",
@@ -1095,7 +1132,15 @@
     "lossPercentageRange": "Phần trăm phải từ 0 đến 100",
     "checkFieldsBeforeSubmit": "Vui lòng kiểm tra lại các trường bị lỗi trước khi xác nhận.",
     "vacuumBagRequired": "Vui lòng chọn túi chân không.",
-    "cartonBoxRequired": "Vui lòng chọn thùng carton."
+    "cartonBoxRequired": "Vui lòng chọn thùng carton.",
+    "vacuumBagQtyRequired": "Vui lòng nhập số lượng túi chân không.",
+    "cartonQtyRequired": "Vui lòng nhập số lượng thùng carton.",
+    "vacuumBagAboveLimit": "Không được nhập quá {{max}} túi chân không.",
+    "vacuumBagStockExceeded": "Chỉ còn {{available}} túi chân không trong kho.",
+    "cartonAboveLimit": "Không được nhập quá {{max}} thùng carton.",
+    "cartonStockExceeded": "Chỉ còn {{available}} thùng carton trong kho.",
+    "needSuggestedVacuumBagFirst": "Cần có số túi gợi ý",
+    "needSuggestedCartonFirst": "Cần có số thùng gợi ý"
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1126,7 +1171,13 @@
     "loadRequestError": "Không thể tải danh sách Kế hoạch sản xuất.",
     "loadBatchError": "Không thể tải danh sách lô nguyên liệu!",
     "batchPreparingWarning": "Có lô nguyên liệu đang trong trạng thái 'Đang chuẩn bị'. Vui lòng chờ trước khi tạo quy trình sản xuất.",
-    "createFail": "Tạo đơn thất bại!"
+    "createFail": "Tạo đơn thất bại!",
+    "update_success": "Cập nhật thành công!",
+    "update_fail": "Cập nhật thất bại. Vui lòng thử lại.",
+    "update_error": "Có lỗi xảy ra khi cập nhật. Vui lòng thử lại.",
+    "delete_success": "Xóa thành công!",
+    "delete_fail": "Xóa thất bại. Vui lòng thử lại.",
+    "delete_error": "Có lỗi xảy ra khi xóa. Vui lòng thử lại."
   },
   "materialExport": {
     "detail": "Chi tiết yêu cầu xuất kho",
@@ -1137,7 +1188,7 @@
     "selectBatchPlaceholder": "Chọn lô nguyên liệu",
     "selectProduction": "Chọn đơn sản xuất",
     "selectProductionPlaceholder": "Chọn đơn sản xuất",
-    "exportName": "Tên đơn xuất kho",
+    "exportName": "Mã đơn xuất kho",
     "exportNamePlaceholder": "Nhập tên đơn xuất kho",
     "exportType": "Loại đơn",
     "productionType": "Đơn sản xuất",
@@ -1161,7 +1212,7 @@
     "createdBy": "Người tạo đơn",
     "batchName": "Tên lô",
     "batchId": "Mã lô",
-    "exportName": "Tên xuất kho",
+    "exportName": "Mã xuất kho",
     "createdDate": "Ngày tạo đơn",
     "note": "Ghi chú"
   },
@@ -1195,10 +1246,18 @@
     "material": "Loại nguyên liệu",
     "selectMaterial": "Chọn loại nguyên liệu",
     "materialRequired": "Vui lòng chọn loại nguyên liệu",
+    "enterVacuumBagQty": "Nhập số lượng túi chân không",
+    "enterCartonQty": "Nhập số lượng thùng carton",
+    "warnings": {
+      "vacuumBagBelowRecommended": "Bạn đang nhập ít hơn số túi gợi ý ({{suggested}} túi). Khuyến nghị nên từ {{suggested}} trở lên.",
+      "cartonBelowRecommended": "Bạn đang nhập ít hơn số thùng gợi ý ({{suggested}} thùng). Khuyến nghị nên từ {{suggested}} trở lên."
+    },
+
     "materialQty": "Số lượng nguyên liệu (kg)",
     "enterMaterialQty": "Nhập số lượng nguyên liệu",
     "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
     "materialNumRequired": "Phải lớn hơn 0",
+
     "loss": "Tỷ lệ hao hụt (%)",
     "enterLoss": "Nhập tỷ lệ hao hụt",
     "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
@@ -1210,15 +1269,27 @@
     "productionDate": "Ngày sản xuất",
     "productionDateRequired": "Vui lòng chọn ngày sản xuất",
     "selectProductionDate": "Chọn ngày sản xuất",
+    "productQty": "Sản lượng thành phẩm ước tính (kg)",
+
+    "priority": "Mức độ ưu tiên",
+    "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
+    "selectPriority": "Chọn mức độ ưu tiên",
+
+    "productionDate": "Ngày sản xuất",
+    "productionDateRequired": "Vui lòng chọn ngày sản xuất",
+    "selectProductionDate": "Chọn ngày sản xuất",
+
     "endDate": "Ngày kết thúc",
     "endDateRequired": "Vui lòng chọn ngày kết thúc",
     "selectEndDate": "Chọn ngày kết thúc",
     "productionDateFirst": "Chọn ngày sản xuất trước",
+
     "note": "Ghi chú",
     "enterNote": "Nhập ghi chú (nếu có)",
     "selectVacuumBag": "Vui lòng chọn túi chân không",
     "selectCartonBox": "Vui lòng chọn thùng carton",
     "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
+
     "suggestedTitle": "Yêu cầu đóng gói:",
     "vacuumNeed": "• Túi chân không cần: ",
     "cartonBoxNeed": "• Thùng carton cần: ",
@@ -1503,13 +1574,15 @@
     "warningEmpty": "Hết nhiên liệu!"
   },
   "createFuel": {
-    "title": "Tạo Loại Nguyên liệu Mới",
+    "title": "Tạo Loại Nguyên Liệu Mới",
     "back": "Quay lại",
+    "viewList": "Xem danh sách nguyên liệu",
+    "nameAlreadyExists": "Tên loại nhiên liệu đã tồn tại!",
     "nameLabel": "Tên loại nguyên liệu",
     "namePlaceholder": "Nhập tên loại nguyên liệu",
     "nameRequired": "Vui lòng nhập tên loại Nguyên liệu",
     "descLabel": "Mô tả",
-    "descPlaceholder": "Nhập mô tả (không bắt buộc)",
+    "descPlaceholder": "Nhập mô tả ( bắt buộc)",
     "imageLabel": "Ảnh loại nguyên liệu (JPG, PNG < 2MB)",
     "imageRequired": "Vui lòng chọn ảnh loại Nguyên liệu",
     "chooseImage": "Chọn ảnh",
@@ -1519,7 +1592,8 @@
     "uploadError": "Lỗi khi đọc ảnh.",
     "createSuccess": "Tạo loại nguyên liệu mới thành công!",
     "createFail": "Tạo nguyên liệu thất bại!",
-    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới."
+    "createError": "Có lỗi xảy ra khi tạo nguyên liệu mới.",
+    "descRequired": "Vui lòng nhập mô tả nguyên liệu"
   },
   "fuelList": {
     "title": "Danh Sách Loại Nguyên Liệu",
@@ -1574,9 +1648,9 @@
     }
   },
   "boxList": {
-    "title": "Danh sách vật liệu theo loại",
+    "title": "Danh Sách Vật Liệu Theo Loại",
     "back": "Quay lại",
-    "create": "+ Tạo vật liệu mới",
+    "create": "+ Tạo Vật Liệu Mới",
     "image": "Ảnh",
     "no_image": "Chưa có ảnh",
     "name": "Tên Nguyên Vật Liệu",
@@ -1617,7 +1691,8 @@
       "validate_quantity": "Vui lòng nhập số lượng",
       "update_success": "Cập nhật thành công!",
       "update_fail": "Cập nhật thất bại!",
-      "update_error": "Lỗi khi cập nhật."
+      "update_error": "Lỗi khi cập nhật.",
+      "validate_positive": "Số lượng không được nhỏ hơn 0"
     },
     "sizes": {
       "small": "Size S",
@@ -1627,7 +1702,7 @@
     }
   },
   "packageCategory": {
-    "title": "Danh Sách loại vật Liệu",
+    "title": "Danh Sách Loại Vật Liệu",
     "back": "Quay lại",
     "create": "+ Tạo loại Vật Liệu",
     "name": "Tên Loại Vật Liệu",
@@ -1687,7 +1762,8 @@
     "submit": "Tạo loại Nguyên Vật Liệu",
     "success": "Tạo loại thùng thành công!",
     "fail": "Tạo thất bại!",
-    "error": "Lỗi kết nối đến server!"
+    "error": "Lỗi kết nối đến server!",
+    "name_already_exists": "Tên loại thùng đã tồn tại!"
   },
   "button": {
     "cancel": "Hủy",
@@ -1702,6 +1778,16 @@
   "boxMaterial": {
     "back": "Quay lại",
     "title": "Tạo Nguyên Liệu Mới",
+    "onlyNumber": "Số lượng nguyên liệu không được âm",
+    "negativeCapacityError": "Dung tích không thể là số âm",
+    "namePlaceholder": "Nhập tên vật liệu (ví dụ: Túi 12x19)",
+    "typePlaceholder": "Chọn loại nguyên liệu",
+    "categoryPlaceholder": "Chọn loại bao bì ",
+    "quantityPlaceholder": "Nhập số lượng ",
+    "lengthPlaceholder": "Nhập chiều dài (cm)",
+    "widthPlaceholder": "Nhập chiều rộng (cm)",
+    "heightPlaceholder1": "Nhập chiều cao (cm)",
+    "capacityPlaceholder": "Nhập dung tích cho nguyên liệu ",
     "packageMaterialName": "Tên Nguyên liệu",
     "type": "Loại Nguyên Liệu",
     "selectType": "Vui lòng chọn loại nguyên liệu",
@@ -1797,7 +1883,9 @@
     "noNote": "Không có",
     "unknown": "Không rõ",
     "loading": "Đang tải...",
-    "close": "Đóng"
+    "close": "Đóng",
+    "selectMaterialType": "Chọn loại nguyên liệu"
+
   },
   "userDashboard": {
     "title": "Dashboard Quản Lý Người Dùng",

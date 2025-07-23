@@ -49,6 +49,12 @@ const ProductionRequest = () => {
     vacuumBag: null,
     carton: null,
   });
+
+  const [userInputPackaging, setUserInputPackaging] = useState({
+    vacuumBag: null,
+    carton: null,
+  });
+
   const [isProductQuantityCalculated, setIsProductQuantityCalculated] =
     useState(false);
   const [productQuantity, setProductQuantity] = useState(0);
@@ -303,8 +309,9 @@ const ProductionRequest = () => {
         : null,
       end_date: values.end_date ? values.end_date.toISOString() : null,
       packaging: {
-        vacuumBag: calculatedPackaging.vacuumBag,
-        carton: calculatedPackaging.carton,
+        vacuumBag:
+          userInputPackaging.vacuumBag ?? calculatedPackaging.vacuumBag,
+        carton: userInputPackaging.carton ?? calculatedPackaging.carton,
         vacuumBagBoxId: selectedPackaging.vacuumBag?._id,
         cartonBoxId: selectedPackaging.carton?._id,
       },
@@ -679,20 +686,17 @@ const ProductionRequest = () => {
         {/* Header Section */}
         <div className="mb-4">
           <div className="text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
               {t("productionRequest.title")}
             </h1>
-            <p className="text-gray-600 text-lg">
-              {t("productionRequest.title_desc")}
-            </p>
           </div>
         </div>
 
         {/* Main Form Card */}
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-3">
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                 <Presentation className="h-4 w-4 text-white" />
               </div>
@@ -979,6 +983,175 @@ const ProductionRequest = () => {
                   </div>
                 </div>
               )}
+
+              {/* Vacuum Bag Quantity Inputs */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.enterVacuumBagQty")}
+                  </span>
+                }
+                name="vacuumBag_quantity"
+                rules={[
+                  {
+                    required: true,
+                    message: t("validation.vacuumBagQtyRequired"),
+                  },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: t("validation.mustBeGreaterThanZero"),
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      const suggested = calculatedPackaging.vacuumBag;
+                      const selected = selectedPackaging.vacuumBag;
+
+                      if (value > suggested + 20) {
+                        return Promise.reject(
+                          t("validation.vacuumBagAboveLimit", {
+                            max: suggested + 20,
+                          })
+                        );
+                      }
+
+                      if (selected && value > selected.quantity) {
+                        return Promise.reject(
+                          t("validation.vacuumBagStockExceeded", {
+                            available: selected.quantity,
+                          })
+                        );
+                      }
+
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
+                validateStatus={
+                  form.getFieldValue("vacuumBag_quantity") <
+                  calculatedPackaging.vacuumBag
+                    ? "error"
+                    : undefined
+                }
+                help={
+                  form.getFieldValue("vacuumBag_quantity") <
+                  calculatedPackaging.vacuumBag
+                    ? t(
+                        "productionRequest.warnings.vacuumBagBelowRecommended",
+                        {
+                          suggested: calculatedPackaging.vacuumBag,
+                        }
+                      )
+                    : null
+                }
+              >
+                <InputNumber
+                  min={1}
+                  placeholder={
+                    !calculatedPackaging.vacuumBag
+                      ? t("validation.needSuggestedVacuumBagFirst")
+                      : t("validation.enterVacuumBagQty")
+                  }
+                  className="w-full rounded border-gray-300"
+                  size="large"
+                  disabled={!calculatedPackaging.vacuumBag}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(value) =>
+                    setUserInputPackaging((prev) => ({
+                      ...prev,
+                      vacuumBag: value,
+                    }))
+                  }
+                />
+              </Form.Item>
+
+              {/* Carton Quantity Input */}
+              <Form.Item
+                label={
+                  <span className="text-gray-800 font-semibold text-sm flex items-center gap-1">
+                    {t("productionRequest.enterCartonQty")}
+                  </span>
+                }
+                name="carton_quantity"
+                rules={[
+                  {
+                    required: true,
+                    message: t("validation.cartonQtyRequired"),
+                  },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: t("validation.mustBeGreaterThanZero"),
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      const suggested = calculatedPackaging.carton;
+                      const selected = selectedPackaging.carton;
+
+                      if (value > suggested + 2) {
+                        return Promise.reject(
+                          t("validation.cartonAboveLimit", {
+                            max: suggested + 2,
+                          })
+                        );
+                      }
+
+                      if (selected && value > selected.quantity) {
+                        return Promise.reject(
+                          t("validation.cartonStockExceeded", {
+                            available: selected.quantity,
+                          })
+                        );
+                      }
+
+                      return Promise.resolve();
+                    },
+                  }),
+                ]}
+                validateStatus={
+                  form.getFieldValue("carton_quantity") &&
+                  form.getFieldValue("carton_quantity") <
+                    calculatedPackaging.carton
+                    ? "error"
+                    : undefined
+                }
+                help={
+                  form.getFieldValue("carton_quantity") &&
+                  form.getFieldValue("carton_quantity") <
+                    calculatedPackaging.carton
+                    ? t("productionRequest.warnings.cartonBelowRecommended", {
+                        suggested: calculatedPackaging.carton,
+                      })
+                    : null
+                }
+              >
+                <InputNumber
+                  min={1}
+                  placeholder={
+                    !calculatedPackaging.carton
+                      ? t("validation.needSuggestedCartonFirst")
+                      : t("validation.enterCartonQty")
+                  }
+                  className="w-full   rounded border-gray-300"
+                  size="large"
+                  disabled={!calculatedPackaging.carton}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault(); // chặn ký tự khác số
+                    }
+                  }}
+                  onChange={(value) =>
+                    setUserInputPackaging((prev) => ({
+                      ...prev,
+                      carton: value,
+                    }))
+                  }
+                />
+              </Form.Item>
 
               {/* Priority */}
               <Form.Item
