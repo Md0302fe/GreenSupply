@@ -84,8 +84,24 @@ import FinishedProductList from "../components/Admin/Content/FinishedProduct/Fin
 
 
 import DashboardfinishedProduct from "../components/Admin/Content/Dashboard/DashboardfinishedProduct";
+import { useSelector } from "react-redux";
+
+// Not Found Page
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import CanNotAccessPage from "../pages/NotFoundPage/CannotAccessPage";
+
+import PrivateRouteAdmin from "../pages/NotFoundPage/PrivateRouteAdmin";
+import PrivateRouteOnlyAdmin from "../pages/NotFoundPage/PrivateOnlyAdmin";
+import PrivateRouteMaterialMng from "../pages/NotFoundPage/PrivateRouteMaterialMng";
+import PrivateRouteWarehouseMng from "../pages/NotFoundPage/PrivateRouteWarehouseMng";
+import PrivateRouteProcessMng from "../pages/NotFoundPage/PrivateRouteProcessMng";
+
+
 
 const Router = () => {
+  // thông tin từ redux --> Chứa cả
+  const user = useSelector((state) => state.user)
+
   return (
     <>
       <Routes>
@@ -107,84 +123,77 @@ const Router = () => {
           {/* payment routes */}
           <Route path="/payment" element={<PaymentPage />} />
 
-        {/* Admin-Page  : Admi-Layout*/}
-        <Route path="/system/admin" element={<Admin />}>
-          {/* DashBoard Admin  */}
-          <Route index element={<Dashboard />} />
+        {/* Admin-Page  : Admin-Layout*/}
+        <Route path="/system/admin" element={<PrivateRouteAdmin />}>
+          <Route path="" element={<Admin />}>
 
-          {/* User Management  */}
-          <Route path="feature_users" element={<FeatureUser />} />
-          <Route path="manage-users" element={<ManageUser />} />
-          <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
-          <Route path="dashboard-user" element={<DashboardUser />} />
+            {/* DashBoard Admin  */}
+            <Route index element={<Dashboard />} />
+            
+            {/* ONLY ROUTES FOR ADMIN - ROLE : (Admin) */}
+            <Route path="" element={<PrivateRouteOnlyAdmin />}>
+              {/* User Management (ONLY ADMIN CAN ACCESS)  */}
+              <Route path="feature_users" element={<FeatureUser />} />
+              <Route path="manage-users" element={<ManageUser />} />
+              <Route path="manage-blocked-users" element={<ManageBlockedUser />} />
+              <Route path="dashboard-user" element={<DashboardUser />} />
+              {/* Predict Mango Maturity Stages (ONLY ADMIN CAN ACCESS) */}
+              <Route path="/system/admin/feature_mango_classification" element={<MangoClassification />} />
+            </Route>
 
-          {/* WareHouse Management */}
-          <Route path="feature_warehouse" element={<FeatureWarehouse />} />
+            {/* ROUTES FOR : WareHouse Management */}
+            <Route path="" element={<PrivateRouteWarehouseMng />}>
+              <Route path="feature_warehouse" element={<FeatureWarehouse />} />
+              <Route path="manage-warehouse" element={<Dashboard1 material-storage-export-list/>} />
+              <Route path="warehouse-receipt" element={<OrderViewPage />} />
+              <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>
+              <Route path="raw-material-batch-list" element={<RawmaterialBatchList/>}/>
+              <Route path="material-storage-export" element={<MaterialStorageExport/>} />
+              <Route path="material-storage-export-list" element={<MaterialStorageExportList/>} />
+              <Route path="batch-history" element={<BatchHistory/>} />
+              <Route path="feature_material_category" element={<FeatureMaterial />} />
+              <Route path="fuel-list" element={<FuelList />} />
+              <Route path="manage-fuel" element={<DashboardFuel />} />
+              <Route path="fuel-Create" element={<CreateFuel />} />
+              <Route path="box-categories/create" element={<CreatePackageCategory />} />
+              <Route path="box-categories/list" element={<PackageCategoryList />} />
+              <Route path="box-list" element={<BoxList />} />
+              <Route path="box-Create" element={<CreateBox />} />
+              <Route path="feature_finished_product" element={<FeatureFinishedProduct />} />
+              <Route path="finished_product_list" element={<FinishedProductList />} />
+              <Route path="dashboard-finished-product" element={<DashboardfinishedProduct />} />
+              <Route path="View-Order-Success" element={<OrderPage />} />
+           </Route>
 
-          <Route path="manage-warehouse" element={<Dashboard1 material-storage-export-list/>} />
-          <Route path="warehouse-receipt" element={<OrderViewPage />} />
-          {/* Raw Material Batch Management */}
-          <Route path="raw-material-batch" element={<RawMaterialBatch/>}/>
-          <Route path="raw-material-batch-list" element={<RawmaterialBatchList/>}/>
-          {/* Material Storage Export Management */}
-          <Route path="material-storage-export" element={<MaterialStorageExport/>} />
-          <Route path="material-storage-export-list" element={<MaterialStorageExportList/>} />
-          <Route path="batch-history" element={<BatchHistory/>} />
+            {/* Material Entry Management */}
+            <Route path="" element={<PrivateRouteMaterialMng />}>
+              <Route path="feature_request_suppplier" element={<FeatureOrdersSuppier />} />
+              <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
+              <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
+              
+              <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />
+              <Route path="C_purchase-order" element={<PurchaseOrder />} />
+              <Route path="R_purchase-orders" element={<PurchaseOrders />} />
+              <Route path="manage-Supplier-request" element={<DashboardSupplyRequest />} />
+              <Route path="manage-Supplier-orders" element={<DashboardSupplierOrder />} />
+            </Route>
 
-          <Route path="feature_request_suppplier" element={<FeatureOrdersSuppier />} />
-          <Route path="manage-fuel-orders" element={<FuelRequestsManagement />} />
-          <Route path="manage-provide-orders" element={<FuelProvideManagement />} />
-          <Route path="View-Order-Success" element={<OrderPage />} />
+            {/* Production Process Management */}
+            <Route path="" element={<PrivateRouteProcessMng />}>
+              <Route path="feature_production_process" element={<FeatureProductProcess />} />
+              <Route path="production-request" element={<ProductionRequest />} />
+              <Route path="production-request-list" element={<ProductionRequestList />} />
+              <Route path="production-processing-list" element={<ProductionProcessingList />} />
+              <Route path="production-processing" element={<ProductionRequestFinishList />} />
+              <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
+              <Route path="production-processing/consolidated-create" element={<ProductionConsolidatedProcessing />} />
+              <Route path="process-histories" element={<ProductionHistories />} />
+              <Route path="processing-system" element={<ProcessingManagement />} />
+              <Route path="process_details/:process_id" element={<ProcessingDetails />} />
+              <Route path="dashboard-production-request" element={<DashboardProductionProcess />} />
+            </Route>
+          </Route>
 
-           {/* Product Order Management */}
-          <Route path="feature_product_orders" element={<FeatureProductOrders />} />
-          <Route path="manage-product-orders" element={<OrdersComponent/>} />
-          
-          {/* Purchase Order Management */}
-          <Route path="feature_purchase_orders" element={<FeaturePurchaseOrder />} />
-          <Route path="C_purchase-order" element={<PurchaseOrder />} />
-          <Route path="R_purchase-orders" element={<PurchaseOrders />} />
-          <Route path="manage-Supplier-request" element={<DashboardSupplyRequest />} />
-          <Route path="manage-Supplier-orders" element={<DashboardSupplierOrder />} />
-
-          {/* Material type Management*/}
-          <Route path="feature_material_category" element={<FeatureMaterial />} />
-          <Route path="fuel-list" element={<FuelList />} />
-          <Route path="manage-fuel" element={<DashboardFuel />} />
-          <Route path="fuel-Create" element={<CreateFuel />} />
-
-          <Route path="box-categories/create" element={<CreatePackageCategory />} />
-          <Route path="box-categories/list" element={<PackageCategoryList />} />
-          <Route path="box-list" element={<BoxList />} />
-          <Route path="box-Create" element={<CreateBox />} />
-
-          {/* Finished product */}
-          <Route path="feature_finished_product" element={<FeatureFinishedProduct />} />
-          <Route path="finished_product_list" element={<FinishedProductList />} />
-
-          {/* Dashboar finishedProduct */}
-          <Route path="dashboard-finished-product" element={<DashboardfinishedProduct />} />
-
-          {/* Predict Mango Maturity Stages */}
-          <Route path="/system/admin/feature_mango_classification" element={<MangoClassification />} />
-
-          {/* Production Process Management */}
-          <Route path="feature_production_process" element={<FeatureProductProcess />} />
-          <Route path="production-request" element={<ProductionRequest />} />
-          <Route path="production-request-list" element={<ProductionRequestList />} />
-
-          {/* Danh sách quy trình sản xuất */}
-          <Route path="production-processing-list" element={<ProductionProcessingList />} />
-          <Route path="production-processing" element={<ProductionRequestFinishList />} />
-          {/* single process */}
-          <Route path="production-processing/create/:id" element={<ProductionProcessing />} />
-          {/* consolidated process */}
-          <Route path="production-processing/consolidated-create" element={<ProductionConsolidatedProcessing />} />
-          <Route path="process-histories" element={<ProductionHistories />} />
-          {/* ROUTES QUY TRÌNH ĐANG THỰC THI */}
-          <Route path="processing-system" element={<ProcessingManagement />} />
-          <Route path="process_details/:process_id" element={<ProcessingDetails />} />
-          <Route path="dashboard-production-request" element={<DashboardProductionProcess />} />
         </Route>
 
           {/* Profile Management */}
@@ -205,20 +214,11 @@ const Router = () => {
           {/* Customer Management */}
           <Route path="/customer/*" element={<CustomerDashboard />} />
 
+          {/* Cannot Access Page */}
+          <Route path="/cannot-access" element={<CanNotAccessPage />} />
+          {/* Not Found - Catch all unmatched routes */}
+          <Route path="*" element={<NotFoundPage />} />
       </Routes>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </>
   );
 };
