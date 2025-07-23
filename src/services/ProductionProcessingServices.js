@@ -165,7 +165,10 @@ export const getDetailsProcessByID = async (process_id, access_token) => {
 };
 
 // Get Detail Process By Id => Consolidate Process
-export const getDetailsConsolidateProcessByID = async (process_id, access_token) => {
+export const getDetailsConsolidateProcessByID = async (
+  process_id,
+  access_token
+) => {
   const res = await axios.get(
     `${process.env.REACT_APP_API_URL}/production-processing/consolidate-details/${process_id}`,
     {}, // Body cần có (ngay cả khi rỗng)
@@ -193,7 +196,10 @@ export const getProcessStageDetails = async (process_id, access_token) => {
 };
 
 // Get Process Stage Details => Consolidate Process
-export const getConsolidateProcessStageDetails = async (process_id, access_token) => {
+export const getConsolidateProcessStageDetails = async (
+  process_id,
+  access_token
+) => {
   const res = await axios.get(
     `${process.env.REACT_APP_API_URL}/production-processing/consolidate-detailsStage/${process_id}`,
     {}, // Body cần có (ngay cả khi rỗng)
@@ -221,15 +227,24 @@ export const handleFinishStage = async (dataRequest) => {
 };
 
 // Handle finish and next stept for process
-export const getHistoriesProcess = async (dataRequest) => {
-  const res = await axios.get(
-    `${process.env.REACT_APP_API_URL}/production-processing/history_process`,
-    {}, // Body cần có (ngay cả khi rỗng)
-    {
-      headers: {
-        Authorization: `Bearer ${dataRequest.access_token}`,
-      },
-    }
-  );
-  return res.data;
+export const getHistoriesProcess = async ({ access_token, type_process }) => {
+  console.log("type_process ", type_process)
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/production-processing/history_process`,
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+        params: {
+          type_process,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    // Xử lý lỗi nếu cần (tuỳ logic app bạn)
+    console.error("Failed to fetch history process:", error);
+    throw error;
+  }
 };
