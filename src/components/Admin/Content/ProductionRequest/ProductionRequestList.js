@@ -151,17 +151,17 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.updateProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success(t("messages.update_success"));
+        message.success(t("productionRequestManagement.messages.update_success"));
         refetchRequests();
         setIsEditMode(false);
         setIsDrawerOpen(false);
       } else {
-        message.error(t("messages.update_fail"));
+        message.error(t("productionRequestManagement.messages.update_fail"));
       }
     },
     onError: (err) => {
       console.log("Update error:", err);
-      message.error(t("messages.update_error"));
+      message.error(t("productionRequestManagement.messages.update_error"));
     },
   });
 
@@ -170,15 +170,15 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.deleteProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success(t("messages.delete_success"));
+        message.success(t("productionRequestManagement.messages.delete_success"));
         refetchRequests(); // gọi lại để cập nhật danh sách
       } else {
-        message.error(t("messages.delete_fail"));
+        message.error(t("productionRequestManagement.messages.delete_fail"));
       }
     },
     onError: (err) => {
       console.log("Delete error:", err);
-      message.error(t("messages.delete_error"));
+      message.error(t("productionRequestManagement.messages.delete_error"));
     },
   });
 
@@ -191,16 +191,16 @@ const ProductionRequestList = () => {
     })
       .then((res) => {
         if (res?.success) {
-          message.success(t("message.approve_success"));
+          message.success(t("productionRequestManagement.messages.approve_success"));
           refetchRequests();
           setIsDrawerOpen(false);
         } else {
-          message.error(t("message.approve_fail"));
+          message.error(t("productionRequestManagement.messages.approve_fail"));
         }
       })
       .catch((err) => {
         console.log(err);
-        message.error(t("message.common_error"));
+        message.error(t("productionRequestManagement.messages.approve_error"));
       });
   };
 
@@ -617,7 +617,7 @@ const ProductionRequestList = () => {
       </Loading>
 
       <DrawerComponent
-        title={isEditMode ? t("form.update_title") : t("drawer.detail_title")}
+        title={isEditMode ? t("productionRequestManagement.update_title") : t("productionRequestManagement.detail_title")}
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"

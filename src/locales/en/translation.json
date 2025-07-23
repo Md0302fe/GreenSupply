@@ -246,8 +246,8 @@
     "confirm": "Confirm",
     "success_update": "Material collection request updated successfully!",
     "fail_update": "Failed to update request",
-    "success_cancel": "Request cancelled successfully!",
-    "fail_cancel": "Failed to cancel request",
+    "success_cancel": "Cancelled material collection request successfully!",
+    "fail_cancel": "Failed to cancel material collection request!",
     "only_cancel_pending": "You can only cancel requests that are 'Pending Approval'.",
     "no_data": "No data available.",
     "delete": "Delete",
@@ -684,11 +684,11 @@
   },
   "harvest": {
     "back": "Go Back",
-    "title": "Material Purchase List",
+    "title": "Create Material Purchase Request",
     "title_description": "Fill in the details to create a new material provide request",
     "detail": "Request Details",
     "form": {
-      "name": "Request ame",
+      "name": "Request name",
       "name_placeholder": "Enter request name...",
       "fuel_type": "Material type",
       "fuel_type_placeholder": "Select material type",
@@ -1140,7 +1140,13 @@
       "note_parent": "All fields marked with",
       "note_child": "are required. The production request will be automatically selected based on the chosen material batch."
     },
-    "viewList": "Warehouse Exports List"
+    "viewList": "Warehouse Exports List",
+    "message": {
+      "create_success": "Created warehouse export request successfully!",
+      "create_fail": "Creat warehouse export request failed!",
+      "create_error": "Error create warehouse export request!",
+      "noteMaxLength": "Note must not exceed {{max}} characters."
+    }
   },
   "materialExportList": {
     "title": "Warehouse Exports List",
@@ -1190,7 +1196,8 @@
     "enterCartonQty": "Enter number of carton boxes",
     "warnings": {
       "vacuumBagBelowRecommended": "You entered fewer vacuum bags than recommended ({{suggested}} bags). It's recommended to use at least {{suggested}}.",
-      "cartonBelowRecommended": "You entered fewer carton boxes than recommended ({{suggested}} boxes). It's recommended to use at least {{suggested}}."
+      "cartonBelowRecommended": "You entered fewer carton boxes than recommended ({{suggested}} boxes). It's recommended to use at least {{suggested}}.",
+      "noteMaxLength": "Note must not exceed {{max}} characters."
     },
     "materialQty": "Material Quantity (Kg)",
     "enterMaterialQty": "Enter material quantity ...",
@@ -1219,6 +1226,7 @@
 
     "note": "Additional Notes",
     "enterNote": "Enter any additional notes or requirements ...",
+
     "selectVacuumBag": "Please select vacuum bag",
     "selectCartonBox": "Please select Carton Box",
     "needProductQtyFirst": "Calculate product quantity first",
@@ -1238,6 +1246,11 @@
       "note": "Note:",
       "note_parent": "All fields marked with",
       "note_child": "are required. The product quantity will be automatically calculated based on material quantity and loss percentage."
+    }, 
+    "messages": {
+      "create_success": "Created production plan successfully!",
+      "create_fail": "Creat production plan failed!",
+      "create_error": "Error create production plan!"
     }
   },
   "validation": {
@@ -1258,7 +1271,20 @@
     "low": "Low"
   },
   "productionRequestManagement": {
-    "title": "Production Plan List"
+    "title": "Production Plan List",
+    "messages": {
+      "update_success": "Production plan updated successfully!",
+      "update_fail": "Failed to update production plan!",
+      "update_error": "Error while updating production plan!",
+      "delete_success": "Production plan deleted successfully!",
+      "delete_fail": "Failed to delete production plan!",
+      "delete_error": "Error while deleting production plan!",
+      "approve_success": "Production plan approved successfully!",
+      "approve_fail": "Failed to approve production plan!",
+      "approve_error": "Error while approving production plan!"
+    },
+    "update_title": "Update Production Plan",
+    "detail_title": "Production Plan Details"
   },
   "form": {
     "request_name": "Request Name",
@@ -1280,7 +1306,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "create_process": "Create Process",
-    "create_batch_process": "Create Batch Process"
+    "create_batch_process": "Create Consolidate Process"
   },
   "hint": {
     "create_plan_process": "+ Create a <1>(plan)</1> process by clicking the icon",
@@ -1703,7 +1729,7 @@
     }
   },
   "createPackageCategory": {
-    "title": "Create New Material Category",
+    "title": "Create Package Material Category",
     "back": "Go Back",
     "name_label": "Material Category Name",
     "name_placeholder": "Enter material category name",
@@ -1728,8 +1754,8 @@
   },
   "boxMaterial": {
     "back": "Back",
-    "title": "Create New Material",
-    "onlyNumber": "Quantity must be a non-negative number",
+    "title": "Create New Package Material",
+    "onlyNumber": "Quantity must be a positive number",
     "namePlaceholder": "Enter material name (e.g. Bag 12x19)",
     "negativeCapacityError": "Capacity cannot be a negative number",
     "typePlaceholder": "Select material type",
