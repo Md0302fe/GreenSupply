@@ -189,7 +189,7 @@ const Router = () => {
               <Route path="production-processing/consolidated-create" element={<ProductionConsolidatedProcessing />} />
               <Route path="process-histories" element={<ProductionHistories />} />
               <Route path="processing-system" element={<ProcessingManagement />} />
-              <Route path="process_details/:process_id" element={<ProcessingDetails />} />
+              <Route path="process_details/:process_type/:process_id" element={<ProcessingDetails />} />
               <Route path="dashboard-production-request" element={<DashboardProductionProcess />} />
             </Route>
           </Route>

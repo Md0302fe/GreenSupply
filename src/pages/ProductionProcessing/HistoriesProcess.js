@@ -1,16 +1,19 @@
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
+import Highlighter from "react-highlight-words";
+import { BsBuildingFillGear } from "react-icons/bs";
 import { Table, Button, Space, Tag, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "../../components/LoadingComponent/Loading";
+import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { getHistoriesProcess } from "../../services/ProductionProcessingServices";
-import Highlighter from "react-highlight-words";
-import { BsBuildingFillGear } from "react-icons/bs";
 
 import { useTranslation } from "react-i18next";
+
+import { FaGears } from "react-icons/fa6";
+import { FaGear } from "react-icons/fa6";
 
 const HistoriesProcess = () => {
   const { t } = useTranslation();
@@ -21,6 +24,7 @@ const HistoriesProcess = () => {
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [type_process, set_type_process] = useState("single_processes");
   const statusMap = {
     "Chờ duyệt": "pending",
     "Đã duyệt": "approve",
@@ -33,17 +37,22 @@ const HistoriesProcess = () => {
     "Nhập kho thành công": "imported",
     "Đang sản xuất": "in_production",
   };
+
   // Fetch data từ API
   const fetchHistoriesProcess = async () => {
     const access_token = user?.access_token;
-    return await getHistoriesProcess(access_token);
+    return await getHistoriesProcess({access_token , type_process});
   };
 
   const { isLoading, data, refetch } = useQuery({
-    queryKey: ["histories_process"],
+    queryKey: ["histories_process", type_process], // thêm 1 fiel tại s2 value , khi fiel này thay đổi useQueries sẽ tự retch dữ liệu mới
     queryFn: fetchHistoriesProcess,
     retry: false,
   });
+
+  const handleLoadingData = async (typeProcess) => {
+    set_type_process(typeProcess);
+  };
 
   // DATA FROM USERS LIST
   const tableData =
@@ -222,7 +231,7 @@ const HistoriesProcess = () => {
             icon={<EyeOutlined />}
             type="link"
             onClick={() =>
-              navigate(`/system/admin/process_details/${record?.processCode}`)
+              navigate(`/system/admin/process_details/${type_process}/${record?.processCode}`)
             }
           >
             {t("histories.button.viewDetails")}
@@ -269,6 +278,53 @@ const HistoriesProcess = () => {
 
           {/* Phần tử trống để cân layout */}
           <div className="min-w-[32px] md:min-w-[100px]"></div>
+        </div>
+
+        {/* selection type of process to view histories */}
+        <div className="px-6 mt-4">
+          <div className="p-2 bg-gray-50 rounded-lg border border-gray-200 text-sm space-y-2 mb-2 w-full md:w-fit">
+            <div className="inline-flex bg-gray-100 rounded-xl p-1 gap-1 mt-2">
+              <button
+                className={`
+        inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+        text-sm font-medium transition-all duration-300
+        ${
+          type_process === "single_processes"
+            ? "bg-white text-green-600 shadow-sm transform scale-105"
+            : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+        }
+      `}
+                onClick={() => handleLoadingData("single_processes")}
+              >
+                <FaGear
+                  className={`text-base ${
+                    type_process === "single_processes" ? "text-green-500" : ""
+                  }`}
+                />
+                <span>{t("processingManagement.button.single")}</span>
+              </button>
+
+              <button
+                className={`
+        inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
+        text-sm font-medium transition-all duration-300
+        ${
+          type_process === "consolidated_processes"
+            ? "bg-white text-green-600 shadow-sm transform scale-105"
+            : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+        }
+      `}
+                onClick={() => handleLoadingData("consolidated_processes")}
+              >
+                <FaGears
+                  className={`text-base ${
+                    type_process === "consolidated_processes" ? "text-green-500" : ""
+                  }`}
+                />
+                <span>{t("processingManagement.button.consolidated")}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

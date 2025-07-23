@@ -21,12 +21,8 @@ import { useTranslation } from "react-i18next";
 const ProcessDetails = () => {
   const { t } = useTranslation();
 
-  const { process_id } = useParams();
+  const { process_id , process_type } = useParams();
   const user = useSelector((state) => state.user);
-
-  const location = useLocation();
-  const processType = location.state?.type;
-
   const [dataProcess, setDataProcess] = useState();
   const [dataStage, setDataStage] = useState();
   const [activeStage, setActiveStage] = useState(null); // stage nào đang mở
@@ -42,7 +38,7 @@ const ProcessDetails = () => {
 
   // Fetch process details từ API
   const fetchBothDetails = async () => {
-    if (processType === "single") {
+    if (process_type && process_type === "single_processes") {
       const [processDetails, processStages] = await Promise.all([
         getDetailsProcessByID(process_id, user?.access_token),
         getProcessStageDetails(process_id, user?.access_token),
@@ -51,7 +47,7 @@ const ProcessDetails = () => {
       setDataStage(processStages);
       return { processDetails, processStages };
     }
-    if (processType === "consolidate") {
+    if (process_type && process_type === "consolidated_processes") {
       const [processDetails, processStages] = await Promise.all([
         getDetailsConsolidateProcessByID(process_id, user?.access_token),
         getConsolidateProcessStageDetails(process_id, user?.access_token),
