@@ -379,7 +379,18 @@
       "createProduction": "Create production request",
       "createProcess": "Create manufacturing process",
       "createExport": "Create export request",
-      "createImport": "Create import request"
+      "createImport": "Create import request",
+      "details" : "View Detail"
+    },
+    "section": {
+      "importExportRequest": "Import/Export Requests",
+      "productionProcess": "Production Processes",
+      "userAndWarehouse": "User/Warehouse",
+      "supplierRequest": "Material Collection/Provide Requests",
+      "materialAndPackaging": "Raw Materials/Packaging",
+      "productionPlan": "Production Plans",
+      "finishedProduct": "Finished Products"
+
     },
     "card": {
       "import": {
@@ -402,7 +413,58 @@
         "titleCompleted": "Number of Completed Import/Export Requests (Daily)",
         "requestsPendingProduction": "Number of Requests Pending Production Process Creation (Daily)",
         "completedProductionProcesses": "Number of Completed Production Processes (Daily)"
+      },
+      "role": {
+        "title": "Role Distribution"
+      },
+      "warehouse": {
+        "title": "Warehouse Usage",
+        "used": "Used",
+        "remain": "Remaining"
+      },
+      "materialCollection": {
+        "title": "📥 Material Collection Requests"
+      },
+      "materialSupply": {
+        "title": "📦 Material Provide Requests"
+      },
+      "rawMaterialDistribution": {
+        "title": "📊 Raw Material Distribution"
+      },
+      "packagingDistribution": {
+        "title": "📦 Packaging Material Distribution",
+        "túi chân không": "Vacuum Bag",
+        "thùng carton": "Carton Box"
+      },
+      "materialStatus": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "processing": "Processing",
+        "completed": "Completed"
       }
+    },
+    "process_card": {
+      "currentActivity": {
+        "title": "Current Activities",
+        "totalPlans": "Total Production Plans",
+        "executingSingle": "Executing Single Processes",
+        "executingConsolidate": "Executing Consolidated Processes"
+      },
+      "summary": {
+        "title": "Summary Statistics",
+        "totalSingleProcess": "Total Single Processes Created",
+        "totalConsolidateProcess": "Total Consolidated Processes Created",
+        "waitingProcess": "Plans Waiting for Process Creation"
+      }
+    },
+    "product": {
+      "totalBatches": "Total finished product batches",
+      "inStock": "Remaining finished products",
+      "typeNumber": "Type #{{number}}",
+      "status": "Product status",
+      "valid": "Valid",
+      "expired": "Expired",
+      "shipping": "Shipping"
     },
     "title_supply_request": "Material Request Dashboard",
     "total_requests": "Total Requests",
@@ -662,11 +724,11 @@
       "quantity_placeholder": "Enter quantity...",
       "price": "Price per Kg / Unit (VND)",
       "price_placeholder": "Enter price...",
-      "start_date":"Start date",
+      "start_date": "Start date",
       "start_date_placeholder": "Select start date",
-      "end_date":"End date",
+      "end_date": "End date",
       "end_date_placeholder": "Select end date",
-      "due_date":"Due date",
+      "due_date": "Due date",
       "due_date_placeholder": "Select due date",
       "priority": "Priority level",
       "priority_placeholder": "Select priority",
@@ -1142,46 +1204,34 @@
     "material": "Material type",
     "selectMaterial": "Select material type",
     "materialRequired": "Please select material type",
-
     "materialQty": "Material Quantity (Kg)",
     "enterMaterialQty": "Enter material quantity ...",
     "materialQtyRequired": "Please enter material quantity",
     "materialNumRequired": "Must be greater than 0",
-
-
     "loss": "Loss Percentage (%)",
     "enterLoss": "Enter loss percentage ...",
     "lossRequired": "Please enter loss percentage",
     "lossMinMax": "Must be between 0-100%",
-
     "productQty": "Estimated Product Output (Kg)",
-
     "priority": "Priority",
     "priorityRequired": "Please select priority",
     "selectPriority": "Select priority level",
-
     "productionDate": "Production Date",
     "productionDateRequired": "Please select production date",
     "selectProductionDate": "Select production date",
-
     "endDate": "End Date",
     "endDateRequired": "Please select end date",
     "selectEndDate": "Select end date",
     "productionDateFirst": "Select production date first",
-
     "note": "Additional Notes",
     "enterNote": "Enter any additional notes or requirements ...",
     "selectVacuumBag": "Please select vacuum bag",
     "selectCartonBox": "Please select Carton Box",
     "needProductQtyFirst": "Calculate product quantity first",
-
-    
     "suggestedTitle": "Packaging Requirements:",
     "vacuumNeed": "• Vacuum bags needed:",
     "cartonBoxNeed": "• Carton boxes needed:",
     "units": "units",
-
-
     "suggestedVacuumBags": "Suggested vacuum bags: {{count}} bags",
     "suggestedCartons": "Suggested carton boxes: {{count}} boxes",
     "vacuumBag": "Vacuum Bag",
