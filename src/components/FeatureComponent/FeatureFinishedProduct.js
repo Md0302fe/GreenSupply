@@ -13,31 +13,26 @@ const UserComponent = () => {
       <div className="flex items-center text-2xl font-semibold text-gray-800 mb-2">
         <FaCubes className="text-3xl text-blue-500 mr-2" />
         <h5 className="relative">
-          Quản lý thành phẩm
+          {t("finishedProduct.finishedProductManagement")}
           <span className="absolute left-0 right-0 bottom-0 h-1 bg-blue-500 transform scale-x-0 transition-transform duration-300 origin-left hover:scale-x-100"></span>
         </h5>
       </div>
-      
+
       {/* Feature Cards Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
         {/* Dashboard */}
         <Card
           link="/system/admin/dashboard-finished-product"
-          title="DashBoard Thành Phẩm"
-          description="toàn bộ thông tin về thành phẩm"
+          title={t("finishedProduct.dashboardTitle")}
+          description={t("finishedProduct.dashboardDesc")}
           image={mng_dashboard_Purchasedorders1}
         />
-
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full justify-items-center">
-        {/* Dashboard */}
         <Card
           link="/system/admin/finished_product_list"
-          title="Danh sách thành phẩm"
-          description="Danh sách thành phẩm đã được sản xuất"
+          title={t("finishedProduct.listTitle")}
+          description={t("finishedProduct.listDesc")}
           image={mng_dashboard_Purchasedorders}
         />
-
       </div>
     </div>
   );

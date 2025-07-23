@@ -994,6 +994,7 @@
     "noDataShort": "No data",
     "unknown": "Unknown",
     "columns": {
+      "receipt_id": "Receipt ID",
       "manager": "Manager",
       "receiptType": "Receipt Type",
       "storage": "Storage",
@@ -1080,7 +1081,15 @@
     "lossPercentageRange": "Percentage must be between 0 and 100",
     "checkFieldsBeforeSubmit": "Please check all error fields before submitting.",
     "vacuumBagRequired": "Please select vacuum bag",
-    "cartonBoxRequired": "Please select carton box"
+    "cartonBoxRequired": "Please select carton box",
+    "vacuumBagQtyRequired": "Please enter the number of vacuum bags.",
+    "cartonQtyRequired": "Please enter the number of carton boxes.",
+    "vacuumBagAboveLimit": "Cannot exceed {{max}} vacuum bags.",
+    "vacuumBagStockExceeded": "Only {{available}} vacuum bags are available in stock.",
+    "cartonAboveLimit": "Cannot exceed {{max}} carton boxes.",
+    "cartonStockExceeded": "Only {{available}} carton boxes are available in stock.",
+    "needSuggestedVacuumBagFirst": "Suggested vacuum bag quantity required",
+    "needSuggestedCartonFirst": "Suggested carton quantity required"
   },
   "messages": {
     "notLoggedIn": "You are not logged in.",
@@ -1239,18 +1248,6 @@
       "note_parent": "All fields marked with",
       "note_child": "are required. The product quantity will be automatically calculated based on material quantity and loss percentage."
     }
-  },
-  "validation": {
-    "vacuumBagQtyRequired": "Please enter the number of vacuum bags.",
-    "cartonQtyRequired": "Please enter the number of carton boxes.",
-    "vacuumBagAboveLimit": "Cannot exceed {{max}} vacuum bags.",
-    "vacuumBagStockExceeded": "Only {{available}} vacuum bags are available in stock.",
-    "cartonAboveLimit": "Cannot exceed {{max}} carton boxes.",
-    "cartonStockExceeded": "Only {{available}} carton boxes are available in stock.",
-    "mustBeGreaterThanZero": "Value must be greater than 0.",
-    "mustBeGreaterThanZero": "Value must be greater than 0.",
-    "needSuggestedVacuumBagFirst": "Suggested vacuum bag quantity required",
-    "needSuggestedCartonFirst": "Suggested carton quantity required"
   },
   "priority": {
     "high": "High",
@@ -1857,5 +1854,12 @@
       "fetchUserFail": "Failed to load user data!",
       "serverConnectionFail": "Cannot connect to server!"
     }
+  },
+  "finishedProduct": {
+    "finishedProductManagement": "Finished Product Management",
+    "dashboardTitle": "Finished Product Dashboard",
+    "dashboardDesc": "Complete information about finished products",
+    "listTitle": "Finished Product List",
+    "listDesc": "List of produced finished products"
   }
 }

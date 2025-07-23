@@ -1818,7 +1818,6 @@
     "loading": "Đang tải...",
     "close": "Đóng",
     "selectMaterialType": "Chọn loại nguyên liệu"
-
   },
   "userDashboard": {
     "title": "Dashboard Quản Lý Người Dùng",
@@ -1839,5 +1838,12 @@
       "fetchUserFail": "Không thể tải dữ liệu người dùng!",
       "serverConnectionFail": "Không thể kết nối server!"
     }
+  },
+  "finishedProduct": {
+    "finishedProductManagement": "Quản lý thành phẩm",
+    "dashboardTitle": "DashBoard Thành Phẩm",
+    "dashboardDesc": "Toàn bộ thông tin về thành phẩm",
+    "listTitle": "Danh sách thành phẩm",
+    "listDesc": "Danh sách thành phẩm đã được sản xuất"
   }
 }

@@ -488,16 +488,6 @@ const ProductionRequestList = () => {
             className="hover:bg-gray-200"
           />
 
-          {/* Nút xoá: chỉ hiển thị nếu trạng thái là "Chờ duyệt" */}
-          {record.status === "Chờ duyệt" && (
-            <Button
-              icon={<MdDelete style={{ color: "red" }} />}
-              onClick={() => confirmDelete(record)}
-              loading={mutationDelete.isLoading}
-              size="middle"
-            />
-          )}
-
           {/* Nút cập nhật: Luôn hiển thị */}
           <Button
             type="link"
@@ -509,6 +499,16 @@ const ProductionRequestList = () => {
               setIsDrawerOpen(true);
             }}
           />
+
+          {/* Nút xoá: chỉ hiển thị nếu trạng thái là "Chờ duyệt" */}
+          {record.status === "Chờ duyệt" && (
+            <Button
+              icon={<MdDelete style={{ color: "red" }} />}
+              onClick={() => confirmDelete(record)}
+              loading={mutationDelete.isLoading}
+              size="middle"
+            />
+          )}
         </div>
       ),
     },

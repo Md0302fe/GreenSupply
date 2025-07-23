@@ -296,7 +296,7 @@ const PackageCategoryList = () => {
             />
             <Button
               type="link"
-              icon={<DeleteOutlined style={{ fontSize: 18 }} />}
+              icon={<DeleteOutlined style={{ fontSize: 18, color: record.is_delete ? "gray" : "red" }} />}
               disabled={record.is_delete}
               title={
                 record.is_delete
