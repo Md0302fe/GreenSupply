@@ -326,7 +326,7 @@ const ProductionRequest = () => {
       });
 
       if (response.statusCode === 200) {
-        message.success(t("messages.createSuccess"));
+        message.success(t("productionRequest.messages.create_success"));
 
         // 2. Sau khi tạo đơn, gọi lại API để lấy dữ liệu kho mới
         const updatedFuelData = await axios.get(
@@ -339,329 +339,16 @@ const ProductionRequest = () => {
         // Reset form sau khi thành công
         form.resetFields();
       } else {
-        message.error(t("messages.createFail"));
+        message.error(t("productionRequest.messages.create_fail"));
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      message.error(t("messages.submitError"));
+      message.error(t("productionRequest.messages.create_error"));
     } finally {
       setSubmitLoading(false);
     }
   };
 
-  // return (
-  //   <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-  //     <div className="flex justify-between items-center mb-2 lg:mb-4 w-full">
-  //       <Button
-  //         onClick={() => navigate(-1)}
-  //         type="primary"
-  //         className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
-  //       >
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           className="h-4 w-4 mr-1"
-  //           fill="none"
-  //           viewBox="0 0 24 24"
-  //           stroke="currentColor"
-  //         >
-  //           <path
-  //             strokeLinecap="round"
-  //             strokeLinejoin="round"
-  //             strokeWidth={2}
-  //             d="M15 12H3m0 0l6-6m-6 6l6 6"
-  //           />
-  //         </svg>
-  //         <span className="hidden md:inline">{t("common.back")}</span>
-  //       </Button>
-  //       <Button
-  //         onClick={() => navigate("/system/admin/production-request-list")}
-  //         type="default"
-  //         className="flex items-center border border-gray-400 text-gray-700 font-medium py-2 px-3 rounded-md shadow-sm hover:bg-gray-100 transition duration-300 ml-2"
-  //       >
-  //         <span className="border-b border-black border-solid">
-  //           {t("productionRequest.planList")}
-  //         </span>
-  //       </Button>
-  //     </div>
-  //     <div className="w-full max-w-3xl bg-white rounded-lg shadow p-6">
-  //       <div className="flex items-center justify-center mt-2 mb-4 gap-2">
-  //         <GrPlan className="size-6" />
-  //         <h2 className="text-24px lg:text-3xl font-bold text-center">
-  //           {t("productionRequest.title")}
-  //         </h2>
-  //       </div>
-
-  //       {submitLoading && (
-  //         <div className="flex justify-center items-center mb-4">
-  //           <span className="text-lg font-medium text-blue-600">
-  //             Loading...
-  //           </span>
-  //         </div>
-  //       )}
-
-  //       <Form form={form} layout="vertical" onFinish={onFinish}>
-  //         <Form.Item
-  //           label={t("productionRequest.name")}
-  //           name="request_name"
-  //           rules={[
-  //             { required: true, message: t("validation.planNameRequired") },
-  //           ]}
-  //         >
-  //           <Input
-  //             placeholder={t("productionRequest.namePlaceholder")}
-  //             maxLength={100}
-  //             className="rounded border-gray-300"
-  //           />
-  //         </Form.Item>
-
-  //         {/* Chọn Loại Nguyên liệu và nhập Sản lượng mong muốn cùng hàng */}
-  //         <div className="flex flex-col md:flex-row md:space-x-4">
-  //           <Form.Item
-  //             label={t("productionRequest.material")}
-  //             name="material"
-  //             rules={[
-  //               { required: true, message: t("validation.materialRequired") },
-  //             ]}
-  //             className="flex-1"
-  //           >
-  //             <Select
-  //               placeholder={t("productionRequest.selectMaterial")}
-  //               className="rounded border-gray-300"
-  //               onChange={(value) => {
-  //                 const selectedFuel = fuelTypes.find((f) => f._id === value);
-  //                 if (selectedFuel) {
-  //                   setSelectedFuelAvailable(selectedFuel.quantity);
-  //                 } else {
-  //                   setSelectedFuelAvailable(null);
-  //                 }
-  //                 form.setFieldsValue({
-  //                   material_quantity: null,
-  //                   product_quantity: null,
-  //                 });
-  //               }}
-  //             >
-  //               {fuelTypes
-  //                 .filter((fuel) => fuel.quantity > 0) // Lọc ra Nguyên liệu có quantity > 0
-  //                 .map((fuel) => (
-  //                   <Select.Option key={fuel._id} value={fuel._id}>
-  //                     {fuel.fuel_type_id?.type_name} ({fuel.quantity} Kg)
-  //                   </Select.Option>
-  //                 ))}
-  //             </Select>
-  //           </Form.Item>
-
-  //           <Form.Item
-  //             label={t("productionRequest.materialQty")}
-  //             name="material_quantity"
-  //             rules={[
-  //               {
-  //                 required: true,
-  //                 message: t("validation.materialQtyRequired"),
-  //               },
-  //               {
-  //                 type: "number",
-  //                 min: 1,
-  //                 message: t("validation.mustBeGreaterThanZero"),
-  //               },
-  //             ]}
-  //           >
-  //             <InputNumber
-  //               min={1}
-  //               className="w-full rounded border-gray-300"
-  //               placeholder={t("productionRequest.enterMaterialQty")}
-  //               onChange={calculateProductQuantity}
-  //               parser={(value) => value.replace(/[^\d]/g, "")} // loại bỏ ký tự không phải số
-  //               onKeyPress={(e) => {
-  //                 if (!/[0-9]/.test(e.key)) {
-  //                   e.preventDefault();
-  //                 }
-  //               }}
-  //             />
-  //           </Form.Item>
-  //         </div>
-
-  //         {/* Hiển thị Số lượng nguyên liệu cần thiết ước tính (tính tự động) */}
-  //         <Form.Item
-  //           label={t("productionRequest.loss")}
-  //           name="loss_percentage"
-  //           rules={[
-  //             { required: true, message: t("validation.lossRequired") },
-  //             {
-  //               type: "number",
-  //               min: 0,
-  //               max: 100,
-  //               message: t("validation.lossPercentageRange"),
-  //             },
-  //           ]}
-  //         >
-  //           <InputNumber
-  //             min={0}
-  //             max={100}
-  //             className="w-full rounded border-gray-300"
-  //             placeholder={t("productionRequest.enterLoss")}
-  //             onChange={calculateProductQuantity}
-  //           />
-  //         </Form.Item>
-
-  //         <Form.Item
-  //           label={t("productionRequest.productQty")}
-  //           name="product_quantity"
-  //         >
-  //           <InputNumber
-  //             disabled
-  //             className="w-full rounded border-gray-300 bg-gray-50"
-  //           />
-  //         </Form.Item>
-
-  //         {/* Chọn Bao Bì */}
-  //         <Form.Item
-  //           label={t("productionRequest.selectVacuumBag")}
-  //           name="vacuumBagSelect"
-  //           rules={[
-  //             { required: true, message: t("validation.vacuumBagRequired") },
-  //           ]}
-  //         >
-  //           <Select
-  //             placeholder={t("productionRequest.needProductQtyFirst")}
-  //             disabled={!isProductQuantityCalculated}
-  //             onChange={(value) => handlePackagingSelect(value, "vacuumBag")}
-  //           >
-  //             {packagingMaterials
-  //               .filter((material) => material.type === "túi chân không")
-  //               .map((material) => (
-  //                 <Select.Option key={material._id} value={material._id}>
-  //                   {material.package_material_name} - {material.capacity}g
-  //                   (Size {getSizeLabel(material.size_category)})
-  //                 </Select.Option>
-  //               ))}
-  //           </Select>
-  //         </Form.Item>
-
-  //         <Form.Item
-  //           label={t("productionRequest.selectCartonBox")}
-  //           name="cartonSelect"
-  //           rules={[
-  //             { required: true, message: t("validation.cartonBoxRequired") },
-  //           ]}
-  //         >
-  //           <Select
-  //             placeholder={t("productionRequest.needProductQtyFirst")}
-  //             disabled={!isProductQuantityCalculated}
-  //             onChange={(value) => handlePackagingSelect(value, "carton")}
-  //           >
-  //             {packagingMaterials
-  //               .filter((material) => material.type === "thùng carton")
-  //               .map((material) => (
-  //                 <Select.Option key={material._id} value={material._id}>
-  //                   {material.package_material_name} - {material.capacity}kg
-  //                   (Size {getSizeLabel(material.size_category)})
-  //                 </Select.Option>
-  //               ))}
-  //           </Select>
-  //         </Form.Item>
-
-  //         {selectedPackaging.vacuumBag && selectedPackaging.carton && (
-  //           <div>
-  //             <p>
-  //               {t("productionRequest.suggestedVacuumBags", {
-  //                 count: calculatedPackaging.vacuumBag,
-  //               })}
-  //             </p>
-  //             <p>
-  //               {t("productionRequest.suggestedCartons", {
-  //                 count: calculatedPackaging.carton,
-  //               })}
-  //             </p>
-  //           </div>
-  //         )}
-  //         <Form.Item
-  //           label={t("productionRequest.priority")}
-  //           name="priority"
-  //           rules={[
-  //             { required: true, message: t("validation.priorityRequired") },
-  //           ]}
-  //         >
-  //           <Select
-  //             placeholder={t("productionRequest.selectPriority")}
-  //             className="rounded border-gray-300"
-  //           >
-  //             <Select.Option value={3}>{t("priority.high")}</Select.Option>
-  //             <Select.Option value={2}>{t("priority.medium")}</Select.Option>
-  //             <Select.Option value={1}>{t("priority.low")}</Select.Option>
-  //           </Select>
-  //         </Form.Item>
-  //         <Form.Item
-  //           label={t("productionRequest.productionDate")}
-  //           name="production_date"
-  //           rules={[
-  //             {
-  //               required: true,
-  //               message: t("validation.productionDateRequired"),
-  //             },
-  //           ]}
-  //         >
-  //           <DatePicker
-  //             style={{ width: "100%" }}
-  //             format="DD/MM/YYYY"
-  //             placeholder={t("productionRequest.selectProductionDate")}
-  //             className="rounded border-gray-300"
-  //             disabledDate={disabledProductionDate}
-  //             onChange={(date) => {
-  //               setProductionDate(date);
-  //               form.setFieldsValue({ production_date: date });
-  //             }}
-  //           />
-  //         </Form.Item>
-  //         <Form.Item
-  //           label={t("productionRequest.endDate")}
-  //           name="end_date"
-  //           rules={[
-  //             { required: true, message: t("validation.endDateRequired") },
-  //           ]}
-  //         >
-  //           <Form.Item noStyle dependencies={["production_date"]}>
-  //             {({ getFieldValue }) => (
-  //               <DatePicker
-  //                 style={{ width: "100%" }}
-  //                 format="DD/MM/YYYY"
-  //                 placeholder={
-  //                   !getFieldValue("production_date")
-  //                     ? t("productionRequest.selectProductionDateFirst")
-  //                     : t("productionRequest.selectEndDate")
-  //                 }
-  //                 className="rounded border-gray-300"
-  //                 disabled={!getFieldValue("production_date")} // disable if no production_date
-  //                 disabledDate={disabledEndDate} // Custom function for disabled date
-  //                 onChange={(date) => form.setFieldsValue({ end_date: date })} // Set end_date value on change
-  //               />
-  //             )}
-  //           </Form.Item>
-  //         </Form.Item>
-
-  //         <Form.Item
-  //           name="request_type"
-  //           initialValue="Đơn sản xuất"
-  //           style={{ display: "none" }}
-  //         >
-  //           <Input />
-  //         </Form.Item>
-
-  //         <Form.Item label={t("productionRequest.note")} name="note">
-  //           <Input.TextArea
-  //             rows={4}
-  //             placeholder={t("productionRequest.enterNote")}
-  //             className="rounded border-gray-300"
-  //           />
-  //         </Form.Item>
-  //         <Form.Item>
-  //           <Button type="primary" htmlType="submit" className="w-full py-2">
-  //             {t("common.confirm")}
-  //           </Button>
-  //         </Form.Item>
-  //       </Form>
-  //     </div>
-  //   </div>
-  // );
   return (
     <div className="min-h-screen bg-white from-blue-50 via-indigo-50 to-purple-50 px-4 py-6">
       <div className="flex justify-between items-center">
@@ -1050,7 +737,7 @@ const ProductionRequest = () => {
                   placeholder={
                     !calculatedPackaging.vacuumBag
                       ? t("validation.needSuggestedVacuumBagFirst")
-                      : t("validation.enterVacuumBagQty")
+                      : t("productionRequest.enterVacuumBagQty")
                   }
                   className="w-full rounded border-gray-300"
                   size="large"
@@ -1134,7 +821,7 @@ const ProductionRequest = () => {
                   placeholder={
                     !calculatedPackaging.carton
                       ? t("validation.needSuggestedCartonFirst")
-                      : t("validation.enterCartonQty")
+                      : t("productionRequest.enterCartonQty")
                   }
                   className="w-full   rounded border-gray-300"
                   size="large"
@@ -1263,10 +950,18 @@ const ProductionRequest = () => {
                   </span>
                 }
                 name="note"
+                rules={[
+                  {
+                    max: 200,
+                    message: t("productionRequest.warnings.noteMaxLength", { max: 200 }),
+                  },
+                ]}
               >
                 <Input.TextArea
                   rows={4}
                   placeholder={t("productionRequest.enterNote")}
+                  maxLength={200}
+                  showCount
                   className="border-2 border-gray-200 p-4 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
                 />
               </Form.Item>

@@ -242,7 +242,7 @@
     "action": "Hành động",
     "success_update": "Cập nhật yêu cầu thu nguyên liệu thành công!",
     "fail_update": "Cập nhật yêu cầu thất bại",
-    "success_cancel": "Yêu cầu đã được hủy thành công!",
+    "success_cancel": "Đã hủy yêu cầu thu thập tài liệu thành công!",
     "fail_cancel": "Hủy yêu cầu thất bại",
     "only_cancel_pending": "Chỉ có thể hủy yêu cầu ở trạng thái 'Chờ duyệt'.",
     "no_data": "Không có dữ liệu.",
@@ -1200,7 +1200,12 @@
       "note_parent": "Các trường có dấu",
       "note_child": "là bắt buộc. Đơn sản xuất sẽ được chọn tự động dựa trên lô nguyên liệu đã chọn."
     },
-    "viewList": "Danh sách xuất kho"
+    "viewList": "Danh sách xuất kho",
+    "message": {
+      "create_success": "Created warehouse export request successfully!",
+      "create_fail": "Creat warehouse export request failed!",
+      "create_error": "Error create warehouse export request!"
+    }
   },
   "materialExportList": {
     "title": "Danh sách yêu cầu xuất kho",
@@ -1250,7 +1255,8 @@
     "enterCartonQty": "Nhập số lượng thùng carton",
     "warnings": {
       "vacuumBagBelowRecommended": "Bạn đang nhập ít hơn số túi gợi ý ({{suggested}} túi). Khuyến nghị nên từ {{suggested}} trở lên.",
-      "cartonBelowRecommended": "Bạn đang nhập ít hơn số thùng gợi ý ({{suggested}} thùng). Khuyến nghị nên từ {{suggested}} trở lên."
+      "cartonBelowRecommended": "Bạn đang nhập ít hơn số thùng gợi ý ({{suggested}} thùng). Khuyến nghị nên từ {{suggested}} trở lên.",
+      "noteMaxLength": "Ghi chú không được vượt quá {{max}} ký tự."
     },
 
     "materialQty": "Số lượng nguyên liệu (kg)",
@@ -1302,8 +1308,13 @@
     "viewList": "Kế hoạch sản xuất",
     "note_require": {
       "note": "Lưu ý:",
-      "note_parent": "Tất cả các trường có dấu *",
+      "note_parent": "Tất cả các trường có dấu",
       "note_child": "là bắt buộc. Số lượng sản phẩm sẽ được tự động tính toán dựa trên số lượng nguyên liệu và tỷ lệ hao hụt."
+    },
+    "message": {
+      "create_success": "Tạo kế hoạch sản xuất thành công!",
+      "create_fail": "Tạo kế hoạch sản xuất thất bại!",
+      "create_error": "Lỗi khi tạo kế hoạch sản xuất!"
     }
   },
   "priority": {
@@ -1312,7 +1323,20 @@
     "low": "Thấp"
   },
   "productionRequestManagement": {
-    "title": "Danh sách kế hoạch sản xuất"
+    "title": "Danh sách kế hoạch sản xuất",
+    "messages": {
+      "update_success": "Cập nhật kế hoạch sản xuất thành công!",
+      "update_fail": "Cập nhật kế hoạch sản xuất thất bại!",
+      "update_error": "Lỗi cập nhật kế hoạch sản xuất!",
+      "delete_success": "Xóa kế hoạch sản xuất thành công!",
+      "delete_fail": "Xóa kế hoạch sản xuất thất bại!",
+      "delete_error": "Lỗi xóa kế hoạch sản xuất!",
+      "approve_success": "Duyệt kế hoạch sản xuất thành công!",
+      "approve_fail": "Duyệt kế hoạch sản xuất thất bại!",
+      "approve_error": "Lỗi duyệt kế hoạch sản xuất!"
+    },
+    "update_title": "Cập Nhật Kế Hoạch Sản Xuất",
+    "detail_title": "Chi Tiết Kế Hoạch Sản Xuất"
   },
   "form": {
     "request_name": "Tên đơn",
