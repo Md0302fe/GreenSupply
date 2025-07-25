@@ -15,8 +15,16 @@ import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlides";
 
+import MangovateLogo from "../../assets/Logo_Mangovate/Logo_Rmb.png";
+
+
 // image
-import backgroundRegister from "../../assets/image/background_login.png";
+// import backgroundRegister from "../../assets/image/background_login.png";
+import backgroundRegister from "../../assets/image/background_login.jpg";
+import facebook from "../../assets/image/facebook.png";
+import youtube from "../../assets/image/youtube.png";
+import tiktok from "../../assets/image/tik-tok.png";
+
 
 // Google
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
@@ -31,10 +39,10 @@ const Login = () => {
   const navigate = useNavigate();
   // Variables
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const dishpatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [stateNotification, setStateNotification] = useState(false);
-  const dishpatch = useDispatch();
   const [messageBlocked, setMessageBlocked] = useState(null);
 
   // FORGOT PASSWORD
@@ -46,6 +54,19 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [sendOtpLoading, setsendOtpLoading] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
+
+  // Bg Loader
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = backgroundRegister;
+    img.onload = () => {
+      setTimeout(() => {
+        setBgLoaded(true); // Chờ 0.5s để fade in
+      }, 100);
+    };
+  }, []);
 
   // translate
   const { t, i18n } = useTranslation();
@@ -97,7 +118,7 @@ const Login = () => {
     try {
       const response = await UserServices.userLogin({ googleToken });
       console.log(response);
-      const { status, user,  message: responseMessage  } = response;
+      const { status, user, message: responseMessage } = response;
       if (status === "NEW_USER") {
         navigate("/google-register", { state: { user } });
       } else if (status === "BLOCKED") {
@@ -142,9 +163,9 @@ const Login = () => {
   const handleGetDetailsUser = async (id, token) => {
     const res = await UserServices.getDetailsUser(id, token);
     const user = {
-       ...res?.data,
-       access_token: token 
-    }
+      ...res?.data,
+      access_token: token,
+    };
     dishpatch(updateUser({ ...res?.data, access_token: token }));
   };
 
@@ -228,7 +249,9 @@ const Login = () => {
     <div className={`login-container flex-center-center h-screen`}>
       {/* Wrapper Login */}
       <div
-        className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
+        className={`Login-wapper Width items-center max-w-full w-full h-full grid md:grid-cols-2 transition-opacity duration-1000 bg-contain ${
+          bgLoaded ? "opacity-100" : "opacity-0"
+        }`}
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
       >
         <div className="Info-Sign-In bg-white rounded-2xl pt-12 pb-6  md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
@@ -261,7 +284,7 @@ const Login = () => {
             </svg>
             <span>{t("home")}</span>
           </a>
-          <img src="image/logo-orange.png" alt="" />
+          <img src={MangovateLogo} className="w-[200px]" alt="" />
           <p className="text-3xl font-bold text-supply-primary mb-4">
             {t("login")}
           </p>
@@ -363,13 +386,13 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="hidden md:flex flex-col items-center justify-center text-center">
-          <img src="image/logo-white.png" alt="" />
-          <p className="text-white font-semibold text-3xl">{t("slogan")}</p>
+        <div className="hidden md:flex flex-col items-center justify-center text-center min-h-[490px] inset-0 bg-white/50 backdrop-blur-sm rounded-md mr-4">
+          <img src={MangovateLogo} className="w-[300px]" alt="" />
+          <p className="text-black font-semibold text-3xl">{t("slogan")}</p>
           <div className="flex items-center gap-3 justify-center mt-3">
-            <img src="image/icon/fb.png" alt="" />
-            <img src="image/icon/yt.png" alt="" />
-            <img src="image/icon/tt.png" alt="" />
+            <img src={facebook} alt="" className="w-10" />
+            <img src={youtube} alt="" className="w-10"/>
+            <img src={tiktok} alt="" className="w-10"/>
           </div>
         </div>
         {isForgotPassword && (

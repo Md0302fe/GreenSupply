@@ -59,7 +59,7 @@ export default function Footer() {
                 {t("landingPage.footer.newsletter.subtitle")}
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col items-center sm:flex-row gap-4">
               <input
                 type="email"
                 placeholder={t("landingPage.footer.newsletter.placeholder")}
