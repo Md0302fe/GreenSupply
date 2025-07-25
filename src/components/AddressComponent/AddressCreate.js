@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
-
-import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 import {
   MDBBreadcrumb,
   MDBBreadcrumbItem,
@@ -13,6 +12,7 @@ import {
 } from "mdb-react-ui-kit";
 
 const AddressCreate = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
@@ -27,58 +27,50 @@ const AddressCreate = () => {
 
   const navigate = useNavigate();
 
-  // 🔹 Hàm kiểm tra họ và tên
+  // Validate full name
   const validateFullName = (name) => {
-    if (!name.trim()) return "Tên không được để trống.";
-    if (name.length < 2 || name.length > 40) return "Tên phải có từ 2 đến 40 ký tự.";
-    if (/\d/.test(name)) return "Tên không được chứa số.";
-    if (/[^a-zA-ZÀ-ỹ\s]/.test(name)) return "Tên không được chứa ký tự đặc biệt.";
+    if (!name.trim()) return t("addressCreate.validation.fullNameRequired");
+    if (name.length < 2 || name.length > 40)
+      return t("addressCreate.validation.fullNameLength");
+    if (/\d/.test(name)) return t("addressCreate.validation.fullNameNoNumber");
+    if (/[^a-zA-ZÀ-ỹ\s]/.test(name))
+      return t("addressCreate.validation.fullNameSpecialChar");
     return "";
   };
 
-  // 🔹 Hàm kiểm tra số điện thoại
+  // Validate phone
   const validatePhone = (phone) => {
-    if (!phone.trim()) return "Số điện thoại không được để trống.";
-  
-    // Kiểm tra nếu chứa dấu âm (-)
-    if (phone.includes("-")) return "Số điện thoại không thể là số âm.";
-  
-    // Kiểm tra nếu chứa ký tự lạ (chỉ cho phép số)
-    if (!/^\d+$/.test(phone)) return "Số điện thoại chỉ được chứa số.";
-  
-    // Kiểm tra độ dài (chỉ chấp nhận đúng 10 số)
-    if (phone.length !== 10) {
-      return "Số điện thoại phải có đúng 10 số.";
-    }
-  
-  
-    return ""; // Hợp lệ
-  };
-  
-
-  // 🔹 Hàm kiểm tra địa chỉ
-  const validateAddress = (address) => {
-    if (!address.trim()) return "Địa chỉ không được để trống.";
-    if (address.length < 5) return "Địa chỉ phải có ít nhất 5 ký tự.";
+    if (!phone.trim()) return t("addressCreate.validation.phoneRequired");
+    if (phone.includes("-")) return t("addressCreate.validation.phoneNegative");
+    if (!/^\d+$/.test(phone))
+      return t("addressCreate.validation.phoneOnlyDigits");
+    if (phone.length !== 10) return t("addressCreate.validation.phoneLength");
     return "";
   };
 
-  // 🔹 Hàm kiểm tra toàn bộ dữ liệu trước khi gửi
+  // Validate address
+  const validateAddress = (address) => {
+    if (!address.trim()) return t("addressCreate.validation.addressRequired");
+    if (address.length < 5) return t("addressCreate.validation.addressLength");
+    return "";
+  };
+
   const validateForm = () => {
     const fullNameError = validateFullName(formData.full_name);
     const phoneError = validatePhone(formData.phone);
     const addressError = validateAddress(formData.address);
 
-    setErrors({ full_name: fullNameError, phone: phoneError, address: addressError });
+    setErrors({
+      full_name: fullNameError,
+      phone: phoneError,
+      address: addressError,
+    });
 
     return !fullNameError && !phoneError && !addressError;
   };
 
-  // 🔹 Xử lý sự kiện khi nhấn nút lưu địa chỉ
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Kiểm tra dữ liệu trước khi gửi API
     if (!validateForm()) return;
 
     try {
@@ -89,18 +81,19 @@ const AddressCreate = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Thông báo thêm thành công
-      message.success("Thêm địa chỉ thành công!", { position: "top-right", autoClose: 3000 });
-
-      // Điều hướng về trang danh sách địa chỉ
+      message.success(t("addressCreate.success"), {
+        position: "top-right",
+        autoClose: 3000,
+      });
       setTimeout(() => navigate("/Address"), 1500);
     } catch (error) {
-      message.error("Tạo địa chỉ thất bại!", { position: "top-right", autoClose: 3000 });
-      console.error("Lỗi khi tạo địa chỉ:", error);
+      message.error(t("addressCreate.error"), {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
-  // 🔹 Xử lý thay đổi dữ liệu và kiểm tra lỗi trực tiếp khi nhập
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
 
@@ -117,75 +110,102 @@ const AddressCreate = () => {
       <div className="Wrapper Width">
         <div className="bg-white shadow-lg rounded-lg p-6 border">
           <MDBContainer>
-            {/* Breadcrumb */}
             <MDBRow>
               <MDBCol>
                 <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4 border">
                   <MDBBreadcrumbItem>
-                    <span onClick={() => navigate("/home")} className="cursor-pointer hover:border-b hover:border-black">
-                      Home
+                    <span
+                      onClick={() => navigate("/home")}
+                      className="cursor-pointer hover:border-b hover:border-black"
+                    >
+                      {t("addressCreate.breadcrumb.home")}
                     </span>
                   </MDBBreadcrumbItem>
                   <MDBBreadcrumbItem>
-                    <span onClick={() => navigate("/profile")} className="cursor-pointer hover:border-b hover:border-black">
-                      User Profile
+                    <span
+                      onClick={() => navigate("/profile")}
+                      className="cursor-pointer hover:border-b hover:border-black"
+                    >
+                      {t("addressCreate.breadcrumb.profile")}
                     </span>
                   </MDBBreadcrumbItem>
                   <MDBBreadcrumbItem>
-                    <span onClick={() => navigate("/Address")} className="cursor-pointer hover:border-b hover:border-black">
-                      View Address
+                    <span
+                      onClick={() => navigate("/Address")}
+                      className="cursor-pointer hover:border-b hover:border-black"
+                    >
+                      {t("addressCreate.breadcrumb.viewAddress")}
                     </span>
                   </MDBBreadcrumbItem>
-                  <MDBBreadcrumbItem active>Create Address</MDBBreadcrumbItem>
+                  <MDBBreadcrumbItem active>
+                    {t("addressCreate.breadcrumb.createAddress")}
+                  </MDBBreadcrumbItem>
                 </MDBBreadcrumb>
               </MDBCol>
             </MDBRow>
 
-            {/* Form Create Address */}
             <div className="p-6 bg-white shadow-md rounded-lg border">
-              <h2 className="text-xl font-semibold mb-4">Thêm địa chỉ mới</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                {t("addressCreate.title")}
+              </h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label className="block font-medium text-gray-700">Họ và Tên:</label>
+                  <label className="block font-medium text-gray-700">
+                    {t("addressCreate.fullName")}
+                  </label>
                   <input
                     className="border p-2 w-full rounded-md"
                     type="text"
-                    placeholder="Nhập tên đầy đủ"
+                    placeholder={t("addressCreate.fullNamePlaceholder")}
                     value={formData.full_name}
                     onChange={(e) => handleChange("full_name", e.target.value)}
                   />
-                  {errors.full_name && <p className="text-red-500 text-sm mt-1">{errors.full_name}</p>}
+                  {errors.full_name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.full_name}
+                    </p>
+                  )}
                 </div>
 
                 <div className="mb-4">
-                  <label className="block font-medium text-gray-700">Số điện thoại:</label>
+                  <label className="block font-medium text-gray-700">
+                    {t("addressCreate.phone")}
+                  </label>
                   <input
                     className="border p-2 w-full rounded-md"
                     type="text"
-                    placeholder="Nhập số điện thoại"
+                    placeholder={t("addressCreate.phonePlaceholder")}
                     value={formData.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
                   />
-                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  )}
                 </div>
 
                 <div className="mb-4">
-                  <label className="block font-medium text-gray-700">Địa chỉ:</label>
+                  <label className="block font-medium text-gray-700">
+                    {t("addressCreate.address")}
+                  </label>
                   <input
                     className="border p-2 w-full rounded-md"
                     type="text"
-                    placeholder="Nhập địa chỉ cụ thể"
+                    placeholder={t("addressCreate.addressPlaceholder")}
                     value={formData.address}
                     onChange={(e) => handleChange("address", e.target.value)}
                   />
-                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                  {errors.address && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.address}
+                    </p>
+                  )}
                 </div>
 
                 <button
                   type="submit"
                   className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-all duration-200"
                 >
-                  Lưu Địa Chỉ
+                  {t("addressCreate.submitButton")}
                 </button>
               </form>
             </div>

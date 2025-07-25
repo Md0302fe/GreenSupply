@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import slider1 from "../../assets/Logo_Mangovate/slider1.jpg"
-import slider2 from "../../assets/Logo_Mangovate/slider2.jpg"
-import slider3 from "../../assets/Logo_Mangovate/slider3.jpg"
-import slider4 from "../../assets/Logo_Mangovate/slider4.jpg"
-import slider5 from "../../assets/Logo_Mangovate/slider5.jpg"
-
+import slider1 from "../../assets/Logo_Mangovate/slider1.jpg";
+import slider2 from "../../assets/Logo_Mangovate/slider2.jpg";
+import slider3 from "../../assets/Logo_Mangovate/slider3.jpg";
+import slider4 from "../../assets/Logo_Mangovate/slider4.jpg";
+import slider5 from "../../assets/Logo_Mangovate/slider5.jpg";
 
 import {
   ChevronLeft,
@@ -19,119 +18,49 @@ import {
 } from "lucide-react";
 import { Button } from "./button.js";
 import { Card, CardContent } from "./card.js";
+import { useTranslation } from "react-i18next";
 
-const slides = [
-  {
-    id: 1,
-    icon: Factory,
-    title: "Hệ thống sản xuất thông minh",
-    subtitle: "Smart Production System",
-    description:
-      "Hỗ trợ sản xuất xoài sấy dẻo với công nghệ tiên tiến, tự động hóa quy trình sản xuất và đảm bảo chất lượng sản phẩm đồng nhất.",
-    features: [
-      "Tự động hóa quy trình",
-      "Kiểm soát chất lượng",
-      "Tối ưu hóa năng suất",
-    ],
-    bgColor: "from-orange-200 to-orange-300",
-    image: slider1,
-  },
-  {
-    id: 2,
-    icon: ShoppingCart,
-    title: "Quản lý đơn hàng thông minh",
-    subtitle: "Smart Order Management",
-    description:
-      "Hệ thống quản lý đơn hàng và cung cấp hàng thông minh, tối ưu hóa việc xử lý đơn hàng và giao hàng đúng hạn.",
-    features: [
-      "Xử lý đơn hàng tự động",
-      "Theo dõi giao hàng",
-      "Quản lý khách hàng",
-    ],
-    bgColor: "from-orange-300 to-orange-400",
-    image: slider2,
-  },
-  {
-    id: 3,
-    icon: Warehouse,
-    title: "Quản lý kho thông minh",
-    subtitle: "Smart Warehouse Management",
-    description:
-      "Hệ thống quản lý kho tiện lợi cho cả kho nguyên liệu và kho thành phẩm, tối ưu hóa không gian và quản lý tồn kho hiệu quả.",
-    features: [
-      "Quản lý tồn kho real-time",
-      "Tối ưu không gian kho",
-      "Báo cáo xuất nhập kho",
-    ],
-    bgColor: "from-orange-500 to-orange-600",
-    image: slider3,
-  },
-  {
-    id: 4,
-    icon: GitBranch,
-    title: "Quản lý quy trình minh bạch",
-    subtitle: "Transparent Process Management",
-    description:
-      "Hệ thống quản lý quy trình minh bạch giúp người dùng nắm bắt được mọi thông tin của quy trình sản xuất một cách chi tiết và rõ ràng.",
-    features: [
-      "Theo dõi quy trình real-time",
-      "Báo cáo chi tiết",
-      "Kiểm soát chất lượng",
-    ],
-    bgColor: "from-green-300 to-purple-400",
-    image: slider4,
-  },
-  {
-    id: 5,
-    icon: BarChart3,
-    title: "Dashboard quản lý toàn diện",
-    subtitle: "Comprehensive Management Dashboard",
-    description:
-      "Hệ thống dashboard đầy đủ các thông tin cần thiết, cung cấp cái nhìn tổng quan và chi tiết về toàn bộ hoạt động của hệ thống.",
-    features: ["Báo cáo tổng quan", "Phân tích dữ liệu", "Cảnh báo thông minh"],
-    bgColor: "from-indigo-500 to-green-600",
-    image: slider5,
-  },
-];
+const slides = [1, 2, 3, 4, 5];
 
 export default function MangoVateSlider() {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
-
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () =>
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  const goToSlide = (index) => setCurrentSlide(index);
 
-  const goToSlide = (index) => {
-    setCurrentSlide(index);
-  };
+  const images = [slider1, slider2, slider3, slider4, slider5];
+  const icons = [Factory, ShoppingCart, Warehouse, GitBranch, BarChart3];
+  const bgColors = [
+    "from-orange-200 to-orange-300",
+    "from-orange-300 to-orange-400",
+    "from-orange-500 to-orange-600",
+    "from-green-300 to-purple-400",
+    "from-indigo-500 to-green-600",
+  ];
 
-  const currentSlideData = slides[currentSlide];
-  const IconComponent = currentSlideData.icon;
+  const slideId = slides[currentSlide];
+  const IconComponent = icons[currentSlide];
 
   return (
     <div className="relative max-w-7xl mx-auto">
       <Card className="overflow-hidden shadow-2xl">
         <CardContent className="p-0">
           <div
-            className={`bg-gradient-to-r ${currentSlideData.bgColor} text-white relative min-h-[500px]`}
+            className={`bg-gradient-to-r ${bgColors[currentSlide]} text-white relative min-h-[500px]`}
           >
             <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12 items-center">
-              {/* Content Section */}
               <div className="flex flex-col justify-center space-y-6">
                 <div className="flex items-center space-x-4">
                   <div className="p-3 bg-white/20 rounded-full backdrop-blur-sm">
@@ -144,24 +73,30 @@ export default function MangoVateSlider() {
 
                 <div>
                   <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                    {currentSlideData.title}
+                    {t(`landingPage.slider.slides.${slideId}.title`)}
                   </h2>
                   <p className="text-white/80 text-lg mb-4">
-                    {currentSlideData.subtitle}
+                    {t(`landingPage.slider.slides.${slideId}.subtitle`)}
                   </p>
                 </div>
 
                 <p className="text-lg leading-relaxed text-white/90">
-                  {currentSlideData.description}
+                  {t(`landingPage.slider.slides.${slideId}.description`)}
                 </p>
 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-lg">Tính năng chính:</h4>
+                  <h4 className="font-semibold text-lg">
+                    {t("landingPage.slider.features_title")}
+                  </h4>
                   <ul className="space-y-2">
-                    {currentSlideData.features.map((feature, index) => (
+                    {[0, 1, 2].map((index) => (
                       <li key={index} className="flex items-center space-x-3">
                         <div className="w-2 h-2 bg-white rounded-full"></div>
-                        <span className="text-white/90">{feature}</span>
+                        <span className="text-white/90">
+                          {t(
+                            `landingPage.slider.slides.${slideId}.features.${index}`
+                          )}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -172,24 +107,23 @@ export default function MangoVateSlider() {
                     size="lg"
                     className="bg-white text-gray-900 hover:bg-white/90 font-semibold px-8"
                   >
-                    Tìm hiểu thêm
+                    {t("landingPage.slider.learn_more")}
                   </Button>
                   <Button
                     size="lg"
                     variant="outline"
                     className="border-white text-white hover:bg-white hover:text-gray-900 px-8 bg-transparent"
                   >
-                    Liên hệ
+                    {t("landingPage.slider.contact")}
                   </Button>
                 </div>
               </div>
 
-              {/* Image Section */}
               <div className="flex items-center justify-center">
                 <div className="relative">
                   <img
-                    src={currentSlideData.image || "/placeholder.svg"}
-                    alt={currentSlideData.title}
+                    src={images[currentSlide] || "/placeholder.svg"}
+                    alt={t(`landingPage.slider.slides.${slideId}.title`)}
                     className="rounded-xl shadow-2xl max-w-full h-auto"
                   />
                   <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
@@ -198,7 +132,6 @@ export default function MangoVateSlider() {
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <Button
               variant="ghost"
               size="icon"
@@ -224,7 +157,6 @@ export default function MangoVateSlider() {
         </CardContent>
       </Card>
 
-      {/* Slide Indicators */}
       <div className="flex justify-center space-x-3 mt-6">
         {slides.map((_, index) => (
           <button
@@ -241,7 +173,6 @@ export default function MangoVateSlider() {
         ))}
       </div>
 
-      {/* Progress Bar */}
       <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
         <div
           className="bg-green-600 h-2 rounded-full transition-all duration-300 ease-out"
@@ -249,7 +180,6 @@ export default function MangoVateSlider() {
         />
       </div>
 
-      {/* Slide Counter */}
       <div className="text-center mt-4 text-gray-600">
         <span className="text-sm font-medium">
           {currentSlide + 1} / {slides.length}

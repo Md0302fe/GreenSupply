@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
-import "react-toastify/dist/ReactToastify.css";
-
+import { useTranslation } from "react-i18next";
 import {
   MDBBreadcrumb,
   MDBBreadcrumbItem,
@@ -11,10 +10,9 @@ import {
   MDBRow,
   MDBCol,
 } from "mdb-react-ui-kit";
-
 import Loading from "../../components/LoadingComponent/Loading";
 
-const fetchAddresses = async (setAddresses, setError, setLoading) => {
+const fetchAddresses = async (setAddresses, setError, setLoading, t) => {
   try {
     const token = JSON.parse(localStorage.getItem("access_token"));
     const response = await axios.get(
@@ -25,14 +23,14 @@ const fetchAddresses = async (setAddresses, setError, setLoading) => {
     );
     setAddresses(response.data.data);
   } catch (err) {
-    setError("Không thể tải danh sách địa chỉ.");
+    setError(t("address.loadError"));
   } finally {
     setLoading(false);
   }
 };
 
-const handleDelete = async (id, addresses, setAddresses) => {
-  if (window.confirm("Bạn có chắc chắn muốn xóa địa chỉ này?")) {
+const handleDelete = async (id, addresses, setAddresses, t) => {
+  if (window.confirm(t("address.confirmDelete"))) {
     try {
       const token = JSON.parse(localStorage.getItem("access_token"));
       await axios.delete(
@@ -44,20 +42,9 @@ const handleDelete = async (id, addresses, setAddresses) => {
 
       setAddresses(addresses.filter((addr) => addr._id !== id));
 
-      // Thông báo xóa thành công
-      message.success("Xóa địa chỉ thành công!", {
-        position: "top-right",
-        autoClose: 3000, // Tự động ẩn sau 3s
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      message.success(t("address.deleteSuccess"));
     } catch (error) {
-      message.error("Xóa địa chỉ thất bại!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      message.error(t("address.deleteFail"));
     }
   }
 };
@@ -67,10 +54,11 @@ const Address = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    fetchAddresses(setAddresses, setError, setLoading);
-  }, []);
+    fetchAddresses(setAddresses, setError, setLoading, t);
+  }, [t]);
 
   return (
     <div className="User-Address Container flex-center-center mb-4 mt-4">
@@ -80,13 +68,13 @@ const Address = () => {
             <MDBContainer>
               <MDBRow>
                 <MDBCol>
-                  <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4 border ">
+                  <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4 border">
                     <MDBBreadcrumbItem>
                       <span
                         onClick={() => navigate("/home")}
                         className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
                       >
-                        Home
+                        {t("breadcrumb.home")}
                       </span>
                     </MDBBreadcrumbItem>
                     <MDBBreadcrumbItem>
@@ -94,27 +82,31 @@ const Address = () => {
                         onClick={() => navigate("/profile")}
                         className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
                       >
-                        User Profile
+                        {t("breadcrumb.profile")}
                       </span>
                     </MDBBreadcrumbItem>
-                    <MDBBreadcrumbItem active>View Address</MDBBreadcrumbItem>
+                    <MDBBreadcrumbItem active>
+                      {t("breadcrumb.viewAddress")}
+                    </MDBBreadcrumbItem>
                   </MDBBreadcrumb>
                 </MDBCol>
               </MDBRow>
 
               <div className="p-6 bg-white shadow-md rounded-lg border mb-6">
-                <h2 className="text-xl font-semibold mb-4">Địa chỉ của tôi</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  {t("address.myAddress")}
+                </h2>
                 <button
                   onClick={() => navigate("/Address-Create")}
                   className="bg-red-500 text-white px-4 py-2 rounded-md mb-4"
                 >
-                  + Thêm địa chỉ mới
+                  + {t("address.addNew")}
                 </button>
 
                 {error ? (
                   <p className="text-red-500">{error}</p>
                 ) : addresses.length === 0 ? (
-                  <p>Chưa có địa chỉ nào.</p>
+                  <p>{t("address.noData")}</p>
                 ) : (
                   <div>
                     {addresses.map((address) => (
@@ -129,14 +121,13 @@ const Address = () => {
 
                         <p className="text-gray-700">{address.address}</p>
 
-                        {/* Hiển thị thẻ "Mặc định" nếu đây là địa chỉ mặc định */}
-                        <div className="flex gap-2 mt-2">
-                          {address.is_default && (
+                        {address.is_default && (
+                          <div className="flex gap-2 mt-2">
                             <span className="bg-red-500 text-white px-2 py-1 rounded text-xs">
-                              Mặc định
+                              {t("address.default")}
                             </span>
-                          )}
-                        </div>
+                          </div>
+                        )}
 
                         <div className="mt-2 flex gap-4">
                           <button
@@ -145,15 +136,20 @@ const Address = () => {
                             }
                             className="text-blue-500"
                           >
-                            Cập nhật
+                            {t("actions.update")}
                           </button>
                           <button
                             onClick={() =>
-                              handleDelete(address._id, addresses, setAddresses)
+                              handleDelete(
+                                address._id,
+                                addresses,
+                                setAddresses,
+                                t
+                              )
                             }
                             className="text-red-500"
                           >
-                            Xóa
+                            {t("actions.delete")}
                           </button>
                         </div>
                       </div>
