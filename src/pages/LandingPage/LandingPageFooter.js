@@ -38,13 +38,13 @@ export default function Footer() {
       <div className="bg-gradient-to-r from-green-600 to-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
+            <div className="">
               <h3 className="text-2xl font-bold mb-2">Đăng ký nhận tin tức</h3>
               <p className="text-green-100">
                 Nhận thông tin mới nhất về sản phẩm và xu hướng công nghệ trong ngành sản xuất
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col items-center sm:flex-row gap-4">
               <input
                 type="email"
                 placeholder="Nhập email của bạn"

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Login.scss";
-import backgroundRegister from "../../assets/image/background_login.png";
+// import backgroundRegister from "../../assets/image/background_login.png";
+import backgroundRegister from "../../assets/image/background_login.jpg";
+
 import * as UserServices from "../../services/UserServices";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import Loading from "../LoadingComponent/Loading";
@@ -12,17 +14,22 @@ import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
 
+import MangovateLogo from "../../assets/Logo_Mangovate/Logo_Rmb.png";
+import facebook from "../../assets/image/facebook.png";
+import youtube from "../../assets/image/youtube.png";
+import tiktok from "../../assets/image/tik-tok.png";
+
 const Register = () => {
   const { t, i18n } = useTranslation();
 
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
-  const [role_check, setRoleCheck] = useState(true);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
+  const [password, setPassword] = useState("");
+  const [role_check, setRoleCheck] = useState(true);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [resendTimer, setResendTimer] = useState(0); // Thời gian chờ (giây)
 
   const [otp, setOtp] = useState("");
@@ -30,6 +37,19 @@ const Register = () => {
   const mutation = useMutationHooks((data) => UserServices.userRegister(data));
   const [loading, setLoading] = useState(false);
   const { data, isSuccess } = mutation;
+
+  // bg loader
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = backgroundRegister;
+    img.onload = () => {
+      setTimeout(() => {
+        setBgLoaded(true); // Chờ 0.5s để fade in
+      }, 100);
+    };
+  }, []);
 
   useEffect(() => {
     if (isSuccess && data.status === "OK") {
@@ -99,7 +119,7 @@ const Register = () => {
     }
 
     if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
-    
+
     setLoading(true);
     try {
       const result = await UserServices.sendOtp({
@@ -143,7 +163,9 @@ const Register = () => {
   return (
     <div className={`login-container flex-center-center h-screen `}>
       <div
-        className="Login-wapper Width items-center bg-cover max-w-full w-full h-full grid md:grid-cols-2"
+        className={`Login-wapper Width items-center max-w-full w-full h-full grid md:grid-cols-2 transition-opacity duration-1000 bg-contain ${
+          bgLoaded ? "opacity-100" : "opacity-0"
+        }`}
         style={{ backgroundImage: `url("${backgroundRegister}")` }}
       >
         <div className="Info-Sign-In  bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-8/12 mx-auto relative">
@@ -387,13 +409,13 @@ const Register = () => {
             <LanguageSwitcher />
           </div>
         </div>
-        <div className="hidden md:flex flex-col items-center justify-center text-center">
-          <img src="image/logo-white.png" alt="" />
-          <p className="text-white font-semibold text-3xl">{t("slogan")}</p>
+        <div className="hidden md:flex flex-col items-center justify-center text-center min-h-[490px] inset-0 bg-white/50 backdrop-blur-sm rounded-md mr-4">
+          <img src={MangovateLogo} className="w-[200px]" alt="" />
+          <p className="text-black font-semibold text-3xl">{t("slogan")}</p>
           <div className="flex items-center gap-3 justify-center mt-3">
-            <img src="image/icon/fb.png" alt="" />
-            <img src="image/icon/yt.png" alt="" />
-            <img src="image/icon/tt.png" alt="" />
+            <img src={facebook} alt="" className="w-10" />
+            <img src={youtube} alt="" className="w-10"/>
+            <img src={tiktok} alt="" className="w-10"/>
           </div>
         </div>
         {otpPopupVisible && (
