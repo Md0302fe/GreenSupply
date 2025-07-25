@@ -13,7 +13,6 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-
 import { FaGear } from "react-icons/fa6";
 import { FaGears } from "react-icons/fa6";
 
@@ -22,12 +21,12 @@ const ProcessingManagement = () => {
 
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
-  
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialType = queryParams.get("type") || "single";
 
-  const [type_process, set_type_process] = useState(initialType);
+  const [type_process, set_type_process] = useState("single_processes");
   const [dataProcessing, setDataProcessing] = useState([]);
   const [singleProcessData, setSingleProcessData] = useState([]);
   // Fetch data từ API
@@ -49,7 +48,7 @@ const ProcessingManagement = () => {
   });
 
   const handleLoadConsolidate = async () => {
-    set_type_process("consolidate");
+    set_type_process("consolidated_processes");
     const access_token = user?.access_token;
     const response = await getAllExecuteConsolidateProcess(access_token);
 
@@ -61,7 +60,7 @@ const ProcessingManagement = () => {
   };
 
   const handleSingleLoadData = () => {
-    set_type_process("single");
+    set_type_process("single_processes");
     setDataProcessing(singleProcessData);
   };
 
@@ -115,7 +114,7 @@ const ProcessingManagement = () => {
         inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
         text-sm font-medium transition-all duration-300
         ${
-          type_process === "single"
+          type_process === "single_processes"
             ? "bg-white text-green-600 shadow-sm transform scale-105"
             : "text-gray-600 hover:text-green-600 hover:bg-white/50"
         }
@@ -124,7 +123,7 @@ const ProcessingManagement = () => {
               >
                 <FaGear
                   className={`text-base ${
-                    type_process === "single" ? "text-green-500" : ""
+                    type_process === "single_processes" ? "text-green-500" : ""
                   }`}
                 />
                 <span>{t("processingManagement.button.single")}</span>
@@ -135,7 +134,7 @@ const ProcessingManagement = () => {
         inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
         text-sm font-medium transition-all duration-300
         ${
-          type_process === "consolidate"
+          type_process === "consolidated_processes"
             ? "bg-white text-green-600 shadow-sm transform scale-105"
             : "text-gray-600 hover:text-green-600 hover:bg-white/50"
         }
@@ -144,7 +143,7 @@ const ProcessingManagement = () => {
               >
                 <FaGears
                   className={`text-base ${
-                    type_process === "consolidate" ? "text-green-500" : ""
+                    type_process === "consolidated_processes" ? "text-green-500" : ""
                   }`}
                 />
                 <span>{t("processingManagement.button.consolidated")}</span>

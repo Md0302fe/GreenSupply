@@ -23,7 +23,7 @@ const ProcessingComponent = ({ data , type }) => {
   
   const handleDetailProcess = (process_id) => {
     // Open Process Details Page
-    navigate(`/system/admin/process_details/${process_id}`, {
+    navigate(`/system/admin/process_details/${type}/${process_id}`, {
       state: { type: type },
     });
   };

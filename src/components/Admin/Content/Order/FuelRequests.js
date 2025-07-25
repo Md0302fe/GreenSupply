@@ -47,6 +47,7 @@ const FuelRequestsManagement = () => {
     "Chờ duyệt": "pending",
     "Đã duyệt": "approve",
     "Đã Hủy": "cancelled",
+    "Đã huỷ": "cancelled",
     "Hoàn Thành": "completed",
     "Đang xử lý": "processing",
   };
@@ -174,6 +175,7 @@ const FuelRequestsManagement = () => {
   const fetchGetAllOrder = async () => {
     const access_token = user?.access_token;
     const res = await OrderServices.getAllOrders(access_token);
+    console.log(res)
     return res;
   };
 
