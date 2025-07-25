@@ -89,71 +89,47 @@ const ProfilePage = () => {
 
   ////Hàm check name
   const validateFullName = (name) => {
-    if (!name.trim()) {
-      return "Tên không được để trống.";
-    }
-
-    if (name.length < 2 || name.length > 50) {
-      return "Tên phải có từ 2 đến 40 ký tự.";
-    }
-
-    if (/\d/.test(name)) {
-      return "Tên không được chứa số.";
-    }
-
-    return ""; // Hợp lệ
+    if (!name.trim()) return t("validation.fullNameRequired");
+    if (name.length < 2 || name.length > 50)
+      return t("validation.fullNameLength");
+    if (/\d/.test(name)) return t("validation.fullNameNoNumber");
+    return "";
   };
 
   ////Hàm check email
   const validateEmail = (email) => {
-    if (!email.trim()) {
-      return "Email không được để trống.";
-    }
-
+    if (!email.trim()) return t("validation.emailRequired");
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(email)) {
-      return "Email không hợp lệ.";
-    }
-
-    return ""; // Hợp lệ
+    if (!emailRegex.test(email)) return t("validation.emailInvalid");
+    return "";
   };
 
   ///Hàm check phone
   const validatePhone = (phone) => {
-    if (!phone.trim()) {
-      return "Số điện thoại không được để trống.";
-    }
-    if (phone.includes("-")) return "Số điện thoại không thể là số âm.";
-
-    // if (!/^(03|05|07|08|09)\d{8}$/.test(phone)) {
-    //   return "Số điện thoại phải có 10 số và bắt đầu bằng 03, 05, 07, 08 hoặc 09.";
-    // }
-
-    if (phone.length !== 10) {
-      return "Số điện thoại phải có đúng 10 số.";
-    }
-
-    return ""; // Hợp lệ
+    if (!phone.trim()) return t("validation.phoneRequired");
+    if (phone.includes("-")) return t("validation.phoneNegative");
+    if (phone.length !== 10) return t("validation.phoneLength");
+    return "";
   };
 
   ///////hàm check giới tính
   const validateGender = (gender) => {
-    const validGenders = ["Nam", "Nữ", "Khác"];
+    if (!gender.trim()) return t("validation.genderRequired");
+  }
 
-    if (!gender.trim()) {
-      return "Giới tính không được để trống.";
+  const validateBirthDay = (date, setBirthDayError) => {
+    if (!date) {
+      setBirthDayError("");
+      return true;
     }
-
-    const formattedGender =
-      gender.trim().charAt(0).toUpperCase() +
-      gender.trim().slice(1).toLowerCase(); // Chuyển chữ cái đầu thành viết hoa
-
-    if (!validGenders.includes(formattedGender)) {
-      return "Giới tính chỉ có thể là 'Nam', 'Nữ' hoặc 'Khác'.";
+    const today = new Date();
+    const selectedDate = new Date(date);
+    if (selectedDate > today) {
+      setBirthDayError(t("validation.birthDayInFuture"));
+      return false;
     }
-
-    return ""; // Hợp lệ
+    setBirthDayError("");
+    return true;
   };
 
   // 3: useEffect
@@ -205,24 +181,6 @@ const ProfilePage = () => {
     console.log("API Response:", res);
     dishpatch(updateUser({ ...res?.data, access_token: token }));
   };
-
-  const validateBirthDay = (date) => {
-    if (!date) {
-      setBirthDayError(""); // Không có lỗi nếu người dùng chưa nhập gì
-      return true;
-    }
-
-    const today = new Date(); // Ngày hiện tại
-    const selectedDate = new Date(date);
-
-    if (selectedDate > today) {
-      setBirthDayError("Ngày sinh không được lớn hơn ngày hiện tại");
-      return false;
-    }
-
-    setBirthDayError(""); // Xóa lỗi nếu hợp lệ
-    return true;
-  };
   // Hàm xử lý gửi OTP
   const requestOtp = async () => {
     if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
@@ -247,20 +205,20 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        message.success(t('otpSent'));
+        message.success(t("otpSent"));
       } else {
         message.error(result.message || "Không thể gửi OTP.");
       }
     } catch (error) {
       console.error("Lỗi khi yêu cầu OTP:", error.message);
-      message.error(t('otpSendFailRetry'));
+      message.error(t("otpSendFailRetry"));
     }
   };
   // Click Submit Sau Khi Điền Form
   const HandleSubmitForm = async () => {
     if (!otp || otp.length !== 6) {
       // Kiểm tra OTP
-      message.error(t('invalidOtp'));
+      message.error(t("invalidOtp"));
       return;
     }
     if (havePassword) {
@@ -278,15 +236,15 @@ const ProfilePage = () => {
   };
   const handleCheckPassword = async () => {
     if (!newPassword || !password || !confirmNewPassword) {
-      message.error(t('fieldsRequired'));
+      message.error(t("fieldsRequired"));
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      message.error(t('passwordMismatch'));
+      message.error(t("passwordMismatch"));
       return;
     }
     if (password === newPassword) {
-      message.error(t('passwordSameAsOld'));
+      message.error(t("passwordSameAsOld"));
       return;
     }
     if (!havePassword) {
@@ -314,11 +272,11 @@ const ProfilePage = () => {
           });
         }, 1000);
 
-        message.success(t('otpSent'));
+        message.success(t("otpSent"));
       }
     } catch (error) {
       console.error("API call failed:", error);
-      message.error(t('emailNotExist'));
+      message.error(t("emailNotExist"));
     } finally {
       setsendOtpLoading(false);
     }
@@ -368,7 +326,7 @@ const ProfilePage = () => {
       access_token,
     });
     if (res2.status === "OK") {
-      message.success(t('passwordChangedSuccess'));
+      message.success(t("passwordChangedSuccess"));
       handleGetDetailsUser(userRedux?.id, userRedux?.access_token);
       window.location.reload();
     }
@@ -632,13 +590,18 @@ const ProfilePage = () => {
                             <MDBCardText>{t("gender")}</MDBCardText>
                           </MDBCol>
                           <MDBCol sm="9">
-                            <InPut
-                              type="text"
+                            <select
                               value={gender}
                               onChange={(e) =>
                                 handleChangeGender(e.target.value)
                               }
-                            />
+                              className="w-full p-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            >
+                              <option value="" disabled>{t("selectGender")}</option>
+                              <option value="male">{t("male")}</option>
+                              <option value="female">{t("female")}</option>
+                              <option value="other">{t("other")}</option>
+                            </select>
                             {genderError && (
                               <p
                                 style={{
@@ -850,7 +813,7 @@ const ProfilePage = () => {
             <input
               type="password"
               required
-              placeholder="Nhập lại mật khẩu mới..."
+              placeholder={t("confirmNewPassword")}
               onChange={(event) => setconfirmNewPassword(event.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
             />

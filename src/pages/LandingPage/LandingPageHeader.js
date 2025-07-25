@@ -1,28 +1,15 @@
 import { useState } from "react";
 import { Search, Menu, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import LanguageSwitcher from "../../components/TranslateComponent/LanguageSwitcher";
 import MangovateLogo from "../../assets/Logo_Mangovate/Logo_Rmb.png";
 
-// Mock translation function - replace with your actual translation
-const t = (key) => {
-  const translations = {
-    "navbar.search_placeholder": "Tìm kiếm...",
-    "navbar.login": "Đăng nhập",
-    "navbar.register": "Đăng ký",
-    "navbar.home": "Trang chủ",
-    "navbar.about": "Giới thiệu",
-    "navbar.services": "Dịch vụ",
-    "navbar.contact": "Liên hệ",
-  };
-  return translations[key] || key;
-};
-
-// Import the real LanguageSwitcher component instead
-
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const { t } = useTranslation();
 
   const navigationItems = [
     { href: "/", label: t("navbar.home") },
@@ -37,7 +24,6 @@ export default function Header() {
       <div className="max-w-7xl mx-auto">
         {/* Top Bar */}
         <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Logo */}
           <div className="flex items-center space-x-3 my-2">
             <div className="max-sm:hidden flex flex-col items-center">
               <img
@@ -46,24 +32,21 @@ export default function Header() {
                 alt="Mangovate logo"
               />
             </div>
-            {/* Text logo as additional fallback */}
           </div>
 
-          {/* Desktop Actions - Search, Auth & Language */}
+          {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
-            {/* Desktop Search */}
+            {/* Search */}
             <div className="relative">
               {!isSearchOpen ? (
-                // Search Icon Button
                 <button
                   onClick={() => setIsSearchOpen(true)}
                   className="p-2.5 text-gray-600 hover:text-orange-500 hover:bg-orange-50 rounded-md transition-colors border border-gray-300 hover:border-orange-500"
-                  title="Tìm kiếm"
+                  title={t("navbar.search_placeholder")}
                 >
                   <Search className="w-5 h-5" />
                 </button>
               ) : (
-                // Expanded Search Input
                 <div className="flex items-center space-x-2">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -78,7 +61,7 @@ export default function Header() {
                   <button
                     onClick={() => setIsSearchOpen(false)}
                     className="p-2 text-gray-400 hover:text-gray-600 rounded-md"
-                    title="Đóng tìm kiếm"
+                    title={t("navbar.search_close") || "Đóng tìm kiếm"}
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -100,13 +83,11 @@ export default function Header() {
               {t("navbar.register")}
             </a>
 
-            {/* Language Switcher */}
             <LanguageSwitcher />
           </div>
 
           {/* Mobile Actions */}
           <div className="flex md:hidden items-center space-x-2">
-            {/* Mobile Search Button */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className={`p-2 rounded-md transition-colors ${
@@ -117,8 +98,6 @@ export default function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
-
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
@@ -147,7 +126,7 @@ export default function Header() {
           </div>
         )}
 
-        {/* Navigation Bar */}
+        {/* Desktop Navigation */}
         <nav className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
           <div className="hidden md:flex items-center justify-center space-x-8 py-3">
             {navigationItems.map((item, index) => (
@@ -166,7 +145,6 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-4 py-4 space-y-4">
-              {/* Mobile Navigation */}
               <div className="space-y-2">
                 {navigationItems.map((item, index) => (
                   <a
@@ -179,7 +157,7 @@ export default function Header() {
                 ))}
               </div>
 
-              {/* Mobile Auth & Language */}
+              {/* Mobile Auth */}
               <div className="pt-4 border-t border-gray-200 space-y-3">
                 <div className="flex space-x-3">
                   <a

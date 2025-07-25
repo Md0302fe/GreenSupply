@@ -36,6 +36,7 @@
   "confirm_password_placeholder": "Confirm password",
   "phone_placeholder": "Phone number",
   "gender": "Gender",
+  "selectGender": "Select Gender",
   "male": "Male",
   "female": "Female",
   "other": "Other",
@@ -418,7 +419,7 @@
       "createProcess": "Create manufacturing process",
       "createExport": "Create export request",
       "createImport": "Create import request",
-      "details" : "View Detail"
+      "details": "View Detail"
     },
     "section": {
       "importExportRequest": "Import/Export Requests",
@@ -428,7 +429,6 @@
       "materialAndPackaging": "Raw Materials/Packaging",
       "productionPlan": "Production Plans",
       "finishedProduct": "Finished Products"
-
     },
     "card": {
       "import": {
@@ -1151,7 +1151,22 @@
     "cartonAboveLimit": "Cannot exceed {{max}} carton boxes.",
     "cartonStockExceeded": "Only {{available}} carton boxes are available in stock.",
     "needSuggestedVacuumBagFirst": "Suggested vacuum bag quantity required",
-    "needSuggestedCartonFirst": "Suggested carton quantity required"
+    "needSuggestedCartonFirst": "Suggested carton quantity required",
+    "fullNameRequired": "Full name is required.",
+    "fullNameLength": "Full name must be between 2 and 40 characters.",
+    "fullNameNoNumber": "Full name cannot contain numbers.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Invalid email format.",
+    "phoneRequired": "Phone number is required.",
+    "phoneNegative": "Phone number cannot be negative.",
+    "phoneLength": "Phone number must be exactly 10 digits.",
+    "genderRequired": "Gender is required.",
+    "genderInvalid": "Gender must be 'Male', 'Female', or 'Other'.",
+    "birthDayInFuture": "Birthdate cannot be in the future.",
+    "fullNameNoSpecialChar": "Full name cannot contain special characters.",
+    "phoneDigitsOnly": "Phone number must contain only digits.",
+    "addressRequired": "Address is required.",
+    "addressTooShort": "Address must be at least 5 characters long."
   },
   "messages": {
     "notLoggedIn": "You are not logged in.",
@@ -1310,7 +1325,7 @@
       "note": "Note:",
       "note_parent": "All fields marked with",
       "note_child": "are required. The product quantity will be automatically calculated based on material quantity and loss percentage."
-    }, 
+    },
     "messages": {
       "create_success": "Created production plan successfully!",
       "create_fail": "Creat production plan failed!",
@@ -1350,7 +1365,10 @@
     "note": "Note",
     "update_title": "Update Request",
     "loss_percentage": "Loss Percentage (%)",
-    "priority": "Priority Level"
+    "priority": "Priority Level",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "address": "Address"
   },
   "action": {
     "edit": "Edit",
@@ -1382,7 +1400,10 @@
     "end_date": "Please select end date"
   },
   "placeholder": {
-    "select_material": "Select material type"
+    "select_material": "Select material type",
+    "fullName": "Enter full name",
+    "phone": "Enter phone number",
+    "address": "Enter full address"
   },
   "notification": {
     "after_approve": "After approval, the requests will be placed in the production queue",
@@ -1914,7 +1935,6 @@
     "loading": "Loading...",
     "close": "Close",
     "selectMaterialType": "Select material type"
-
   },
   "userDashboard": {
     "title": "User Management Dashboard",
@@ -1942,5 +1962,256 @@
     "dashboardDesc": "Complete information about finished products",
     "listTitle": "Finished Product List",
     "listDesc": "List of produced finished products"
+  },
+  "landingPage": {
+    "navbar": {
+      "search_placeholder": "Search...",
+      "login": "Login",
+      "register": "Register",
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact"
+    },
+    "cards": {
+      "cost_satisfaction": "Cost Optimization",
+      "cost_satisfaction_desc": "Significantly reduce production costs while increasing customer satisfaction.",
+      "support_24_7": "24/7 Support",
+      "support_24_7_desc": "Always ready to assist anytime, anywhere.",
+      "seamless_integration": "Seamless Integration",
+      "seamless_integration_desc": "Easily integrates into your existing system without disruption.",
+      "real_time_tracking": "Real-Time Tracking",
+      "real_time_tracking_desc": "Track production and inventory in real time for full control."
+    },
+    "banner": {
+      "subtitle": "Smart and comprehensive dried mango production management system"
+    },
+    "why_choose": {
+      "title": "Why choose MangoVate?",
+      "advanced_tech": "Advanced Technology",
+      "advanced_tech_desc": "Applying IoT and AI in production",
+      "effective_mgmt": "Effective Management",
+      "effective_mgmt_desc": "Optimize every operational process",
+      "quality_assurance": "Guaranteed Quality",
+      "quality_assurance_desc": "Quality control from start to finish"
+    },
+    "servicesSection": {
+      "header": "Our Services",
+      "subheader": "MangoVate offers a comprehensive solution for dried mango production management",
+      "learn_more": "Learn more",
+      "ctaTitle": "Ready to get started with MangoVate?",
+      "ctaDescription": "Contact us for a consultation and experience the intelligent dried mango production management system",
+      "contact": "Get a consultation",
+      "demo": "View demo",
+      "services": {
+        "1": {
+          "title": "Smart Manufacturing",
+          "description": "Automate the dried mango production process with advanced IoT and AI technology.",
+          "features": {
+            "0": "Automatic temperature control",
+            "1": "Real-time quality monitoring",
+            "2": "Productivity optimization"
+          }
+        },
+        "2": {
+          "title": "Order Management",
+          "description": "Smart order and logistics management system, optimized for supply chain efficiency.",
+          "features": {
+            "0": "Automated order processing",
+            "1": "Shipping tracking",
+            "2": "Customer CRM management"
+          }
+        },
+        "3": {
+          "title": "Warehouse Management",
+          "description": "Efficiently manage raw materials and finished goods using RFID and barcode technology.",
+          "features": {
+            "0": "Real-time inventory management",
+            "1": "Optimized storage space",
+            "2": "Import/export reporting"
+          }
+        },
+        "4": {
+          "title": "Transparent Process",
+          "description": "Track and control the entire production process in a transparent and detailed manner.",
+          "features": {
+            "0": "Traceability",
+            "1": "Quality control",
+            "2": "Process reporting"
+          }
+        },
+        "5": {
+          "title": "Overview Dashboard",
+          "description": "Comprehensive management interface with smart reports, analytics, and alerts.",
+          "features": {
+            "0": "Comprehensive reports",
+            "1": "Data analysis",
+            "2": "Smart alerts"
+          }
+        }
+      }
+    },
+    "slider": {
+      "features_title": "Key features:",
+      "learn_more": "Learn more",
+      "contact": "Contact",
+      "slides": {
+        "1": {
+          "title": "Smart Production System",
+          "subtitle": "Smart Production System",
+          "description": "Support dried mango production with cutting-edge technology, automating the production process and ensuring consistent product quality.",
+          "features": {
+            "0": "Automated process",
+            "1": "Quality control",
+            "2": "Productivity optimization"
+          }
+        },
+        "2": {
+          "title": "Smart Order Management",
+          "subtitle": "Smart Order Management",
+          "description": "Smart order and supply management system, optimizing order processing and on-time delivery.",
+          "features": {
+            "0": "Automated order handling",
+            "1": "Delivery tracking",
+            "2": "Customer management"
+          }
+        },
+        "3": {
+          "title": "Smart Warehouse Management",
+          "subtitle": "Smart Warehouse Management",
+          "description": "Convenient warehouse management for both raw and finished goods, optimizing space and inventory efficiency.",
+          "features": {
+            "0": "Real-time inventory tracking",
+            "1": "Space optimization",
+            "2": "Stock reporting"
+          }
+        },
+        "4": {
+          "title": "Transparent Process Management",
+          "subtitle": "Transparent Process Management",
+          "description": "Transparent process management helps users capture detailed and clear production workflow information.",
+          "features": {
+            "0": "Real-time process tracking",
+            "1": "Detailed reports",
+            "2": "Quality control"
+          }
+        },
+        "5": {
+          "title": "Comprehensive Management Dashboard",
+          "subtitle": "Comprehensive Management Dashboard",
+          "description": "Complete dashboard with essential information, giving a full and detailed view of system operations.",
+          "features": {
+            "0": "Overview reports",
+            "1": "Data analytics",
+            "2": "Smart alerts"
+          }
+        }
+      }
+    },
+    "footer": {
+      "newsletter": {
+        "title": "Subscribe to our newsletter",
+        "subtitle": "Get the latest updates on products and technology trends in the manufacturing industry",
+        "placeholder": "Enter your email",
+        "button": "Subscribe"
+      },
+      "description": "An intelligent dried mango production management system providing a comprehensive solution for businesses.",
+      "services": [
+        "Smart Manufacturing",
+        "Order Management",
+        "Warehouse Management",
+        "Transparent Processes",
+        "Overview Dashboard"
+      ],
+      "quickLinks": [
+        "About Us",
+        "Features",
+        "Pricing",
+        "Support",
+        "Blog",
+        "Documentation"
+      ],
+      "legalLinks": [
+        "Privacy Policy",
+        "Terms of Service",
+        "Cookie Policy",
+        "GDPR"
+      ],
+      "links": {
+        "services": "Services",
+        "quick": "Quick Links",
+        "legal": "Legal"
+      },
+      "contact": {
+        "title": "Contact Us",
+        "address": "123 ABC Street, District 1\nHo Chi Minh City, Vietnam",
+        "hours": "Mon - Fri: 8:00 AM - 6:00 PM\nSat: 8:00 AM - 12:00 PM\nSunday: Closed"
+      },
+      "copyright": "All rights reserved.",
+      "developed": "Developed with ❤️ in Vietnam",
+      "powered_by": {
+        "label": "Powered by",
+        "name": "MangoVate Tech"
+      }
+    }
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "profile": "User Profile",
+    "viewAddress": "View Address",
+    "updateAddress": "Update Address"
+  },
+  "address": {
+    "myAddress": "My Address",
+    "addNew": "Add new address",
+    "noData": "No addresses found.",
+    "default": "Default",
+    "confirmDelete": "Are you sure you want to delete this address?",
+    "deleteSuccess": "Address deleted successfully!",
+    "deleteFail": "Failed to delete address!",
+    "loadError": "Unable to load address list."
+  },
+  "actions": {
+    "update": "Update",
+    "delete": "Delete"
+  },
+  "addressCreate": {
+    "breadcrumb": {
+      "home": "Home",
+      "profile": "User Profile",
+      "viewAddress": "View Address",
+      "createAddress": "Create Address"
+    },
+    "title": "Add New Address",
+    "fullName": "Full Name:",
+    "fullNamePlaceholder": "Enter your full name",
+    "phone": "Phone Number:",
+    "phonePlaceholder": "Enter phone number",
+    "address": "Address:",
+    "addressPlaceholder": "Enter full address",
+    "submitButton": "Save Address",
+    "success": "Address added successfully!",
+    "error": "Failed to create address!",
+    "validation": {
+      "fullNameRequired": "Full name is required.",
+      "fullNameLength": "Full name must be between 2 and 40 characters.",
+      "fullNameNoNumber": "Full name must not contain numbers.",
+      "fullNameSpecialChar": "Full name must not contain special characters.",
+      "phoneRequired": "Phone number is required.",
+      "phoneNegative": "Phone number cannot be negative.",
+      "phoneOnlyDigits": "Phone number must contain only digits.",
+      "phoneLength": "Phone number must be exactly 10 digits.",
+      "addressRequired": "Address is required.",
+      "addressLength": "Address must be at least 5 characters long."
+    }
+  },
+  "addressUpdate": {
+    "title": "Update Address"
+  },
+  "message": {
+    "fetchFailed": "Failed to fetch address.",
+    "fetchError": "Error loading address. Please try again.",
+    "updateSuccess": "Address updated successfully!",
+    "updateError": "Failed to update address. Please try again."
   }
 }

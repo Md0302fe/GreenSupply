@@ -37,6 +37,7 @@
   "confirm_password_placeholder": "Xác thực mật khẩu",
   "phone_placeholder": "Số điện thoại",
   "gender": "Giới tính",
+  "selectGender": "Select Gender",
   "male": "Nam",
   "female": "Nữ",
   "other": "Khác",
@@ -1140,7 +1141,22 @@
     "cartonAboveLimit": "Không được nhập quá {{max}} thùng carton.",
     "cartonStockExceeded": "Chỉ còn {{available}} thùng carton trong kho.",
     "needSuggestedVacuumBagFirst": "Cần có số túi gợi ý",
-    "needSuggestedCartonFirst": "Cần có số thùng gợi ý"
+    "needSuggestedCartonFirst": "Cần có số thùng gợi ý",
+    "fullNameRequired": "Tên không được để trống.",
+    "fullNameLength": "Tên phải có từ 2 đến 40 ký tự.",
+    "fullNameNoNumber": "Tên không được chứa số.",
+    "emailRequired": "Email không được để trống.",
+    "emailInvalid": "Email không hợp lệ.",
+    "phoneRequired": "Số điện thoại không được để trống.",
+    "phoneNegative": "Số điện thoại không thể là số âm.",
+    "phoneLength": "Số điện thoại phải có đúng 10 số.",
+    "genderRequired": "Giới tính không được để trống.",
+    "genderInvalid": "Giới tính chỉ có thể là 'Nam', 'Nữ' hoặc 'Khác'.",
+    "birthDayInFuture": "Ngày sinh không được lớn hơn ngày hiện tại.",
+    "fullNameNoSpecialChar": "Tên không được chứa ký tự đặc biệt.",
+    "phoneDigitsOnly": "Số điện thoại chỉ được chứa số.",
+    "addressRequired": "Địa chỉ không được để trống.",
+    "addressTooShort": "Địa chỉ phải có ít nhất 5 ký tự."
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1263,7 +1279,6 @@
     "enterMaterialQty": "Nhập số lượng nguyên liệu",
     "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
     "materialNumRequired": "Phải lớn hơn 0",
-
     "loss": "Tỷ lệ hao hụt (%)",
     "enterLoss": "Nhập tỷ lệ hao hụt",
     "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
@@ -1275,27 +1290,15 @@
     "productionDate": "Ngày sản xuất",
     "productionDateRequired": "Vui lòng chọn ngày sản xuất",
     "selectProductionDate": "Chọn ngày sản xuất",
-    "productQty": "Sản lượng thành phẩm ước tính (kg)",
-
-    "priority": "Mức độ ưu tiên",
-    "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
-    "selectPriority": "Chọn mức độ ưu tiên",
-
-    "productionDate": "Ngày sản xuất",
-    "productionDateRequired": "Vui lòng chọn ngày sản xuất",
-    "selectProductionDate": "Chọn ngày sản xuất",
-
     "endDate": "Ngày kết thúc",
     "endDateRequired": "Vui lòng chọn ngày kết thúc",
     "selectEndDate": "Chọn ngày kết thúc",
     "productionDateFirst": "Chọn ngày sản xuất trước",
-
     "note": "Ghi chú",
     "enterNote": "Nhập ghi chú (nếu có)",
     "selectVacuumBag": "Vui lòng chọn túi chân không",
     "selectCartonBox": "Vui lòng chọn thùng carton",
     "needProductQtyFirst": "Vui lòng nhập sản lượng thành phẩm trước",
-
     "suggestedTitle": "Yêu cầu đóng gói:",
     "vacuumNeed": "• Túi chân không cần: ",
     "cartonBoxNeed": "• Thùng carton cần: ",
@@ -1350,7 +1353,10 @@
     "note": "Ghi chú",
     "update_title": "Cập nhật đơn",
     "loss_percentage": "Tỉ lệ hao hụt",
-    "priority": "Mức độ ưu tiên"
+    "priority": "Mức độ ưu tiên",
+    "fullName": "Họ và Tên",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ"
   },
   "action": {
     "edit": "Chỉnh sửa",
@@ -1382,7 +1388,10 @@
     "end_date": "Vui lòng chọn ngày kết thúc"
   },
   "placeholder": {
-    "select_material": "Chọn loại Nguyên liệu"
+    "select_material": "Chọn loại Nguyên liệu",
+    "fullName": "Nhập tên đầy đủ",
+    "phone": "Nhập số điện thoại",
+    "address": "Nhập địa chỉ cụ thể"
   },
   "notification": {
     "after_approve": "Sau khi Duyệt kế hoạch / Kế hoạch sẽ được đưa vào hàng chờ sản xuất",
@@ -1936,5 +1945,256 @@
     "dashboardDesc": "Toàn bộ thông tin về thành phẩm",
     "listTitle": "Danh sách thành phẩm",
     "listDesc": "Danh sách thành phẩm đã được sản xuất"
+  },
+  "landingPage": {
+    "navbar": {
+      "search_placeholder": "Tìm kiếm...",
+      "login": "Đăng nhập",
+      "register": "Đăng ký",
+      "home": "Trang chủ",
+      "about": "Giới thiệu",
+      "services": "Dịch vụ",
+      "contact": "Liên hệ"
+    },
+    "cards": {
+      "cost_satisfaction": "Tối ưu chi phí",
+      "cost_satisfaction_desc": "Giảm đáng kể chi phí sản xuất và tăng sự hài lòng khách hàng.",
+      "support_24_7": "Hỗ trợ 24/7",
+      "support_24_7_desc": "Luôn sẵn sàng hỗ trợ mọi lúc, mọi nơi.",
+      "seamless_integration": "Tích hợp liền mạch",
+      "seamless_integration_desc": "Dễ dàng tích hợp với hệ thống sẵn có mà không gián đoạn.",
+      "real_time_tracking": "Theo dõi thời gian thực",
+      "real_time_tracking_desc": "Theo dõi sản xuất và tồn kho theo thời gian thực để kiểm soát toàn diện."
+    },
+    "banner": {
+      "subtitle": "Hệ thống quản lý sản xuất xoài sấy dẻo thông minh và toàn diện"
+    },
+    "why_choose": {
+      "title": "Tại sao chọn MangoVate?",
+      "advanced_tech": "Công nghệ tiên tiến",
+      "advanced_tech_desc": "Ứng dụng IoT và AI trong sản xuất",
+      "effective_mgmt": "Quản lý hiệu quả",
+      "effective_mgmt_desc": "Tối ưu hóa mọi quy trình vận hành",
+      "quality_assurance": "Chất lượng đảm bảo",
+      "quality_assurance_desc": "Kiểm soát chất lượng từ đầu đến cuối"
+    },
+    "servicesSection": {
+      "header": "Dịch vụ của chúng tôi",
+      "subheader": "MangoVate cung cấp giải pháp toàn diện cho việc quản lý và sản xuất xoài sấy dẻo",
+      "learn_more": "Tìm hiểu thêm",
+      "ctaTitle": "Sẵn sàng bắt đầu với MangoVate?",
+      "ctaDescription": "Liên hệ với chúng tôi để được tư vấn và trải nghiệm hệ thống quản lý sản xuất xoài sấy dẻo thông minh",
+      "contact": "Liên hệ tư vấn",
+      "demo": "Xem demo",
+      "services": {
+        "1": {
+          "title": "Sản xuất thông minh",
+          "description": "Tự động hóa quy trình sản xuất xoài sấy dẻo với công nghệ IoT và AI tiên tiến.",
+          "features": {
+            "0": "Kiểm soát nhiệt độ tự động",
+            "1": "Giám sát chất lượng real-time",
+            "2": "Tối ưu hóa năng suất"
+          }
+        },
+        "2": {
+          "title": "Quản lý đơn hàng",
+          "description": "Hệ thống quản lý đơn hàng và logistics thông minh, tối ưu hóa chuỗi cung ứng.",
+          "features": {
+            "0": "Xử lý đơn hàng tự động",
+            "1": "Theo dõi vận chuyển",
+            "2": "Quản lý khách hàng CRM"
+          }
+        },
+        "3": {
+          "title": "Quản lý kho bãi",
+          "description": "Quản lý hiệu quả kho nguyên liệu và thành phẩm với công nghệ RFID và barcode.",
+          "features": {
+            "0": "Quản lý tồn kho real-time",
+            "1": "Tối ưu không gian lưu trữ",
+            "2": "Báo cáo xuất nhập kho"
+          }
+        },
+        "4": {
+          "title": "Quy trình minh bạch",
+          "description": "Theo dõi và kiểm soát toàn bộ quy trình sản xuất một cách minh bạch và chi tiết.",
+          "features": {
+            "0": "Truy xuất nguồn gốc",
+            "1": "Kiểm soát chất lượng",
+            "2": "Báo cáo quy trình"
+          }
+        },
+        "5": {
+          "title": "Dashboard tổng quan",
+          "description": "Giao diện quản lý tổng thể với báo cáo, phân tích và cảnh báo thông minh.",
+          "features": {
+            "0": "Báo cáo tổng hợp",
+            "1": "Phân tích dữ liệu",
+            "2": "Cảnh báo thông minh"
+          }
+        }
+      }
+    },
+    "slider": {
+      "features_title": "Tính năng chính:",
+      "learn_more": "Tìm hiểu thêm",
+      "contact": "Liên hệ",
+      "slides": {
+        "1": {
+          "title": "Hệ thống sản xuất thông minh",
+          "subtitle": "Smart Production System",
+          "description": "Hỗ trợ sản xuất xoài sấy dẻo với công nghệ tiên tiến, tự động hóa quy trình sản xuất và đảm bảo chất lượng sản phẩm đồng nhất.",
+          "features": {
+            "0": "Tự động hóa quy trình",
+            "1": "Kiểm soát chất lượng",
+            "2": "Tối ưu hóa năng suất"
+          }
+        },
+        "2": {
+          "title": "Quản lý đơn hàng thông minh",
+          "subtitle": "Smart Order Management",
+          "description": "Hệ thống quản lý đơn hàng và cung cấp hàng thông minh, tối ưu hóa việc xử lý đơn hàng và giao hàng đúng hạn.",
+          "features": {
+            "0": "Xử lý đơn hàng tự động",
+            "1": "Theo dõi giao hàng",
+            "2": "Quản lý khách hàng"
+          }
+        },
+        "3": {
+          "title": "Quản lý kho thông minh",
+          "subtitle": "Smart Warehouse Management",
+          "description": "Hệ thống quản lý kho tiện lợi cho cả kho nguyên liệu và kho thành phẩm, tối ưu hóa không gian và quản lý tồn kho hiệu quả.",
+          "features": {
+            "0": "Quản lý tồn kho real-time",
+            "1": "Tối ưu không gian kho",
+            "2": "Báo cáo xuất nhập kho"
+          }
+        },
+        "4": {
+          "title": "Quản lý quy trình minh bạch",
+          "subtitle": "Transparent Process Management",
+          "description": "Hệ thống quản lý quy trình minh bạch giúp người dùng nắm bắt được mọi thông tin của quy trình sản xuất một cách chi tiết và rõ ràng.",
+          "features": {
+            "0": "Theo dõi quy trình real-time",
+            "1": "Báo cáo chi tiết",
+            "2": "Kiểm soát chất lượng"
+          }
+        },
+        "5": {
+          "title": "Dashboard quản lý toàn diện",
+          "subtitle": "Comprehensive Management Dashboard",
+          "description": "Hệ thống dashboard đầy đủ các thông tin cần thiết, cung cấp cái nhìn tổng quan và chi tiết về toàn bộ hoạt động của hệ thống.",
+          "features": {
+            "0": "Báo cáo tổng quan",
+            "1": "Phân tích dữ liệu",
+            "2": "Cảnh báo thông minh"
+          }
+        }
+      }
+    },
+    "footer": {
+      "newsletter": {
+        "title": "Đăng ký nhận tin tức",
+        "subtitle": "Nhận thông tin mới nhất về sản phẩm và xu hướng công nghệ trong ngành sản xuất",
+        "placeholder": "Nhập email của bạn",
+        "button": "Đăng ký"
+      },
+      "description": "Hệ thống quản lý sản xuất xoài sấy dẻo thông minh, mang đến giải pháp toàn diện cho doanh nghiệp.",
+      "services": [
+        "Sản xuất thông minh",
+        "Quản lý đơn hàng",
+        "Quản lý kho bãi",
+        "Quy trình minh bạch",
+        "Dashboard tổng quan"
+      ],
+      "quickLinks": [
+        "Giới thiệu",
+        "Tính năng",
+        "Bảng giá",
+        "Hỗ trợ",
+        "Blog",
+        "Tài liệu"
+      ],
+      "legalLinks": [
+        "Chính sách bảo mật",
+        "Điều khoản sử dụng",
+        "Chính sách cookie",
+        "GDPR"
+      ],
+      "links": {
+        "services": "Dịch vụ",
+        "quick": "Liên kết nhanh",
+        "legal": "Pháp lý"
+      },
+      "contact": {
+        "title": "Liên hệ",
+        "address": "123 Đường ABC, Quận 1\nTP. Hồ Chí Minh, Việt Nam",
+        "hours": "Thứ 2 - Thứ 6: 8:00 - 18:00\nThứ 7: 8:00 - 12:00\nChủ nhật: Nghỉ"
+      },
+      "copyright": "Tất cả quyền được bảo lưu.",
+      "developed": "Được phát triển với ❤️ tại Việt Nam",
+      "powered_by": {
+        "label": "Powered by",
+        "name": "MangoVate Tech"
+      }
+    }
+  },
+  "breadcrumb": {
+    "home": "Trang chủ",
+    "profile": "Hồ sơ người dùng",
+    "viewAddress": "Xem địa chỉ",
+    "updateAddress": "Cập nhật địa chỉ"
+  },
+  "address": {
+    "myAddress": "Địa chỉ của tôi",
+    "addNew": "Thêm địa chỉ mới",
+    "noData": "Chưa có địa chỉ nào.",
+    "default": "Mặc định",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa địa chỉ này?",
+    "deleteSuccess": "Xóa địa chỉ thành công!",
+    "deleteFail": "Xóa địa chỉ thất bại!",
+    "loadError": "Không thể tải danh sách địa chỉ."
+  },
+  "actions": {
+    "update": "Cập nhật",
+    "delete": "Xóa"
+  },
+  "addressCreate": {
+    "breadcrumb": {
+      "home": "Trang chủ",
+      "profile": "Hồ sơ cá nhân",
+      "viewAddress": "Danh sách địa chỉ",
+      "createAddress": "Thêm địa chỉ"
+    },
+    "title": "Thêm địa chỉ mới",
+    "fullName": "Họ và Tên:",
+    "fullNamePlaceholder": "Nhập tên đầy đủ",
+    "phone": "Số điện thoại:",
+    "phonePlaceholder": "Nhập số điện thoại",
+    "address": "Địa chỉ:",
+    "addressPlaceholder": "Nhập địa chỉ cụ thể",
+    "submitButton": "Lưu Địa Chỉ",
+    "success": "Thêm địa chỉ thành công!",
+    "error": "Tạo địa chỉ thất bại!",
+    "validation": {
+      "fullNameRequired": "Tên không được để trống.",
+      "fullNameLength": "Tên phải có từ 2 đến 40 ký tự.",
+      "fullNameNoNumber": "Tên không được chứa số.",
+      "fullNameSpecialChar": "Tên không được chứa ký tự đặc biệt.",
+      "phoneRequired": "Số điện thoại không được để trống.",
+      "phoneNegative": "Số điện thoại không thể là số âm.",
+      "phoneOnlyDigits": "Số điện thoại chỉ được chứa số.",
+      "phoneLength": "Số điện thoại phải có đúng 10 số.",
+      "addressRequired": "Địa chỉ không được để trống.",
+      "addressLength": "Địa chỉ phải có ít nhất 5 ký tự."
+    }
+  },
+  "addressUpdate": {
+    "title": "Cập nhật địa chỉ"
+  },
+  "message": {
+    "fetchFailed": "Không thể lấy địa chỉ!",
+    "fetchError": "Lỗi khi tải địa chỉ. Vui lòng thử lại!",
+    "updateSuccess": "Cập nhật địa chỉ thành công!",
+    "updateError": "Cập nhật địa chỉ thất bại. Vui lòng thử lại!"
   }
 }
