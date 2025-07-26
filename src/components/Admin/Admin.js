@@ -190,7 +190,7 @@ const Admin = (props) => {
   // Cập nhật notifications với is_read = true cho item
   const handleMarkAsRead = async (notification_id) => {
     const dataRequest = {
-      access_token: user?._id,
+      access_token: user?.access_token,
       notification_id,
     };
     const res = await Notifications.read_Notification(dataRequest);
@@ -203,7 +203,7 @@ const Admin = (props) => {
   // Xóa thông báo by notification_id
   const handleDeleteNotification = async (notification_id) => {
     const dataRequest = {
-      access_token: user?._id,
+      access_token: user?.access_token,
       notification_id,
     };
     const res = await Notifications.delete_Notification(dataRequest);

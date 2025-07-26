@@ -19,11 +19,13 @@ export const getAllNotification = async (dataRequest) => {
 
 // check readed notification
 export const read_Notification = async (dataRequest) => {
-  const { access_token } = dataRequest;
+  const { access_token, notification_id } = dataRequest;
+  console.log(access_token)
   const res = await axiosJWT.put(
     `${process.env.REACT_APP_API_URL}/notifications/read_notification`,
-    dataRequest,
+    {dataRequest}, 
     {
+      params: { notification_id },
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
