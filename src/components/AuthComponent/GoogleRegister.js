@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import * as UserServices from "../../services/UserServices";
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
-import backgroundRegister from "../../assets/image/background_login.png";
+import backgroundRegister from "../../assets/image/background_login.jpg";
 
 const GoogleRegister = () => {
   const { t } = useTranslation();
@@ -69,11 +69,24 @@ const GoogleRegister = () => {
   };
 
   return (
-    <div className={`login-container flex-center-center h-screen`}>
+    <div className="login-container flex-center-center h-screen relative overflow-hidden">
+      {/* Lớp nền mờ */}
       <div
-        className="Login-wapper Width items-center bg-cover max-w-full w-full h-full flex"
-        style={{ backgroundImage: `url("${backgroundRegister}")` }}
-      >
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url("${backgroundRegister}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(5px)",
+          transform: "scale(1.05)", // để tránh viền bị cắt
+        }}
+      ></div>
+
+      {/* Lớp overlay mờ nhẹ (tùy chọn, nếu muốn tối nền) */}
+      <div className="absolute inset-0 bg-black/20 z-0"></div>
+
+      {/* Nội dung chính */}
+      <div className="Login-wapper Width items-center max-w-full w-full h-full flex z-10">
         <div className="Info-Sign-In bg-white rounded-2xl pb-4 md:ml-8 w-11/12 lg:w-6/12 mx-auto relative">
           <a
             href="/login"

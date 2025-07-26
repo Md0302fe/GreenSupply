@@ -1,16 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./styles";
-import {
-  MDBCol,
-  MDBContainer,
-  MDBRow,
-  MDBCard,
-  MDBCardText,
-  MDBCardBody,
-  MDBBtn,
-  MDBBreadcrumb,
-  MDBBreadcrumbItem,
-} from "mdb-react-ui-kit";
 
 import { Upload, message } from "antd";
 import { getBase64 } from "../../ultils";
@@ -23,17 +12,6 @@ import { useMutationHooks } from "./../../hooks/useMutationHook";
 import * as UserServices from "../../services/UserServices";
 import Loading from "../../components/LoadingComponent/Loading";
 
-import {
-  CardBodys,
-  FlexCenterCenter,
-  FlexCenterCenterCol,
-  InPut,
-  StyledMDBCardImage,
-  WrapperContent,
-  WrapperProfileUser,
-} from "./styles";
-
-import userImage from "../../assets/DefaultUser.jpg";
 import OTPInput from "react-otp-input";
 import { useTranslation } from "react-i18next";
 const ProfilePage = () => {
@@ -67,13 +45,14 @@ const ProfilePage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [sendOtpLoading, setsendOtpLoading] = useState(false);
   const [havePassword, setHavepassword] = useState(false);
-
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
   const dishpatch = useDispatch();
-  const location = useLocation();
-
-  // kiểm tra state từ phía Payment
-  const fromPayment = location.state?.fromPayment;
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
 
   // 2: Mutation
   const mutation = useMutationHooks((Res) => {
@@ -81,11 +60,6 @@ const ProfilePage = () => {
     return UserServices.updateAccount({ id, data, access_token });
   });
   const { isPending, isSuccess, data } = mutation;
-
-  const formatDateForInput = (date) => {
-    if (!date) return "";
-    return date.split("T")[0]; // Lấy phần YYYY-MM-DD từ "YYYY-MM-DDTHH:MM:SS.ZZZZ"
-  };
 
   ////Hàm check name
   const validateFullName = (name) => {
@@ -115,7 +89,7 @@ const ProfilePage = () => {
   ///////hàm check giới tính
   const validateGender = (gender) => {
     if (!gender.trim()) return t("validation.genderRequired");
-  }
+  };
 
   const validateBirthDay = (date, setBirthDayError) => {
     if (!date) {
@@ -145,7 +119,8 @@ const ProfilePage = () => {
   }, [isSuccess]);
 
   // CLICK BUTTON BTN UPDATE -> CALL API HANDLE UPDATE USER - CLICK CẬP NHẬT
-  const handleClickBtnUpdate = () => {
+  const handleClickBtnUpdate = (customAvatar = null) => {
+    console.log("🛠 Running handleClickBtnUpdate");
     const nameError = validateFullName(full_name);
     const emailError = validateEmail(email);
     const phoneError = validatePhone(phone);
@@ -156,18 +131,19 @@ const ProfilePage = () => {
     setPhoneError(phoneError);
     setGenderError(genderError);
 
-    if (nameError || emailError || phoneError || genderError) return; // Nếu có lỗi, không gửi API
-
+    if (nameError || emailError || phoneError || genderError) {
+      console.log("🚫 Dừng lại vì có lỗi form");
+      return;
+    }
     const data = {
       full_name,
       email,
       phone,
       address,
-      avatar,
+      avatar: customAvatar || avatar,
       birth_day,
       gender,
     };
-
     mutation.mutate({
       id: userRedux?.id,
       data,
@@ -235,7 +211,7 @@ const ProfilePage = () => {
     }
   };
   const handleCheckPassword = async () => {
-    if (!newPassword || !password || !confirmNewPassword) {
+    if ((!password && havePassword) || !newPassword || !confirmNewPassword) {
       message.error(t("fieldsRequired"));
       return;
     }
@@ -261,6 +237,7 @@ const ProfilePage = () => {
       }
       if (res.status === "OK") {
         setOtpPopupVisible(true);
+        setIsChangePassword(false);
         setResendTimer(60);
         const interval = setInterval(() => {
           setResendTimer((prev) => {
@@ -345,16 +322,20 @@ const ProfilePage = () => {
       setHavepassword(true);
     }
   }, [userRedux]);
-
+  const formatDateForInput = (isoString) => {
+    if (!isoString) return "";
+    return isoString.split("T")[0]; // chỉ lấy phần yyyy-MM-dd
+  };
   const handleChangeName = (value) => {
+    if (value.length > 40) return; // Không làm gì nếu vượt quá 40 ký tự
+
     setFullName(value);
     const error = validateFullName(value);
     setFullNameError(error);
   };
-  const handleChangeEmail = (value) => {
-    setEmail(value);
-    const error = validateEmail(value);
-    setEmailError(error);
+  const handleChangeBirthday = (value) => {
+    setBirthday(value);
+    validateBirthDay(value, setBirthDayError);
   };
   const handleChangePhone = (value) => {
     setPhone(value);
@@ -378,343 +359,410 @@ const ProfilePage = () => {
 
   // Tuy nhiên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
   // Ant Design cung cấp một đối tượng info trong onChange, chứa thông tin chi tiết về tệp và quá trình tải lên.
-  const handleChangeAvatar = async (info) => {
-    // C2: getBase64
-    const file = info.fileList[0];
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setAvatar(file.preview);
+  const handleChangeAvatar = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Preview để hiển thị
+    const preview = await getBase64(file);
+    setAvatar(preview); // dùng để hiển thị ảnh
+
+    // Gọi cập nhật luôn, dùng preview để truyền vào API
+    handleClickBtnUpdate(preview);
   };
 
   return (
     <div className="User-Profile Container flex-center-center">
       <div className="Wrapper Width">
-        {/* <WrapperProfileTitle>THÔNG TIN NGƯỜI DÙNG</WrapperProfileTitle> */}
         <Loading isPending={isPending}>
-          <WrapperContent className="pt-3 mb-4 mt-4">
-            <WrapperProfileUser>
-              <MDBContainer>
-                <MDBRow>
-                  <MDBCol>
-                    <MDBBreadcrumb className="bg-light rounded-3 p-3 mb-4 flex flex-row w-full justify-between items-center min-h-[60px]">
-                      <div className="flex flex-row items-center">
-                        <MDBBreadcrumbItem>
-                          <span
-                            onClick={() => navigate("/home")}
-                            className="cursor-pointer hover:border-b hover:border-black transition-all duration-200"
-                          >
-                            Home
-                          </span>
-                        </MDBBreadcrumbItem>
-                        <MDBBreadcrumbItem active>
-                          {t("userProfile")}
-                        </MDBBreadcrumbItem>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-4">
+            {/* Left Sidebar */}
+            <div className="lg:col-span-1 flex justify-center items-center h-full">
+              {/* Profile Card */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6 max-w-[280px]">
+                <div className="flex flex-col items-center text-center">
+                  {/* Avatar */}
+                  <div className="relative mb-6">
+                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1">
+                      <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                        {avatar ? (
+                          <img
+                            src={avatar || "/placeholder.svg"}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                            {full_name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </div>
+                        )}
                       </div>
-                      {fromPayment && (
-                        <div>
-                          <MDBBreadcrumbItem>
-                            <span
-                              onClick={() => navigate("/Payment")}
-                              className="cursor-pointer border-b border-black uppercase transition-all duration-200 hover:text-[17px]"
-                            >
-                              {t("continueShopping")}
-                            </span>
-                          </MDBBreadcrumbItem>
-                        </div>
-                      )}
-                    </MDBBreadcrumb>
-                  </MDBCol>
-                </MDBRow>
-                <MDBRow>
-                  <MDBCol lg="4">
-                    <FlexCenterCenterCol className="mb-2">
-                      {/* avatar here */}
-                      <CardBodys>
-                        <StyledMDBCardImage
-                          src={avatar || userImage}
-                          alt="avatar"
-                          fluid
+                    </div>
+                    <label className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full cursor-pointer shadow-lg transition-all duration-200 hover:scale-110">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
                         />
-                        <p className="text-muted mb-1">{full_name}</p>
-                        <p className="text-muted mb-4">
-                          Bay Area, San Francisco, CA
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleChangeAvatar}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2 max-w-[80%] line-clamp-1">
+                    {full_name}
+                  </h2>
+                  <p className="text-gray-600 mb-4">{email}</p>
+
+                  <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-6">
+                    {t("profile.verifiedAccount")}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="w-full space-y-3">
+                    <button
+                      onClick={() => setIsEditing(!isEditing)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
+                      👤{" "}
+                      {isEditing
+                        ? t("profile.cancelEdit")
+                        : t("profile.editProfile")}
+                    </button>
+
+                    <button
+                      onClick={() => handleChagePasswordModal()}
+                      className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-all duration-200"
+                    >
+                      🔒 {t("changePassword")}
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/Address")}
+                      className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-all duration-200"
+                    >
+                      📍 {t("addressList")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="lg:col-span-3 flex items-center w-full">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden w-full">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">
+                        {t("profile.personalInfo")}
+                      </h3>
+                      <p className="text-blue-100">{t("profile.updateHint")}</p>
+                    </div>
+                    {isEditing && (
+                      <button
+                        onClick={() => handleClickBtnUpdate(avatar)}
+                        disabled={isPending}
+                        className="bg-white/20 hover:bg-white/30 text-white font-medium py-2 px-6 rounded-lg transition-all duration-200 disabled:opacity-50"
+                      >
+                        {isPending
+                          ? `💾 ${t("profile.saving")}`
+                          : `💾 ${t("profile.saveChanges")}`}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-2 ">
+                  {/* Full Name */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                    <label className="flex items-center text-sm font-semibold text-gray-700">
+                      👤 {t("profile.fullName")}
+                    </label>
+                    <div className="md:col-span-2">
+                      <input
+                        type="text"
+                        value={full_name}
+                        onChange={(e) => handleChangeName(e.target.value)}
+                        disabled={!isEditing}
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                          !isEditing
+                            ? "bg-gray-50 border-gray-200 text-gray-600"
+                            : "bg-white border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        } ${fullNameError ? "border-red-500" : ""}`}
+                        placeholder={t("profile.enterFullName")}
+                      />
+                      {fullNameError && (
+                        <p className="text-red-500 text-sm mt-2 flex items-center">
+                          ⚠️ {fullNameError}
                         </p>
-                        <FlexCenterCenter>
-                          <MDBBtn
-                            onClick={(e) =>
-                              handleClickBtnUpdate(e.target.value)
-                            }
-                          >
-                            {t("saveInfo")}
-                          </MDBBtn>
-                        </FlexCenterCenter>
-                      </CardBodys>
-                    </FlexCenterCenterCol>
-                    <FlexCenterCenterCol className="mb-2">
-                      {/* avatar here */}
-                      <CardBodys>
-                        <FlexCenterCenter>
-                          <MDBBtn onClick={() => navigate("/Address")}>
-                            {t("addressList")}
-                          </MDBBtn>
-                        </FlexCenterCenter>
-                      </CardBodys>
-                    </FlexCenterCenterCol>
-                    <FlexCenterCenterCol className="mb-4">
-                      {/* avatar here */}
-                      <CardBodys>
-                        <FlexCenterCenter>
-                          <MDBBtn onClick={() => handleChagePasswordModal()}>
-                            {t("changePassword")}
-                          </MDBBtn>
-                        </FlexCenterCenter>
-                      </CardBodys>
-                    </FlexCenterCenterCol>
-                  </MDBCol>
-                  <MDBCol lg="8">
-                    <MDBCard className="mb-4">
-                      <MDBCardBody className="flex flex-col gap-4">
-                        <MDBRow>
-                          <MDBCol sm="3">
-                            <MDBCardText>{t("name")}</MDBCardText>
-                          </MDBCol>
-                          <MDBCol sm="9" className="cursor-pointer">
-                            <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
-                              <InPut
-                                type="text"
-                                value={full_name}
-                                onChange={(e) =>
-                                  handleChangeName(e.target.value)
-                                }
-                              />
-                            </MDBCardText>
-                            {fullNameError && (
-                              <p
-                                style={{
-                                  color: "red",
-                                  fontSize: "12px",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                {fullNameError}
-                              </p>
-                            )}
-                          </MDBCol>
-                        </MDBRow>
-                        <MDBRow>
-                          <MDBCol sm="3">
-                            <MDBCardText>{t("email")}</MDBCardText>
-                          </MDBCol>
-                          <MDBCol sm="9">
-                            <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
-                              <InPut
-                                type="email"
-                                value={email}
-                                disabled
-                                onChange={(e) =>
-                                  handleChangeEmail(e.target.value)
-                                }
-                              />
-                            </MDBCardText>
-                            {emailError && (
-                              <p
-                                style={{
-                                  color: "red",
-                                  fontSize: "12px",
-                                  marginTop: "6px",
-                                }}
-                              >
-                                {emailError}
-                              </p>
-                            )}
-                          </MDBCol>
-                        </MDBRow>
-                        <MDBRow>
-                          <MDBCol sm="3">
-                            <MDBCardText>{t("phone")}</MDBCardText>
-                          </MDBCol>
-                          <MDBCol sm="9">
-                            <MDBCardText className="flex justify-center items-center h-[20px] max-w-full text-muted">
-                              <InPut
-                                type="number"
-                                value={phone}
-                                onChange={(e) =>
-                                  handleChangePhone(e.target.value)
-                                }
-                              />
-                            </MDBCardText>
-                            {phoneError && (
-                              <p
-                                style={{
-                                  color: "red",
-                                  fontSize: "12px",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                {phoneError}
-                              </p>
-                            )}
-                          </MDBCol>
-                        </MDBRow>
+                      )}
+                    </div>
+                  </div>
 
-                        <MDBRow>
-                          <MDBCol sm="3">
-                            <MDBCardText>{t("birthDate")}</MDBCardText>
-                          </MDBCol>
-                          <MDBCol sm="9">
-                            {/* <InPut
-                              type="date"
-                               value={formatDateForInput(birth_day)}
-                              onChange={(e) => setBirthday(e.target.value)}
-                            /> */}
-                            <InPut
-                              type="date"
-                              value={formatDateForInput(birth_day)}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (validateBirthDay(value)) {
-                                  setBirthday(value);
-                                }
-                              }}
-                            />
-                            {birthDayError && (
-                              <p style={{ color: "red", fontSize: "12px" }}>
-                                {birthDayError}
-                              </p>
-                            )}
-                          </MDBCol>
-                        </MDBRow>
-                        <MDBRow>
-                          <MDBCol sm="3">
-                            <MDBCardText>{t("gender")}</MDBCardText>
-                          </MDBCol>
-                          <MDBCol sm="9">
-                            <select
-                              value={gender}
-                              onChange={(e) =>
-                                handleChangeGender(e.target.value)
-                              }
-                              className="w-full p-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            >
-                              <option value="" disabled>{t("selectGender")}</option>
-                              <option value="male">{t("male")}</option>
-                              <option value="female">{t("female")}</option>
-                              <option value="other">{t("other")}</option>
-                            </select>
-                            {genderError && (
-                              <p
-                                style={{
-                                  color: "red",
-                                  fontSize: "12px",
-                                  marginTop: "4px",
-                                }}
-                              >
-                                {genderError}
-                              </p>
-                            )}
-                          </MDBCol>
-                        </MDBRow>
+                  <hr className="border-gray-200" />
 
-                        <div className="flex justify-between items-center min-h-[20vh]">
-                          <div className="flex-[0.25]">
-                            <MDBCardText>{t("avatar")}</MDBCardText>
-                          </div>
-                          {/* setting image here */}
-                          <div className="flex-[0.74]">
-                            <Upload.Dragger
-                              listType="picture"
-                              showUploadList={{ showRemoveIcon: true }}
-                              accept=".png, .jpg, .jpeg, .gif, .webp, .avif, .eps"
-                              maxCount={1}
-                              beforeUpload={(file) => {
-                                return false;
-                              }}
-                              onChange={(event) => handleChangeAvatar(event)}
-                            >
-                              <button> Upload Your Image</button>
-                            </Upload.Dragger>
-                          </div>
-                        </div>
-                      </MDBCardBody>
-                    </MDBCard>
-                  </MDBCol>
-                </MDBRow>
-              </MDBContainer>
-            </WrapperProfileUser>
-          </WrapperContent>
+                  {/* Email */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                    <label className="flex items-center text-sm font-semibold text-gray-700">
+                      📧 {t("profile.emailAddress")}
+                    </label>
+                    <div className="md:col-span-2">
+                      <input
+                        type="email"
+                        value={email}
+                        disabled={true}
+                        className="w-full px-4 py-3 rounded-lg border-2 bg-gray-50 border-gray-200 text-gray-600"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">
+                        🔒 {t("profile.emailNoChange")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <hr className="border-gray-200" />
+
+                  {/* Phone */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                    <label className="flex items-center text-sm font-semibold text-gray-700">
+                      📱 {t("profile.phoneNumber")}
+                    </label>
+                    <div className="md:col-span-2">
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => handleChangePhone(e.target.value)}
+                        disabled={!isEditing}
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                          !isEditing
+                            ? "bg-gray-50 border-gray-200 text-gray-600"
+                            : "bg-white border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        } ${phoneError ? "border-red-500" : ""}`}
+                        placeholder={t("profile.enterPhone")}
+                      />
+                      {phoneError && (
+                        <p className="text-red-500 text-sm mt-2 flex items-center">
+                          ⚠️ {phoneError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <hr className="border-gray-200" />
+
+                  {/* Birth Date */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                    <label className="flex items-center text-sm font-semibold text-gray-700">
+                      🎂 {t("profile.birthDate")}
+                    </label>
+                    <div className="md:col-span-2">
+                      <input
+                        type="date"
+                        value={formatDateForInput(birth_day)}
+                        onChange={(e) => handleChangeBirthday(e.target.value)}
+                        disabled={!isEditing}
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                          !isEditing
+                            ? "bg-gray-50 border-gray-200 text-gray-600"
+                            : "bg-white border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        } ${birthDayError ? "border-red-500" : ""}`}
+                      />
+                      {birthDayError && (
+                        <p className="text-red-500 text-sm mt-2 flex items-center">
+                          ⚠️ {birthDayError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <hr className="border-gray-200" />
+
+                  {/* Gender */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                    <label className="flex items-center text-sm font-semibold text-gray-700">
+                      ⚧ {t("profile.gender")}
+                    </label>
+                    <div className="md:col-span-2">
+                      <select
+                        value={gender}
+                        onChange={(e) => handleChangeGender(e.target.value)}
+                        disabled={!isEditing}
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                          !isEditing
+                            ? "bg-gray-50 border-gray-200 text-gray-600"
+                            : "bg-white border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        } ${genderError ? "border-red-500" : ""}`}
+                      >
+                        <option value="male">{t("male")}</option>
+                        <option value="female">{t("female")}</option>
+                        <option value="other">{t("other")}</option>
+                      </select>
+                      {genderError && (
+                        <p className="text-red-500 text-sm mt-2 flex items-center">
+                          ⚠️ {genderError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {isEditing && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-center">
+                        <span className="text-blue-600 mr-2">ℹ️</span>
+                        <p className="text-blue-800 text-sm">
+                          {t("profile.editHint")}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </Loading>
       </div>
 
       {isSubmitEmail && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <div
-              onClick={() => setIsSubmitEmail(false)}
-              className="absolute top-4 right-4 cursor-pointer"
-            >
-              <img src="/image/icon/close.png" alt="" className="w-4" />
-            </div>
-            <h2 className="text-lg font-semibold text-gray-700">
-              {t("confirmEmail")}
-            </h2>
-            <p className="text-gray-500 text-sm mb-4">
-              {t("pleaseEnterEmail")}
-            </p>
-            <input
-              type="email"
-              required
-              placeholder={t("enterEmail")}
-              onChange={(event) => setEmailSubmit(event.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
-            />
-            {errorMessage && (
-              <p className="text-red-500 mt-2 ml-2">{errorMessage}</p>
-            )}
-            <button
-              onClick={() => handleCheckEmail()}
-              disabled={sendOtpLoading}
-              className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
-            >
-              {sendOtpLoading === true ? (
-                <div role="status" className="w-fit mx-auto">
-                  <svg
-                    aria-hidden="true"
-                    className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                      fill="currentFill"
-                    />
-                  </svg>
-                </div>
-              ) : (
-                <span>{t("sendRequest")}</span>
-              )}
-            </button>
-
-            {sendOtpLoading === false ?? (
-              <div
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden transform transition-all duration-300 scale-100">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white relative">
+              <button
                 onClick={() => setIsSubmitEmail(false)}
-                className="absolute top-3 right-3 cursor-pointer"
+                className="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/20 rounded-full p-2 transition-all duration-200"
               >
-                <img
-                  src="/image/icon/close.png"
-                  alt="Đóng"
-                  className="w-4 opacity-70 hover:opacity-100 transition"
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              <h2 className="text-xl font-bold mb-1">
+                {t("confirmEmail") || "Confirm Email"}
+              </h2>
+              <p className="text-blue-100 text-sm">
+                {t("pleaseEnterEmail") ||
+                  "Please enter your email to receive OTP"}
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  {t("enterEmail") || "Email Address"}
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="example@email.com"
+                  onChange={(e) => setEmailSubmit(e.target.value)}
+                  className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 focus:bg-white transition-all duration-200"
                 />
+                {errorMessage && (
+                  <p className="text-red-500 text-sm mt-2 flex items-center">
+                    <svg
+                      className="w-4 h-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    {errorMessage}
+                  </p>
+                )}
               </div>
-            )}
+
+              <button
+                onClick={handleCheckEmail}
+                disabled={sendOtpLoading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+              >
+                {sendOtpLoading ? (
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 mr-3 animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    {t("sending") || "Sending..."}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    {t("sendRequest") || "Send Request"}
+                  </div>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
+
       {otpPopupVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
@@ -772,95 +820,73 @@ const ProfilePage = () => {
         </div>
       )}
       {isChagePassword && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <div
-              onClick={() => setIsChangePassword(false)}
-              className="absolute top-4 right-4 cursor-pointer"
-            >
-              <img src="/image/icon/close.png" alt="" className="w-4" />
-            </div>
-            <h2 className="text-lg font-semibold text-gray-700">
-              {t("changePassword")}
-            </h2>
-            {havePassword && (
-              <div>
-                <p className="text-gray-500 text-sm my-2 mt-3">
-                  {t("enterOldPassword")}
-                </p>
-                <input
-                  type="password"
-                  required
-                  placeholder={t("enterOldPassword")}
-                  onChange={(event) => setPassword(event.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
-                />
-              </div>
-            )}
-            <p className="text-gray-500 text-sm my-2 mt-3">
-              {t("enterNewPassword")}
-            </p>
-            <input
-              type="password"
-              required
-              placeholder={t("enterNewPassword")}
-              onChange={(event) => setNewPassword(event.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
-            />
-            <p className="text-gray-500 text-sm my-2 mt-3">
-              {t("confirmNewPassword")}
-            </p>
-            <input
-              type="password"
-              required
-              placeholder={t("confirmNewPassword")}
-              onChange={(event) => setconfirmNewPassword(event.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
-            />
-            {errorMessage && (
-              <p className="text-red-500 mt-2 ml-2">{errorMessage}</p>
-            )}
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md relative shadow-xl">
             <button
-              onClick={() => handleCheckPassword()}
-              disabled={sendOtpLoading}
-              className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={() => setIsChangePassword(false)}
             >
-              {sendOtpLoading === true ? (
-                <div role="status" className="w-fit mx-auto">
-                  <svg
-                    aria-hidden="true"
-                    className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                      fill="currentFill"
-                    />
-                  </svg>
-                </div>
-              ) : (
-                <span>{t("sendRequest")}</span>
-              )}
+              ✕
             </button>
 
-            {sendOtpLoading === false ?? (
-              <div
-                onClick={() => setIsChangePassword(false)}
-                className="absolute top-3 right-3 cursor-pointer"
-              >
-                <img
-                  src="/image/icon/close.png"
-                  alt="Đóng"
-                  className="w-4 opacity-70 hover:opacity-100 transition"
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              🔒 {t("profile.changePassword")}
+            </h2>
+
+            {havePassword && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t("profile.currentPassword")}
+                </label>
+                <input
+                  type={showPassword.current ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3 border rounded-md focus:ring focus:border-blue-500"
                 />
               </div>
             )}
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t("profile.newPassword")}
+              </label>
+              <input
+                type={showPassword.new ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full p-3 border rounded-md focus:ring focus:border-blue-500"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t("profile.confirmPassword")}
+              </label>
+              <input
+                type={showPassword.confirm ? "text" : "password"}
+                value={confirmNewPassword}
+                onChange={(e) => setconfirmNewPassword(e.target.value)}
+                className="w-full p-3 border rounded-md focus:ring focus:border-blue-500"
+              />
+              {newPassword !== confirmNewPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {t("profile.passwordMismatch")}
+                </p>
+              )}
+            </div>
+
+            {errorMessage && (
+              <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
+            )}
+
+            <button
+              onClick={handleCheckPassword}
+              disabled={sendOtpLoading}
+              className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+            >
+              {sendOtpLoading ? t('profile.updating') : t('profile.updatePassword')}
+            </button>
           </div>
         </div>
       )}
