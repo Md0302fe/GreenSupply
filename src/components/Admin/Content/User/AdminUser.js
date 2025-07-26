@@ -76,7 +76,7 @@ const UserComponent = () => {
         full_name: res?.data.full_name,
         email: res?.data.email,
         phone: res?.data.phone,
-        role: res?.data?.role_id?.role_name,
+        role: res?.data?.role_id?._id,
         avatar: res?.data.avatar,
         address: res?.data.address,
         birth_day: res?.data.birth_day,
