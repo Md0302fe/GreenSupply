@@ -663,6 +663,8 @@ const ProvideRequestManagement = () => {
         onOk={handleConfirmDelete}
         confirmLoading={mutationDelete.isPending}
         okButtonProps={{ danger: true }}
+        okText={t("harvestRequest.confirm")}
+        cancelText={t("harvestRequest.close")}
       >
         <p>{t("provideRequest.deleteConfirmMessage")}</p>
       </Modal>
