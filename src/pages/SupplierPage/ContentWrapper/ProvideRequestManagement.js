@@ -17,6 +17,7 @@ import { MdDelete } from "react-icons/md";
 import Shop from "../../../assets/NewProject/Icon-GreenSupply/shop-illustration.webp";
 import { convertPrice } from "../../../ultils";
 import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 
 const ProvideRequestManagement = () => {
   const { t } = useTranslation();
@@ -388,13 +389,13 @@ const ProvideRequestManagement = () => {
 
   const columns = isMobile
     ? [
-        allColumns[0],
-        allColumns[1],
-        allColumns[2],
-        allColumns[3],
-        allColumns[4],
-        actionColumn,
-      ] // Tên nguyên liệu, Trạng thái, Hành động
+      allColumns[0],
+      allColumns[1],
+      allColumns[2],
+      allColumns[3],
+      allColumns[4],
+      actionColumn,
+    ] // Tên nguyên liệu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
   const drawerWidth = isMobile ? "100%" : "40%";
@@ -583,11 +584,11 @@ const ProvideRequestManagement = () => {
                   readOnly
                   value={
                     formUpdate.getFieldValue("quantity") &&
-                    formUpdate.getFieldValue("price")
+                      formUpdate.getFieldValue("price")
                       ? (
-                          Number(formUpdate.getFieldValue("quantity")) *
-                          Number(formUpdate.getFieldValue("price"))
-                        ).toLocaleString("vi-VN") + " VNĐ"
+                        Number(formUpdate.getFieldValue("quantity")) *
+                        Number(formUpdate.getFieldValue("price"))
+                      ).toLocaleString("vi-VN") + " VNĐ"
                       : "Chưa tính"
                   }
                 />
@@ -632,26 +633,23 @@ const ProvideRequestManagement = () => {
 
               {/* Submit Button */}
               <div className="flex flex-col md:flex-row justify-end gap-4 mt-4">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={mutationUpdate.isPending}
-                  className="w-full md:w-auto"
-                >
-                  {mutationUpdate.isPending
-                    ? t("common.updating")
-                    : t("common.update")}
-                </Button>
+                <div className="w-full md:w-auto">
+                  <ButtonComponent
+                    type="update"
+                    htmlType="submit"
+                    loading={mutationUpdate.isPending}
+                  />
+                </div>
 
-                <Button
-                  type="default"
-                  danger
-                  onClick={handleCancelUpdate}
-                  className="w-full md:w-auto"
-                >
-                  {t("common.cancel")}
-                </Button>
+                <div className="w-full md:w-auto">
+                  <ButtonComponent
+                    type="cancel"
+                    onClick={handleCancelUpdate}
+                    htmlType="button"
+                  />
+                </div>
               </div>
+
             </Form>
           </div>
         </Loading>
@@ -771,13 +769,12 @@ const ProvideRequestManagement = () => {
             </div>
 
             {/* Nút đóng */}
-            <div className="flex justify-start">
-              <Button
+            <div className="flex justify-end">
+              <ButtonComponent
+                type="close"
                 onClick={() => setIsDetailDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-              >
-                {t("close")}
-              </Button>
+                htmlType="button"
+              />
             </div>
           </div>
         ) : (

@@ -3,7 +3,7 @@ import { Button } from "antd";
 import "./ButtonComponent.scss";
 import { useTranslation } from "react-i18next";
 
-const ButtonComponent = ({ type, onClick, htmlType }) => {
+const ButtonComponent = ({ type, onClick, htmlType, loading }) => {
   const { t } = useTranslation();
 
   const buttonConfig = {
@@ -51,8 +51,11 @@ const ButtonComponent = ({ type, onClick, htmlType }) => {
       className={`custom-button ${config.className}`}
       onClick={onClick}
       htmlType={resolvedHtmlType}
+      loading={loading}
     >
-      {config.label}
+      {loading && type === "update"
+        ? t("common.updating")
+        : config.label}
     </Button>
   );
 };
