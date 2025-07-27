@@ -427,13 +427,13 @@ const HarvestRequestManagement = () => {
   // Chọn cột hiển thị tùy theo thiết bị
   const columns = isMobile
     ? [
-        allColumns[0],
-        allColumns[1],
-        allColumns[2],
-        allColumns[3],
-        allColumns[4],
-        actionColumn,
-      ] // Tên yêu cầu, Trạng thái, Hành động
+      allColumns[0],
+      allColumns[1],
+      allColumns[2],
+      allColumns[3],
+      allColumns[4],
+      actionColumn,
+    ] // Tên yêu cầu, Trạng thái, Hành động
     : [...allColumns, actionColumn];
 
   const handleViewDetail = (record) => {
@@ -589,25 +589,21 @@ const HarvestRequestManagement = () => {
             </div>
 
             <div className="flex flex-col md:flex-row justify-end gap-4 mt-4">
-              <Button
-                type="primary"
-                onClick={handleEditSubmit}
-                loading={mutationUpdate.isPending}
-                className="w-full md:w-auto font-semibold"
-              >
-                {mutationUpdate.isPending
-                  ? t("common.updating")
-                  : t("common.update")}
-              </Button>
+              <div className="w-full md:w-auto">
+                <ButtonComponent
+                  type="update"
+                  onClick={handleEditSubmit}
+                  htmlType="button" // hoặc "submit" nếu cần
+                />
+              </div>
 
-              <Button
-                type="default"
-                danger
-                onClick={handleCancelUpdate}
-                className="w-full md:w-auto font-semibold"
-              >
-                {t("common.cancel")}
-              </Button>
+              <div className="w-full md:w-auto">
+                <ButtonComponent
+                  type="cancel"
+                  onClick={handleCancelUpdate}
+                  htmlType="button"
+                />
+              </div>
             </div>
           </div>
         ) : (
@@ -730,12 +726,11 @@ const HarvestRequestManagement = () => {
 
             {/* Nút đóng */}
             <div className="flex justify-end">
-              <button
+              <ButtonComponent
+                type="close"
                 onClick={() => setIsViewDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-              >
-                {t("harvestRequest.close")}
-              </button>
+                htmlType="button"
+              />
             </div>
           </div>
         ) : (

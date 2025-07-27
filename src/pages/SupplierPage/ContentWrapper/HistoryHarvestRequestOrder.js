@@ -13,6 +13,7 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import * as ultils from "../../../ultils";
 import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 const HistoryHarvestRequestOrder = () => {
   const { t } = useTranslation();
   const user = useSelector((state) => state.user);
@@ -233,22 +234,22 @@ const HistoryHarvestRequestOrder = () => {
     return "bg-gray-100 text-gray-800";
   };
   const [isMobile, setIsMobile] = useState(() => {
-      if (typeof window !== "undefined") {
-        return window.innerWidth < 768;
-      }
-      return false;
-    });
-  
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-  
-      handleResize(); // cập nhật ngay khi component mount
-  
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const drawerWidth = isMobile ? "100%" : "40%";
   return (
     <div className="px-2">
@@ -380,13 +381,13 @@ const HistoryHarvestRequestOrder = () => {
                 </div>
 
                 {/* Nút đóng */}
-                <div className="flex justify-start">
-                  <button
+                <div className="flex justify-end">
+                  <ButtonComponent
+                    type="close"
                     onClick={() => setIsViewDrawerOpen(false)}
-                    className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    {t("historyHarvestRequestOrder.close")}
-                  </button>
+                    htmlType="button"
+                    customLabel={t("historyHarvestRequestOrder.close")}
+                  />
                 </div>
               </div>
             ) : (
