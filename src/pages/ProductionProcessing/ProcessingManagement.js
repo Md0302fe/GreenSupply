@@ -152,7 +152,7 @@ const ProcessingManagement = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto px-4 md:px-20 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-14 mx-auto px-4 md:px-20 py-8">
           {dataProcessing?.map((process, index) => {
             return (
               <ProcessingComponent

@@ -1094,10 +1094,10 @@ const StageComponent = ({
              transition duration-300 ease-in-out transform 
              hover:scale-105 hover:from-green-600 hover:to-green-700
              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:from-green-500 disabled:hover:to-green-600"
-                        disabled={
-                          !isCheckProduct ||
-                          parseInt(dataProcess?.current_stage) === 7
-                        }
+                        // disabled={
+                        //   !isCheckProduct ||
+                        //   parseInt(dataProcess?.current_stage) === 7
+                        // }
                         onClick={() =>
                           handleComplete({
                             noStage,

@@ -151,7 +151,7 @@ const ProductionRequestList = () => {
           backgroundColor: "#f9f9f9",
           borderRadius: 4,
           boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-          width: 220,
+          width:260,
         }}
         onKeyDown={(e) => e.stopPropagation()}
       >

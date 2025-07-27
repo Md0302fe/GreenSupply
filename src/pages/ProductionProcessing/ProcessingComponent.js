@@ -31,7 +31,7 @@ const ProcessingComponent = ({ data , type }) => {
   return (
     <div
       id="processBox"
-      className="max-w-[400px] p-2 lg:p-4 rounded-lg shadow-md cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+      className="max-w-full p-2 lg:p-4 rounded-lg shadow-md cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
       style={{ backgroundColor: currentColor }}
       onClick={() => handleDetailProcess(data._id)}
     >

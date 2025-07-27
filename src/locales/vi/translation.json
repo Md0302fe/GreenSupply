@@ -1125,7 +1125,7 @@
     "planNameRequired": "Vui lòng nhập tên kế hoạch",
     "materialRequired": "Vui lòng chọn Loại Nguyên liệu",
     "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
-    "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
+    "lossRequired": "Vui lòng nhập Tỷ lệ hao hụt ước tính",
     "priorityRequired": "Vui lòng chọn mức độ ưu tiên",
     "productionDateRequired": "Vui lòng chọn ngày sản xuất",
     "endDateRequired": "Vui lòng chọn ngày kết thúc",
@@ -1279,9 +1279,9 @@
     "enterMaterialQty": "Nhập số lượng nguyên liệu",
     "materialQtyRequired": "Vui lòng nhập số lượng nguyên liệu",
     "materialNumRequired": "Phải lớn hơn 0",
-    "loss": "Tỷ lệ hao hụt (%)",
-    "enterLoss": "Nhập tỷ lệ hao hụt",
-    "lossRequired": "Vui lòng nhập tỷ lệ hao hụt",
+    "loss": "Tỷ lệ hao hụt ước tính  (%)",
+    "enterLoss": "Nhập Tỷ lệ hao hụt ước tính",
+    "lossRequired": "Vui lòng nhập Tỷ lệ hao hụt ước tính",
     "lossMinMax": "Phải nằm trong khoảng từ 0-100%",
     "productQty": "Sản lượng thành phẩm ước tính (kg)",
     "priority": "Mức độ ưu tiên",
@@ -1312,7 +1312,7 @@
     "note_require": {
       "note": "Lưu ý:",
       "note_parent": "Tất cả các trường có dấu",
-      "note_child": "là bắt buộc. Số lượng sản phẩm sẽ được tự động tính toán dựa trên số lượng nguyên liệu và tỷ lệ hao hụt."
+      "note_child": "là bắt buộc. Số lượng sản phẩm sẽ được tự động tính toán dựa trên số lượng nguyên liệu và Tỷ lệ hao hụt ước tính ."
     },
     "message": {
       "create_success": "Tạo kế hoạch sản xuất thành công!",
@@ -1342,8 +1342,8 @@
     "detail_title": "Chi Tiết Kế Hoạch Sản Xuất"
   },
   "form": {
-    "request_name": "Tên đơn",
-    "request_type": "Loại đơn",
+    "request_name": "Tên kế hoạch",
+    "request_type": "Loại kế hoạch",
     "material": "Nguyên liệu",
     "product_quantity": "Thành phẩm (Kg)",
     "material_quantity": "Nguyên liệu (Kg)",
@@ -1351,7 +1351,7 @@
     "end_date": "Ngày kết thúc",
     "status": "Trạng thái",
     "note": "Ghi chú",
-    "update_title": "Cập nhật đơn",
+    "update_title": "Cập nhật kế hoạch",
     "loss_percentage": "Tỉ lệ hao hụt",
     "priority": "Mức độ ưu tiên",
     "fullName": "Họ và Tên",
@@ -1378,7 +1378,7 @@
     "over_fuel": "Sản lượng mong muốn vượt quá số Nguyên liệu. Sản lượng tối đa là {{max}} Kg."
   },
   "drawer": {
-    "detail_title": "Chi tiết đơn sản xuất"
+    "detail_title": "Chi tiết kế hoạch sản xuất"
   },
   "validate": {
     "request_name": "Vui lòng nhập tên đơn",
@@ -1562,7 +1562,7 @@
     "requestName": "Tên yêu cầu",
     "requestType": "Loại yêu cầu",
     "materialQuantity": "Số lượng nguyên liệu",
-    "lossPercentage": "Tỷ lệ hao hụt",
+    "lossPercentage": "Tỷ lệ hao hụt ước tính",
     "productQuantity": "Số lượng thành phẩm",
     "priority": "Ưu tiên",
     "packagingInfo": "Thông tin bao bì",

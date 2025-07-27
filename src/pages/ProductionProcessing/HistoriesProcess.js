@@ -41,7 +41,7 @@ const HistoriesProcess = () => {
   // Fetch data từ API
   const fetchHistoriesProcess = async () => {
     const access_token = user?.access_token;
-    return await getHistoriesProcess({access_token , type_process});
+    return await getHistoriesProcess({ access_token, type_process });
   };
 
   const { isLoading, data, refetch } = useQuery({
@@ -225,13 +225,16 @@ const HistoriesProcess = () => {
     {
       title: <div className="text-center">{t("histories.field.action")}</div>,
       key: "action",
+      className: "text-center", // Thêm dòng này để căn giữa nội dung cell
       render: (_, record) => (
         <Space>
           <Button
             icon={<EyeOutlined />}
             type="link"
             onClick={() =>
-              navigate(`/system/admin/process_details/${type_process}/${record?.processCode}`)
+              navigate(
+                `/system/admin/process_details/${type_process}/${record?.processCode}`
+              )
             }
           >
             {t("histories.button.viewDetails")}
@@ -318,7 +321,9 @@ const HistoriesProcess = () => {
               >
                 <FaGears
                   className={`text-base ${
-                    type_process === "consolidated_processes" ? "text-green-500" : ""
+                    type_process === "consolidated_processes"
+                      ? "text-green-500"
+                      : ""
                   }`}
                 />
                 <span>{t("processingManagement.button.consolidated")}</span>

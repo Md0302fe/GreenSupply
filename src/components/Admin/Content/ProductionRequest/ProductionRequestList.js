@@ -151,7 +151,9 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.updateProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success(t("productionRequestManagement.messages.update_success"));
+        message.success(
+          t("productionRequestManagement.messages.update_success")
+        );
         refetchRequests();
         setIsEditMode(false);
         setIsDrawerOpen(false);
@@ -170,7 +172,9 @@ const ProductionRequestList = () => {
     mutationFn: ProductionRequestServices.deleteProductionRequest,
     onSuccess: (dataResponse) => {
       if (dataResponse?.success) {
-        message.success(t("productionRequestManagement.messages.delete_success"));
+        message.success(
+          t("productionRequestManagement.messages.delete_success")
+        );
         refetchRequests(); // gọi lại để cập nhật danh sách
       } else {
         message.error(t("productionRequestManagement.messages.delete_fail"));
@@ -191,7 +195,9 @@ const ProductionRequestList = () => {
     })
       .then((res) => {
         if (res?.success) {
-          message.success(t("productionRequestManagement.messages.approve_success"));
+          message.success(
+            t("productionRequestManagement.messages.approve_success")
+          );
           refetchRequests();
           setIsDrawerOpen(false);
         } else {
@@ -347,7 +353,7 @@ const ProductionRequestList = () => {
           backgroundColor: "#f9f9f9",
           borderRadius: 4,
           boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-          width: 220,
+          width: 260,
         }}
         onKeyDown={(e) => e.stopPropagation()}
       >
@@ -616,26 +622,32 @@ const ProductionRequestList = () => {
         />
       </Loading>
 
+      {/* Cập nhật form */}
       <DrawerComponent
-        title={isEditMode ? t("productionRequestManagement.update_title") : t("productionRequestManagement.detail_title")}
+        title={
+          isEditMode
+            ? t("productionRequestManagement.update_title")
+            : t("productionRequestManagement.detail_title")
+        }
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"
         width={drawerWidth}
       >
-        {/* Chế độ XEM CHI TIẾT */}
+        {/* ====================== VIEW MODE ====================== */}
         {selectedRequest && !isEditMode && (
           <Form layout="vertical">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Tên đơn - hàng riêng */}
+            {/* Block 1: các trường dài */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {/* Tên đơn - full width */}
               <Form.Item
                 label={t("form.request_name")}
-                className="!mb-0 lg:col-span-2"
+                className="!mb-0 lg:col-span-3"
               >
                 <Input value={selectedRequest.request_name} disabled />
               </Form.Item>
 
-              {/* Loại đơn + Trạng thái */}
+              {/* Loại đơn + Trạng thái (2 cột) */}
               <Form.Item label={t("form.request_type")} className="!mb-0">
                 <Input value={selectedRequest.request_type} disabled />
               </Form.Item>
@@ -648,22 +660,27 @@ const ProductionRequestList = () => {
                   </Tag>
                 </div>
               </Form.Item>
+              {/* chừa 1 slot trống để đủ 3 cột */}
+              <div />
 
-              {/* Nguyên liệu - hàng riêng */}
+              {/* Nguyên liệu - full width */}
               <Form.Item
                 label={t("form.material")}
-                className="!mb-0 lg:col-span-2"
+                className="!mb-0 lg:col-span-3"
               >
                 <Input value={selectedRequest.material} disabled />
               </Form.Item>
+            </div>
 
-              {/* Thành phẩm + Nguyên liệu */}
+            {/* Block 2: nhóm 3-cột cho các field số & có thể nằm ngang */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
               <Form.Item label={t("form.product_quantity")} className="!mb-0">
                 <Input
                   value={`${selectedRequest.product_quantity} Kg`}
                   disabled
                 />
               </Form.Item>
+
               <Form.Item label={t("form.material_quantity")} className="!mb-0">
                 <Input
                   value={`${selectedRequest.material_quantity} Kg`}
@@ -671,42 +688,42 @@ const ProductionRequestList = () => {
                 />
               </Form.Item>
 
-              {/* Hao hụt + Ưu tiên */}
               <Form.Item label={t("form.loss_percentage")} className="!mb-0">
                 <Input value={`${selectedRequest.loss_percentage}%`} disabled />
               </Form.Item>
+
               <Form.Item label={t("form.priority")} className="!mb-0">
                 <Input value={selectedRequest.priority} disabled />
               </Form.Item>
 
-              {/* Ngày sản xuất + Ngày kết thúc */}
               <Form.Item label={t("form.production_date")} className="!mb-0">
                 <Input
                   value={convertDateStringV1(selectedRequest.production_date)}
                   disabled
                 />
               </Form.Item>
+
               <Form.Item label={t("form.end_date")} className="!mb-0">
                 <Input
                   value={convertDateStringV1(selectedRequest.end_date)}
                   disabled
                 />
               </Form.Item>
-
-              {/* Ghi chú nếu có */}
-              {selectedRequest.note && (
-                <Form.Item
-                  label={t("form.note")}
-                  className="lg:col-span-2 !mb-0"
-                >
-                  <Input.TextArea
-                    value={selectedRequest.note}
-                    rows={3}
-                    disabled
-                  />
-                </Form.Item>
-              )}
             </div>
+
+            {/* Ghi chú nếu có */}
+            {selectedRequest.note && (
+              <Form.Item
+                label={t("form.note")}
+                className="lg:col-span-3 !mb-0 mt-4"
+              >
+                <Input.TextArea
+                  value={selectedRequest.note}
+                  rows={3}
+                  disabled
+                />
+              </Form.Item>
+            )}
 
             {/* Nút hành động */}
             <div className="flex justify-end gap-3 mt-6 flex-wrap">
@@ -724,7 +741,7 @@ const ProductionRequestList = () => {
           </Form>
         )}
 
-        {/* Chế độ CHỈNH SỬA */}
+        {/* ====================== EDIT MODE ====================== */}
         {selectedRequest && isEditMode && (
           <div
             style={{
@@ -735,144 +752,161 @@ const ProductionRequestList = () => {
             }}
           >
             <Form form={form} layout="vertical">
-              {/* Tên đơn (bắt buộc) */}
-              <Form.Item
-                label={t("form.request_name")}
-                name="request_name"
-                rules={[
-                  { required: true, message: t("validate.request_name") },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+              {/* Block 1: trường dài */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* Tên đơn */}
+                <Form.Item
+                  label={t("form.request_name")}
+                  name="request_name"
+                  rules={[
+                    { required: true, message: t("validate.request_name") },
+                  ]}
+                  className="lg:col-span-3"
+                >
+                  <Input />
+                </Form.Item>
 
-              {/* Loại đơn: có thể cho sửa nếu muốn */}
-              <Form.Item label={t("form.request_type")} name="request_type">
-                <Input disabled />
-              </Form.Item>
+                {/* Loại đơn & Trạng thái (nếu muốn để ngang) */}
+                <Form.Item label={t("form.request_type")} name="request_type">
+                  {/* giữ disabled như cũ */}
+                  <Input disabled />
+                </Form.Item>
 
-              {/* Chọn Nguyên liệu */}
-              <Form.Item
-                label={t("form.material")}
-                name="material"
-                rules={[{ required: true, message: t("validate.material") }]}
-              >
-                <Select placeholder={t("placeholder.select_material")} disabled>
-                  {fuelTypes.map((fuel) => (
-                    <Select.Option key={fuel._id} value={fuel._id}>
-                      {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg)
+                <Form.Item label={t("form.status")} name="status">
+                  <Select disabled>
+                    <Select.Option value="Chờ duyệt">
+                      {t("status.pending")}
                     </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
+                    <Select.Option value="Đang xử lý">
+                      {t("status.processing")}
+                    </Select.Option>
+                    <Select.Option value="Từ chối">
+                      {t("status.reject")}
+                    </Select.Option>
+                    <Select.Option value="Đã huỷ">
+                      {t("status.canceled")}
+                    </Select.Option>
+                    <Select.Option value="Đã Hoàn Thành">
+                      {t("status.completed")}
+                    </Select.Option>
+                    <Select.Option value="Đang sản xuất">
+                      {t("status.in_production")}
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
 
-              {/* Thành phẩm -> Tự tính nguyên liệu */}
-              <Form.Item
-                label={t("form.product_quantity")}
-                name="product_quantity"
-                rules={[
-                  { required: true, message: t("form.product_quantity") },
-                ]}
-              >
-                <InputNumber
-                  className="w-full"
-                  min={1}
-                  onChange={handleProductQuantityChange}
-                />
-              </Form.Item>
+                {/* chừa 1 slot trống để cân cột */}
+                <div />
 
-              {/* Nguyên liệu (Kg) -> disabled */}
-              <Form.Item
-                label={t("form.material_quantity")}
-                name="material_quantity"
-              >
-                <InputNumber className="w-full" disabled />
-              </Form.Item>
+                {/* Nguyên liệu */}
+                <Form.Item
+                  label={t("form.material")}
+                  name="material"
+                  rules={[{ required: true, message: t("validate.material") }]}
+                  className="lg:col-span-3"
+                >
+                  <Select
+                    placeholder={t("placeholder.select_material")}
+                    disabled
+                  >
+                    {fuelTypes.map((fuel) => (
+                      <Select.Option key={fuel._id} value={fuel._id}>
+                        {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg)
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
 
-              {/* Tỉ lệ hao hụt (%) */}
-              <Form.Item
-                label={t("form.loss_percentage")}
-                name="loss_percentage"
-                rules={[
-                  { required: true, message: t("validate.loss_percentage") },
-                ]}
-              >
-                <InputNumber
-                  className="w-full"
-                  min={0}
-                  max={100}
-                  formatter={(value) => `${value}%`}
-                  parser={(value) => value.replace("%", "")}
-                />
-              </Form.Item>
+              {/* Block 2: nhóm 3-cột cho các trường số & có thể nằm ngang */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                {/* Thành phẩm */}
+                <Form.Item
+                  label={t("form.product_quantity")}
+                  name="product_quantity"
+                  rules={[
+                    { required: true, message: t("form.product_quantity") },
+                  ]}
+                >
+                  <InputNumber
+                    className="w-full"
+                    min={1}
+                    onChange={handleProductQuantityChange}
+                  />
+                </Form.Item>
 
-              {/* Độ ưu tiên */}
-              <Form.Item
-                label={t("form.priority")}
-                name="priority"
-                rules={[{ required: true, message: t("validate.priority") }]}
-              >
-                <Select className="w-full">
-                  {/* Mặc định truyền vào giá trị là 1, 2, 3 nhưng hiển thị là "Thấp", "Trung bình", "Cao" */}
-                  <Select.Option value={3}>{t("common.high")}</Select.Option>
-                  <Select.Option value={2}>{t("common.medium")}</Select.Option>
-                  <Select.Option value={1}>{t("common.low")}</Select.Option>
-                </Select>
-              </Form.Item>
+                {/* Nguyên liệu */}
+                <Form.Item
+                  label={t("form.material_quantity")}
+                  name="material_quantity"
+                >
+                  <InputNumber className="w-full" disabled />
+                </Form.Item>
 
-              {/* Ngày sản xuất -> DatePicker */}
-              <Form.Item
-                label={t("form.production_date")}
-                name="production_date"
-                rules={[{ required: true, message: t("form.production_date") }]}
-              >
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  className="w-full"
-                  disabledDate={disabledProductionDate}
-                />
-              </Form.Item>
+                {/* Tỉ lệ hao hụt */}
+                <Form.Item
+                  label={t("form.loss_percentage")}
+                  name="loss_percentage"
+                  rules={[
+                    { required: true, message: t("validate.loss_percentage") },
+                  ]}
+                >
+                  <InputNumber
+                    className="w-full"
+                    min={0}
+                    max={100}
+                    formatter={(value) => `${value}%`}
+                    parser={(value) => value.replace("%", "")}
+                  />
+                </Form.Item>
 
-              {/* Ngày kết thúc -> DatePicker */}
-              <Form.Item
-                label={t("form.end_date")}
-                name="end_date"
-                dependencies={["production_date"]}
-                rules={[{ required: true, message: t("form.end_date") }]}
-              >
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  className="w-full"
-                  disabledDate={disabledEndDate}
-                />
-              </Form.Item>
+                {/* Ưu tiên */}
+                <Form.Item
+                  label={t("form.priority")}
+                  name="priority"
+                  rules={[{ required: true, message: t("validate.priority") }]}
+                >
+                  <Select className="w-full">
+                    <Select.Option value={3}>{t("common.high")}</Select.Option>
+                    <Select.Option value={2}>
+                      {t("common.medium")}
+                    </Select.Option>
+                    <Select.Option value={1}>{t("common.low")}</Select.Option>
+                  </Select>
+                </Form.Item>
 
-              {/* Trạng thái -> disable */}
-              <Form.Item label={t("form.status")} name="status">
-                <Select disabled>
-                  <Select.Option value="Chờ duyệt">
-                    {t("status.pending")}
-                  </Select.Option>
-                  <Select.Option value="Đang xử lý">
-                    {t("status.processing")}
-                  </Select.Option>
-                  <Select.Option value="Từ chối">
-                    {t("status.reject")}
-                  </Select.Option>
-                  <Select.Option value="Đã huỷ">
-                    {t("status.canceled")}
-                  </Select.Option>
-                  <Select.Option value="Đã Hoàn Thành">
-                    {t("status.completed")}
-                  </Select.Option>
-                  <Select.Option value="Đang sản xuất">
-                    {t("status.in_production")}
-                  </Select.Option>
-                </Select>
-              </Form.Item>
+                {/* Ngày sản xuất */}
+                <Form.Item
+                  label={t("form.production_date")}
+                  name="production_date"
+                  rules={[
+                    { required: true, message: t("form.production_date") },
+                  ]}
+                >
+                  <DatePicker
+                    format="DD/MM/YYYY"
+                    className="w-full"
+                    disabledDate={disabledProductionDate}
+                  />
+                </Form.Item>
+
+                {/* Ngày kết thúc */}
+                <Form.Item
+                  label={t("form.end_date")}
+                  name="end_date"
+                  dependencies={["production_date"]}
+                  rules={[{ required: true, message: t("form.end_date") }]}
+                >
+                  <DatePicker
+                    format="DD/MM/YYYY"
+                    className="w-full"
+                    disabledDate={disabledEndDate}
+                  />
+                </Form.Item>
+              </div>
 
               {/* Ghi chú */}
-              <Form.Item label={t("form.note")} name="note">
+              <Form.Item label={t("form.note")} name="note" className="mt-4">
                 <Input.TextArea rows={3} />
               </Form.Item>
             </Form>
