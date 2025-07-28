@@ -116,7 +116,7 @@ const Login = () => {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     const googleToken = credentialResponse.credential;
     try {
-      const response = await UserServices.userLogin({ googleToken });
+      const response = await UserServices.userLoginWithGoogle({ googleToken });
       console.log(response);
       const { status, user, message: responseMessage } = response;
       if (status === "NEW_USER") {

@@ -8,6 +8,13 @@ export const userLogin = async (data) => {
   );
   return res?.data;
 };
+export const userLoginWithGoogle = async (data) => {
+  const res = await axios.post(
+    `${process.env.REACT_APP_API_URL}/user/sign-in-with-google`,
+    data
+  );
+  return res?.data;
+};
 export const checkEmail = async (data) => {
   const res = await axios.post(
     `${process.env.REACT_APP_API_URL}/user/check-email`,

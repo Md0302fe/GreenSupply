@@ -102,11 +102,14 @@ const MaterialStorageExport = () => {
         // Nếu có batchId trên URL và nằm trong danh sách hợp lệ
         if (batchId) {
           const selectedBatch = filteredBatches.find((b) => b._id === batchId);
+          const exportName = generateExportCode(selectedBatch);
           if (selectedBatch) {
             form.setFieldsValue({
               batch_id: selectedBatch._id,
               production_request_id: selectedBatch.production_request_id,
+              export_name: exportName,
             });
+            
           }
         }
       } catch (error) {
