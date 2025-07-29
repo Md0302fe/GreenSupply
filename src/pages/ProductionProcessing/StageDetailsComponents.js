@@ -29,7 +29,7 @@ const StageComponent = ({
   );
   const [processType, setProcessType] = useState("");
 
-  console.log("processType ", processType)
+  console.log("processType ", processType);
 
   // Data Product
   const [dataProduct, setDataProduct] = useState({
@@ -685,7 +685,8 @@ const StageComponent = ({
         ) : (
           // trường hợp là 1 array các yêu cầu - thành phẩm
           <div className="flex flex-wrap gap-3">
-            {processType === "consolidated_processes" && dataConsolidate &&
+            {processType === "consolidated_processes" &&
+              dataConsolidate &&
               dataConsolidate?.map((item, index) => (
                 <div
                   key={index}
@@ -1086,7 +1087,7 @@ const StageComponent = ({
                     </p>
                   </div>
                   {/* Nút hoàn thành */}
-                  {stage?.status === t("processDetails.status.executing") && (
+                  {stage?.status === "Đang thực thi" && (
                     <div className="info-box flex justify-end items-end">
                       <button
                         className="bg-gradient-to-r from-green-500 to-green-600 
@@ -1106,7 +1107,7 @@ const StageComponent = ({
                           })
                         }
                       >
-                        ✅ {t("stage.button.complete")}
+                        {t("stage.button.complete")}
                       </button>
                     </div>
                   )}

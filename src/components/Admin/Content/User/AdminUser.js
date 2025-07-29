@@ -108,7 +108,6 @@ const UserComponent = () => {
     } else if (dataUpdate?.role === "Warehouse_Manager") {
       dataUpdate.role = "686f3835d7eaed8a9fd5a8b6";
     } else if (dataUpdate?.role === "Process_Manager") {
-
     }
     const updatedData = {
       ...dataUpdate,
@@ -310,7 +309,7 @@ const UserComponent = () => {
           className="flex items-center gap-1 cursor-pointer text-black hover:bg-gray-200 px-2 py-1 rounded transition-all"
           onClick={() => {
             setRowSelected(record._id);
-            setDrawerMode("edit");;
+            setDrawerMode("edit");
           }}
         >
           <AiOutlineEdit className="text-xl text-green-600" />
@@ -319,7 +318,6 @@ const UserComponent = () => {
       </div>
     );
   };
-
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -473,18 +471,12 @@ const UserComponent = () => {
       dataIndex: "role",
       key: "role",
       filters: [
-        {
-          text: "Admin",
-          value: "Admin",
-        },
-        {
-          text: "User",
-          value: "User",
-        },
-        {
-          text: "Supplier",
-          value: "Supplier",
-        },
+        { text: "Admin", value: "Admin" },
+        { text: "User", value: "User" },
+        { text: "Supplier", value: "Supplier" },
+        { text: "Material Manager", value: "Material Manager" },
+        { text: "Warehouse Manager", value: "Warehouse Manager" },
+        { text: "Process Manager", value: "Process Manager" },
       ],
       onFilter: (value, record) => {
         return record.role.includes(value);
@@ -534,7 +526,7 @@ const UserComponent = () => {
           />
         </div>
       ),
-    }
+    },
   ];
   return (
     <div className="Wrapper-Admin-User">
@@ -603,9 +595,7 @@ const UserComponent = () => {
       {/* DRAWER - Update Product */}
       <DrawerComponent
         title={
-          isEditMode
-            ? t("user_list.update_title")
-            : t("user_list.detail_title")
+          isEditMode ? t("user_list.update_title") : t("user_list.detail_title")
         }
         isOpen={isDrawerOpen}
         onClose={() => setDrawerMode(null)}
@@ -616,11 +606,15 @@ const UserComponent = () => {
           <div className="grid grid-cols-1 gap-2 mb-2">
             {/* Họ tên */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.name")}</label>
+              <label className="block mb-1 font-semibold">
+                {t("user_list.name")}
+              </label>
               <input
                 type="text"
                 value={stateDetailsUser.full_name}
-                onChange={(e) => handleOnChangeDetails(e.target.value, "full_name")}
+                onChange={(e) =>
+                  handleOnChangeDetails(e.target.value, "full_name")
+                }
                 placeholder={t("user_list.name")}
                 className="border p-2 rounded w-full mb-2"
                 disabled={isViewMode}
@@ -629,7 +623,9 @@ const UserComponent = () => {
 
             {/* Email */}
             <div>
-              <label className="block mb-2 font-semibold">{t("user_list.email")}</label>
+              <label className="block mb-2 font-semibold">
+                {t("user_list.email")}
+              </label>
               <input
                 type="text"
                 value={stateDetailsUser.email}
@@ -640,7 +636,9 @@ const UserComponent = () => {
 
             {/* Số điện thoại */}
             <div>
-              <label className="block mb-2 font-semibold">{t("user_list.phone")}</label>
+              <label className="block mb-2 font-semibold">
+                {t("user_list.phone")}
+              </label>
               <input
                 type="text"
                 value={stateDetailsUser.phone}
@@ -651,7 +649,9 @@ const UserComponent = () => {
 
             {/* Địa chỉ */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.address")}</label>
+              <label className="block mb-1 font-semibold">
+                {t("user_list.address")}
+              </label>
               <input
                 type="text"
                 value={stateDetailsUser.address}
@@ -662,11 +662,15 @@ const UserComponent = () => {
 
             {/* Giới tính */}
             <div>
-              <label className="block mb-1 font-semibold">{t("user_list.gender")}</label>
+              <label className="block mb-1 font-semibold">
+                {t("user_list.gender")}
+              </label>
               <select
                 value={stateDetailsUser.gender}
                 disabled
-                className={`border p-2 rounded w-full mb-2 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
+                className={`border p-2 rounded w-full mb-2 ${
+                  isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""
+                }`}
               >
                 <option value="male">{t("user_list.male")}</option>
                 <option value="female">{t("user_list.female")}</option>
@@ -676,7 +680,9 @@ const UserComponent = () => {
 
             {/* Ngày sinh */}
             <div>
-              <label className="block mb-2 font-semibold">{t("user_list.birth_day")}</label>
+              <label className="block mb-2 font-semibold">
+                {t("user_list.birth_day")}
+              </label>
               <input
                 type="text"
                 value={
@@ -691,34 +697,44 @@ const UserComponent = () => {
 
             {/* Vai trò */}
             <div>
-              <label className="block mb-2 font-semibold">{t("user_list.role")}</label>
+              <label className="block mb-2 font-semibold">
+                {t("user_list.role")}
+              </label>
               <select
                 value={stateDetailsUser.role}
                 onChange={(e) => handleOnChangeDetails(e.target.value, "role")}
-                className={`border p-2 rounded w-full mb-2 ${isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""}`}
+                className={`border p-2 rounded w-full mb-2 ${
+                  isViewMode ? "appearance-none bg-gray-100 cursor-default" : ""
+                }`}
                 disabled={isViewMode}
               >
                 {/* id Admin */}
                 <option value="67950da386a0a462d408c7b9">Admin</option>
                 {/* id Material Manager */}
-                <option value="686f3835d7eaed8a9fd5a8b8">Material_Manager</option>
+                <option value="686f3835d7eaed8a9fd5a8b8">
+                  Material_Manager
+                </option>
                 {/* id Warehouse_Manager */}
-                <option value="686f3835d7eaed8a9fd5a8b7">Warehouse_Manager</option>
+                <option value="686f3835d7eaed8a9fd5a8b7">
+                  Warehouse_Manager
+                </option>
                 {/* id Production_Manager */}
-                <option value="686f3835d7eaed8a9fd5a8b6">Process_Manager</option>
+                <option value="686f3835d7eaed8a9fd5a8b6">
+                  Process_Manager
+                </option>
                 {/* id Supplier*/}
                 <option value="67950fec8465df03b29bf753">Supplier</option>
                 {/* id  User */}
                 <option value="67950f9f8465df03b29bf752">User</option>
-
-
               </select>
             </div>
 
             {/* Upload avatar */}
             {!isViewMode && (
               <div>
-                <label className="block mb-2 font-semibold">{t("user_list.upload_image")}</label>
+                <label className="block mb-2 font-semibold">
+                  {t("user_list.upload_image")}
+                </label>
                 <Upload.Dragger
                   listType="picture"
                   showUploadList={{ showRemoveIcon: true }}
@@ -738,7 +754,9 @@ const UserComponent = () => {
 
             {/* Ảnh đại diện xem trước */}
             <div>
-              <label className="block mt-4 font-semibold">{t("user_list.review_avatar")}</label>
+              <label className="block mt-4 font-semibold">
+                {t("user_list.review_avatar")}
+              </label>
               <div className="flex justify-center">
                 <img
                   src={stateDetailsUser?.avatar || defaultBackground}
@@ -750,7 +768,9 @@ const UserComponent = () => {
 
             {/* Created at */}
             <div>
-              <label className="block mb-2 font-semibold">{t("user_list.created_at")}</label>
+              <label className="block mb-2 font-semibold">
+                {t("user_list.created_at")}
+              </label>
               <p className="text-left">
                 {converDateString(stateDetailsUser?.createdAt)}
               </p>
@@ -758,7 +778,9 @@ const UserComponent = () => {
 
             {/* Updated at */}
             <div>
-              <label className="block mb-2 font-semibold">{t("user_list.updated_at")}</label>
+              <label className="block mb-2 font-semibold">
+                {t("user_list.updated_at")}
+              </label>
               <p className="text-left">
                 {converDateString(stateDetailsUser?.updatedAt)}
               </p>
@@ -770,11 +792,17 @@ const UserComponent = () => {
             {isEditMode && (
               <>
                 <ButtonComponent type="update" onClick={onFinishUpdate} />
-                <ButtonComponent type="close" onClick={() => setDrawerMode(null)} />
+                <ButtonComponent
+                  type="close"
+                  onClick={() => setDrawerMode(null)}
+                />
               </>
             )}
             {isViewMode && (
-              <ButtonComponent type="close" onClick={() => setDrawerMode(null)} />
+              <ButtonComponent
+                type="close"
+                onClick={() => setDrawerMode(null)}
+              />
             )}
           </div>
         </div>
