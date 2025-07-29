@@ -12,6 +12,7 @@ import { HiOutlineDocumentSearch } from "react-icons/hi";
 
 import * as ultils from "../../../ultils";
 import { useTranslation } from "react-i18next";
+import ButtonComponent from "../../../components/ButtonComponent/ButtonComponent";
 
 const HistoryProvideOrder = () => {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ const HistoryProvideOrder = () => {
       { user_id }
     );
   };
-  
+
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth < 768;
@@ -370,12 +371,12 @@ const HistoryProvideOrder = () => {
             </div>
 
             <div className="flex justify-end mt-4">
-              <button
+              <ButtonComponent
+                type="close"
                 onClick={() => setIsViewDrawerOpen(false)}
-                className="bg-gray-500 text-white font-bold px-4 py-2 rounded hover:bg-gray-600"
-              >
-                {t("historyProvideOrder.close")}
-              </button>
+                htmlType="button"
+                customLabel={t("historyProvideOrder.close")}
+              />
             </div>
           </div>
         ) : (
