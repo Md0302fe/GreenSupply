@@ -339,7 +339,7 @@ const DashboardComponent = () => {
 
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 w-full">
             <button
-              className="md:w-[200px] h-[50px] bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
+              className="w-full md:w-[200px] h-[50px] bg-[#005a2c] hover:bg-[#00a34b] text-white font-bold text-sm py-1 px-2 rounded"
               onClick={() => {
                 importExportRef.current?.scrollIntoView({ behavior: "smooth" });
               }}
@@ -835,7 +835,7 @@ const DashboardComponent = () => {
                 nameKey="type"
                 cx="50%"
                 cy="50%"
-                outerRadius={100}
+                outerRadius={isMobile ? 60 : 80}
                 label
               >
                 {fuelDistribution.map((entry, index) => (

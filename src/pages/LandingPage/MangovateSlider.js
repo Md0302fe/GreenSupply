@@ -60,39 +60,39 @@ export default function MangoVateSlider() {
           <div
             className={`bg-gradient-to-r ${bgColors[currentSlide]} text-white relative min-h-[500px]`}
           >
-            <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12 items-center">
+            <div className="grid md:grid-cols-2 gap-8 p-2 md:p-8 md:p-12 items-center">
               <div className="flex flex-col justify-center space-y-6">
                 <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-white/20 rounded-full backdrop-blur-sm">
-                    <IconComponent className="w-8 h-8" />
+                  <div className="p-2 md:p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                    <IconComponent className="w-4 md:w-8 h-4 md:h-8" />
                   </div>
-                  <div className="text-sm font-medium bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                  <div className="text-sm font-medium bg-white/20 px-3 md:px-4 py-2 rounded-full backdrop-blur-sm">
                     MangoVate System
                   </div>
                 </div>
 
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                  <h2 className="text-3x1 md:text-4xl font-bold mb-2">
                     {t(`landingPage.slider.slides.${slideId}.title`)}
                   </h2>
-                  <p className="text-white/80 text-lg mb-4">
+                  <p className="text-white/80 text-sm md:text-lg mb-4">
                     {t(`landingPage.slider.slides.${slideId}.subtitle`)}
                   </p>
                 </div>
 
-                <p className="text-lg leading-relaxed text-white/90">
+                <p className="text-sm md:text-lg leading-relaxed text-white/90">
                   {t(`landingPage.slider.slides.${slideId}.description`)}
                 </p>
 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-lg">
+                  <h4 className="font-semibold text-sm md:text-lg">
                     {t("landingPage.slider.features_title")}
                   </h4>
                   <ul className="space-y-2">
                     {[0, 1, 2].map((index) => (
                       <li key={index} className="flex items-center space-x-3">
                         <div className="w-2 h-2 bg-white rounded-full"></div>
-                        <span className="text-white/90">
+                        <span className="text-sm md:text-lg text-white/90">
                           {t(
                             `landingPage.slider.slides.${slideId}.features.${index}`
                           )}
@@ -102,7 +102,7 @@ export default function MangoVateSlider() {
                   </ul>
                 </div>
 
-                <div className="flex space-x-4 pt-4">
+                <div className="flex flex-col space-y-3 pt-4 md:flex-row md:space-y-0 md:space-x-4">
                   <Button
                     size="lg"
                     className="bg-white text-gray-900 hover:bg-white/90 font-semibold px-8"
@@ -161,11 +161,10 @@ export default function MangoVateSlider() {
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
                 ? "bg-green-600 scale-125"
                 : "bg-gray-300 hover:bg-gray-400"
-            }`}
+              }`}
             onClick={() => goToSlide(index)}
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}

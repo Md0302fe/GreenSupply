@@ -316,11 +316,16 @@ const HarvestRequestPage = () => {
         <button
           type="button"
           onClick={() => navigate("/system/admin/R_purchase-orders")}
-          className="group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-3.5 py-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+          className="group inline-flex items-center gap-1.5 md:gap-2 
+             bg-blue-600 hover:bg-blue-700 text-white font-medium 
+             px-3 py-2 md:px-3.5 md:py-2.5 
+             rounded-lg md:rounded-xl 
+             shadow-sm hover:shadow-md transition-all duration-200"
         >
           {t("harvest.viewList") || "Material Purchase List"}
           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
         </button>
+
       </div>
 
       <div className="max-w-5xl mx-auto">
@@ -597,19 +602,18 @@ const HarvestRequestPage = () => {
                   {formData.priority && (
                     <div className="mt-1 md:mt-2">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          formData.priority === "Cao"
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${formData.priority === "Cao"
                             ? "bg-red-100 text-red-800"
                             : formData.priority === "Trung bình"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-green-100 text-green-800"
-                        }`}
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
                       >
                         {formData.priority === "Cao"
                           ? "High"
                           : formData.priority === "Trung bình"
-                          ? "Medium"
-                          : "Low"}{" "}
+                            ? "Medium"
+                            : "Low"}{" "}
                         Priority
                       </span>
                     </div>
