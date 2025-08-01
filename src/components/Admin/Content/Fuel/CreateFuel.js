@@ -97,19 +97,19 @@ const CreateFuel = () => {
   };
 
   useEffect(() => {
-  const fetchFuelTypes = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`);
-      if (res.data?.requests) {
-        setFuelTypes(res.data.requests);
+    const fetchFuelTypes = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/fuel/getAll`);
+        if (res.data?.requests) {
+          setFuelTypes(res.data.requests);
+        }
+      } catch (err) {
+        console.error("Lỗi khi lấy danh sách nhiên liệu", err);
       }
-    } catch (err) {
-      console.error("Lỗi khi lấy danh sách nhiên liệu", err);
-    }
-  };
+    };
 
-  fetchFuelTypes();
-}, []);
+    fetchFuelTypes();
+  }, []);
 
 
   const uploadProps = {
@@ -136,33 +136,41 @@ const CreateFuel = () => {
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 p-6">
       {/* Nút quay lại - đặt riêng, full width, căn trái */}
       <div className="w-full mb-2 lg:mb-4 flex justify-between items-center">
-        {/* Nút Quay lại */}
-        <div>
-          <button
-            onClick={() => navigate(-1)}
-            className="group flex items-center bg-black text-white font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-blue-600 transition duration-300"
-            type="button"
+        {/* Nút Quay lại - style giống Button mẫu */}
+        <button
+          onClick={() => navigate(-1)}
+          type="button"
+          className="flex items-center justify-center md:justify-start text-white font-semibold transition duration-300 shadow-sm px-2 md:px-3 py-1 bg-black hover:opacity-70 rounded-md min-w-[20px] md:min-w-[100px]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 md:h-4 md:w-4 md:mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <span className="group-hover:-translate-x-1 transition-transform duration-200">
-              ←
-            </span>
-            <span className="ml-2">{t("createFuel.back")}</span>
-          </button>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+          <span className="hidden md:inline">{t("fuelList.back")}</span>
+        </button>
 
-        {/* Nút Xem danh sách */}
-        <div>
-          <button
-            onClick={() => navigate("/system/admin/fuel-list")}
-            className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow-sm transition duration-300"
-          >
-            {t("createFuel.viewList") || "Xem danh sách"}
-            <span className="group-hover:translate-x-1 transition-transform duration-200">
-              →
-            </span>
-          </button>
-        </div>
+        {/* Nút Xem danh sách*/}
+        <button
+          onClick={() => navigate("/system/admin/fuel-list")}
+          className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-2 py-1 rounded-md shadow-sm transition duration-300"
+        >
+          {t("createFuel.viewList") || "Xem danh sách"}
+          <span className="group-hover:translate-x-1 transition-transform duration-200">
+            →
+          </span>
+        </button>
       </div>
+
 
       <div className="w-full max-w-xl bg-white rounded-lg shadow p-8">
         <div className="flex justify-center items-center gap-2 mb-3">
