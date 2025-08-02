@@ -386,8 +386,8 @@ const HarvestRequestManagement = () => {
 
   const statusMap = {
     "Chờ duyệt": { color: "orange", label: t("status.pending") },
-    "Đã duyệt": { color: "green", label: t("status.approve") },
-    "Hoàn Thành": { color: "gold", label: t("status.completed") },
+    "Đã duyệt": { color: "blue", label: t("status.approve") },
+    "Hoàn Thành": { color: "green", label: t("status.completed") },
     "Đang xử lý": { color: "gold", label: t("status.completed") },
     "Đã huỷ": { color: "red", label: t("status.cancelled") },
     "Đã hủy": { color: "red", label: t("status.cancelled") },

@@ -908,10 +908,10 @@
     "back": "Go Back",
     "title": "Material Collection Requests List",
     "table": {
-      "customer": "Customer",
+      "customer": "Suppliers",
       "fuel_type": "Material type",
       "request_name": "Request Name",
-      "price": "Price",
+      "price": "Price (VND)",
       "status": "Status",
       "actions": "Actions"
     },
@@ -952,8 +952,9 @@
     "orderCompleted": "Order completed successfully!",
     "completeFailed": "Failed to complete order!",
     "errorCompleting": "An error occurred while completing the order!",
-    "customer": "Customer",
-    "fuelType": "Request Name",
+    "customer": "Suppliers",
+    "request_name": "Request Name",
+    "fuelType": "Material Type",
     "price": "Price (VND)",
     "status": "Status",
     "pending": "Pending",
@@ -1073,7 +1074,7 @@
     "receiptType": {
       "raw": "Raw Material",
       "product": "Finished Product",
-      "supply": "Supply",
+      "supply": "Provide",
       "request": "Collection",
       "unknown": "Unknown"
     },
@@ -1550,7 +1551,7 @@
     "system": "system"
   },
   "finishedProductList": {
-    "title": "Finished Products List",
+    "title": "Finished Products Batch List",
     "searchPlaceholder": "Search by name or product code",
     "searchButton": "Search",
     "selectMaterialType": "Select material type",

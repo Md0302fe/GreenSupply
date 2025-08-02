@@ -115,7 +115,7 @@ const FinishedProductList = () => {
   }, [searchText, selectedType, page, status]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 px-8">
+    <div className="min-h-screen flex flex-col items-center justify-start px-8">
       <div
         style={{ marginBottom: 24, marginTop: 24 }}
         className="flex items-center justify-between w-full"
