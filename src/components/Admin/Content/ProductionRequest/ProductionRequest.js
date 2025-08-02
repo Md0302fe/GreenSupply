@@ -44,6 +44,7 @@ const ProductionRequest = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [packagingMaterials, setPackagingMaterials] = useState([]);
   const [productionDate, setProductionDate] = useState(null);
+  const [endDateValue, setEndDateValue] = useState(null);
 
   const [selectedPackaging, setSelectedPackaging] = useState({
     vacuumBag: null,
@@ -234,7 +235,21 @@ const ProductionRequest = () => {
       [type]: requiredQty,
     }));
   };
+  useEffect(() => {
+    const production = form.getFieldValue("production_date");
+    const end = form.getFieldValue("end_date");
 
+    if (production && end) {
+      const diff = dayjs(end).diff(dayjs(production), "day");
+      if (diff <= 0) {
+        form.setFieldsValue({ end_date: null });
+        setEndDateValue(null); // Force cập nhật UI của DatePicker
+        message.info(
+          "Ngày kết thúc đã được xoá vì phải sau ngày sản xuất ít nhất 1 ngày."
+        );
+      }
+    }
+  }, [productionDate]);
   const calculateProductQuantity = () => {
     const material_quantity = form.getFieldValue("material_quantity");
     const loss_percentage = form.getFieldValue("loss_percentage");
@@ -277,7 +292,8 @@ const ProductionRequest = () => {
     if (!productionDate) {
       return current && current < dayjs().startOf("day");
     }
-    return current && current.isBefore(productionDate, "day");
+    // Bắt buộc chọn sau ngày sản xuất ít nhất 1 ngày
+    return current && current <= dayjs(productionDate).endOf("day");
   };
 
   const handleProductQuantityChange = () => {
@@ -894,6 +910,11 @@ const ProductionRequest = () => {
                     className="h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
                     disabledDate={disabledProductionDate}
                     onChange={(date) => {
+                      const currentEndDate = form.getFieldValue("end_date");
+                      if (currentEndDate) {
+                        form.setFieldsValue({ end_date: null });
+                        setEndDateValue(null); // cần thêm dòng này để sync UI ngay
+                      }
                       setProductionDate(date);
                       form.setFieldsValue({ production_date: date });
                     }}
@@ -912,12 +933,29 @@ const ProductionRequest = () => {
                       required: true,
                       message: t("productionRequest.endDateRequired"),
                     },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        const start = getFieldValue("production_date");
+                        if (start && value) {
+                          const diff = dayjs(value).diff(dayjs(start), "day");
+                          if (diff < 1) {
+                            return Promise.reject(
+                              new Error(
+                                "Ngày kết thúc phải sau ngày sản xuất ít nhất 1 ngày"
+                              )
+                            );
+                          }
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
                 >
                   <Form.Item noStyle dependencies={["production_date"]}>
                     {({ getFieldValue }) => (
                       <DatePicker
                         style={{ width: "100%" }}
+                        value={endDateValue}
                         format="DD/MM/YYYY"
                         placeholder={
                           !getFieldValue("production_date")
@@ -927,9 +965,10 @@ const ProductionRequest = () => {
                         className="h-12 rounded-xl border-2 border-gray-200 focus:border-blue-500 transition-all duration-200"
                         disabled={!getFieldValue("production_date")}
                         disabledDate={disabledEndDate}
-                        onChange={(date) =>
-                          form.setFieldsValue({ end_date: date })
-                        }
+                        onChange={(date) => {
+                          form.setFieldsValue({ end_date: date });
+                          setEndDateValue(date); // cập nhật lại UI
+                        }}
                       />
                     )}
                   </Form.Item>

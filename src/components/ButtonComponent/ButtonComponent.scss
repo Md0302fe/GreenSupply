@@ -35,17 +35,8 @@
     }
   }
 
-  &.btn-approve {
-    background-color: #000;
-    color: #fff;
-    border: none;
-
-    &:hover {
-      background-color: #333;
-    }
-  }
-
-   &.btn-approve-order {
+   &.btn-approve-order,
+   &.btn-approve {
     background-color: #134afe;
     color: #fff;
     border: none;

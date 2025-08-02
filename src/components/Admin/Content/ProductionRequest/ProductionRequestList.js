@@ -416,7 +416,18 @@ const ProductionRequestList = () => {
         text
       ),
   });
+  useEffect(() => {
+    const production = form.getFieldValue("production_date");
+    const end = form.getFieldValue("end_date");
 
+    if (production && end) {
+      const diff = dayjs(end).diff(dayjs(production), "day");
+      if (diff < 1) {
+        form.setFieldsValue({ end_date: null });
+        message.warning("Ngày kết thúc phải sau ngày sản xuất ít nhất 1 ngày.");
+      }
+    }
+  }, [form.getFieldValue("production_date")]);
   // Cấu hình cột
   const columns = [
     {
@@ -484,39 +495,45 @@ const ProductionRequestList = () => {
     {
       title: <div className="text-center">{t("table.actions")}</div>,
       key: "action",
-      render: (record) => (
-        <div className="flex justify-center items-center gap-2">
-          {/* Xem chi tiết */}
-          <Button
-            icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
-            size="middle"
-            onClick={() => handleViewDetail(record)}
-            className="hover:bg-gray-200"
-          />
+      render: (record) => {
+        const isPending = record.status === "Chờ duyệt";
 
-          {/* Nút cập nhật: Luôn hiển thị */}
-          <Button
-            type="link"
-            icon={<AiFillEdit style={{ color: "#0e79c7" }} />}
-            className="hover:bg-gray-200"
-            onClick={() => {
-              setSelectedRequest(record);
-              setIsEditMode(true);
-              setIsDrawerOpen(true);
-            }}
-          />
-
-          {/* Nút xoá: chỉ hiển thị nếu trạng thái là "Chờ duyệt" */}
-          {record.status === "Chờ duyệt" && (
+        return (
+          <div className="flex justify-center items-center gap-2">
+            {/* Xem chi tiết: Luôn hiển thị */}
             <Button
-              icon={<MdDelete style={{ color: "red" }} />}
-              onClick={() => confirmDelete(record)}
-              loading={mutationDelete.isLoading}
+              icon={<HiOutlineDocumentSearch style={{ color: "dodgerblue" }} />}
               size="middle"
+              onClick={() => handleViewDetail(record)}
+              className="hover:bg-gray-200"
             />
-          )}
-        </div>
-      ),
+
+            {/* Chỉ hiển thị nút Sửa nếu trạng thái là Chờ duyệt */}
+            {isPending && (
+              <Button
+                type="link"
+                icon={<AiFillEdit style={{ color: "#0e79c7" }} />}
+                className="hover:bg-gray-200"
+                onClick={() => {
+                  setSelectedRequest(record);
+                  setIsEditMode(true);
+                  setIsDrawerOpen(true);
+                }}
+              />
+            )}
+
+            {/* Chỉ hiển thị nút Xoá nếu trạng thái là Chờ duyệt */}
+            {isPending && (
+              <Button
+                icon={<MdDelete style={{ color: "red" }} />}
+                onClick={() => confirmDelete(record)}
+                loading={mutationDelete.isLoading}
+                size="middle"
+              />
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -895,7 +912,28 @@ const ProductionRequestList = () => {
                   label={t("form.end_date")}
                   name="end_date"
                   dependencies={["production_date"]}
-                  rules={[{ required: true, message: t("form.end_date") }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("form.end_date"),
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        const start = getFieldValue("production_date");
+                        if (start && value) {
+                          const diff = dayjs(value).diff(dayjs(start), "day");
+                          if (diff < 1) {
+                            return Promise.reject(
+                              new Error(
+                                "Ngày kết thúc phải sau ngày sản xuất ít nhất 1 ngày"
+                              )
+                            );
+                          }
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
                 >
                   <DatePicker
                     format="DD/MM/YYYY"
