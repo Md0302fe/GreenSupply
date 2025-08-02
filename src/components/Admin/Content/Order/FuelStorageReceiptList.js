@@ -43,12 +43,8 @@ const FuelStorageReceiptList = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilterVal, setStatusFilterVal] = useState("");
   const [sortOrder] = useState("desc");
-  const [showSearchInput, setShowSearchInput] = useState(false);
-  const [showStatusFilter, setShowStatusFilter] = useState(false);
   const [receiptTypeFilter, setReceiptTypeFilter] = useState("1");
   const [originalReceipts, setOriginalReceipts] = useState([]);
-  const [showTypeFilter, setShowTypeFilter] = useState(false);
-
   const searchInput = useRef(null);
   const [searchedColumn, setSearchedColumn] = useState("");
 
@@ -61,6 +57,26 @@ const FuelStorageReceiptList = () => {
     "Nhập kho thành công": "imported",
     "Nhập kho thất bại": "importFailed",
     "Đã huỷ": "cancelled",
+  };
+  const normalizeStatus = (status) => {
+    const normalized = status?.trim().toLowerCase();
+    switch (normalized) {
+      case "chờ duyệt":
+        return "Chờ duyệt";
+      case "đã duyệt":
+        return "Đã duyệt";
+      case "đã hủy":
+      case "đã huỷ":
+      case "đã Hủy":
+      case "đã Huỷ":
+        return "Đã hủy"; // Thống nhất về dạng này
+      case "hoàn thành":
+        return "Hoàn Thành";
+      case "đang xử lý":
+        return "Đang xử lý";
+      default:
+        return status;
+    }
   };
   const fetchReceipts = async () => {
     setLoading(true);
@@ -419,8 +435,6 @@ const FuelStorageReceiptList = () => {
       ),
     },
   ];
-
-  console.log("receipts ==> ", receipts);
 
   return (
     <div className="fuel-storage-receipt-list md:px-8">

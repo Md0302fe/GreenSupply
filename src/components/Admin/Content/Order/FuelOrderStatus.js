@@ -435,7 +435,7 @@ const FuelOrderStatus = () => {
             type="primary"
             className="bg-blue-600"
             onClick={() =>
-              navigate("/system/admin/warehouse-receipt?status=Chờ duyệt")
+              navigate("/system/admin/warehouse-receipt")
             }
           >
             {t("fuelOrderStatus.receiptList")}
