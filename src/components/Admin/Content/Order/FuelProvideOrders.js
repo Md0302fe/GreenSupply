@@ -418,7 +418,7 @@ const tableData =
       ...getColumnSearchProps("customerName"),
     },
     {
-      title: <div className="text-left">{t("fuelProvide.fuelType")}</div>,
+      title: <div className="text-left">{t("fuelProvide.request_name")}</div>,
       dataIndex: "fuel_name",
       key: "fuel_name",
       ...getColumnSearchProps("fuel_name"),
@@ -481,33 +481,33 @@ const tableData =
         );
       },
     },
-    {
-      title: t("fuelProvide.createdAt"),
-      dataIndex: "createdAt",
-      align: "center",
-      className: "text-center",
-      key: "createdAt",
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      render: (createdAt) => {
-        if (!createdAt) return <span>{t("fuelProvide.noData")}</span>; // Tránh lỗi khi createdAt là null hoặc undefined
+    // {
+    //   title: t("fuelProvide.createdAt"),
+    //   dataIndex: "createdAt",
+    //   align: "center",
+    //   className: "text-center",
+    //   key: "createdAt",
+    //   sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    //   render: (createdAt) => {
+    //     if (!createdAt) return <span>{t("fuelProvide.noData")}</span>; // Tránh lỗi khi createdAt là null hoặc undefined
 
-        const date = new Date(createdAt);
-        if (isNaN(date.getTime()))
-          return <span>{t("fuelProvide.invalid")}</span>; // Kiểm tra xem date có hợp lệ không
+    //     const date = new Date(createdAt);
+    //     if (isNaN(date.getTime()))
+    //       return <span>{t("fuelProvide.invalid")}</span>; // Kiểm tra xem date có hợp lệ không
 
-        const vietnamTime = new Intl.DateTimeFormat("vi-VN", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZone: "Asia/Ho_Chi_Minh",
-        }).format(date);
+    //     const vietnamTime = new Intl.DateTimeFormat("vi-VN", {
+    //       year: "numeric",
+    //       month: "2-digit",
+    //       day: "2-digit",
+    //       hour: "2-digit",
+    //       minute: "2-digit",
+    //       second: "2-digit",
+    //       timeZone: "Asia/Ho_Chi_Minh",
+    //     }).format(date);
 
-        return <span>{vietnamTime}</span>;
-      },
-    },
+    //     return <span>{vietnamTime}</span>;
+    //   },
+    // },
     {
       title: t("fuelProvide.action"),
       align: "center",
@@ -575,7 +575,11 @@ const tableData =
 
       {/* DRAWER - Chi Tiết Đơn Hàng */}
       <DrawerComponent
-        title={t("fuelProvide.orderDetail")}
+        title={
+          <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
+            {t("fuelProvide.orderDetail")}
+          </div>
+        }
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -598,10 +602,10 @@ const tableData =
                 />
               </div>
 
-              {/* Loại nhiên liệu */}
+              {/* Tên yêu cầu */}
               <div>
                 <label className="block mb-1 font-semibold">
-                  {t("fuelProvide.fuelType")}
+                  {t("fuelProvide.request_name")}
                 </label>
                 <input
                   type="text"

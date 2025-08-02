@@ -118,7 +118,7 @@ const FuelRequestsManagement = () => {
     try {
       const response = await handleCancelOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hủy"); // Cập nhật trạng thái đơn hàng
         message.success("Đơn hàng đã bị hủy thành công!");
         queryOrder.refetch();
       } else {
@@ -480,7 +480,11 @@ const tableData =
 
       {/* DRAWER - Update Product */}
       <DrawerComponent
-        title={t("fuel_request.drawer.title")}
+        title={
+          <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
+            {t("fuel_request.drawer.title")}
+          </div>
+        }
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         placement="right"
@@ -628,23 +632,16 @@ const tableData =
             </div>
 
           </div>
-
-          {orderStatus === "Chờ duyệt" && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "10px",
-                marginTop: 24,
-              }}
-            ></div>
-          )}
+          <div className="flex justify-end gap-3">
+            {orderStatus === "Chờ duyệt" && (
+              <>
+                <ButtonComponent type="approve-order" onClick={handleApproveOrder} />
+                <ButtonComponent type="cancel-order" onClick={handleCancelOrder} />
+              </>
+            )}
+            <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} disabled={isLoadDetails}/>
+          </div>
         </Loading>
-        <div className="flex justify-end gap-3">
-          <ButtonComponent type="approve-order" onClick={handleApproveOrder} />
-          <ButtonComponent type="cancel-order" onClick={handleCancelOrder} />
-          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
-        </div>
       </DrawerComponent>
     </div>
   );
