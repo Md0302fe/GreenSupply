@@ -262,7 +262,7 @@ const HarvestRequestPage = () => {
   useEffect(() => {
     if (isSuccess) {
       if (data?.PurchaseOrder?.status) {
-        message.success(data?.PurchaseOrder.status);
+        message.success(t('harvest.success.created'));
       }
       setTimeout(() => {
         setNewForm();

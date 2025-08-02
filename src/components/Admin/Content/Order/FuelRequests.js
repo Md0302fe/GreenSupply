@@ -46,8 +46,7 @@ const FuelRequestsManagement = () => {
   const statusMap = {
     "Chờ duyệt": "pending",
     "Đã duyệt": "approve",
-    "Đã Hủy": "cancelled",
-    "Đã huỷ": "cancelled",
+    "Đã hủy": "cancelled",
     "Hoàn Thành": "completed",
     "Đang xử lý": "processing",
   };
@@ -66,7 +65,26 @@ const FuelRequestsManagement = () => {
     supplier_id: {},
     total_price: "",
   });
-
+  const normalizeStatus = (status) => {
+    const normalized = status?.trim().toLowerCase();
+    switch (normalized) {
+      case "chờ duyệt":
+        return "Chờ duyệt";
+      case "đã duyệt":
+        return "Đã duyệt";
+      case "đã hủy":
+      case "đã huỷ":
+      case "đã Hủy":
+      case "đã Huỷ":
+        return "Đã hủy"; // Thống nhất về dạng này
+      case "hoàn thành":
+        return "Hoàn Thành";
+      case "đang xử lý":
+        return "Đang xử lý";
+      default:
+        return status;
+    }
+  };
   const fetchGetUserDetails = async ({ id, access_token }) => {
     const res = await OrderServices.getDetailOrders(id, access_token);
     if (res?.data) {
@@ -175,7 +193,7 @@ const FuelRequestsManagement = () => {
   const fetchGetAllOrder = async () => {
     const access_token = user?.access_token;
     const res = await OrderServices.getAllOrders(access_token);
-    console.log(res)
+    console.log(res);
     return res;
   };
 
@@ -189,23 +207,23 @@ const FuelRequestsManagement = () => {
 
   // DATA FROM USERS LIST
   const filteredOrders =
-  orders?.data?.length &&
-  orders.data.filter((order) => {
-    return defaultStatusFilter
-      ? order.status?.trim() === defaultStatusFilter.trim()
-      : true;
-  });
+    orders?.data?.length &&
+    orders.data.filter((order) => {
+      return defaultStatusFilter
+        ? order.status?.trim() === defaultStatusFilter.trim()
+        : true;
+    });
 
-const tableData =
-  filteredOrders?.length &&
-  filteredOrders.map((order) => {
-    return {
-      ...order,
-      key: order._id,
-      customerName: order?.supplier_id?.full_name,
-    };
-  });
-
+  const tableData =
+    filteredOrders?.length &&
+    filteredOrders.map((order) => {
+      return {
+        ...order,
+        key: order._id,
+        customerName: order?.supplier_id?.full_name,
+        status: normalizeStatus(order.status),
+      };
+    });
 
   // Actions
   const renderAction = () => {
@@ -381,7 +399,7 @@ const tableData =
         { text: t("status.pending"), value: "Chờ duyệt" },
         { text: t("status.processing"), value: "Đang xử lý" },
         { text: t("status.approve"), value: "Đã duyệt" },
-        { text: t("status.cancelled"), value: "Đã Hủy" },
+        { text: t("status.cancelled"), value: "Đã hủy" },
         { text: t("status.completed"), value: "Hoàn Thành" },
       ],
       onFilter: (value, record) => record.status?.trim() === value.trim(),
@@ -394,8 +412,7 @@ const tableData =
           case "Đã duyệt":
             color = "green";
             break;
-          case "Đã huỷ":
-          case "Đã Hủy": // đề phòng cả 2 cách viết
+          case "Đã hủy":
             color = "red";
             break;
           case "Hoàn Thành":
@@ -498,7 +515,10 @@ const tableData =
                   </label>
                   <input
                     type="text"
-                    value={stateDetailsUser?.supplier_id?.full_name || t("common.no_data")}
+                    value={
+                      stateDetailsUser?.supplier_id?.full_name ||
+                      t("common.no_data")
+                    }
                     readOnly
                     className="border p-2 rounded w-full mb-1 bg-gray-100"
                   />
@@ -626,7 +646,6 @@ const tableData =
                 </div>
               </div>
             </div>
-
           </div>
 
           {orderStatus === "Chờ duyệt" && (
@@ -643,7 +662,10 @@ const tableData =
         <div className="flex justify-end gap-3">
           <ButtonComponent type="approve-order" onClick={handleApproveOrder} />
           <ButtonComponent type="cancel-order" onClick={handleCancelOrder} />
-          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+          <ButtonComponent
+            type="close"
+            onClick={() => setIsDrawerOpen(false)}
+          />
         </div>
       </DrawerComponent>
     </div>

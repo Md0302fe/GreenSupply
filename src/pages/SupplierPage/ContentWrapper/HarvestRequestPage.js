@@ -362,7 +362,7 @@ const HarvestRequestPage = () => {
               name="price"
               min="1"
               max="9999999"
-              placeholder={t("harvestRequest.price")}
+              placeholder={t("harvestRequest.price_placeholder")}
               value={formData.price}
               onChange={handleChange}
               onKeyDown={(e) => {
