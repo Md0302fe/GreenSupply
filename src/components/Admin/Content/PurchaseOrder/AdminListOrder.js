@@ -885,9 +885,9 @@ const UserComponent = () => {
       {/* DRAWER - Update Product */}
       <DrawerComponent
         title={
-          <span className="text-[14px] lg:text-lg font-semibold">
-            {t("order.drawer_title")}
-          </span>
+          <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
+            {t("order.update_title")}
+          </div>
         }
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}

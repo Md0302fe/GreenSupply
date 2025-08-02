@@ -260,7 +260,7 @@
     "enter_pickup_address": "Nhập địa chỉ...",
     "no_address": "Không có địa chỉ nào",
     "note_placeholder": "Ghi chú (tối đa 200 ký tự)",
-    "total_price_label": "Tổng giá:",
+    "total_price_label": "Tổng giá",
     "submit_button": "Gửi Yêu Cầu",
     "reset_button": "Làm mới",
     "invalid_request_name": "Tên yêu cầu chỉ chứa chữ, số và khoảng trắng!",
@@ -801,13 +801,13 @@
   },
   "order": {
     "back": "Quay lại",
-    "title": "Danh sách yêu cầu nhập nguyên liệu",
-    "drawer_title": "Chi Tiết Đơn Thu Nguyên liệu",
-    "update_title": "Cập Nhật Đơn Thu Nguyên liệu",
+    "title": "Danh sách kế hoạch nhập nguyên liệu",
+    "drawer_title": "Chi Tiết Kế Hoạch Nhập Nguyên liệu",
+    "update_title": "Cập Nhật Kế Hoạch Nhập Nguyên liệu",
     "form": {
       "name": "Tên Đơn",
       "name_placeholder": "Tên đơn thu Nguyên liệu...",
-      "fuel_type": "Loại Nguyên liệu cần thu",
+      "fuel_type": "Loại nguyên liệu cần thu",
       "fuel_type_placeholder": "Chọn loại Nguyên liệu",
       "no_data": "Không có dữ liệu",
       "image": "Hình ảnh",
@@ -824,7 +824,7 @@
       "priority_placeholder": "Chọn mức độ ưu tiên",
       "note": "Ghi chú",
       "note_placeholder": "Nhập ghi chú...",
-      "total_price": "Tổng giá:"
+      "total_price": "Tổng giá"
     },
     "priority": {
       "high": "Cao",
@@ -899,15 +899,15 @@
     "back": "Quay lại",
     "title": "Danh sách yêu cầu thu nguyên liệu",
     "table": {
-      "customer": "Khách Hàng",
-      "fuel_type": "Loại Nguyên Liệu",
-      "request_name": "Yêu cầu",
-      "price": "Giá Tiền",
-      "status": "Trạng Thái",
-      "actions": "Chức năng"
+      "customer": "Nhà cung cấp",
+      "fuel_type": "Loại nguyên liệu",
+      "request_name": "Tên yêu cầu",
+      "price": "Giá tiền (VND)",
+      "status": "Trạng thái",
+      "actions": "Hành động"
     },
     "drawer": {
-      "title": "Chi Tiết Đơn Hàng",
+      "title": "Chi Tiết Yêu Cầu Thu Nguyên Liệu",
       "priority": "Mức độ ưu tiên",
       "quantity": "Số Lượng",
       "total_price": "Tổng Giá",
@@ -943,10 +943,11 @@
     "orderCompleted": "Đơn hàng đã được hoàn thành thành công!",
     "completeFailed": "Hoàn thành đơn thất bại!",
     "errorCompleting": "Có lỗi xảy ra khi hoàn thành đơn!",
-    "customer": "Khách Hàng",
-    "fuelType": "Loại Nguyên Liệu",
-    "price": "Giá Tiền (Vnđ)",
-    "status": "Trạng Thái",
+    "customer": "Nhà cung cấp",
+    "request_name": "Tên yêu cầu",
+    "fuelType": "Loại nguyên liệu",
+    "price": "Giá tiền (VND)",
+    "status": "Trạng thái",
     "pending": "Chờ duyệt",
     "approved": "Đã duyệt",
     "canceled": "Đã hủy",
@@ -957,8 +958,8 @@
     "invalid": "Không hợp lệ",
     "action": "Chức năng",
     "back": "Quay lại",
-    "title": "Danh sách đơn cung cấp nguyên liệu",
-    "orderDetail": "Chi Tiết Đơn Hàng",
+    "title": "Danh sách yêu cầu cung cấp nguyên liệu",
+    "orderDetail": "Chi Tiết Yêu Cầu Cung Cấp Nguyên Liệu",
     "quality": "Chất Lượng",
     "quantity": "Số Lượng",
     "note": "Ghi chú",
@@ -1036,7 +1037,7 @@
     "updatedAt": "Cập Nhật",
     "loading": "Đang tải dữ liệu...",
     "quantity": "Số Lượng",
-    "price": "Giá Tiền",
+    "price": "Giá Tiền (VND)",
     "receiptType": "Loại Đơn Hàng"
   },
   "fuelStorage": {
@@ -1542,7 +1543,7 @@
     "system": "hệ thống"
   },
   "finishedProductList": {
-    "title": "Danh sách thành phẩm",
+    "title": "Danh sách lô thành phẩm",
     "searchPlaceholder": "Tìm kiếm theo tên hoặc mã sản phẩm",
     "searchButton": "Tìm kiếm",
     "selectMaterialType": "Chọn loại vật liệu",
