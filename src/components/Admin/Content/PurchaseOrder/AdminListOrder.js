@@ -719,6 +719,7 @@ const UserComponent = () => {
           {t("order.table.request_name")}
         </div>
       ),
+      __excelTitle__: t("order.table.request_name"),
       dataIndex: "request_name",
       key: "request_name",
       ...(getColumnSearchProps("request_name") || {}),
@@ -731,6 +732,7 @@ const UserComponent = () => {
           {t("order.table.quantity_remain")}
         </div>
       ),
+      __excelTitle__:t("order.table.quantity_remain"),
       dataIndex: "quantity_remain",
       className: "text-center",
       key: "quantity_remain",
@@ -745,6 +747,7 @@ const UserComponent = () => {
         </div>
       ),
       dataIndex: "quantity",
+      __excelTitle__: t("order.table.total_quantity"),
       key: "quantity",
       className: "text-center",
       filters: [
@@ -765,6 +768,7 @@ const UserComponent = () => {
       title: (
         <div style={{ textAlign: "center" }}>{t("order.table.start_date")}</div>
       ),
+      __excelTitle__:t("order.table.start_date"),
       dataIndex: "start_received",
       className: "text-center",
       key: "start_received",
@@ -777,6 +781,7 @@ const UserComponent = () => {
         <div style={{ textAlign: "center" }}>{t("order.table.end_date")}</div>
       ),
       dataIndex: "end_received",
+      __excelTitle__:t("order.table.end_date"),
       className: "text-center",
       key: "end_received",
       sorter: (a, b) => new Date(a.end_received) - new Date(b.end_received),
@@ -787,6 +792,7 @@ const UserComponent = () => {
       title: (
         <div style={{ textAlign: "center" }}>{t("order.table.status")}</div>
       ),
+      __excelTitle__:t("order.table.status"),
       dataIndex: "status",
       className: "text-center",
       key: "status",
