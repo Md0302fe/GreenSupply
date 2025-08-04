@@ -378,7 +378,11 @@ const RawMaterialBatchList = () => {
       </Loading>
 
       <DrawerComponent
-        title={t("batchHistory.detailTitle")}
+        title={
+          <div className="w-full text-center text-[14px] lg:text-lg font-semibold">
+            {t("batchHistory.detailTitle")}
+          </div>
+        }
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}
         placement="right"

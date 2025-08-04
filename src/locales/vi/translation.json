@@ -145,7 +145,7 @@
     "save": "Lưu",
     "backToDetail": "Quay lại chi tiết",
     "approve": "Duyệt đơn",
-    "reject": "Hủy yêu cầu",
+    "reject": "Hủy đơn",
     "unknown": "Không rõ",
     "noNote": "Không có ghi chú",
     "viewDetail": "Xem chi tiết",
@@ -804,6 +804,7 @@
     "title": "Danh sách kế hoạch nhập nguyên liệu",
     "drawer_title": "Chi Tiết Kế Hoạch Nhập Nguyên liệu",
     "update_title": "Cập Nhật Kế Hoạch Nhập Nguyên liệu",
+    "detail_title": "Chi Tiết Kế Hoạch Nhập Nguyên Liệu",
     "form": {
       "name": "Tên Đơn",
       "name_placeholder": "Tên đơn thu Nguyên liệu...",
@@ -855,7 +856,7 @@
     "actions": {
       "update": "Cập Nhật",
       "accept": "Duyệt đơn",
-      "cancel": "Hủy yêu cầu"
+      "cancel": "Hủy đơn"
     },
     "toast": {
       "no_order_selected": "Không có đơn hàng nào được chọn để hủy!",
