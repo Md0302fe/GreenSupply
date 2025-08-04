@@ -341,7 +341,7 @@
     "quantity_kg": "Quantity (Kg)",
     "unit_price": "Price per unit (VND/Kg)",
     "total_price": "Total Price (VND)",
-    "total_price_display": "Total Price:",
+    "total_price_display": "Total Price",
     "status": "Status",
     "note": "Note",
     "enter_quantity": "Quantity to supply",
@@ -559,7 +559,7 @@
       "description": "Create a new material purchase request"
     },
     "manage": {
-      "title": "Material Purchase List",
+      "title": "Purchase Material Plan List",
       "description": "Manage created material purchase requests"
     },
     "completed": {
@@ -729,7 +729,7 @@
     "blocked": "Blocked",
     "active": "Active",
     "block": "Block Account",
-    "unblock": "Unblock",
+    "unblock": "Unblock Account",
     "update": "Update",
     "confirm_block_title": "Confirm Account Block",
     "confirm_block_text": "Are you sure you want to block this account?",
@@ -746,7 +746,7 @@
   },
   "harvest": {
     "back": "Go Back",
-    "title": "Create Material Purchase Request",
+    "title": "Create Purchase Material Plan",
     "title_description": "Fill in the details to create a new material provide request",
     "detail": "Request Details",
     "form": {
@@ -779,7 +779,7 @@
       "note_parent": "All fields marked with",
       "note_child": "are required. Please ensure all information is accurate before submitting your harvest request."
     },
-    "viewList": "Material Purchase List",
+    "viewList": "Purchase Plan List",
     "priority": {
       "high": "High",
       "medium": "Medium",
@@ -809,13 +809,14 @@
   },
   "order": {
     "back": "Go Back",
-    "title": "Material Purchase List",
+    "title": "Purchase Material Plan List",
     "drawer_title": "Material Collection Order Details",
     "update_title": "Update Material Collection Order",
+    "detail_title": "Purchase Material Plan Details",
     "form": {
-      "name": "Order Name",
+      "name": "Request Name",
       "name_placeholder": "Enter order name...",
-      "fuel_type": "Material type",
+      "fuel_type": "Material Type",
       "fuel_type_placeholder": "Select Material type",
       "no_data": "No data available",
       "image": "Image",
@@ -832,7 +833,7 @@
       "priority_placeholder": "Select priority",
       "note": "Note",
       "note_placeholder": "Enter note...",
-      "total_price": "Total Price:"
+      "total_price": "Total Price"
     },
     "priority": {
       "high": "High",
@@ -864,7 +865,7 @@
     "actions": {
       "update": "Update",
       "accept": "Approve",
-      "cancel": "Cancel Request"
+      "cancel": "Cancel"
     },
     "toast": {
       "no_order_selected": "No order selected for cancellation!",
@@ -916,7 +917,7 @@
       "actions": "Actions"
     },
     "drawer": {
-      "title": "Order Details",
+      "title": "Material Collection Request Details",
       "priority": "Priority",
       "quantity": "Quantity",
       "total_price": "Total Price",
@@ -968,7 +969,7 @@
     "action": "Action",
     "back": "Go Back",
     "title": "Material Provide Requests List",
-    "orderDetail": "Order Details",
+    "orderDetail": "Material Provide Request Details",
     "quality": "Quality",
     "quantity": "Quantity",
     "note": "Note",
@@ -1241,7 +1242,7 @@
     "productionRequest": "Production Request",
     "batch": "Raw Material Batch",
     "status": "Status",
-    "detailTitle": "Export Order Detail",
+    "detailTitle": "Export Order Details",
     "createdBy": "Created by",
     "batchName": "Batch Name",
     "batchId": "Batch ID",
@@ -1256,7 +1257,7 @@
     "batchNamePlaceholder": "Enter batch name...",
     "exportType": "Export Type",
     "status": "Status",
-    "detailTitle": "Raw Material Batch Detail",
+    "detailTitle": "Batch Export Details",
     "requestName": "Request Name",
     "requestNamePlaceholder": "Enter request name...",
     "image": "Image",

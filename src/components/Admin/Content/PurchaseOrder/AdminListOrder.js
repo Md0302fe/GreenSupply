@@ -892,7 +892,7 @@ const UserComponent = () => {
       <DrawerComponent
         title={
           <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
-            {t("order.update_title")}
+            {t("order.detail_title")}
           </div>
         }
         isOpen={isDrawerOpen}

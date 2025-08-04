@@ -316,10 +316,15 @@ const tableData =
                 : handleBlockAccount(record?._id)
             }
             style={{
+              width: "160px",
+              height: "36px",
               borderRadius: "5px",
               fontSize: "14px",
-              transition: "all 0.3s ease",
-              backgroundColor: record?.is_blocked ? "#52c41a" : "#ffa940", // Xanh lá khi bỏ chặn, vàng khi chặn
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 12px",
+              backgroundColor: record?.is_blocked ? "#52c41a" : "#ffa940",
               borderColor: record?.is_blocked ? "#52c41a" : "#ffa940",
               color: "white",
             }}
@@ -336,11 +341,14 @@ const tableData =
               e.currentTarget.style.color = "white";
             }}
           >
-            <BiBlock style={{ marginRight: "5px" }} />
-            <span>
-              {record?.is_blocked
-                ? t("blocked_user.unblock")
-                : t("blocked_user.block")}
+            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* <BiBlock style={{ fontSize: "16px", position: "relative", top: "1px" }} /> */}
+              <span style={{ lineHeight: 1 }}>
+                {record?.is_blocked 
+                  ? t("blocked_user.unblock") 
+                  : t("blocked_user.block")
+                }
+              </span>
             </span>
           </Button>
         </div>

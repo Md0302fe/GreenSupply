@@ -559,9 +559,9 @@ const RawMaterialBatchList = () => {
       </Loading>
       <DrawerComponent
         title={
-          isEditMode
-            ? t("materialBatch.updateTitle")
-            : t("materialBatch.detailTitle")
+          <div className="text-[14px] lg:text-lg font-semibold w-full text-center">
+            {isEditMode ? t("materialBatch.updateTitle") : t("materialBatch.detailTitle")}
+          </div>
         }
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}

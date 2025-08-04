@@ -364,6 +364,12 @@ const FuelRequestsManagement = () => {
       ),
   });
 
+  const priorityMap = {
+    1: t("priority.high"),
+    2: t("priority.medium"),
+    3: t("priority.low"),
+  };
+
   // COLUMNS DATA TABLE
   const columns = [
     {
@@ -596,7 +602,7 @@ const FuelRequestsManagement = () => {
                   </label>
                   <input
                     type="text"
-                    value={stateDetailsUser?.priority || t("common.no_data")}
+                    value={priorityMap[stateDetailsUser?.priority] || t("common.no_data")}
                     readOnly
                     className="border p-2 rounded w-full mb-1 bg-gray-100"
                   />

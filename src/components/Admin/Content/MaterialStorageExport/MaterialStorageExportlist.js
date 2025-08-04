@@ -452,9 +452,13 @@ const MaterialStorageExportList = () => {
         />
       </Loading>
 
-      {/* ✅ Drawer hiển thị chi tiết */}
+      {/* Drawer hiển thị chi tiết */}
       <DrawerComponent
-        title={t("materialExportList.detailTitle")}
+        title={
+          <div className="w-full text-center text-[14px] lg:text-lg font-semibold">
+            {t("materialExportList.detailTitle")}
+          </div>
+        }
         isOpen={isDrawerOpen}
         onClose={() => {
           setIsDrawerOpen(false);
