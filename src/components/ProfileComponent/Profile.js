@@ -435,7 +435,7 @@ const ProfilePage = () => {
                   </h2>
                   <p className="text-gray-600 mb-4">{email}</p>
 
-                  <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-6">
+                  <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-4">
                     {t("profile.verifiedAccount")}
                   </div>
 

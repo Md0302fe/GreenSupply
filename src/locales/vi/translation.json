@@ -359,6 +359,7 @@
     "your_note": "Ghi chú của bạn:",
     "send_request": "Gửi Yêu Cầu",
     "no_data": "Không có",
+    "no_requests": "Không có đơn yêu cầu cung cấp nào.",
     "select_order_warning": "Vui lòng chọn đơn hàng!",
     "success_create": "Tạo đơn cung cấp thành công!",
     "failed_create": "Tạo đơn thất bại!",
