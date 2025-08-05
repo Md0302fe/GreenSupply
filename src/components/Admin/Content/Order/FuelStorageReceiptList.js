@@ -149,6 +149,7 @@ const FuelStorageReceiptList = () => {
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
+    setSearchedColumn("");
   };
 
   const [isMobile, setIsMobile] = useState(() => {
@@ -171,7 +172,7 @@ const FuelStorageReceiptList = () => {
 
   const drawerWidth = isMobile ? "100%" : "40%";
 
-  const getColumnSearchProps = (dataIndex) => ({
+  const getColumnSearchProps = (dataIndex, filterCallback) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -198,7 +199,7 @@ const FuelStorageReceiptList = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Tìm
+            {t("common.search")}
           </Button>
           <Button
             onClick={() => {
@@ -208,10 +209,18 @@ const FuelStorageReceiptList = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Reset
+            {t("common.reset")}
           </Button>
-          <Button type="link" size="small" onClick={close}>
-            Đóng
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+              setSearchText("");
+              setSearchedColumn("");
+            }}
+          >
+            {t("common.close")}
           </Button>
         </Space>
       </div>
@@ -220,20 +229,25 @@ const FuelStorageReceiptList = () => {
     filterIcon: (filtered) => (
       <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
+
     onFilter: (value, record) =>
-      record.manager_id?.full_name
-        ? record.manager_id.full_name
-            .toString()
+      filterCallback
+        ? filterCallback(value, record)
+        : record[dataIndex]
+            ?.toString()
             .toLowerCase()
-            .includes(value.toLowerCase())
-        : false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
+            .includes(value.toLowerCase()),
+
+    filterDropdownProps: {
+      onOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
     },
+
     render: (text) =>
-      searchedColumn === dataIndex ? (
+      searchedColumn === dataIndex && searchText ? (
         <span style={{ backgroundColor: "#ffc069", padding: 0 }}>{text}</span>
       ) : (
         text
@@ -263,13 +277,6 @@ const FuelStorageReceiptList = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    const debounceFn = _.debounce(() => {
-      setDebouncedSearch(searchText);
-    }, 500);
-    debounceFn();
-    return () => debounceFn.cancel();
-  }, [searchText]);
 
   const handleExportFileExcel = () => {
     if (!receipts.length) {
