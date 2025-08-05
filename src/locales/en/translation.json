@@ -266,7 +266,7 @@
     "note_placeholder": "Note (max 200 characters)",
     "total_price_label": "Total price",
     "submit_button": "Submit Request",
-    "reset_button": "Reset",
+    "reset_button": "Reset Form",
     "invalid_request_name": "Request name must only contain letters, numbers, and spaces!",
     "empty_request_name": "Request name is required!",
     "empty_material_type": "Material type is required!",
@@ -363,6 +363,7 @@
     "your_note": "Your note:",
     "send_request": "Send Request",
     "no_data": "None",
+    "no_requests": "No provide requests available.",
     "select_order_warning": "Please select an order!",
     "success_create": "Provide Request created successfully!",
     "failed_create": "Failed to create Provide Request!",
@@ -579,7 +580,7 @@
     },
     "provideList": {
       "title": "Material Provide Requests",
-      "description": "Manage requests to supply raw materials"
+      "description": "Manage requests to provide raw materials"
     },
     "receipt": {
       "title": "Create Warehouse Receipt",

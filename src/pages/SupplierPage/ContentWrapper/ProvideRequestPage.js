@@ -9,10 +9,11 @@ import { useSelector } from "react-redux";
 import { message } from "antd";
 import { getUserAddresses } from "./../../../services/UserService";
 import { useTranslation } from "react-i18next";
+import { Spin } from "antd";
 
 const ProvideRequestPage = () => {
   const { t } = useTranslation();
-
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const userRedux = useSelector((state) => state.user);
   const [adminOrders, setAdminOrders] = useState([]);
@@ -26,14 +27,15 @@ const ProvideRequestPage = () => {
     address: "",
   });
   const formRef = useRef(null);
-  const [error, setError] = useState(""); // Lưu lỗi nhập liệu
-  const [noteError, setNoteError] = useState(""); // Lưu lỗi ghi chú
+  const [error, setError] = useState("");
+  const [noteError, setNoteError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [timeLeft, setTimeLeft] = useState(null);
   const [addressError, setAddressError] = useState("");
 
   const fetchOrders = async (page = 1) => {
+    setLoading(true);
     try {
       const access_token = userRedux?.access_token;
       const user_id = userRedux?.id;
@@ -42,7 +44,6 @@ const ProvideRequestPage = () => {
         access_token,
         user_id
       );
-      console.log(response);
       setAdminOrders(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
       setCurrentPage(page);
@@ -58,8 +59,11 @@ const ProvideRequestPage = () => {
       }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   const fetchOrderById = async (id) => {
     try {
       const response = await getFuelEntryDetail(id);
@@ -199,63 +203,74 @@ const ProvideRequestPage = () => {
         </h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          {adminOrders.map((order) => (
-            <div
-              key={order._id}
-              onClick={() => handleSelectOrder(order._id)}
-              className={`flex justify-between items-center border rounded p-4 cursor-pointer transition-all duration-300 ${
-                selectedOrder?._id === order._id
-                  ? "border-green-600 bg-green-50 shadow-lg scale-[1.01]"
-                  : "border-gray-300 bg-white shadow"
-              }`}
-            >
-              {/* Nội dung bên trái */}
-              <div className="flex-1 pr-4">
-                <h3 className="font-bold text-lg line-clamp-1">
-                  {order.request_name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {t("provideRequest.remaining_quantity")}{" "}
-                  <span className="font-semibold">
-                    {order.quantity_remain} kg
-                  </span>
-                </p>
-                <p className="text-sm text-gray-600">
-                  {t("provideRequest.unit_price")}{" "}
-                  <span className="font-semibold">
-                    {order.price.toLocaleString("vi-VN")} VNĐ
-                  </span>
-                </p>
-                <p className="text-sm text-gray-600">
-                  {t("provideRequest.time_left")}{" "}
-                  {(() => {
-                    const time = getTimeRemaining(order.end_received);
-                    return time.total > 0
-                      ? `${time.days} ${t("common.days")} ${time.hours} ${t(
-                          "common.hours"
-                        )} ${time.minutes} ${t("common.minutes")}`
-                      : t("provideRequest.expired");
-                  })()}
-                </p>
-
-                <button
-                  onClick={() => handleSelectOrder(order._id)}
-                  className="mt-3 bg-[#006838] text-white px-4 py-2 rounded hover:bg-[#008c4a] hover:scale-105 transition-transform"
-                >
-                  {t("provideRequest.create_button")}
-                </button>
-              </div>
-
-              {/* Ảnh bên phải */}
-              <div className="w-24 h-24 flex-shrink-0">
-                <img
-                  src={order.fuel_image || "/default-image.jpg"}
-                  alt={order.request_name}
-                  className="w-full h-full object-cover rounded"
-                />
-              </div>
+          {loading ? (
+            <div className="col-span-full text-center py-6 text-gray-600 flex flex-col items-center gap-2">
+              <Spin size="large" />
+              {t("common.loading")}
             </div>
-          ))}
+          ) : adminOrders.length === 0 ? (
+            <div className="col-span-full text-center py-6 text-gray-600">
+              {t("provideRequest.no_requests")}
+            </div>
+          ) : (
+            adminOrders.map((order) => (
+              <div
+                key={order._id}
+                onClick={() => handleSelectOrder(order._id)}
+                className={`flex justify-between items-center border rounded p-4 cursor-pointer transition-all duration-300 ${
+                  selectedOrder?._id === order._id
+                    ? "border-green-600 bg-green-50 shadow-lg scale-[1.01]"
+                    : "border-gray-300 bg-white shadow"
+                }`}
+              >
+                {/* Nội dung bên trái */}
+                <div className="flex-1 pr-4">
+                  <h3 className="font-bold text-lg line-clamp-1">
+                    {order.request_name}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {t("provideRequest.remaining_quantity")}{" "}
+                    <span className="font-semibold">
+                      {order.quantity_remain} kg
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("provideRequest.unit_price")}{" "}
+                    <span className="font-semibold">
+                      {order.price.toLocaleString("vi-VN")} VNĐ
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("provideRequest.time_left")}{" "}
+                    {(() => {
+                      const time = getTimeRemaining(order.end_received);
+                      return time.total > 0
+                        ? `${time.days} ${t("common.days")} ${time.hours} ${t(
+                            "common.hours"
+                          )} ${time.minutes} ${t("common.minutes")}`
+                        : t("provideRequest.expired");
+                    })()}
+                  </p>
+
+                  <button
+                    onClick={() => handleSelectOrder(order._id)}
+                    className="mt-3 bg-[#006838] text-white px-4 py-2 rounded hover:bg-[#008c4a] hover:scale-105 transition-transform"
+                  >
+                    {t("provideRequest.create_button")}
+                  </button>
+                </div>
+
+                {/* Ảnh bên phải */}
+                <div className="w-24 h-24 flex-shrink-0">
+                  <img
+                    src={order.fuel_image || "/default-image.jpg"}
+                    alt={order.request_name}
+                    className="w-full h-full object-cover rounded"
+                  />
+                </div>
+              </div>
+            ))
+          )}
         </div>
         <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
           {/* Trang trước */}
