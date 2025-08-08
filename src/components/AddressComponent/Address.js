@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import { useTranslation } from "react-i18next";
 import {
   MDBBreadcrumb,
@@ -29,36 +29,46 @@ const fetchAddresses = async (setAddresses, setError, setLoading, t) => {
   }
 };
 
-const handleDelete = async (id, addresses, setAddresses, t) => {
-  if (window.confirm(t("address.confirmDelete"))) {
-    try {
-      const token = JSON.parse(localStorage.getItem("access_token"));
-      await axios.delete(
-        `http://localhost:3001/api/user/address/delete/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setAddresses(addresses.filter((addr) => addr._id !== id));
-
-      message.success(t("address.deleteSuccess"));
-    } catch (error) {
-      message.error(t("address.deleteFail"));
-    }
-  }
-};
-
 const Address = () => {
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
     fetchAddresses(setAddresses, setError, setLoading, t);
   }, [t]);
+
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setIsOpenDelete(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setConfirmLoading(true);
+    try {
+      const token = JSON.parse(localStorage.getItem("access_token"));
+      await axios.delete(
+        `http://localhost:3001/api/user/address/delete/${selectedId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setAddresses((prev) => prev.filter((addr) => addr._id !== selectedId));
+      message.success(t("address.deleteSuccess"));
+    } catch (error) {
+      message.error(t("address.deleteFail"));
+    } finally {
+      setConfirmLoading(false);
+      setIsOpenDelete(false);
+    }
+  };
 
   return (
     <div className="User-Address Container flex-center-center mb-4 mt-4">
@@ -139,14 +149,7 @@ const Address = () => {
                             {t("actions.update")}
                           </button>
                           <button
-                            onClick={() =>
-                              handleDelete(
-                                address._id,
-                                addresses,
-                                setAddresses,
-                                t
-                              )
-                            }
+                            onClick={() => handleDeleteClick(address._id)}
                             className="text-red-500"
                           >
                             {t("actions.delete")}
@@ -158,6 +161,20 @@ const Address = () => {
                 )}
               </div>
             </MDBContainer>
+
+            {/* Modal Confirm Delete */}
+            <Modal
+              title={t("address.confirmDeleteTitle")}
+              open={isOpenDelete}
+              onCancel={() => setIsOpenDelete(false)}
+              onOk={handleConfirmDelete}
+              confirmLoading={confirmLoading}
+              okButtonProps={{ danger: true }}
+              okText={t("harvestRequest.confirm")}
+              cancelText={t("harvestRequest.close")}
+            >
+              <p>{t("address.confirmDelete")}</p>
+            </Modal>
           </div>
         </Loading>
       </div>

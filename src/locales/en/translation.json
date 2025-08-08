@@ -861,12 +861,15 @@
       "accept_title": "Confirm Approval",
       "accept_confirm": "Are you sure you want to approve this order?",
       "cancel_title": "Confirm Cancel",
-      "cancel_confirm": "Are you sure you want to cancel this order?"
+      "cancel_confirm": "Are you sure you want to cancel this order?",
+      "delete_confirm_title": "Confirm Delete Plan",
+      "delete_confirm_plan": "Are you sure you want to cancel this plan?"
     },
     "actions": {
       "update": "Update",
       "accept": "Approve",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "delete": "Delete"
     },
     "toast": {
       "no_order_selected": "No order selected for cancellation!",
@@ -2169,6 +2172,7 @@
     "addNew": "Add new address",
     "noData": "No addresses found.",
     "default": "Default",
+    "confirmDeleteTitle": "Confirm deletion",
     "confirmDelete": "Are you sure you want to delete this address?",
     "deleteSuccess": "Address deleted successfully!",
     "deleteFail": "Failed to delete address!",
