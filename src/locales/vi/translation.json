@@ -846,18 +846,21 @@
     },
     "modal": {
       "delete_title": "Xóa yêu cầu",
-      "delete_confirm": "Bạn có chắc muốn xóa sản phẩm không ?",
+      "delete_confirm": "Bạn có chắc muốn xóa sản phẩm này không ?",
       "update_title": "Xác nhận cập nhật đơn hàng",
-      "update_confirm": "Bạn có chắc chắn muốn cập nhật thông tin đơn hàng không?",
+      "update_confirm": "Bạn có chắc chắn muốn cập nhật thông tin đơn hàng này không?",
       "accept_title": "Xác nhận đơn hàng",
-      "accept_confirm": "Bạn có chắc chắn muốn Duyệt đơn hàng không?",
+      "accept_confirm": "Bạn có chắc chắn muốn Duyệt đơn hàng này không?",
       "cancel_title": "Xác nhận hủy cập nhật",
-      "cancel_confirm": "Bạn có chắc chắn muốn hủy cập nhật đơn hàng không?"
+      "cancel_confirm": "Bạn có chắc chắn muốn hủy cập nhật đơn hàng này không?",
+      "delete_confirm_title": "Xóa kế hoạch",
+      "delete_confirm_plan": "Bạn có chắc muốn xóa kế hoạch nhập nguyên liệu này không ?"
     },
     "actions": {
       "update": "Cập Nhật",
       "accept": "Duyệt đơn",
-      "cancel": "Hủy đơn"
+      "cancel": "Hủy đơn",
+      "delete": "Xóa đơn"
     },
     "toast": {
       "no_order_selected": "Không có đơn hàng nào được chọn để hủy!",
@@ -2152,6 +2155,7 @@
     "addNew": "Thêm địa chỉ mới",
     "noData": "Chưa có địa chỉ nào.",
     "default": "Mặc định",
+    "confirmDeleteTitle": "Xác nhận xóa",
     "confirmDelete": "Bạn có chắc chắn muốn xóa địa chỉ này?",
     "deleteSuccess": "Xóa địa chỉ thành công!",
     "deleteFail": "Xóa địa chỉ thất bại!",
