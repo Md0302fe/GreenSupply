@@ -103,6 +103,8 @@
   "passwordSameAsOld": "New password must not be the same as the old password.",
   "passwordChangedSuccess": "Password changed successfully.",
   "emailNotExist": "Email does not exist.",
+  "otp_expired_or_not_exist": "OTP has expired or does not exist.",
+  "otp_incorrect": "OTP is incorrect or has expired.",
   "carousel": {
     "view_more": "View more",
     "slide1_title": "Welcome to Mangovate",

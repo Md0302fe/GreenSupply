@@ -100,6 +100,8 @@
   "passwordSameAsOld": "Mật khẩu mới không được trùng với mật khẩu cũ",
   "passwordChangedSuccess": "Thay đổi mật khẩu thành công.",
   "emailNotExist": "Email không tồn tại",
+  "otp_expired_or_not_exist": "OTP đã hết hạn hoặc không tồn tại.",
+  "otp_incorrect": "OTP không chính xác, hoặc đã hết hạn.",
   "carousel": {
     "view_more": "Xem thêm",
     "slide1_title": "Chào mừng đến với Mangovate",

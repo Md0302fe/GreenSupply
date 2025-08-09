@@ -31,9 +31,10 @@ const Register = () => {
   const [role_check, setRoleCheck] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resendTimer, setResendTimer] = useState(0); // Thời gian chờ (giây)
+  const [otpLoading, setOtpLoading] = useState(false);
 
   const [otp, setOtp] = useState("");
-  const [otpPopupVisible, setOtpPopupVisible] = useState("");
+  const [otpPopupVisible, setOtpPopupVisible] = useState(false);
   const mutation = useMutationHooks((data) => UserServices.userRegister(data));
   const [loading, setLoading] = useState(false);
   const { data, isSuccess } = mutation;
@@ -62,13 +63,13 @@ const Register = () => {
   }, [isSuccess]);
 
   // Click Submit Sau Khi Điền Form
-  const HandleSubmitFormRegister = () => {
+  const HandleSubmitFormRegister = async () => {
     if (!otp || otp.length !== 6) {
-      // Kiểm tra OTP
       message.error(t("fill_valid_information"));
       return;
     }
-    const data = {
+
+    const payload = {
       name,
       email,
       password,
@@ -79,10 +80,53 @@ const Register = () => {
       gender,
       otp,
     };
-    mutation.mutate(data);
+
+    setOtpLoading(true);
+    try {
+      let res;
+      if (typeof mutation.mutateAsync === "function") {
+        // ✅ await kết quả trả về
+        res = await mutation.mutateAsync(payload);
+      } else {
+        // hoặc gọi thẳng service
+        res = await UserServices.userRegister(payload);
+      }
+
+      // Bây giờ res là object, không còn là Promise
+      console.log("res:", res);
+
+      if (res?.status === "OK") {
+        message.success(t("register_success"));
+        setTimeout(() => (window.location.href = "/login"), 1500);
+      } else {
+        // Lấy message từ server và dịch nếu cần
+        const key =
+          res?.messageKey ||
+          res?.message === "OTP không chính xác." ||
+          "OTP đã hết hạn hoặc không tồn tại.";
+
+        const msg = key ? t(key) : res?.message || t("otp_incorrect");
+        message.error(msg ? t("otp_incorrect") : res?.message);
+      }
+    } catch (err) {
+      // axios error: err.response?.data có thể chứa { message | messageKey }
+      const data = err?.response?.data;
+      const key =
+        data?.messageKey ||
+        data?.message === "OTP không chính xác." ||
+        "OTP đã hết hạn hoặc không tồn tại.";
+
+      const msg = key
+        ? t(key)
+        : data?.message || err?.message || t("otp_incorrect");
+      message.error(msg ? t("otp_incorrect") : data?.message);
+    } finally {
+      setOtpLoading(false);
+    }
   };
 
   const handleCloseOtpPopup = () => {
+    if (otpLoading) return; // đang submit thì không cho đóng
     setOtp("");
     setOtpPopupVisible(false);
     setResendTimer(0);
@@ -355,7 +399,7 @@ const Register = () => {
             </div> */}
 
             {/* Error */}
-            <div
+            {/* <div
               className={`errorShow register ${data?.status ? "active" : ""}`}
             >
               {data?.status === "ERROR" ? (
@@ -373,7 +417,7 @@ const Register = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
 
             <Loading isPending={loading}>
               <div className="text-center">
@@ -414,8 +458,8 @@ const Register = () => {
           <p className="text-black font-semibold text-3xl">{t("slogan")}</p>
           <div className="flex items-center gap-3 justify-center mt-3">
             <img src={facebook} alt="" className="w-10" />
-            <img src={youtube} alt="" className="w-10"/>
-            <img src={tiktok} alt="" className="w-10"/>
+            <img src={youtube} alt="" className="w-10" />
+            <img src={tiktok} alt="" className="w-10" />
           </div>
         </div>
         {otpPopupVisible && (
@@ -445,26 +489,53 @@ const Register = () => {
                 renderInput={(props) => (
                   <input
                     {...props}
-                    className="w-12 h-12 text-center text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                    disabled={otpLoading} // <-- thêm dòng này
+                    className="w-12 h-12 text-center text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ width: "48px", height: "48px" }}
                   />
                 )}
               />
               <button
-                className="mt-6 w-full py-3 bg-indigo-600 text-white text-lg font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-                onClick={() => HandleSubmitFormRegister(otp)}
+                className="mt-6 w-full py-3 bg-indigo-600 text-white text-lg font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed"
+                onClick={HandleSubmitFormRegister}
+                disabled={otpLoading || otp.length !== 6}
               >
-                {t("confirm_otp")}
+                {otpLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                        opacity="0.25"
+                      />
+                      <path
+                        d="M4 12a8 8 0 018-8"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                    </svg>
+                    {t("processing") || "Processing..."}
+                  </span>
+                ) : (
+                  t("confirm_otp")
+                )}
               </button>
               <p className="text-sm text-gray-500 text-center mt-4">
                 {t("not_receive_code")}{" "}
                 <span
                   className={`cursor-pointer ${
-                    resendTimer > 0
+                    resendTimer > 0 || otpLoading
                       ? "text-gray-400 cursor-not-allowed"
                       : "text-indigo-600 hover:underline"
                   }`}
-                  onClick={resendTimer === 0 ? requestOtp : undefined}
+                  onClick={
+                    resendTimer === 0 && !otpLoading ? requestOtp : undefined
+                  }
                 >
                   {resendTimer > 0
                     ? t("resend_after", { count: resendTimer })
