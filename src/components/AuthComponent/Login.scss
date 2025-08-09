@@ -178,35 +178,35 @@ Control OverLay .overlay-all.hidden {
       }
     }
 
-    // Goto sign up
-    .Goto-Sign-Up {
-      position: relative;
-      background-image: url("../../assets/Labubu.png");
-      width: 340px;
-      height: 470px;
-      background-size: cover;
-      background-repeat: no-repeat;
-      .Goto-Sign-Up__btn {
-        .btn-signup {
-          position: absolute;
-          bottom: 5%;
-          left: 50%;
-          transform: translateX(-50%);
-          background-color: #eaeaea;
-          border: none;
-          color: black;
-          font-size: 20px;
-          font-size: 12px;
-          border-radius: 5px;
-          width: 100px;
-          height: 32px;
-          transition: all 0.6s ease;
-          &:hover {
-            font-size: 13px;
-          }
-        }
-      }
-    }
+    // // Goto sign up
+    // .Goto-Sign-Up {
+    //   position: relative;
+    //   background-image: url("../../assets/Labubu.png");
+    //   width: 340px;
+    //   height: 470px;
+    //   background-size: cover;
+    //   background-repeat: no-repeat;
+    //   .Goto-Sign-Up__btn {
+    //     .btn-signup {
+    //       position: absolute;
+    //       bottom: 5%;
+    //       left: 50%;
+    //       transform: translateX(-50%);
+    //       background-color: #eaeaea;
+    //       border: none;
+    //       color: black;
+    //       font-size: 20px;
+    //       font-size: 12px;
+    //       border-radius: 5px;
+    //       width: 100px;
+    //       height: 32px;
+    //       transition: all 0.6s ease;
+    //       &:hover {
+    //         font-size: 13px;
+    //       }
+    //     }
+    //   }
+    // }
 
     // Btn close form
     .btn-close-form {
