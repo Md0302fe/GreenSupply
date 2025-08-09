@@ -120,6 +120,41 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
     }
   };
 
+  const handleOpenAdminCore = () => {
+    const roleName = userRedux?.role_name;
+    const mapping_role_page = [
+      {
+        role_name: "Admin",
+        page_link: "/system/admin",
+      },
+      {
+        role_name: "Material Manager",
+        page_link: "/system/admin/feature_purchase_orders",
+      },
+      {
+        role_name: "Warehouse Manager",
+        page_link: "/system/admin/feature_warehouse",
+      },
+      {
+        role_name: "Process Manager",
+        page_link: "/system/admin/feature_production_process",
+      },
+    ];
+
+    const matchedRole = mapping_role_page.find(
+      (account) => account?.role_name === roleName
+    );
+
+    console.log("roleName ==> ", roleName);
+    console.log("matchedRole ==> ", matchedRole?.page_link);
+
+    if (matchedRole) {
+      navigate(matchedRole?.page_link);
+    } else {
+      navigate("*");
+    }
+  };
+
   const [openUserInfo, setOpenUserInfo] = useState(false);
   const handleOpenUserInfo = () => {
     setOpenUserInfo(true);
@@ -300,6 +335,24 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
               </div>
             </MenuItem>
             <Divider sx={{ borderColor: "black" }} />
+            {[
+              "Admin",
+              "Material Manager",
+              "Warehouse Manager",
+              "Process Manager",
+            ].includes(userRedux?.role_name) && (
+              <MenuItem
+                onClick={() => {
+                  handleCloseMyAcc();
+                  handleOpenAdminCore();
+                }}
+                className="flex items-center gap-3"
+              >
+                <MdDashboardCustomize className="text-[16px]" />
+                <span className="text-[14px]">{t("system_management")}</span>
+              </MenuItem>
+            )}
+
             <MenuItem
               onClick={handleCloseMyAcc}
               className="flex items-center gap-3"
@@ -309,16 +362,6 @@ const HeaderSupplier = ({ toggleSidebar, isSidebarOpen, windowWidth }) => {
                 {t("personal_info")}
               </a>
             </MenuItem>
-
-            {/* <MenuItem
-              onClick={handleCloseMyAcc}
-              className="flex items-center gap-3"
-            >
-              <MdDashboardCustomize className="text-[16px]" />
-              <a href="/system/admin" className="text-[14px]">
-                {t("system_management")}
-              </a>
-            </MenuItem> */}
 
             <MenuItem
               onClick={() => {

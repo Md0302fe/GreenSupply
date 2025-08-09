@@ -265,14 +265,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (isSuccessDelete) {
       if (deleteRespone?.status === "OK") {
-        setIsOpenDelete(false);
+        // setIsOpenDelete(false);
         message.success(deleteRespone?.message);
-      } else {
-        message.success(deleteRespone?.message);
-        setIsOpenDelete(false);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessDelete]);
 
   useEffect(() => {
@@ -308,11 +304,13 @@ const UserComponent = () => {
   const { isLoading, data: data_purchase } = queryPurchased;
 
   // Handle Confirm Delete Product
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
+    setIsOpenDelete(false);
     mutationDelete.mutate(
       { id: rowSelected, token: user?.access_token },
       {
         onSettled: () => {
+          setIsOpenDelete(false);
           queryPurchased.refetch();
         },
       }
@@ -330,7 +328,8 @@ const UserComponent = () => {
       return;
     }
 
-    console.log("🟢 Hủy đơn hàng với ID:", rowSelected);
+    setIsConfirmCancelOpen(false);
+    setIsDrawerOpen(false);
 
     mutationSoftDelete.mutate(
       {
@@ -339,13 +338,13 @@ const UserComponent = () => {
       },
       {
         onSuccess: () => {
-          message.success(t("order.toast.cancel_success"));
-          queryPurchased.refetch(); // Cập nhật danh sách đơn hàng
-          setIsDrawerOpen(false); // 🔹 Đóng form sau khi hủy
+          message.success(t("order.toast.delete_success"));
+          queryPurchased.refetch(); 
+          setIsDrawerOpen(false); 
         },
         onError: (error) => {
-          console.error("🔴 Lỗi khi gọi API:", error);
-          message.error(t("order.toast.cancel_failed"));
+          console.error("Lỗi khi gọi API:", error);
+          message.error(t("order.toast.delete_failed"));
         },
       }
     );
@@ -732,7 +731,7 @@ const UserComponent = () => {
           {t("order.table.quantity_remain")}
         </div>
       ),
-      __excelTitle__:t("order.table.quantity_remain"),
+      __excelTitle__: t("order.table.quantity_remain"),
       dataIndex: "quantity_remain",
       className: "text-center",
       key: "quantity_remain",
@@ -768,7 +767,7 @@ const UserComponent = () => {
       title: (
         <div style={{ textAlign: "center" }}>{t("order.table.start_date")}</div>
       ),
-      __excelTitle__:t("order.table.start_date"),
+      __excelTitle__: t("order.table.start_date"),
       dataIndex: "start_received",
       className: "text-center",
       key: "start_received",
@@ -781,7 +780,7 @@ const UserComponent = () => {
         <div style={{ textAlign: "center" }}>{t("order.table.end_date")}</div>
       ),
       dataIndex: "end_received",
-      __excelTitle__:t("order.table.end_date"),
+      __excelTitle__: t("order.table.end_date"),
       className: "text-center",
       key: "end_received",
       sorter: (a, b) => new Date(a.end_received) - new Date(b.end_received),
@@ -792,7 +791,7 @@ const UserComponent = () => {
       title: (
         <div style={{ textAlign: "center" }}>{t("order.table.status")}</div>
       ),
-      __excelTitle__:t("order.table.status"),
+      __excelTitle__: t("order.table.status"),
       dataIndex: "status",
       className: "text-center",
       key: "status",
@@ -891,7 +890,10 @@ const UserComponent = () => {
       {/* DRAWER - Update Product */}
       <DrawerComponent
         title={
-          <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
+          <div
+            className="text-[14px] lg:text-lg font-semibold"
+            style={{ textAlign: "center" }}
+          >
             {t("order.detail_title")}
           </div>
         }
@@ -1216,6 +1218,8 @@ const UserComponent = () => {
         open={isOpenDelete}
         onCancel={handleCancelDelete}
         onOk={handleConfirmDelete}
+        confirmLoading={isPendingDelete}
+        destroyOnClose
       >
         <Loading isPending={isPendingDelete}>
           <div>{t("order.modal.delete_confirm")}</div>

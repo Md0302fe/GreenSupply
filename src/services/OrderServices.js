@@ -21,7 +21,6 @@ export const getAllOrders = async (access_token) => {
   return res?.data;
 };
 
-
 export const getAllProvideOrders = async (access_token) => {
   const res = await axiosJWT.get(
     `${process.env.REACT_APP_API_URL}/orders/fuel-supply-orders`,
@@ -31,20 +30,16 @@ export const getAllProvideOrders = async (access_token) => {
       },
     }
   );
-
   return res?.data;
 };
-
 
 export const getDetailOrders = async (id, access_token) => {
   // thông qua id , và access_token chỉ cho phép get dữ liệu của only user này
   try {
-  
-
     const res = await axios.get(
       `${process.env.REACT_APP_API_URL}/orders/fuel-requests/${id}`
     );
-     console.log("details order",res)
+    console.log("details order",res)
     return res?.data;
   } catch (error) {
     console.log("Error :", error);
@@ -54,12 +49,10 @@ export const getDetailOrders = async (id, access_token) => {
 export const getDetailProvideOrders = async (id, access_token) => {
   // thông qua id , và access_token chỉ cho phép get dữ liệu của only user này
   try {
-  
-
     const res = await axios.get(
       `${process.env.REACT_APP_API_URL}/orders/fuel-supply-orders/${id}`
     );
-     console.log("details provide",res)
+    console.log("details provide",res)
     return res?.data;
   } catch (error) {
     console.log("Error :", error);
@@ -81,8 +74,6 @@ export const handleAcceptOrders = async (id,) => {
 export const handleAcceptProvideOrders = async (id,) => {
   // thông qua id , và access_token chỉ cho phép get dữ liệu của only user này
   try {
-  
-
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL}/orders/fuel-supply-orders/${id}/accept`
     );
@@ -91,8 +82,6 @@ export const handleAcceptProvideOrders = async (id,) => {
     console.log("Error :", error);
   }
 };
-
-
 
 export const handleCancelOrders = async (id,) => {
   try {
@@ -104,6 +93,7 @@ export const handleCancelOrders = async (id,) => {
     console.log("Error:", error);
   }
 };
+
 export const handleCancelProvideOrders = async (id,) => {
   try {
     const res = await axios.post(
