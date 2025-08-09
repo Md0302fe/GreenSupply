@@ -655,7 +655,7 @@ const ProductionRequestList = () => {
         {selectedRequest && !isEditMode && (
           <Form layout="vertical">
             {/* Block 1: các trường dài */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Tên đơn - full width */}
               <Form.Item
                 label={t("form.request_name")}
@@ -690,7 +690,7 @@ const ProductionRequestList = () => {
             </div>
 
             {/* Block 2: nhóm 3-cột cho các field số & có thể nằm ngang */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <Form.Item label={t("form.product_quantity")} className="!mb-0">
                 <Input
                   value={`${selectedRequest.product_quantity} Kg`}

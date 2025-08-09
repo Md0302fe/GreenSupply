@@ -10,11 +10,13 @@ import {
   Input,
   Drawer,
   Form,
+  Upload,
 } from "antd";
 import axios from "axios";
 import {
   DownloadOutlined,
   SearchOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import Highlighter from "react-highlight-words";
@@ -74,7 +76,8 @@ const FuelList = () => {
             t("fuelList.drawer.no_description"),
           is_deleted: item.is_deleted,
           quantity: item.quantity,
-          storage_id: item.storage_id,
+          storage_id: item.storage_id?._id || "",
+          storage_name: item.storage_id?.name_storage || t("fuelList.no_data_to_export"),
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
@@ -95,6 +98,26 @@ const FuelList = () => {
     setIsUpdateModalOpen(true);
   };
 
+  const [isMobile, setIsMobile] = useState(() => {
+      if (typeof window !== "undefined") {
+        return window.innerWidth < 768;
+      }
+      return false;
+    });
+  
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      handleResize(); // cập nhật ngay khi component mount
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  
+    const drawerWidth = isMobile ? "100%" : "40%";
+  
   const handleUpdate = async () => {
     try {
       if (updateData.type_name.trim() === "") {
@@ -102,20 +125,29 @@ const FuelList = () => {
         return;
       }
 
+      const formData = new FormData();
+      formData.append("type_name", updateData.type_name);
+      formData.append("description", updateData.description);
+      formData.append("quantity", updateData.quantity);
+      if (updateData.newImage) {
+        formData.append("image", updateData.newImage);
+      }
+
       const res = await axios.put(
         `${process.env.REACT_APP_API_URL}/fuel/update/${editingFuel._id}`,
-        updateData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       if (res.data.success) {
         message.success(t("fuelList.create_success"));
-        setFuels((prev) =>
-          prev.map((fuel) =>
-            fuel._id === editingFuel._id ? { ...fuel, ...updateData } : fuel
-          )
-        );
-        setIsUpdateDrawerOpen(false); // Đóng Drawer cập nhật
+        fetchFuels(); // load lại danh sách
+        setIsUpdateDrawerOpen(false);
       } else {
         message.error(t("fuelList.create_fail"));
       }
@@ -123,6 +155,7 @@ const FuelList = () => {
       message.error(t("fuelList.update_error"));
     }
   };
+
 
   const handleCancelFuel = async (id) => {
     try {
@@ -153,7 +186,7 @@ const FuelList = () => {
     fetchFuels();
   }, []);
 
-  
+
   // Handle Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -278,50 +311,60 @@ const FuelList = () => {
   // Columns definition
   const columns = [
     {
-      title: (
-        <div style={{ textAlign: "left", width: "100%" }}>
-          {t("fuelList.columns.type_name")}
-        </div>
-      ),
-      // title: "Tên Loại Nguyên liệu",
+      title: t("fuelList.columns.type_name"),
       dataIndex: "type_name",
       key: "type_name",
+      width: 150,
       ...getColumnSearchProps("type_name"),
       sorter: (a, b) => a.type_name.localeCompare(b.type_name),
-      // align: "center",
     },
     {
-      title: (
-        <div style={{ textAlign: "left" }}>
-          {t("fuelList.columns.description")}
+      title: t("fuelList.columns.image"),
+      dataIndex: "fuel_type_id",
+      key: "image",
+      width: 100,
+      align: "center",
+      render: (fuel_type_id) => (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {fuel_type_id?.image ? (
+            <img
+              src={fuel_type_id.image}
+              alt="fuel"
+              style={{
+                width: 64,
+                height: 64,
+                objectFit: "cover",
+                borderRadius: 6,
+              }}
+            />
+          ) : (
+            <i>{t("fuelList.drawer.no_image")}</i>
+          )}
         </div>
       ),
-
+    },
+    {
+      title: t("fuelList.columns.description"),
       dataIndex: "description",
       key: "description",
-      width: "40%",
-      align: "center",
+      width: 300,
+      align: "left",
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("fuelList.columns.quantity")}
-        </div>
-      ),
+      title: t("fuelList.columns.quantity"),
       dataIndex: "quantity",
       key: "quantity",
+      className: "text-center",
+      width: 100,
       sorter: (a, b) => a.quantity - b.quantity,
       align: "center",
-      render: (text) => <div style={{ textAlign: "center" }}>{text}</div>,
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("fuelList.columns.status")}
-        </div>
-      ),
+      title: t("fuelList.columns.status"),
       dataIndex: "is_deleted",
       key: "is_deleted",
+      className: "text-center",
+      width: 80,
       filters: [
         { text: t("fuelList.status.deleted"), value: true },
         { text: t("fuelList.status.active"), value: false },
@@ -329,40 +372,29 @@ const FuelList = () => {
       onFilter: (value, record) => record.is_deleted === value,
       align: "center",
       render: (is_deleted) => (
-        <div style={{ textAlign: "center" }}>
-          <Tag color={is_deleted ? "red" : "green"}>
-            {is_deleted
-              ? t("fuelList.status.deleted")
-              : t("fuelList.status.active")}
-          </Tag>
-        </div>
+        <Tag color={is_deleted ? "red" : "green"}>
+          {is_deleted ? t("fuelList.status.deleted") : t("fuelList.status.active")}
+        </Tag>
       ),
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("fuelList.columns.actions")}
-        </div>
-      ),
+      title: t("fuelList.columns.actions"),
       key: "action",
+      width: 100,
       align: "center",
       render: (_, record) => (
-        <div style={{ textAlign: "center" }}>
-          <Space>
-            {/* Nút Xem chi tiết */}
-            <Button
-              type="link"
-              icon={<HiOutlineDocumentSearch style={{ fontSize: "24px" }} />}
-              onClick={() => showFuelDetails(record)}
-            ></Button>
-            {/* Nút Chỉnh sửa */}
-            <Button
-              type="link"
-              icon={<EditOutlined style={{ fontSize: "20px" }} />}
-              onClick={() => openUpdateDrawer(record)}
-            ></Button>
-          </Space>
-        </div>
+        <Space>
+          <Button
+            type="link"
+            icon={<HiOutlineDocumentSearch style={{ fontSize: "20px" }} />}
+            onClick={() => showFuelDetails(record)}
+          />
+          <Button
+            type="link"
+            icon={<EditOutlined style={{ fontSize: "18px" }} />}
+            onClick={() => openUpdateDrawer(record)}
+          />
+        </Space>
       ),
     },
   ];
@@ -432,7 +464,7 @@ const FuelList = () => {
           setSelectedFuel(null);
         }}
         placement="right"
-        width={400}
+        width={drawerWidth}
       >
         {selectedFuel ? (
           <Form layout="vertical" disabled>
@@ -490,7 +522,7 @@ const FuelList = () => {
 
               {/* Kho */}
               <Form.Item label={t("fuelList.drawer.storage")} className="!mb-0">
-                <Input value={selectedFuel.storage_id ?? t("fuelList.no_data_to_export")} />
+                <Input value={selectedFuel.storage_name ?? t("fuelList.no_data_to_export")} />
               </Form.Item>
 
               {/* Ngày tạo & Ngày cập nhật */}
@@ -523,45 +555,110 @@ const FuelList = () => {
           setEditingFuel(null);
         }}
         placement="right"
-        width={400}
+        width={drawerWidth}
       >
         {editingFuel ? (
-          <div>
-            <Input
-              value={updateData.type_name}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, type_name: e.target.value })
-              }
-              placeholder={t("fuelList.columns.type_name")}
-              className="mb-2"
-            />
-            <Input.TextArea
-              value={updateData.description}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, description: e.target.value })
-              }
-              placeholder={t("fuelList.columns.description")}
-              className="mb-2"
-            />
-            <Input
-              value={updateData.quantity}
-               inputMode="numeric"
-              min={1} 
-              onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-               // Chỉ cho phép số không âm
-               setUpdateData({ ...updateData, quantity: value });
+          <Form layout="vertical">
+            {/* Cập nhật hình ảnh */}
+            <Form.Item label={t("fuelList.columns.image")}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 8,
+                }}
+              >
+                {updateData?.newImage ? (
+                  // Nếu đã chọn ảnh mới thì hiển thị preview
+                  <img
+                    src={URL.createObjectURL(updateData.newImage)}
+                    alt="preview"
+                    style={{
+                      width: 200,
+                      height: 200,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                    }}
+                  />
+                ) : editingFuel.fuel_type_id?.image ? (
+                  // Nếu chưa chọn ảnh mới thì hiển thị ảnh cũ
+                  <img
+                    src={editingFuel.fuel_type_id.image}
+                    alt="fuel"
+                    style={{
+                      width: 200,
+                      height: 200,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                    }}
+                  />
+                ) : (
+                  <i>{t("fuelList.drawer.no_image")}</i>
+                )}
+
+                <Upload
+                  beforeUpload={(file) => {
+                    setUpdateData({ ...updateData, newImage: file });
+                    return false; // Ngăn auto upload
+                  }}
+                  maxCount={1}
+                  showUploadList={false} // Ẩn danh sách file của Upload
+                >
+                  <Button icon={<UploadOutlined />}>
+                    {t("fuelList.drawer.upload_image")}
+                  </Button>
+                </Upload>
+              </div>
+            </Form.Item>
+            {/* Tên loại nguyên liệu */}
+            <Form.Item label={t("fuelList.columns.type_name")}>
+              <Input
+                value={updateData.type_name}
+                onChange={(e) =>
+                  setUpdateData({ ...updateData, type_name: e.target.value })
                 }
-              }}
-            />
+              />
+            </Form.Item>
+
+            {/* Mô tả */}
+            <Form.Item label={t("fuelList.columns.description")}>
+              <Input.TextArea
+                value={updateData.description}
+                rows={3}
+                onChange={(e) =>
+                  setUpdateData({ ...updateData, description: e.target.value })
+                }
+              />
+            </Form.Item>
+
+            {/* Số lượng */}
+            <Form.Item label={t("fuelList.form.placeholder_quantity")}>
+              <Input
+                value={updateData.quantity}
+                inputMode="numeric"
+                min={1}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setUpdateData({ ...updateData, quantity: value });
+                  }
+                }}
+              />
+            </Form.Item>
+
+            {/* Nút hành động */}
             <div className="flex justify-end mt-2">
               <Space>
                 <ButtonComponent type="update" onClick={handleUpdate} />
-                <ButtonComponent type="close" onClick={() => setIsUpdateDrawerOpen(false)} />
+                <ButtonComponent
+                  type="close"
+                  onClick={() => setIsUpdateDrawerOpen(false)}
+                />
               </Space>
             </div>
-          </div>
+          </Form>
         ) : (
           <p>{t("fuelList.drawer.loading")}</p>
         )}

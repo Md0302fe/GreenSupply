@@ -1657,7 +1657,8 @@
       "description": "Mô Tả",
       "quantity": "Số Lượng Trong Kho",
       "status": "Trạng Thái",
-      "actions": "Hành Động"
+      "actions": "Hành Động",
+      "image": "Hình ảnh nguyên liệu"
     },
     "status": {
       "deleted": "Đã xóa",
@@ -1677,7 +1678,8 @@
       "loading": "Đang tải dữ liệu...",
       "close": "Đóng",
       "cancel": "Hủy",
-      "save": "Lưu"
+      "save": "Lưu",
+      "upload_image": "Tải ảnh lên"
     },
     "form": {
       "placeholder_name": "Tên Loại Nguyên liệu",
