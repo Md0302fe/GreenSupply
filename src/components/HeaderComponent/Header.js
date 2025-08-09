@@ -97,6 +97,41 @@ const ImprovedHeader = () => {
     setUserAvatar(userRedux?.avatar);
   }, [userRedux?.avatar]);
 
+  const handleOpenAdminCore = () => {
+    const roleName = userRedux?.role_name;
+    const mapping_role_page = [
+      {
+        role_name: "Admin",
+        page_link: "/system/admin",
+      },
+      {
+        role_name: "Material Manager",
+        page_link: "/system/admin/feature_purchase_orders",
+      },
+      {
+        role_name: "Warehouse Manager",
+        page_link: "/system/admin/feature_warehouse",
+      },
+      {
+        role_name: "Process Manager",
+        page_link: "/system/admin/feature_production_process",
+      },
+    ];
+
+    const matchedRole = mapping_role_page.find(
+      (account) => account?.role_name === roleName
+    );
+
+    console.log("roleName ==> ", roleName)
+    console.log("matchedRole ==> ", matchedRole?.page_link)
+
+    if (matchedRole) {
+      navigate(matchedRole?.page_link);
+    } else {
+      navigate("*");
+    }
+  };
+
   // Check if user is logged in
   const isLoggedIn =
     userRedux?.full_name !== "" && userRedux?.full_name !== undefined;
@@ -241,7 +276,7 @@ const ImprovedHeader = () => {
                               <li>
                                 <div
                                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
-                                  onClick={() => navigate("/system/admin")}
+                                  onClick={() => handleOpenAdminCore()}
                                 >
                                   <Settings className="w-4 h-4 mr-3" />
                                   {t("system_management") ||
