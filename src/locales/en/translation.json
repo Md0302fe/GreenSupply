@@ -1674,7 +1674,8 @@
       "description": "Description",
       "quantity": "Stock Quantity",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "image": "Material Image"
     },
     "status": {
       "deleted": "Deleted",
@@ -1694,7 +1695,8 @@
       "loading": "Loading data...",
       "close": "Close",
       "cancel": "Cancel",
-      "save": "Save"
+      "save": "Save",
+      "upload_image": "Upload New Image"
     },
     "form": {
       "placeholder_name": "Material type Name",

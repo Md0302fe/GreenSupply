@@ -145,6 +145,25 @@ const PackageCategoryList = () => {
     confirm();
     setSearchText(selectedKeys[0]);
   };
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
 
   const handleReset = (clearFilters) => {
     clearFilters();
@@ -230,6 +249,7 @@ const PackageCategoryList = () => {
       dataIndex: "Descriptions",
       key: "Descriptions",
       align: "center",
+      width: 400,
     },
     {
       title: (
@@ -414,7 +434,7 @@ const PackageCategoryList = () => {
           setIsDrawerOpen(false);
           setSelectedCategory(null);
         }}
-        width={400}
+        width={drawerWidth}
       >
         {selectedCategory ? (
           <Form layout="vertical" disabled>
@@ -500,7 +520,7 @@ const PackageCategoryList = () => {
       {/* Drawer chỉnh sửa */}
       <Drawer
         title={t("packageCategory.edit.title")}
-        width={400}
+        width={drawerWidth}
         onClose={() => setIsEditDrawerOpen(false)}
         open={isEditDrawerOpen}
         destroyOnClose
