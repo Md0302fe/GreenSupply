@@ -131,7 +131,7 @@ const FuelProvideManagement = () => {
     try {
       const response = await handleCancelProvideOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus("Đã Hủy"); // Cập nhật trạng thái đơn hàng
+        setOrderStatus("Đã hủy"); // Cập nhật trạng thái đơn hàng
         message.success(t("fuelProvide.orderCanceled"));
         queryOrder.refetch();
       } else {
