@@ -218,7 +218,7 @@ const DashboardFuel = () => {
                       <span className="flex items-center gap-1">
                         🌿{" "}
                         <span className="font-medium">
-                          Tổng số loại nguyên liệu
+                          {t("material_dashboard.totalFuelTypes")}
                         </span>
                       </span>
                     }
@@ -236,7 +236,7 @@ const DashboardFuel = () => {
                       <span className="flex items-center gap-1">
                         📦{" "}
                         <span className="font-medium">
-                          Tổng số loại vật liệu
+                          {t("material_dashboard.totalBoxCategories")}
                         </span>
                       </span>
                     }
@@ -305,30 +305,30 @@ const DashboardFuel = () => {
               className="transition-transform hover:scale-105 duration-300 shadow"
             >
               <h3 className="text-base font-semibold mb-2 flex items-center gap-1">
-                🧾 Thống kê vật liệu đóng gói
+                🧾 {t("material_dashboard.packagingStats")}
               </h3>
               <div className="text-sm text-gray-800 leading-6 space-y-2">
                 <div>
-                  🟢 Đang hoạt động:{" "}
+                  🟢 {t("material_dashboard.active")}:{" "}
                   <strong>
                     {fuelSummary?.boxCategory?.activeBoxCategories || 0}
                   </strong>
                 </div>
                 <div>
-                  🔴 Đã ngừng sử dụng:{" "}
+                  🔴 {t("material_dashboard.inactive")}:{" "}
                   <strong>
                     {fuelSummary?.boxCategory?.inactiveBoxCategories || 0}
                   </strong>
                 </div>
                 <div>
-                  🏆 Tồn nhiều nhất:{" "}
+                  🏆 {t("material_dashboard.maxStock")}:{" "}
                   <strong>
                     {fuelSummary?.boxCategory?.maxStockBoxCategory?.name} (
                     {fuelSummary?.boxCategory?.maxStockBoxCategory?.quantity})
                   </strong>
                 </div>
                 <div>
-                  ⚠️ Tồn ít nhất:{" "}
+                  ⚠️ {t("material_dashboard.minStock")}:{" "}
                   <strong>
                     {fuelSummary?.boxCategory?.minStockBoxCategory?.name} (
                     {fuelSummary?.boxCategory?.minStockBoxCategory?.quantity})
@@ -341,24 +341,24 @@ const DashboardFuel = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 md:mb-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">
-                📊 Phân bổ nguyên liệu
+                📊 {t("material_dashboard.fuelDistribution")}
               </h2>
               {pieData.length > 0 ? (
                 <Pie {...pieConfig} />
               ) : (
-                <Alert message="Không có dữ liệu biểu đồ!" type="info" />
+                <Alert message={t("material_dashboard.noChartData")} type="info" />
               )}
             </div>
 
             {/* Biểu đồ cột: tổng bao bì theo loại */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">
-                📦 Phân bổ bao bì đã sử dụng
+                📦 {t("material_dashboard.packagingDistribution")}
               </h2>
               {boxBarData.length > 0 ? (
                 <Column {...barConfig} />
               ) : (
-                <Alert message="Không có dữ liệu biểu đồ bao bì!" type="info" />
+                <Alert message={t("material_dashboard.noPackagingData")} type="info" />
               )}
             </div>
           </div>

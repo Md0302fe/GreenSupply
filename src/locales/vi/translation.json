@@ -319,7 +319,19 @@
     "seamless_integration": "Tích hợp liền mạch",
     "seamless_integration_desc": "Kết nối các quy trình trong chuỗi cung ứng của bạn một cách dễ dàng với các công cụ và công nghệ hiện đại, đảm bảo hoạt động trơn tru.",
     "real_time_tracking": "Theo dõi thời gian thực",
-    "real_time_tracking_desc": "Giám sát chuỗi cung ứng của bạn trong thời gian thực với các cập nhật chính xác, đảm bảo tính minh bạch và kiểm soát ở mọi bước."
+    "real_time_tracking_desc": "Giám sát chuỗi cung ứng của bạn trong thời gian thực với các cập nhật chính xác, đảm bảo tính minh bạch và kiểm soát ở mọi bước.",
+    "currentActivity": {
+      "title": "Hoạt động hiện tại",
+      "totalPlans": "📄 Tổng Kế Hoạch Sản Xuất",
+      "executingSingle": "🚀 Quy Trình Đơn Đang Thực Thi",
+      "executingConsolidate": "🔄 Quy Trình Tổng Hợp Đang Thực Thi"
+    },
+    "stats": {
+      "title": "Tổng hợp thống kê",
+      "totalSingle": "📦 Tổng Quy Trình Đơn Đã Tạo",
+      "totalConsolidate": "📦 Tổng Quy Trình Tổng Hợp Đã Tạo",
+      "waitingToCreate": "⏳ Kế Hoạch Chờ Tạo Quy Trình"
+    }
   },
   "about": {
     "description": "Chúng tôi nỗ lực chuyển đổi chuỗi cung ứng xoài bằng cách cung cấp các giải pháp đổi mới đảm bảo chất lượng, hiệu quả và tính bền vững từ trang trại đến bàn ăn. Với MSCM, tính minh bạch và hợp tác là trọng tâm trong mọi việc chúng tôi làm. Để đơn giản hóa và nâng cao chuỗi cung ứng xoài, trao quyền cho nông dân, nhà phân phối và nhà bán lẻ thông qua các giải pháp đổi mới, công nghệ và dựa trên dữ liệu.",
@@ -900,7 +912,9 @@
     "material_quantity": "K.l Nguyên liệu (Kg)",
     "production_date": "Ngày bắt đầu",
     "end_date": "Ngày kết thúc",
-    "actions": "Hành động"
+    "actions": "Hành động",
+    "planName": "Tên kế hoạch",
+    "createdAt": "Ngày tạo"
   },
   "fuel_request": {
     "back": "Quay lại",
@@ -1262,8 +1276,10 @@
     "note": "Ghi chú"
   },
   "dashboardProduction": {
-    "title": "Dashboard quy trình sản xuất",
-    "chartTitle": "Biểu đồ trạng thái quy trình"
+    "title": "Bảng điều khiển quy trình sản xuất",
+    "chartTitle": "Thống kê trạng thái quy trình",
+    "recentPlansTitle": "🆕 Các kế hoạch sản xuất gần đây",
+    "seriesName": "Số lượng"
   },
   "productionRequest": {
     "title": "Lập kế hoạch sản xuất",
@@ -1612,7 +1628,19 @@
     "export": "Xuất kho",
     "errorLoading": "Không thể tải dữ liệu, vui lòng thử lại!",
     "warningAlmostEmpty": "Sắp hết nhiên liệu!",
-    "warningEmpty": "Hết nhiên liệu!"
+    "warningEmpty": "Hết nhiên liệu!",
+    "unknown": "Không xác định",
+    "totalBoxCategories": "Tổng số loại vật liệu",
+    "packagingStats": "Thống kê vật liệu đóng gói",
+    "active": "Đang hoạt động",
+    "inactive": "Đã ngừng sử dụng",
+    "maxStock": "Tồn nhiều nhất",
+    "minStock": "Tồn ít nhất",
+    "noChartData": "Không có dữ liệu biểu đồ!",
+    "packagingDistribution": "Phân bổ bao bì đã sử dụng",
+    "noPackagingData": "Không có dữ liệu biểu đồ bao bì!",
+    "vacuumBag": "túi chân không",
+    "cartonBox": "thùng carton"
   },
   "createFuel": {
     "title": "Tạo Loại Nguyên Liệu Mới",
@@ -2203,10 +2231,10 @@
     "title": "Cập nhật địa chỉ"
   },
   "message": {
-    "fetchFailed": "Không thể lấy địa chỉ!",
-    "fetchError": "Lỗi khi tải địa chỉ. Vui lòng thử lại!",
     "updateSuccess": "Cập nhật địa chỉ thành công!",
-    "updateError": "Cập nhật địa chỉ thất bại. Vui lòng thử lại!"
+    "updateError": "Cập nhật địa chỉ thất bại. Vui lòng thử lại!",
+    "fetchFailed": "Không thể lấy dữ liệu!",
+    "fetchError": "Lỗi khi lấy dữ liệu!"
   },
   "profile": {
     "title": "Thông tin người dùng",

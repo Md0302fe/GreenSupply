@@ -323,7 +323,19 @@
     "seamless_integration": "Seamless Integration",
     "seamless_integration_desc": "Easily connect processes in your supply chain with modern tools and technology for smooth operations.",
     "real_time_tracking": "Real-Time Tracking",
-    "real_time_tracking_desc": "Monitor your supply chain in real time with accurate updates, ensuring transparency and control at every step."
+    "real_time_tracking_desc": "Monitor your supply chain in real time with accurate updates, ensuring transparency and control at every step.",
+    "currentActivity": {
+      "title": "Current activity",
+      "totalPlans": "Total Production Plans",
+      "executingSingle": "Executing Single Processes",
+      "executingConsolidate": "Executing Consolidated Processes"
+    },
+    "stats": {
+      "title": "Summary statistics",
+      "totalSingle": "Total Single Processes Created",
+      "totalConsolidate": "Total Consolidated Processes Created",
+      "waitingToCreate": "Plans Waiting for Process Creation"
+    }
   },
   "about": {
     "description": "We strive to transform the mango supply chain by providing innovative solutions that ensure quality, efficiency, and sustainability from farm to table. At MSCM, transparency and collaboration are at the heart of everything we do. We simplify and enhance the mango supply chain by empowering farmers, distributors, and retailers through innovative, technology-driven, and data-based solutions.",
@@ -911,7 +923,9 @@
     "material_quantity": "Material Quantity (Kg)",
     "production_date": "Start Date",
     "end_date": "End Date",
-    "actions": "Actions"
+    "actions": "Actions",
+    "planName": "Plan name",
+    "createdAt": "Created at"
   },
   "fuel_request": {
     "back": "Go Back",
@@ -1276,7 +1290,9 @@
   },
   "dashboardProduction": {
     "title": "Production Process Dashboard",
-    "chartTitle": "Process Status Chart"
+    "chartTitle": "Process status overview",
+    "recentPlansTitle": "Recent production plans",
+    "seriesName": "Count"
   },
   "productionRequest": {
     "title": "Create Production Plan",
@@ -1622,7 +1638,19 @@
     "export": "Export",
     "errorLoading": "Failed to load data, please try again!",
     "warningAlmostEmpty": "Almost out of fuel!",
-    "warningEmpty": "Out of fuel!"
+    "warningEmpty": "Out of fuel!",
+    "unknown": "Unknown",
+    "totalBoxCategories": "Total packaging types",
+    "packagingStats": "Packaging statistics",
+    "active": "Active",
+    "inactive": "Inactive",
+    "maxStock": "Max stock",
+    "minStock": "Min stock",
+    "noChartData": "No chart data available!",
+    "packagingDistribution": "Packaging distribution",
+    "noPackagingData": "No packaging chart data!",
+    "vacuumBag": "vacuum bag",
+    "cartonBox": "carton box"
   },
   "createFuel": {
     "title": "Create New Material Type",
@@ -2222,8 +2250,8 @@
     "title": "Update Address"
   },
   "message": {
-    "fetchFailed": "Failed to fetch address.",
-    "fetchError": "Error loading address. Please try again.",
+    "fetchFailed": "Failed to fetch data.",
+    "fetchError": "Error loading data. Please try again.",
     "updateSuccess": "Address updated successfully!",
     "updateError": "Failed to update address. Please try again."
   },
