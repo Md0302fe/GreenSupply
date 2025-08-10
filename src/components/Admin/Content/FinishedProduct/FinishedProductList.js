@@ -265,13 +265,6 @@ const FinishedProductList = () => {
                 <Form.Item>
                   <Input
                     readOnly
-                    value={`Tên thành phẩm: ${selectedProductDetail?.name}`}
-                  />
-                </Form.Item>
-
-                <Form.Item>
-                  <Input
-                    readOnly
                     value={`Ngày sản xuất: ${selectedProductDetail?.created_date?.slice(0, 10)}`}
                   />
                 </Form.Item>
