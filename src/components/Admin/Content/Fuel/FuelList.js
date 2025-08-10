@@ -77,7 +77,8 @@ const FuelList = () => {
           is_deleted: item.is_deleted,
           quantity: item.quantity,
           storage_id: item.storage_id?._id || "",
-          storage_name: item.storage_id?.name_storage || t("fuelList.no_data_to_export"),
+          storage_name:
+            item.storage_id?.name_storage || t("fuelList.no_data_to_export"),
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
@@ -154,7 +155,6 @@ const FuelList = () => {
       message.error(t("fuelList.update_error"));
     }
   };
-
 
   const handleCancelFuel = async (id) => {
     try {
@@ -614,7 +614,11 @@ const FuelList = () => {
       </DrawerComponent>
 
       <Drawer
-        title={t("fuelList.drawer.update_title")}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("fuelList.drawer.update_title")}
+          </div>
+        }
         open={isUpdateDrawerOpen}
         onClose={() => {
           setIsUpdateDrawerOpen(false);
