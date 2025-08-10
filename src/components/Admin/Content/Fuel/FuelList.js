@@ -77,8 +77,7 @@ const FuelList = () => {
           is_deleted: item.is_deleted,
           quantity: item.quantity,
           storage_id: item.storage_id?._id || "",
-          storage_name:
-            item.storage_id?.name_storage || t("fuelList.no_data_to_export"),
+          storage_name: item.storage_id?.name_storage || t("fuelList.no_data_to_export"),
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
         }));
@@ -155,6 +154,7 @@ const FuelList = () => {
       message.error(t("fuelList.update_error"));
     }
   };
+
 
   const handleCancelFuel = async (id) => {
     try {
@@ -373,11 +373,7 @@ const FuelList = () => {
       align: "left",
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("fuelList.columns.quantity")}
-        </div>
-      ),
+      title: t("fuelList.columns.quantity"),
       dataIndex: "quantity",
       key: "quantity",
       className: "text-center",
@@ -386,11 +382,7 @@ const FuelList = () => {
       align: "center",
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("fuelList.columns.status")}
-        </div>
-      ),
+      title: t("fuelList.columns.status"),
       dataIndex: "is_deleted",
       key: "is_deleted",
       className: "text-center",
@@ -410,11 +402,7 @@ const FuelList = () => {
       ),
     },
     {
-      title: (
-        <div style={{ textAlign: "center", width: "100%" }}>
-          {t("fuelList.columns.actions")}
-        </div>
-      ),
+      title: t("fuelList.columns.actions"),
       key: "action",
       width: 100,
       align: "center",
@@ -689,7 +677,6 @@ const FuelList = () => {
                 </Upload>
               </div>
             </Form.Item>
-
             {/* Tên loại nguyên liệu */}
             <Form.Item label={t("fuelList.columns.type_name")}>
               <Input
