@@ -389,7 +389,7 @@ const FuelRequestsManagement = () => {
       ...getColumnSearchProps("fuel_name"),
     },
     {
-      title: t("fuel_request.table.price"),
+      title: `${t("fuel_request.table.price")}\\(1kg)`,
       dataIndex: "price",
       key: "price",
       className: "text-center",

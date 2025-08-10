@@ -99,25 +99,25 @@ const FuelList = () => {
   };
 
   const [isMobile, setIsMobile] = useState(() => {
-      if (typeof window !== "undefined") {
-        return window.innerWidth < 768;
-      }
-      return false;
-    });
-  
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-  
-      handleResize(); // cập nhật ngay khi component mount
-  
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-  
-    const drawerWidth = isMobile ? "100%" : "40%";
-  
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize(); // cập nhật ngay khi component mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const drawerWidth = isMobile ? "100%" : "40%";
+
   const handleUpdate = async () => {
     try {
       if (updateData.type_name.trim() === "") {
@@ -125,21 +125,20 @@ const FuelList = () => {
         return;
       }
 
-      const formData = new FormData();
-      formData.append("type_name", updateData.type_name);
-      formData.append("description", updateData.description);
-      formData.append("quantity", updateData.quantity);
-      if (updateData.newImage) {
-        formData.append("image", updateData.newImage);
-      }
+      const payload = {
+        type_name: updateData.type_name,
+        description: updateData.description,
+        quantity: updateData.quantity,
+        image: updateData.newImage || editingFuel.fuel_type_id?.image, // có thể gửi base64 hoặc URL nếu BE cần
+      };
 
       const res = await axios.put(
         `${process.env.REACT_APP_API_URL}/fuel/update/${editingFuel._id}`,
-        formData,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -186,7 +185,6 @@ const FuelList = () => {
     fetchFuels();
   }, []);
 
-
   // Handle Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -197,6 +195,26 @@ const FuelList = () => {
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText("");
+  };
+
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const base64 = await getBase64(file);
+      setUpdateData((prev) => ({
+        ...prev,
+        newImage: base64, // lưu luôn base64
+      }));
+    }
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -319,7 +337,11 @@ const FuelList = () => {
       sorter: (a, b) => a.type_name.localeCompare(b.type_name),
     },
     {
-      title: t("fuelList.columns.image"),
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("fuelList.columns.image")}
+        </div>
+      ),
       dataIndex: "fuel_type_id",
       key: "image",
       width: 100,
@@ -331,8 +353,8 @@ const FuelList = () => {
               src={fuel_type_id.image}
               alt="fuel"
               style={{
-                width: 64,
-                height: 64,
+                width: "100%",
+                height: "auto",
                 objectFit: "cover",
                 borderRadius: 6,
               }}
@@ -373,7 +395,9 @@ const FuelList = () => {
       align: "center",
       render: (is_deleted) => (
         <Tag color={is_deleted ? "red" : "green"}>
-          {is_deleted ? t("fuelList.status.deleted") : t("fuelList.status.active")}
+          {is_deleted
+            ? t("fuelList.status.deleted")
+            : t("fuelList.status.active")}
         </Tag>
       ),
     },
@@ -383,18 +407,20 @@ const FuelList = () => {
       width: 100,
       align: "center",
       render: (_, record) => (
-        <Space>
-          <Button
-            type="link"
-            icon={<HiOutlineDocumentSearch style={{ fontSize: "20px" }} />}
-            onClick={() => showFuelDetails(record)}
-          />
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ fontSize: "18px" }} />}
-            onClick={() => openUpdateDrawer(record)}
-          />
-        </Space>
+        <div className="text-center">
+          <Space>
+            <Button
+              type="link"
+              icon={<HiOutlineDocumentSearch style={{ fontSize: "20px" }} />}
+              onClick={() => showFuelDetails(record)}
+            />
+            <Button
+              type="link"
+              icon={<EditOutlined style={{ fontSize: "18px" }} />}
+              onClick={() => openUpdateDrawer(record)}
+            />
+          </Space>
+        </div>
       ),
     },
   ];
@@ -470,8 +496,15 @@ const FuelList = () => {
           <Form layout="vertical" disabled>
             <div className="grid grid-cols-1 gap-4">
               {/* Tên loại nguyên liệu */}
-              <Form.Item label={t("fuelList.columns.type_name")} className="!mb-0">
-                <Input value={selectedFuel.type_name || t("fuelList.no_data_to_export")} />
+              <Form.Item
+                label={t("fuelList.columns.type_name")}
+                className="!mb-0"
+              >
+                <Input
+                  value={
+                    selectedFuel.type_name || t("fuelList.no_data_to_export")
+                  }
+                />
               </Form.Item>
 
               {/* Ảnh nguyên liệu */}
@@ -493,23 +526,37 @@ const FuelList = () => {
               </Form.Item>
 
               {/* Mô tả */}
-              <Form.Item label={t("fuelList.columns.description")} className="!mb-0">
+              <Form.Item
+                label={t("fuelList.columns.description")}
+                className="!mb-0"
+              >
                 <Input.TextArea
                   rows={3}
                   value={
-                    selectedFuel.description || t("fuelList.drawer.no_description")
+                    selectedFuel.description ||
+                    t("fuelList.drawer.no_description")
                   }
                 />
               </Form.Item>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
                 {/* Số lượng */}
-                <Form.Item label={t("fuelList.form.placeholder_quantity")} className="!mb-0">
-                  <Input value={selectedFuel.quantity ?? t("fuelList.no_data_to_export")} />
+                <Form.Item
+                  label={t("fuelList.form.placeholder_quantity")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedFuel.quantity ?? t("fuelList.no_data_to_export")
+                    }
+                  />
                 </Form.Item>
 
                 {/* Trạng thái xóa */}
-                <Form.Item label={t("fuelList.drawer.delete_status")} className="!mb-0">
+                <Form.Item
+                  label={t("fuelList.drawer.delete_status")}
+                  className="!mb-0"
+                >
                   <div className="border border-gray-300 rounded px-2 py-1 h-[32px] flex items-center ">
                     <Tag color={selectedFuel.is_deleted ? "red" : "green"}>
                       {selectedFuel.is_deleted
@@ -522,28 +569,47 @@ const FuelList = () => {
 
               {/* Kho */}
               <Form.Item label={t("fuelList.drawer.storage")} className="!mb-0">
-                <Input value={selectedFuel.storage_name ?? t("fuelList.no_data_to_export")} />
+                <Input
+                  value={
+                    selectedFuel.storage_name ?? t("fuelList.no_data_to_export")
+                  }
+                />
               </Form.Item>
 
               {/* Ngày tạo & Ngày cập nhật */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <Form.Item label={t("fuelList.drawer.created_at")} className="!mb-0">
-                  <Input value={new Date(selectedFuel.createdAt).toLocaleString()} />
+                <Form.Item
+                  label={t("fuelList.drawer.created_at")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={new Date(selectedFuel.createdAt).toLocaleString()}
+                  />
                 </Form.Item>
 
-                <Form.Item label={t("fuelList.drawer.updated_at")} className="!mb-0">
-                  <Input value={new Date(selectedFuel.updatedAt).toLocaleString()} />
+                <Form.Item
+                  label={t("fuelList.drawer.updated_at")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={new Date(selectedFuel.updatedAt).toLocaleString()}
+                  />
                 </Form.Item>
               </div>
             </div>
           </Form>
         ) : (
-          <p className="text-center text-gray-500">{t("fuelList.drawer.loading")}</p>
+          <p className="text-center text-gray-500">
+            {t("fuelList.drawer.loading")}
+          </p>
         )}
 
         {/* Nút đóng */}
         <div className="flex justify-end mt-6">
-          <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} />
+          <ButtonComponent
+            type="close"
+            onClick={() => setIsDrawerOpen(false)}
+          />
         </div>
       </DrawerComponent>
 
@@ -571,9 +637,8 @@ const FuelList = () => {
                 }}
               >
                 {updateData?.newImage ? (
-                  // Nếu đã chọn ảnh mới thì hiển thị preview
                   <img
-                    src={URL.createObjectURL(updateData.newImage)}
+                    src={updateData.newImage}
                     alt="preview"
                     style={{
                       width: 200,
@@ -583,7 +648,6 @@ const FuelList = () => {
                     }}
                   />
                 ) : editingFuel.fuel_type_id?.image ? (
-                  // Nếu chưa chọn ảnh mới thì hiển thị ảnh cũ
                   <img
                     src={editingFuel.fuel_type_id.image}
                     alt="fuel"
@@ -599,12 +663,13 @@ const FuelList = () => {
                 )}
 
                 <Upload
-                  beforeUpload={(file) => {
-                    setUpdateData({ ...updateData, newImage: file });
-                    return false; // Ngăn auto upload
+                  beforeUpload={async (file) => {
+                    const base64 = await getBase64(file);
+                    setUpdateData((prev) => ({ ...prev, newImage: base64 }));
+                    return false;
                   }}
                   maxCount={1}
-                  showUploadList={false} // Ẩn danh sách file của Upload
+                  showUploadList={false}
                 >
                   <Button icon={<UploadOutlined />}>
                     {t("fuelList.drawer.upload_image")}

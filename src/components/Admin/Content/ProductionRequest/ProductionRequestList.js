@@ -550,6 +550,7 @@ const ProductionRequestList = () => {
     setIsEditMode(false);
   };
 
+  console.log("fuelTypes => ", fuelTypes)
   // Bấm “Chỉnh sửa”
   const handleEdit = () => {
     setIsEditMode(true);
@@ -685,7 +686,7 @@ const ProductionRequestList = () => {
                 label={t("form.material")}
                 className="!mb-0 lg:col-span-3"
               >
-                <Input value={selectedRequest.material} disabled />
+                <Input value={selectedRequest?.material?.fuel_type_id?.type_name} disabled />
               </Form.Item>
             </div>
 
@@ -824,12 +825,12 @@ const ProductionRequestList = () => {
                 >
                   <Select
                     placeholder={t("placeholder.select_material")}
-                    disabled
                   >
                     {fuelTypes.map((fuel) => (
                       <Select.Option key={fuel._id} value={fuel._id}>
-                        {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg)
+                        {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg) 
                       </Select.Option>
+
                     ))}
                   </Select>
                 </Form.Item>

@@ -1418,7 +1418,7 @@
     "production_queue": "Production Queue"
   },
   "page": {
-    "title": "Pending Requests to Process"
+    "title": "Pending Requests To Process"
   },
   "productionProcess": {
     "title": {
@@ -1530,12 +1530,12 @@
     },
     "stages": {
       "stage1": "Ingredient Sorting",
-      "stage2": "Washing and Cleaning",
-      "stage3": "Surface Disinfection",
-      "stage4": "Bio-coating & Drying",
-      "stage5": "Ripening (Temp/Humidity Control)",
-      "stage6": "Final Packaging",
-      "stage7": "Labeling & Traceability"
+      "stage2": "Washing – Peeling – Seed Removal – Slicing",
+      "stage3": "Blanching for Enzyme Inhibition",
+      "stage4": "Flavoring (Sugar/Salt Soaking)",
+      "stage5": "Drying (Cold Dryer or Convection)",
+      "stage6": "Cooling – Packaging – Labeling",
+      "stage7": "Cold Storage"
     },
     "message": {
       "completeSuccess": "Stage marked as complete successfully",
