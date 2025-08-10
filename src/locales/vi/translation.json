@@ -978,32 +978,53 @@
     "fuelName": "Tên Nguyên Liệu"
   },
   "dashboardWarehouse": {
-    "title": "Quản Lý Kho",
-    "totalReceipts": "Tổng đơn nhập kho",
-    "pendingReceipts": "Đơn Chờ Duyệt",
-    "approvedReceipts": "Đơn Đã Duyệt",
-    "storageInfo": "Thông tin kho",
-    "used": "đã sử dụng",
-    "statsChartTitle": "Thống kê đơn nhập kho",
-    "filter": {
-      "day": "Theo Ngày",
-      "week": "Theo Tuần",
-      "month": "Theo Tháng"
-    },
-    "recentReceipts": "Đơn nhập kho",
-    "columns": {
-      "id": "Mã đơn",
-      "manager": "Người quản lý",
-      "status": "Trạng thái",
-      "quantity": "Số lượng",
-      "createdAt": "Ngày nhập"
-    },
-    "noData": "Không có dữ liệu",
-    "notLoggedIn": "Bạn chưa đăng nhập!",
-    "noStorageInfo": "Không tìm thấy thông tin kho!",
-    "noReceipts": "Không có dữ liệu đơn nhập kho!",
-    "serverError": "Không thể kết nối đến server!"
+  "title": "Quản Lý Kho",
+  "totalReceipts": "Tổng đơn nhập kho",
+  "pendingReceipts": "Đơn Chờ Duyệt",
+  "approvedReceipts": "Đơn Đã Duyệt",
+  "importedReceipts": "Đơn đã nhập kho",
+  "totalExports": "Tổng đơn xuất kho",
+  "pendingExports": "Đơn xuất kho chờ duyệt",
+  "completedExports": "Đơn xuất kho hoàn thành",
+  "orderStatus": "Trạng thái đơn",
+  "exported": "Đã xuất kho",
+  "storageInfo": "Thông tin kho",
+  "used": "đã sử dụng",
+  "statsChartTitle": "Thống kê đơn nhập kho",
+  "exportStatsChartTitle": "Thống kê đơn xuất kho",
+  "exportOrders": "Đơn xuất kho",
+  "exportLoadError": "Không thể tải dữ liệu đơn xuất kho",
+  "filter": {
+    "day": "Theo Ngày",
+    "week": "Theo Tuần",
+    "month": "Theo Tháng"
   },
+  "recentReceipts": "Đơn nhập kho",
+  "columns": {
+    "id": "Mã đơn",
+    "manager": "Người quản lý",
+    "status": "Trạng thái",
+    "quantity": "Số lượng",
+    "createdAt": "Ngày nhập",
+    "creator": "Người tạo",
+    "batchName": "Lô nguyên liệu"
+  },
+  "noData": "Không có dữ liệu",
+  "notLoggedIn": "Bạn chưa đăng nhập!",
+  "noStorageInfo": "Không tìm thấy thông tin kho!",
+  "noReceipts": "Không có dữ liệu đơn nhập kho!",
+  "serverError": "Không thể kết nối đến server!",
+  "status": {
+    "pending": "Chờ duyệt",
+    "approve": "Đã duyệt",
+    "cancelled": "Đã hủy",
+    "completed": "Hoàn thành",
+    "processing": "Đang xử lý",
+    "failed": "Thất bại",
+    "disable": "Vô hiệu hóa",
+    "imported": "Nhập kho thành công"
+  }
+},
   "fuelOrderStatus": {
     "fetchError": "Lỗi khi lấy danh sách đơn hàng!",
     "serverError": "Không thể kết nối đến server!",
