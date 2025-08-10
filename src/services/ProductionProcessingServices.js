@@ -82,7 +82,7 @@ export const getAllExecuteConsolidateProcess = async (access_token) => {
   );
   return res?.data;
 };
-export const updateProductionRequest = async ({ id, token, dataUpdate }) => {
+export const updateProductionRequest = async ({ id, token, dataUpdate}) => {
   // Giả sử BE có endpoint put /production-request/:id
   const res = await axios.put(
     `${process.env.REACT_APP_API_URL}/production-processing/${id}`,

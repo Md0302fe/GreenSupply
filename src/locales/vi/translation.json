@@ -799,7 +799,7 @@
       "empty_priority": "Vui lòng chọn mức độ ưu tiên!"
     },
     "success": {
-      "created": "Tạo yêu cầu thu hàng thành công!"
+      "created": "Lập Kế Hoạch Cung Cấp Nguyên Liệu Thành Công!"
     }
   },
   "order": {
@@ -941,7 +941,7 @@
     }
   },
   "fuelProvide": {
-    "orderApproved": "Đơn hàng đã được duyệt thành công!",
+    "orderApproved": "Đơn cung cấp đã được duyệt thành công!",
     "approveFailed": "Duyệt đơn thất bại!",
     "errorApproving": "Có lỗi xảy ra khi duyệt đơn:",
     "orderCanceled": "Đơn hàng đã bị hủy thành công!",
@@ -1659,7 +1659,8 @@
       "description": "Mô Tả",
       "quantity": "Số Lượng Trong Kho",
       "status": "Trạng Thái",
-      "actions": "Hành Động"
+      "actions": "Hành Động",
+      "image": "Hình ảnh nguyên liệu"
     },
     "status": {
       "deleted": "Đã xóa",
@@ -1679,7 +1680,8 @@
       "loading": "Đang tải dữ liệu...",
       "close": "Đóng",
       "cancel": "Hủy",
-      "save": "Lưu"
+      "save": "Lưu",
+      "upload_image": "Tải ảnh lên"
     },
     "form": {
       "placeholder_name": "Tên Loại Nguyên liệu",
@@ -1800,7 +1802,7 @@
     "name_required": "Vui lòng nhập tên loại nguyên liệu",
     "description_label": "Mô tả",
     "description_placeholder": "Nhập mô tả (tuỳ chọn)",
-    "submit": "Tạo loại Nguyên Vật Liệu",
+    "submit": "Tạo Loại Nguyên Vật Liệu",
     "success": "Tạo loại thùng thành công!",
     "fail": "Tạo thất bại!",
     "error": "Lỗi kết nối đến server!",

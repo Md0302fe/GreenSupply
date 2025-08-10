@@ -76,7 +76,7 @@ const FuelRequestsManagement = () => {
       case "đã huỷ":
       case "đã Hủy":
       case "đã Huỷ":
-        return "Đã hủy"; // Thống nhất về dạng này
+        return "Đã hủy";
       case "hoàn thành":
         return "Hoàn Thành";
       case "đang xử lý":
@@ -136,14 +136,14 @@ const FuelRequestsManagement = () => {
     try {
       const response = await handleCancelOrders(stateDetailsUser._id);
       if (response) {
-        setOrderStatus("Đã hủy"); // Cập nhật trạng thái đơn hàng
-        message.success("Đơn hàng đã bị hủy thành công!");
+        setOrderStatus("Đã hủy");
+        message.success(t("fuel_request.toast.cancel_success"));
         queryOrder.refetch();
       } else {
-        message.error("Hủy đơn thất bại!");
+        message.error(t("fuel_request.toast.cancel_failed"));
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi hủy đơn!");
+      message.error(t("fuel_request.toast.cancel_error"));
     }
   };
 
@@ -389,7 +389,7 @@ const FuelRequestsManagement = () => {
       ...getColumnSearchProps("fuel_name"),
     },
     {
-      title: t("fuel_request.table.price"),
+      title: `${t("fuel_request.table.price")}\\(1kg)`,
       dataIndex: "price",
       key: "price",
       className: "text-center",

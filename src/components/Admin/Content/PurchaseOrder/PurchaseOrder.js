@@ -361,7 +361,7 @@ const HarvestRequestPage = () => {
               <input
                 type="text"
                 name="request_name"
-                maxLength="50"
+                maxLength="200"
                 placeholder={t("harvest.form.name_placeholder")}
                 value={formData.request_name}
                 onChange={handleChange}

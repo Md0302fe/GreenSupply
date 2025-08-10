@@ -741,29 +741,27 @@ const StageComponent = ({
   };
 
   const handleSaveCheckProduct = () => {
-    const requiredFields = {
-      name: "Tên sản phẩm",
-      quantity: "Khối lượng tịnh",
-    };
+    // const requiredFields = {
+    //   quantity: "Khối lượng tịnh",
+    // };
 
-    const missingFields = Object.entries(requiredFields).filter(
-      ([key]) =>
-        dataProduct[key] === "" ||
-        dataProduct[key] === null ||
-        dataProduct[key] === undefined
-    );
+    // const missingFields = Object.entries(requiredFields).filter(
+    //   ([key]) =>
+    //     dataProduct[key] === "" ||
+    //     dataProduct[key] === null ||
+    //     dataProduct[key] === undefined
+    // );
 
-    // kiểm tra - thông báo khi không đủ thông tin
-    if (missingFields.length > 0) {
-      const firstMissing = missingFields[0][1];
-      message.error(`Vui lòng nhập ${firstMissing}`);
-      return;
-    }
+    // // kiểm tra - thông báo khi không đủ thông tin
+    // if (missingFields.length > 0) {
+    //   const firstMissing = missingFields[0][1];
+    //   message.error(`Vui lòng nhập ${firstMissing}`);
+    //   return;
+    // }
     setIsCheckProduct(true);
     setIsModalVisible(false);
   };
 
-  console.log("dataProduct ,", dataProduct);
   // Render data of product
   const renderProductFormData = () => {
     if (!dataProduct)

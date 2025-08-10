@@ -60,9 +60,9 @@ export default function MangoVateSlider() {
           <div
             className={`bg-gradient-to-r ${bgColors[currentSlide]} text-white relative min-h-[500px]`}
           >
-            <div className="grid md:grid-cols-2 gap-8 p-2 md:p-8 md:p-12 items-center">
+            <div className="grid md:grid-cols-2 gap-8 p-12 items-center">
               <div className="flex flex-col justify-center space-y-6">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 p-0 md:p-5">
                   <div className="p-2 md:p-3 bg-white/20 rounded-full backdrop-blur-sm">
                     <IconComponent className="w-4 md:w-8 h-4 md:h-8" />
                   </div>

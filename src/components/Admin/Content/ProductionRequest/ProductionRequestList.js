@@ -550,6 +550,7 @@ const ProductionRequestList = () => {
     setIsEditMode(false);
   };
 
+  console.log("fuelTypes => ", fuelTypes)
   // Bấm “Chỉnh sửa”
   const handleEdit = () => {
     setIsEditMode(true);
@@ -655,7 +656,7 @@ const ProductionRequestList = () => {
         {selectedRequest && !isEditMode && (
           <Form layout="vertical">
             {/* Block 1: các trường dài */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Tên đơn - full width */}
               <Form.Item
                 label={t("form.request_name")}
@@ -685,12 +686,12 @@ const ProductionRequestList = () => {
                 label={t("form.material")}
                 className="!mb-0 lg:col-span-3"
               >
-                <Input value={selectedRequest.material} disabled />
+                <Input value={selectedRequest?.material?.fuel_type_id?.type_name} disabled />
               </Form.Item>
             </div>
 
             {/* Block 2: nhóm 3-cột cho các field số & có thể nằm ngang */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <Form.Item label={t("form.product_quantity")} className="!mb-0">
                 <Input
                   value={`${selectedRequest.product_quantity} Kg`}
@@ -824,12 +825,12 @@ const ProductionRequestList = () => {
                 >
                   <Select
                     placeholder={t("placeholder.select_material")}
-                    disabled
                   >
                     {fuelTypes.map((fuel) => (
                       <Select.Option key={fuel._id} value={fuel._id}>
-                        {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg)
+                        {fuel.fuel_type_id?.type_name} (Tồn: {fuel.quantity} Kg) 
                       </Select.Option>
+
                     ))}
                   </Select>
                 </Form.Item>
