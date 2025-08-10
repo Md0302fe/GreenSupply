@@ -7,8 +7,8 @@
   "password_placeholder": "Password",
   "forgot_password": "Forgot password?",
   "or": "Or",
-  "success_login": "Login successful!",
-  "fail_login": "Login failed.",
+  "success_login": "Login Successful!",
+  "fail_login": "Login Failed",
   "enter_email": "Please enter your email",
   "send_request": "Send request",
   "enter_otp": "Enter OTP",
@@ -19,8 +19,8 @@
   "slogan": "Effective solution for your agricultural products",
   "copyright": "@2025 copyright by Mangovate",
   "not_receive_code": "Not receive code?",
-  "login_success": "Login successful!",
-  "login_fail": "Login failed.",
+  "login_success": "Login Successful!",
+  "login_fail": "Login Failed",
   "login_retry": "Login unsuccessful, please try again later.",
   "otp_sent": "OTP has been sent!",
   "otp_cant_sent": "Cannot send otp!",
@@ -365,8 +365,8 @@
     "no_data": "None",
     "no_requests": "No provide requests available.",
     "select_order_warning": "Please select an order!",
-    "success_create": "Provide Request created successfully!",
-    "failed_create": "Failed to create Provide Request!",
+    "success_create": "Provide Request Created Successfully!",
+    "failed_create": "Failed To Create Provide Request!",
     "note_length_error": "Note must not exceed 2000 characters!",
     "delivery_address": "Delivery Address",
     "selected_order_info": "Selected Order Information",
@@ -805,7 +805,7 @@
       "empty_priority": "Please select a priority level!"
     },
     "success": {
-      "created": "Request created successfully!"
+      "created": "Create Purchase Material Plan Successfully!"
     }
   },
   "order": {
@@ -862,8 +862,8 @@
       "accept_confirm": "Are you sure you want to approve this order?",
       "cancel_title": "Confirm Cancel",
       "cancel_confirm": "Are you sure you want to cancel this order?",
-      "delete_confirm_title": "Confirm Delete Plan",
-      "delete_confirm_plan": "Are you sure you want to cancel this plan?"
+      "delete_confirm_title": "Confirm Delete",
+      "delete_confirm_plan": "Are you sure you want to delete this plan?"
     },
     "actions": {
       "update": "Update",
@@ -874,7 +874,9 @@
     "toast": {
       "no_order_selected": "No order selected for cancellation!",
       "cancel_success": "Order cancelled successfully!",
-      "cancel_failed": "Failed to cancel order!"
+      "cancel_failed": "Failed to cancel order!",
+      "delete_success": "Plan deleted successfully!",
+      "delete_failed": "Failed to delete order!"
     }
   },
   "supplier_dashboard": {
@@ -936,27 +938,27 @@
       "cancel": "Cancel"
     },
     "toast": {
-      "approve_success": "Order approved successfully!",
-      "approve_failed": "Order approval failed!",
-      "approve_error": "An error occurred while approving the order!",
-      "cancel_success": "Order cancelled successfully!",
-      "cancel_failed": "Order cancellation failed!",
-      "cancel_error": "An error occurred while cancelling the order!",
-      "complete_success": "Order completed successfully!",
-      "complete_failed": "Order completion failed!",
-      "complete_error": "An error occurred while completing the order!"
+      "approve_success": "Collection request approved successfully!",
+      "approve_failed": "Collection request approval failed!",
+      "approve_error": "An error occurred while approving the collection request!",
+      "cancel_success": "Collection request cancelled successfully!",
+      "cancel_failed": "Collection request cancellation failed!",
+      "cancel_error": "An error occurred while cancelling the collection request!",
+      "complete_success": "Collection request completed successfully!",
+      "complete_failed": "Collection request completion failed!",
+      "complete_error": "An error occurred while completing the collection request!"
     }
   },
   "fuelProvide": {
-    "orderApproved": "Order approved successfully!",
-    "approveFailed": "Failed to approve order!",
-    "errorApproving": "An error occurred while approving the order:",
-    "orderCanceled": "Order canceled successfully!",
-    "cancelFailed": "Failed to cancel order!",
-    "errorCanceling": "An error occurred while canceling the order:",
-    "orderCompleted": "Order completed successfully!",
-    "completeFailed": "Failed to complete order!",
-    "errorCompleting": "An error occurred while completing the order!",
+    "orderApproved": "Provide request approved successfully!",
+    "approveFailed": "Provide request approval failed!",
+    "errorApproving": "An error occurred while approving the provide request:",
+    "orderCanceled": "Provide request canceled successfully!",
+    "cancelFailed": "Failed to cancel provide request!",
+    "errorCanceling": "An error occurred while canceling the provide request:",
+    "orderCompleted": "Provide request completed successfully!",
+    "completeFailed": "Failed to complete provide request!",
+    "errorCompleting": "An error occurred while completing the provide request!",
     "customer": "Suppliers",
     "request_name": "Request Name",
     "fuelType": "Material Type",
@@ -1363,14 +1365,14 @@
     "request_name": "Request Name",
     "request_type": "Request Type",
     "material": "Material",
-    "product_quantity": "Product Quantity (Kg)",
-    "material_quantity": "Material Quantity (Kg)",
+    "product_quantity": "Product Quantity(Kg)",
+    "material_quantity": "Material Quantity(Kg)",
     "production_date": "Production Date",
     "end_date": "End Date",
     "status": "Status",
     "note": "Note",
     "update_title": "Update Request",
-    "loss_percentage": "Loss Percentage (%)",
+    "loss_percentage": "Loss Percentage(%)",
     "priority": "Priority Level",
     "fullName": "Full Name",
     "phone": "Phone Number",
@@ -1416,7 +1418,7 @@
     "production_queue": "Production Queue"
   },
   "page": {
-    "title": "Pending Requests to Process"
+    "title": "Pending Requests To Process"
   },
   "productionProcess": {
     "title": {
@@ -1674,7 +1676,8 @@
       "description": "Description",
       "quantity": "Stock Quantity",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "image": "Material Image"
     },
     "status": {
       "deleted": "Deleted",
@@ -1694,7 +1697,8 @@
       "loading": "Loading data...",
       "close": "Close",
       "cancel": "Cancel",
-      "save": "Save"
+      "save": "Save",
+      "upload_image": "Upload New Image"
     },
     "form": {
       "placeholder_name": "Material type Name",
@@ -1725,7 +1729,7 @@
     "category_error": "Failed to fetch box categories.",
     "box_error": "Failed to fetch boxes.",
     "details": {
-      "title": "Box Details",
+      "title": "Package Materials Details",
       "name": "Name",
       "quantity": "Quantity",
       "status": "Status",
@@ -1736,7 +1740,7 @@
       "close": "Close"
     },
     "update": {
-      "title": "Update Box",
+      "title": "Update Package Material",
       "name": "Box Name",
       "quantity": "Quantity",
       "image_label": "New Image",
@@ -1780,7 +1784,7 @@
       "close": "Close"
     },
     "edit": {
-      "title": "Edit Category",
+      "title": "Update Package Material Category",
       "name": "Category Name",
       "description": "Description",
       "cancel": "Cancel",

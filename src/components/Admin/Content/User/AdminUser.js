@@ -595,7 +595,11 @@ const UserComponent = () => {
       {/* DRAWER - Update Product */}
       <DrawerComponent
         title={
-          isEditMode ? t("user_list.update_title") : t("user_list.detail_title")
+          <div className="text-[14px] lg:text-lg font-semibold text-center">
+            {isEditMode
+              ? t("user_list.update_title")
+              : t("user_list.detail_title")}{" "}
+          </div>
         }
         isOpen={isDrawerOpen}
         onClose={() => setDrawerMode(null)}

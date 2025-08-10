@@ -435,7 +435,11 @@ const BoxList = () => {
       />
 
       <Drawer
-        title={t("boxList.details.title")}
+        title={
+          <div className="text-[14px] lg:text-lg font-semibold text-center">
+            {t("boxList.details.title")}
+          </div>
+        }
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         width={400}
@@ -544,7 +548,11 @@ const BoxList = () => {
       </Drawer>
 
       <Drawer
-        title={t("boxList.update.title")}
+        title={
+          <div className="text-[16px] font-semibold text-center">
+            {t("boxList.update.title")}
+          </div>
+        }
         open={isEditDrawerOpen}
         onClose={() => {
           setIsEditDrawerOpen(false);
@@ -593,7 +601,7 @@ const BoxList = () => {
               }}
             />
           </Form.Item>
-          
+
           {/* 
           <Form.Item label="Ảnh mới">
             <Input

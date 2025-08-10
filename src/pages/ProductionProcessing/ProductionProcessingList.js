@@ -302,6 +302,7 @@ const ProductionProcessingList = () => {
     try {
       const values = await form.validateFields();
       const updatedData = {
+        process_type: type_process,
         production_name: values.production_name,
         start_time: startDate ? startDate.toISOString() : null, // Dùng state
         end_time: endDate ? endDate.toISOString() : null, // Dùng state
