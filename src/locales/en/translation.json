@@ -1145,7 +1145,7 @@
     "note": "Note",
     "createExportOrder": "Create Export Order",
     "updateTitle": "Update Raw Material Batch",
-    "detailTitle": "Batch Detail",
+    "detailTitle": "Raw Material Batch Details",
     "estimatedProduction": "Estimated Production (Kg)",
     "requiredMaterialEstimate": "Estimated Required Material (Kg)",
     "selectFuelType": "Select Material type",
