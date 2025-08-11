@@ -27,6 +27,7 @@ import _ from "lodash";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { GoPackageDependencies } from "react-icons/go";
 import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
+import imgProductBatch from "../../../../assets/Feature_warehouse/prouct_carton_img.jpg";
 
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -277,7 +278,6 @@ const FuelStorageReceiptList = () => {
     setLoading(false);
   };
 
-
   const handleExportFileExcel = () => {
     if (!receipts.length) {
       message.warning(t("fuelStorage.noDataToExport"));
@@ -443,6 +443,8 @@ const FuelStorageReceiptList = () => {
     },
   ];
 
+  console.log("selectedReceipt ==> ", selectedReceipt);
+
   return (
     <div className="fuel-storage-receipt-list md:px-8">
       {/* Tiêu đề */}
@@ -545,107 +547,220 @@ const FuelStorageReceiptList = () => {
       >
         {selectedReceipt ? (
           <Form layout="vertical" disabled>
+            {/* Hình ảnh sản phẩm */}
+            {receiptTypeFilter === "2" && (
+              <div className="space-y-2 flex flex-col items-center mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  {t("fuelStorage.columns.productImage")}
+                </label>
+                <div className="relative overflow-hidden w-1/2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                  <img
+                    src={imgProductBatch || "/placeholder.svg"}
+                    alt="Product Image"
+                    className="w-full h-32 object-cover transition-transform duration-200 hover:scale-105"
+                  />
+                  {!imgProductBatch && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                      <span className="text-gray-400 text-sm">
+                        No image available
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Người quản lý - full width */}
-              <Form.Item
-                label={t("fuelStorage.columns.manager")}
-                className="col-span-1 lg:col-span-2 !mb-0"
-              >
-                <Input
-                  value={
-                    selectedReceipt.manager_id?.full_name ||
-                    t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
-
-              {/* Tên nguyên liệu - full width */}
-              <Form.Item
-                label={t("fuelProvide.fuelName")}
-                className="col-span-1 lg:col-span-2 !mb-0"
-              >
-                <Input
-                  value={
-                    selectedReceipt.receipt_request_id?.fuel_name ||
-                    selectedReceipt.receipt_supply_id?.fuel_name ||
-                    t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.manager")}
+                  className="col-span-1 lg:col-span-2 !mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.manager_id?.full_name ||
+                      t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
+              )}
 
               {/* Loại đơn hàng */}
-              <Form.Item
-                label={t("fuelStorage.columns.receiptType")}
-                className="!mb-0"
-              >
-                <Input
-                  value={
-                    selectedReceipt.receipt_supply_id
-                      ? t("fuelStorage.receiptType.supply")
-                      : t("fuelStorage.receiptType.request")
-                  }
-                />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.receiptType")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.receipt_supply_id
+                        ? t("fuelStorage.receiptType.supply")
+                        : t("fuelStorage.receiptType.request")
+                    }
+                  />
+                </Form.Item>
+              )}
+
+              {/* Mã thành phẩm */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.productCode")}
+                  className="!mb-0"
+                >
+                  <Input value={selectedReceipt.production?.masanpham} />
+                </Form.Item>
+              )}
 
               {/* Kho */}
-              <Form.Item
-                label={t("fuelStorage.columns.storage")}
-                className="!mb-0"
-              >
-                <Input
-                  value={
-                    selectedReceipt.storage_id?.name_storage ||
-                    t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.storage")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.storage_id?.name_storage ||
+                      t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
+              )}
+
+              {/* Mã kế hoạch */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.productionPlan")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.production?.origin_production_request_id
+                        ?._id
+                    }
+                  />
+                </Form.Item>
+              )}
 
               {/* Đơn giá */}
-              <Form.Item label={t("fuelProvide.price")} className="!mb-0">
-                <Input
-                  value={
-                    selectedReceipt.receipt_request_id?.price !== undefined
-                      ? selectedReceipt.receipt_request_id.price.toLocaleString() +
-                        " VNĐ"
-                      : selectedReceipt.receipt_supply_id?.price !== undefined
-                      ? selectedReceipt.receipt_supply_id.price.toLocaleString() +
-                        " VNĐ"
-                      : t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item label={t("fuelProvide.price")} className="!mb-0">
+                  <Input
+                    value={
+                      selectedReceipt.receipt_request_id?.price !== undefined
+                        ? selectedReceipt.receipt_request_id.price.toLocaleString() +
+                          " VNĐ"
+                        : selectedReceipt.receipt_supply_id?.price !== undefined
+                        ? selectedReceipt.receipt_supply_id.price.toLocaleString() +
+                          " VNĐ"
+                        : t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
+              )}
 
               {/* Số lượng */}
-              <Form.Item
-                label={t("fuelStorage.columns.quantity")}
-                className="!mb-0"
-              >
-                <Input
-                  value={
-                    selectedReceipt.receipt_request_id?.quantity ||
-                    selectedReceipt.receipt_supply_id?.quantity ||
-                    t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.quantity")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.receipt_request_id?.quantity ||
+                      selectedReceipt.receipt_supply_id?.quantity ||
+                      t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
+              )}
+
+              {/* Ngày Tạo */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.createdAt")}
+                  className="!mb-0"
+                >
+                  <Input value={selectedReceipt.production?.created_date} />
+                </Form.Item>
+              )}
+
+              {/* Hạn sử dụng */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.expirationDate")}
+                  className="!mb-0"
+                >
+                  <Input value={selectedReceipt.production?.expiration_date} />
+                </Form.Item>
+              )}
+
+              {/* Loại nguyên liệu */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.materialType")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.production?.origin_production_request_id
+                        ?.material?.fuel_type_id?.type_name
+                    }
+                  />
+                </Form.Item>
+              )}
+
+              {/* Tình Trạng */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.curentStatus")}
+                  className="!mb-0"
+                >
+                  <Input value={selectedReceipt.production?.status} />
+                </Form.Item>
+              )}
+
+              {/* Số lượng */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.quantity")}
+                  className="!mb-0"
+                >
+                  <Input value="1" />
+                </Form.Item>
+              )}
+
+              {/* Số lượng */}
+              {receiptTypeFilter === "2" && (
+                <Form.Item
+                  label={t("fuelStorage.columns.weight")}
+                  className="!mb-0"
+                >
+                  <Input value={selectedReceipt.production?.quantity} />
+                </Form.Item>
+              )}
 
               {/* Tổng giá và Trạng thái - cùng hàng trên màn hình lớn */}
               {/* Thành tiền */}
-              <Form.Item label={t("fuelProvide.totalPrice")} className="!mb-0">
-                <Input
-                  value={
-                    selectedReceipt.receipt_request_id?.total_price !==
-                    undefined
-                      ? selectedReceipt.receipt_request_id.total_price.toLocaleString() +
-                        " VNĐ"
-                      : selectedReceipt.receipt_supply_id?.total_price !==
-                        undefined
-                      ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() +
-                        " VNĐ"
-                      : t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item
+                  label={t("fuelProvide.totalPrice")}
+                  className="!mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.receipt_request_id?.total_price !==
+                      undefined
+                        ? selectedReceipt.receipt_request_id.total_price.toLocaleString() +
+                          " VNĐ"
+                        : selectedReceipt.receipt_supply_id?.total_price !==
+                          undefined
+                        ? selectedReceipt.receipt_supply_id.total_price.toLocaleString() +
+                          " VNĐ"
+                        : t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
+              )}
 
               {/* Trạng thái */}
               {selectedReceipt?.status && (
@@ -690,32 +805,20 @@ const FuelStorageReceiptList = () => {
               )}
 
               {/* Địa chỉ */}
-              <Form.Item
-                label={t("fuelProvide.address")}
-                className="col-span-1 lg:col-span-2 !mb-0"
-              >
-                <Input
-                  value={
-                    selectedReceipt.receipt_request_id?.address ||
-                    selectedReceipt.receipt_supply_id?.address ||
-                    t("fuelStorage.noDataShort")
-                  }
-                />
-              </Form.Item>
-
-              {/* Ngày tạo và cập nhật - shared row */}
-              <Form.Item
-                label={t("fuelStorage.columns.createdAt")}
-                className="!mb-0"
-              >
-                <Input value={converDateString(selectedReceipt.createdAt)} />
-              </Form.Item>
-              <Form.Item
-                label={t("fuelStorage.columns.updatedAt")}
-                className="!mb-0"
-              >
-                <Input value={converDateString(selectedReceipt.updatedAt)} />
-              </Form.Item>
+              {receiptTypeFilter === "1" && (
+                <Form.Item
+                  label={t("fuelProvide.address")}
+                  className="col-span-1 lg:col-span-2 !mb-0"
+                >
+                  <Input
+                    value={
+                      selectedReceipt.receipt_request_id?.address ||
+                      selectedReceipt.receipt_supply_id?.address ||
+                      t("fuelStorage.noDataShort")
+                    }
+                  />
+                </Form.Item>
+              )}
 
               {/* Ghi chú - nếu có */}
               {(selectedReceipt.receipt_request_id?.note ||
@@ -734,6 +837,23 @@ const FuelStorageReceiptList = () => {
                 </Form.Item>
               )}
             </div>
+            {/* Ngày tạo và cập nhật - shared row */}
+            {receiptTypeFilter === "1" && (
+              <div className="w-full flex flex-col lg:flex-row lg:gap-[23%] mt-4">
+                <Form.Item
+                  label={t("fuelStorage.columns.createdAt")}
+                  className="!mb-0"
+                >
+                  <Input value={converDateString(selectedReceipt.createdAt)} />
+                </Form.Item>
+                <Form.Item
+                  label={t("fuelStorage.columns.updatedAt")}
+                  className="!mb-0"
+                >
+                  <Input value={converDateString(selectedReceipt.updatedAt)} />
+                </Form.Item>
+              </div>
+            )}
           </Form>
         ) : (
           <p className="text-center text-gray-500">
