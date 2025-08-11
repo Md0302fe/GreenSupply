@@ -1002,33 +1002,54 @@
     "address": "Address",
     "fuelName": "Material Name"
   },
-  "dashboardWarehouse": {
-    "title": "Warehouse Management",
-    "totalReceipts": "Total receipts",
-    "pendingReceipts": "Pending receipts",
-    "approvedReceipts": "Approved receipts",
-    "storageInfo": "Storage Information",
-    "used": "used",
-    "statsChartTitle": "Receipt Statistics",
-    "filter": {
-      "day": "By Day",
-      "week": "By Week",
-      "month": "By Month"
-    },
-    "recentReceipts": "Recent receipts",
-    "columns": {
-      "id": "Receipt ID",
-      "manager": "Manager",
-      "status": "Status",
-      "quantity": "Quantity",
-      "createdAt": "Created At"
-    },
-    "noData": "No data available",
-    "notLoggedIn": "You are not logged in!",
-    "noStorageInfo": "Storage info not found!",
-    "noReceipts": "No receipt data found!",
-    "serverError": "Failed to connect to the server!"
+ "dashboardWarehouse": {
+  "title": "Warehouse Management",
+  "totalReceipts": "Total receipts",
+  "pendingReceipts": "Pending receipts",
+  "approvedReceipts": "Approved receipts",
+  "importedReceipts": "Imported receipts",
+  "totalExports": "Total export orders",
+  "pendingExports": "Pending export orders",
+  "completedExports": "Completed export orders",
+  "orderStatus": "Order status",
+  "exported": "Exported",
+  "storageInfo": "Storage Information",
+  "used": "used",
+  "statsChartTitle": "Import orders statistics",
+  "exportStatsChartTitle": "Export orders statistics",
+  "exportOrders": "Export orders",
+  "exportLoadError": "Failed to load export orders",
+  "filter": {
+    "day": "By Day",
+    "week": "By Week",
+    "month": "By Month"
   },
+  "recentReceipts": "Recent receipts",
+  "columns": {
+    "id": "Receipt ID",
+    "manager": "Manager",
+    "status": "Status",
+    "quantity": "Quantity",
+    "createdAt": "Created At",
+    "creator": "Creator",
+    "batchName": "Raw material batch"
+  },
+  "noData": "No data available",
+  "notLoggedIn": "You are not logged in!",
+  "noStorageInfo": "Storage info not found!",
+  "noReceipts": "No receipt data found!",
+  "serverError": "Failed to connect to the server!",
+  "status": {
+    "pending": "Pending",
+    "approve": "Approved",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "processing": "Processing",
+    "failed": "Failed",
+    "disable": "Disabled",
+    "imported": "Imported"
+  }
+},
   "fuelOrderStatus": {
     "fetchError": "Failed to fetch order list!",
     "serverError": "Unable to connect to the server!",
@@ -1138,7 +1159,7 @@
     "note": "Note",
     "createExportOrder": "Create Export Order",
     "updateTitle": "Update Raw Material Batch",
-    "detailTitle": "Batch Detail",
+    "detailTitle": "Raw Material Batch Details",
     "estimatedProduction": "Estimated Production (Kg)",
     "requiredMaterialEstimate": "Estimated Required Material (Kg)",
     "selectFuelType": "Select Material type",
