@@ -47,7 +47,7 @@ const UserComponent = () => {
   const user = useSelector((state) => state.user);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const filterStatus = queryParams.get("status"); // Ví dụ: "Chờ duyệt"
+  const filterStatus = queryParams.get("status");
 
   const navigate = useNavigate();
 
@@ -70,6 +70,39 @@ const UserComponent = () => {
     fuel_image: "",
   });
 
+  const MAX_QTY = 1_000_000;
+  const MAX_PRICE = 9_999_999;
+  const formatNumber = (n) => n.toLocaleString("vi-VN");
+  const [fieldErrors, setFieldErrors] = useState({
+    request_name: "",
+    quantity: "",
+    price: "",
+    start_received: "",
+    end_received: "",
+    due_date: "",
+  });
+
+  const safeTotalPrice = () => {
+    const q = Number(purchaseDetails.quantity);
+    const p = Number(purchaseDetails.price);
+    if (
+      isNaN(q) ||
+      isNaN(p) ||
+      !isFinite(q) ||
+      !isFinite(p) ||
+      q <= 0 ||
+      p <= 0 ||
+      q > MAX_QTY ||
+      p > MAX_PRICE
+    )
+      return 0;
+    return q * p;
+  };
+
+  const toDayStart = (d) => (d ? new Date(d).setHours(0, 0, 0, 0) : null);
+  const normalizeDate = (d) => (d ? new Date(d).setHours(0, 0, 0, 0) : null);
+  const today = toDayStart(new Date());
+
   // Fetch : Get User Details
   const fetchGetPurchaseDetail = async ({ id, access_token }) => {
     try {
@@ -80,22 +113,25 @@ const UserComponent = () => {
       );
 
       if (res?.PurchaseOrderDetail) {
+        const d = res.PurchaseOrderDetail;
         setPurchaseDetails({
-          request_name: res.PurchaseOrderDetail.request_name,
-          start_received: res.PurchaseOrderDetail.start_received,
-          end_received: res.PurchaseOrderDetail.end_received,
-          due_date: res.PurchaseOrderDetail.due_date,
-          quantity: res.PurchaseOrderDetail.quantity,
-          quantity_remain: res.PurchaseOrderDetail.quantity_remain,
-          status: res.PurchaseOrderDetail.status,
-          price: res.PurchaseOrderDetail.price,
-          fuel_type: res.PurchaseOrderDetail.fuel_type,
-          updatedAt: res.PurchaseOrderDetail.updatedAt,
-          fuel_image: res.PurchaseOrderDetail.fuel_image,
-          total_price: res.PurchaseOrderDetail.total_price,
-          priority: res.PurchaseOrderDetail.priority,
-          note: res.PurchaseOrderDetail.note,
+          request_name: d.request_name,
+          start_received: d.start_received ? new Date(d.start_received) : null,
+          end_received: d.end_received ? new Date(d.end_received) : null,
+          due_date: d.due_date ? new Date(d.due_date) : null,
+          quantity: d.quantity,
+          quantity_remain: d.quantity_remain,
+          status: d.status,
+          price: d.price,
+          fuel_type: d.fuel_type,
+          updatedAt: d.updatedAt,
+          fuel_image: d.fuel_image,
+          total_price: d.total_price,
+          priority: d.priority,
+          note: d.note,
         });
+        setFieldErrors({ quantity: "", price: "" });
+        revalidateNumbers(d.quantity, d.price);
       }
     } catch (error) {
       console.error("Error fetching purchase details:", error);
@@ -123,10 +159,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (updateSuccess) {
       if (dataUpdate.status) {
-        message.success("Update Purchased Order Success");
+        message.success(t("harvest.success.updated"));
         setIsDrawerOpen(false);
       } else {
-        message.success("Update Purchased Order Fail");
+        message.success(t("harvest.fail.updated"));
       }
     }
   }, [updateSuccess]);
@@ -141,10 +177,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (AcceptSuccess) {
       if (dataAccept.status) {
-        message.success("Accept Purchased Order Success");
+        message.success(t("harvest.success.accept"));
         setIsDrawerOpen(false);
       } else {
-        message.success("Accept Purchased Order Fail");
+        message.success(t("harvest.fail.accept"));
       }
     }
   }, [AcceptSuccess]);
@@ -204,49 +240,52 @@ const UserComponent = () => {
 
   const validatePurchaseDetails = () => {
     const errors = [];
+    const q = Number(purchaseDetails.quantity);
+    const p = Number(purchaseDetails.price);
+    const start = normalizeDate(purchaseDetails.start_received);
+    const end = normalizeDate(purchaseDetails.end_received);
+    const due = normalizeDate(purchaseDetails.due_date);
 
-    if (
-      !purchaseDetails.request_name ||
-      purchaseDetails.request_name.trim() === ""
-    ) {
-      errors.push("Tên đơn hàng không được để trống!");
-    }
+    // Name & fuel type
+    if (!purchaseDetails.request_name?.trim())
+      errors.push(t("harvest.validation.empty_name"));
+    if (!purchaseDetails.fuel_type?.trim())
+      errors.push(t("harvest.validation.empty_fuel_type"));
 
-    if (!purchaseDetails.fuel_type || purchaseDetails.fuel_type.trim() === "") {
-      errors.push("Loại Nguyên liệu không được để trống!");
-    }
+    // Dates (không lặp lại)
+    if (!start) errors.push(t("harvest.validation.empty_start_date"));
+    else if (start < today)
+      errors.push(t("harvest.validation.invalid_start_date"));
 
-    if (!purchaseDetails.start_received) {
-      errors.push("Vui lòng chọn ngày bắt đầu nhận đơn!");
-    }
+    if (!end) errors.push(t("harvest.validation.empty_end_date"));
+    else if (start && end <= start)
+      errors.push(t("harvest.validation.invalid_end_date"));
 
-    if (!purchaseDetails.end_received) {
-      errors.push("Vui lòng chọn ngày kết thúc nhận đơn!");
-    }
+    if (!due) errors.push(t("harvest.validation.empty_due_date"));
+    else if (end && due <= end)
+      errors.push(t("harvest.validation.invalid_due_date"));
 
-    if (!purchaseDetails.due_date) {
-      errors.push("Vui lòng chọn hạn chót hoàn thành đơn!");
-    }
+    // Quantity
+    if (!purchaseDetails.quantity?.toString().trim())
+      errors.push(t("harvest.validation.empty_quantity"));
+    else if (isNaN(q) || q <= 0)
+      errors.push(t("harvest.validation.invalid_quantity"));
+    else if (q > MAX_QTY)
+      errors.push(
+        t("harvest.validation.exceed_quantity", { max: formatNumber(MAX_QTY) })
+      );
 
-    // So sánh ngày bắt đầu < ngày kết thúc
-    if (purchaseDetails.start_received && purchaseDetails.end_received) {
-      const start = new Date(purchaseDetails.start_received).getTime();
-      const end = new Date(purchaseDetails.end_received).getTime();
-      if (start >= end) {
-        errors.push("Ngày kết thúc phải sau ngày bắt đầu.");
-      }
-    }
+    // Price
+    if (!purchaseDetails.price?.toString().trim())
+      errors.push(t("harvest.validation.empty_price"));
+    else if (isNaN(p) || p <= 0)
+      errors.push(t("harvest.validation.invalid_price"));
+    else if (p > MAX_PRICE)
+      errors.push(
+        t("harvest.validation.exceed_price", { max: formatNumber(MAX_PRICE) })
+      );
 
-    // So sánh ngày kết thúc < hạn chót (không được trùng)
-    if (purchaseDetails.end_received && purchaseDetails.due_date) {
-      const end = new Date(purchaseDetails.end_received).setHours(0, 0, 0, 0);
-      const due = new Date(purchaseDetails.due_date).setHours(0, 0, 0, 0);
-      if (end >= due) {
-        errors.push("Hạn chót phải sau ngày kết thúc (không được trùng).");
-      }
-    }
-
-    return errors;
+    return [...new Set(errors)];
   };
 
   // Mutation - Delete Productd
@@ -284,6 +323,13 @@ const UserComponent = () => {
   useEffect(() => {
     formUpdate.setFieldsValue(purchaseDetails);
   }, [formUpdate, setPurchaseDetails, purchaseDetails]);
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      setFieldErrors({ quantity: "", price: "" });
+    }
+  }, [isDrawerOpen]);
+
   // handle Notification update product
 
   // -------------------------------------------------\\
@@ -338,13 +384,13 @@ const UserComponent = () => {
       },
       {
         onSuccess: () => {
-          message.success(t("order.toast.delete_success"));
-          queryPurchased.refetch(); 
-          setIsDrawerOpen(false); 
+          message.success(t("harvest.success.delete"));
+          queryPurchased.refetch();
+          setIsDrawerOpen(false);
         },
         onError: (error) => {
           console.error("Lỗi khi gọi API:", error);
-          message.error(t("order.toast.delete_failed"));
+          message.error(t("harvest.fail.delete"));
         },
       }
     );
@@ -382,27 +428,94 @@ const UserComponent = () => {
   // Xử lý input
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const nextErrors = { ...fieldErrors };
+
+    // Name
+    if (name === "request_name") {
+      const v = (value ?? "").trim();
+      nextErrors.request_name = v ? "" : t("harvest.validation.empty_name");
+    }
+
+    // ----- Dates -----
     if (name === "start_received") {
-      if (value <= currentDate) {
-        message.error("Vui lòng chọn ngày bắt đầu nhận đơn từ hôm nay trở đi.");
-        return;
-      }
-    } else if (name === "end_received") {
-      if (value < purchaseDetails.start_received) {
-        message.error("Ngày kết thúc nhận đơn phải sau ngày bắt đầu nhận đơn.");
-        return;
-      }
-    } else if (name === "due_date") {
-      if (value < purchaseDetails.end_received) {
-        message.error("Hạn chót nhận đơn phải sau ngày kết thúc nhận đơn.");
-        return;
+      const v = toDayStart(value);
+      nextErrors.start_received =
+        v === null || v < today
+          ? t("harvest.validation.invalid_start_date")
+          : "";
+    }
+
+    if (name === "end_received") {
+      const start = toDayStart(purchaseDetails.start_received);
+      const end = toDayStart(value);
+      nextErrors.end_received =
+        end === null || start === null || end <= start
+          ? t("harvest.validation.invalid_end_date")
+          : "";
+    }
+
+    if (name === "due_date") {
+      const end = toDayStart(purchaseDetails.end_received);
+      const due = toDayStart(value);
+      nextErrors.due_date =
+        due === null || end === null || due <= end
+          ? t("harvest.validation.invalid_due_date")
+          : "";
+    }
+
+    if (name === "quantity") {
+      const v = value?.toString() ?? "";
+      const n = Number(v);
+      if (!v.trim()) {
+        nextErrors.quantity = t("harvest.validation.empty_quantity");
+      } else if (isNaN(n) || !isFinite(n) || n <= 0) {
+        nextErrors.quantity = t("harvest.validation.invalid_quantity");
+      } else if (n > MAX_QTY) {
+        nextErrors.quantity = t("harvest.validation.exceed_quantity", {
+          max: formatNumber(MAX_QTY),
+        });
+      } else {
+        nextErrors.quantity = "";
       }
     }
-    // Kiểm tra Tên yêu cầu (Không chứa ký tự đặc biệt)
-    if ((name === "quantity" || name === "price") && value === "0") {
-      return;
+
+    // validate giá
+    if (name === "price") {
+      const v = value?.toString() ?? "";
+      const n = Number(v);
+      if (!v.trim()) {
+        nextErrors.price = t("harvest.validation.empty_price");
+      } else if (isNaN(n) || !isFinite(n) || n <= 0) {
+        nextErrors.price = t("harvest.validation.invalid_price");
+      } else if (n > MAX_PRICE) {
+        nextErrors.price = t("harvest.validation.exceed_price", {
+          max: formatNumber(MAX_PRICE),
+        });
+      } else {
+        nextErrors.price = "";
+      }
     }
+    setFieldErrors(nextErrors);
+
+    // Không cho set “0” cứng
+    if ((name === "quantity" || name === "price") && value === "0") return;
     setPurchaseDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const revalidateNumbers = (q, p) => {
+    const MAX_QTY = 1_000_000,
+      MAX_PRICE = 9_999_999;
+    const errs = { quantity: "", price: "" };
+
+    if (!q && q !== 0) errs.quantity = t("harvest.validation.empty_quantity");
+    else if (isNaN(+q) || +q <= 0 || +q > MAX_QTY)
+      errs.quantity = t("harvest.validation.invalid_quantity");
+
+    if (!p && p !== 0) errs.price = t("harvest.validation.empty_price");
+    else if (isNaN(+p) || +p <= 0 || +p > MAX_PRICE)
+      errs.price = t("harvest.validation.invalid_price");
+
+    setFieldErrors(errs);
   };
 
   // Khi bấm "Cập Nhật" -> Hiện Modal xác nhận cập nhật
@@ -898,7 +1011,10 @@ const UserComponent = () => {
           </div>
         }
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setFieldErrors({ quantity: "", price: "" });
+        }}
         placement="right"
         width={drawerWidth}
         forceRender
@@ -920,8 +1036,18 @@ const UserComponent = () => {
                     placeholder={t("order.form.name_placeholder")}
                     value={purchaseDetails.request_name}
                     onChange={handleChange}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    className={`border p-2 rounded w-full focus:ring focus:ring-yellow-300
+                      ${
+                        fieldErrors.request_name
+                          ? "border-red-400 focus:border-red-500"
+                          : "border-gray-300"
+                      }`}
                   />
+                  {fieldErrors.request_name && (
+                    <p className="mt-1 text-red-500 text-sm">
+                      {fieldErrors.request_name}
+                    </p>
+                  )}
                 </div>
 
                 {/* Loại Nguyên liệu */}
@@ -1007,12 +1133,22 @@ const UserComponent = () => {
                           e.preventDefault();
                         }
                       }}
-                      className="border border-gray-300 p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300"
+                      className={`border p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300
+                        ${
+                          fieldErrors.quantity
+                            ? "border-red-400 focus:border-red-500"
+                            : "border-gray-300"
+                        }`}
                     />
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
                       Kg
                     </span>
                   </div>
+                  {fieldErrors.quantity && (
+                    <p className="mt-1 text-red-500 text-sm">
+                      {fieldErrors.quantity}
+                    </p>
+                  )}
                 </div>
 
                 {/* Giá trên mỗi kg */}
@@ -1036,12 +1172,22 @@ const UserComponent = () => {
                           e.preventDefault();
                         }
                       }}
-                      className="border border-gray-300 p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300"
+                      className={`border p-2 pr-14 rounded w-full focus:ring focus:ring-yellow-300
+                        ${
+                          fieldErrors.price
+                            ? "border-red-400 focus:border-red-500"
+                            : "border-gray-300"
+                        }`}
                     />
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">
                       VND
                     </span>
                   </div>
+                  {fieldErrors.price && (
+                    <p className="mt-1 text-red-500 text-sm">
+                      {fieldErrors.price}
+                    </p>
+                  )}
                 </div>
 
                 {/* Ngày nhận đơn */}
@@ -1063,6 +1209,11 @@ const UserComponent = () => {
                         className="w-full outline-none bg-transparent"
                         minDate={new Date()}
                       />
+                      {fieldErrors.start_received && (
+                        <p className="mt-1 text-red-500 text-sm">
+                          {fieldErrors.start_received}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -1090,6 +1241,11 @@ const UserComponent = () => {
                             : new Date()
                         }
                       />
+                      {fieldErrors.end_received && (
+                        <p className="mt-1 text-red-500 text-sm">
+                          {fieldErrors.end_received}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -1117,6 +1273,11 @@ const UserComponent = () => {
                             : new Date()
                         }
                       />
+                      {fieldErrors.due_date && (
+                        <p className="mt-1 text-red-500 text-sm">
+                          {fieldErrors.due_date}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1162,10 +1323,7 @@ const UserComponent = () => {
                 <div className="font-semibold text-lg text-gray-800">
                   {t("order.form.total_price")}:{" "}
                   <span className="text-red-500 font-bold">
-                    {(
-                      purchaseDetails.quantity * purchaseDetails.price
-                    ).toLocaleString("vi-VN")}{" "}
-                    VNĐ
+                    {safeTotalPrice().toLocaleString("vi-VN")} VNĐ
                   </span>
                 </div>
 
@@ -1188,7 +1346,7 @@ const UserComponent = () => {
                       {t("order.actions.accept")}
                     </button>
 
-                    {/* Nút huỷ */}
+                    {/* Nút xóa */}
                     <button
                       type="button"
                       onClick={handleOpenConfirmCancel}
@@ -1218,6 +1376,9 @@ const UserComponent = () => {
         open={isOpenDelete}
         onCancel={handleCancelDelete}
         onOk={handleConfirmDelete}
+        okButtonProps={{
+          style: { backgroundColor: "red", borderColor: "red" },
+        }}
         confirmLoading={isPendingDelete}
         destroyOnClose
       >
@@ -1232,6 +1393,9 @@ const UserComponent = () => {
         open={isConfirmUpdateOpen}
         onCancel={() => setIsConfirmUpdateOpen(false)}
         onOk={handleConfirmUpdate}
+        okButtonProps={{
+          style: { backgroundColor: "green", borderColor: "green" },
+        }}
       >
         <p>{t("order.modal.update_confirm")}</p>
       </ModalComponent>
@@ -1242,6 +1406,9 @@ const UserComponent = () => {
         open={isConfirmAccept}
         onCancel={() => setIsConfirmAccept(false)}
         onOk={handleConfirmAccept}
+        okButtonProps={{
+          style: { backgroundColor: "#134afe", borderColor: "#134afe" },
+        }}
       >
         <p>{t("order.modal.accept_confirm")}</p>
       </ModalComponent>
@@ -1252,6 +1419,9 @@ const UserComponent = () => {
         open={isConfirmCancelOpen}
         onCancel={() => setIsConfirmCancelOpen(false)}
         onOk={handleCancelUpdate}
+        okButtonProps={{
+          style: { backgroundColor: "red", borderColor: "red" },
+        }}
       >
         <p>{t("order.modal.delete_confirm_plan")}</p>
       </ModalComponent>

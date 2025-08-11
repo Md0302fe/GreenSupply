@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { convertPrice } from "../../../../ultils";
 import { SearchOutlined } from "@ant-design/icons";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
-
+import { Modal } from "antd";
 import TableUser from "./TableUser";
 import Loading from "../../../LoadingComponent/Loading";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
@@ -49,7 +49,12 @@ const FuelProvideManagement = () => {
     "thất bại": "failed",
     "Vô hiệu hóa": "disable",
   };
-
+  const normalize = (s) => {
+    const v = (s || "").trim().toLowerCase();
+    return v === "vô hiệu hóa" || v === "vo hieu hoa" || v === "disable"
+      ? "Đã hủy"
+      : s;
+  };
   const user = useSelector((state) => state.user);
 
   //  Search Props
@@ -64,6 +69,8 @@ const FuelProvideManagement = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const defaultStatusFilter = queryParams.get("status") || "";
+  const [isConfirmApproveOpen, setIsConfirmApproveOpen] = useState(false);
+  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
 
   //  State Details quản lý products khi có req edit
   const [stateDetailsUser, setStateDetailsUser] = useState({
@@ -119,6 +126,7 @@ const FuelProvideManagement = () => {
         setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
         message.success(t("fuelProvide.orderApproved"));
         queryOrder.refetch();
+        setIsDrawerOpen(false);
       } else {
         message.error(t("fuelProvide.approveFailed"));
       }
@@ -134,6 +142,7 @@ const FuelProvideManagement = () => {
         setOrderStatus("Đã hủy"); // Cập nhật trạng thái đơn hàng
         message.success(t("fuelProvide.orderCanceled"));
         queryOrder.refetch();
+        setIsDrawerOpen(false);
       } else {
         message.error(t("fuelProvide.cancelFailed"));
       }
@@ -251,25 +260,26 @@ const FuelProvideManagement = () => {
   };
 
   // DATA FROM USERS LIST
-const filteredOrders =
-  orders?.data?.filter((order) => {
-    return defaultStatusFilter
-      ? order.status?.trim() === defaultStatusFilter.trim()
-      : true;
-  }) || [];
+  const filteredOrders =
+    orders?.data?.filter((order) => {
+      return defaultStatusFilter
+        ? order.status?.trim() === defaultStatusFilter.trim()
+        : true;
+    }) || [];
 
-const tableData =
-  filteredOrders.length &&
-  filteredOrders
-    .map((order) => {
-      return {
-        ...order,
-        key: order._id,
-        customerName: order?.supplier_id?.full_name,
-        createdAt: order?.createdAt,
-      };
-    })
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const tableData =
+    filteredOrders.length &&
+    filteredOrders
+      .map((order) => {
+        return {
+          ...order,
+          key: order._id,
+          customerName: order?.supplier_id?.full_name,
+          createdAt: order?.createdAt,
+          status: normalize(order.status)
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Actions
   const renderAction = () => {
@@ -576,7 +586,10 @@ const tableData =
       {/* DRAWER - Chi Tiết Đơn Hàng */}
       <DrawerComponent
         title={
-          <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
+          <div
+            className="text-[14px] lg:text-lg font-semibold"
+            style={{ textAlign: "center" }}
+          >
             {t("fuelProvide.orderDetail")}
           </div>
         }
@@ -747,20 +760,63 @@ const tableData =
                 <>
                   <ButtonComponent
                     type="approve-order"
-                    onClick={handleAcceptProvideOrder}
+                    onClick={() => setIsConfirmApproveOpen(true)}
                   />
                   <ButtonComponent
                     type="cancel-order"
-                    onClick={handleCancelProvideOrder}
+                    onClick={() => setIsConfirmCancelOpen(true)}
                   />
                 </>
               )}
+
               <ButtonComponent
                 type="close"
                 onClick={() => setIsDrawerOpen(false)}
               />
             </div>
           </div>
+          <Modal
+            title={t("fuelProvide.modal.approve_title") || "Confirm Approval"}
+            open={isConfirmApproveOpen}
+            onCancel={() => setIsConfirmApproveOpen(false)}
+            onOk={async () => {
+              setIsConfirmApproveOpen(false);
+              await handleAcceptProvideOrder(); // gọi API
+            }}
+            okText={t("fuelProvide.modal.confirm_approve") || "OK"}
+            cancelText={t("common.close") || "Cancel"}
+            okButtonProps={{
+              style: { backgroundColor: "#134afe", borderColor: "#134afe" },
+            }}
+          >
+            <p>
+              {t("fuelProvide.modal.approve_confirm") ||
+                "Are you sure you want to approve this request?"}
+            </p>
+          </Modal>
+
+          {/* Confirm Cancel */}
+          <Modal
+            title={
+              t("fuelProvide.modal.cancel_title") || "Confirm Cancellation"
+            }
+            open={isConfirmCancelOpen}
+            onCancel={() => setIsConfirmCancelOpen(false)}
+            onOk={async () => {
+              setIsConfirmCancelOpen(false);
+              await handleCancelProvideOrder(); // gọi API
+            }}
+            okText={t("fuelProvide.modal.confirm_cancel") || "OK"}
+            cancelText={t("common.close") || "Cancel"}
+            okButtonProps={{
+              style: { backgroundColor: "red", borderColor: "red" },
+            }}
+          >
+            <p>
+              {t("fuelProvide.modal.cancel_confirm") ||
+                "Are you sure you want to cancel this request?"}
+            </p>
+          </Modal>
         </Loading>
       </DrawerComponent>
     </div>

@@ -4,7 +4,8 @@ import "./Order.scss";
 import { Button, Form, Input, Space } from "antd";
 import * as OrderServices from "../../../../services/OrderServices";
 import { Descriptions } from "antd";
-
+import { Modal } from "antd";
+import ModalComponent from "../../../ModalComponent/ModalComponent";
 import { SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -30,7 +31,8 @@ import { useTranslation } from "react-i18next";
 import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
 const FuelRequestsManagement = () => {
   const { t } = useTranslation();
-
+  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
+  const [isConfirmApproveOpen, setIsConfirmApproveOpen] = useState(false);
   const [rowSelected, setRowSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoadDetails, setIsLoadDetails] = useState(false);
@@ -124,6 +126,7 @@ const FuelRequestsManagement = () => {
         setOrderStatus("Đã duyệt"); // Cập nhật trạng thái đơn hàng
         message.success(t("fuel_request.toast.approve_success"));
         queryOrder.refetch();
+        setIsDrawerOpen(false);
       } else {
         message.error(t("fuel_request.toast.approve_failed"));
       }
@@ -139,6 +142,7 @@ const FuelRequestsManagement = () => {
         setOrderStatus("Đã hủy");
         message.success(t("fuel_request.toast.cancel_success"));
         queryOrder.refetch();
+        setIsDrawerOpen(false);
       } else {
         message.error(t("fuel_request.toast.cancel_failed"));
       }
@@ -504,7 +508,10 @@ const FuelRequestsManagement = () => {
       {/* DRAWER - Update Product */}
       <DrawerComponent
         title={
-          <div className="text-[14px] lg:text-lg font-semibold" style={{ textAlign: "center" }}>
+          <div
+            className="text-[14px] lg:text-lg font-semibold"
+            style={{ textAlign: "center" }}
+          >
             {t("fuel_request.drawer.title")}
           </div>
         }
@@ -602,7 +609,10 @@ const FuelRequestsManagement = () => {
                   </label>
                   <input
                     type="text"
-                    value={priorityMap[stateDetailsUser?.priority] || t("common.no_data")}
+                    value={
+                      priorityMap[stateDetailsUser?.priority] ||
+                      t("common.no_data")
+                    }
                     readOnly
                     className="border p-2 rounded w-full mb-1 bg-gray-100"
                   />
@@ -660,12 +670,56 @@ const FuelRequestsManagement = () => {
           <div className="flex justify-end gap-3">
             {orderStatus === "Chờ duyệt" && (
               <>
-                <ButtonComponent type="approve-order" onClick={handleApproveOrder} />
-                <ButtonComponent type="cancel-order" onClick={handleCancelOrder} />
+                {/* MỞ MODAL THAY VÌ GỌI API */}
+                <ButtonComponent
+                  type="approve-order"
+                  onClick={() => setIsConfirmApproveOpen(true)}
+                />
+                <ButtonComponent
+                  type="cancel-order"
+                  onClick={() => setIsConfirmCancelOpen(true)}
+                />
               </>
             )}
-            <ButtonComponent type="close" onClick={() => setIsDrawerOpen(false)} disabled={isLoadDetails}/>
+            <ButtonComponent
+              type="close"
+              onClick={() => setIsDrawerOpen(false)}
+              disabled={isLoadDetails}
+            />
           </div>
+          <Modal
+            title={t("fuel_request.modal.approve_title")}
+            open={isConfirmApproveOpen}
+            onCancel={() => setIsConfirmApproveOpen(false)}
+            onOk={() => {
+              setIsConfirmApproveOpen(false);
+              handleApproveOrder(); // Gọi API thật sự ở đây
+            }}
+            okText={t("fuel_request.modal.confirm_approve")}
+            cancelText={t("common.close")}
+            okButtonProps={{
+              style: { backgroundColor: "#134afe", borderColor: "#134afe" },
+            }}
+          >
+            <p>{t("fuel_request.modal.approve_confirm")}</p>
+          </Modal>
+          
+          <Modal
+            title={t("fuel_request.modal.cancel_title")}
+            open={isConfirmCancelOpen}
+            onCancel={() => setIsConfirmCancelOpen(false)}
+            onOk={() => {
+              setIsConfirmCancelOpen(false);
+              handleCancelOrder();
+            }}
+            okText={t("fuel_request.modal.confirm_cancel")}
+            cancelText={t("common.close")}
+            okButtonProps={{
+              style: { backgroundColor: "red", borderColor: "red" },
+            }}
+          >
+            <p>{t("fuel_request.modal.cancel_confirm")}</p>
+          </Modal>
         </Loading>
       </DrawerComponent>
     </div>
