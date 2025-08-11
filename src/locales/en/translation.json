@@ -804,10 +804,23 @@
       "empty_due_date": "Please select a due date!",
       "invalid_end_date": "End date must be after start date!",
       "invalid_due_date": "Due date must be after end date!",
-      "empty_priority": "Please select a priority level!"
+      "empty_priority": "Please select a priority level!",
+      "exceed_quantity": "Enter quantity less than {{max}} kg.",
+      "exceed_price": "Enter price less than {{max}} VND.",
+      "invalid_quantity": "Invalid quantity!",
+      "invalid_price": "Invalid price!"
     },
     "success": {
-      "created": "Create Purchase Material Plan Successfully!"
+      "created": "Created Purchase Material Plan Successfully!",
+      "updated": "Updated Purchase Material Plan Successfully!",
+      "accept": "Approved Purchase Material Plan Successfully!",
+      "delete": "Deleted Purchase Material Plan Successfully!"
+    },
+    "fail": {
+      "created": "Fail To Create Purchase Material Plan!",
+      "updated": "Fail To Update Purchase Material Plan!",
+      "accept": "Fail To Approve Purchase Material Plan!",
+      "delete": "Fail To Delete Purchase Material Plan!"
     }
   },
   "order": {
@@ -859,11 +872,11 @@
       "delete_title": "Delete Request",
       "delete_confirm": "Are you sure you want to delete this product?",
       "update_title": "Confirm Update",
-      "update_confirm": "Are you sure you want to update this order?",
+      "update_confirm": "Are you sure you want to update this request?",
       "accept_title": "Confirm Approval",
-      "accept_confirm": "Are you sure you want to approve this order?",
+      "accept_confirm": "Are you sure you want to approve this request?",
       "cancel_title": "Confirm Cancel",
-      "cancel_confirm": "Are you sure you want to cancel this order?",
+      "cancel_confirm": "Are you sure you want to cancel this request?",
       "delete_confirm_title": "Confirm Delete",
       "delete_confirm_plan": "Are you sure you want to delete this plan?"
     },
@@ -874,7 +887,7 @@
       "delete": "Delete"
     },
     "toast": {
-      "no_order_selected": "No order selected for cancellation!",
+      "no_order_selected": "No request selected for cancellation!",
       "cancel_success": "Order cancelled successfully!",
       "cancel_failed": "Failed to cancel order!",
       "delete_success": "Plan deleted successfully!",
@@ -950,6 +963,14 @@
       "complete_success": "Collection request completed successfully!",
       "complete_failed": "Collection request completion failed!",
       "complete_error": "An error occurred while completing the collection request!"
+    },
+    "modal": {
+      "cancel_title": "Confirm Cancellation",
+      "cancel_confirm": "Are you sure you want to cancel this collection request?",
+      "confirm_cancel": "OK",
+      "approve_title": "Confirm Approval",
+      "approve_confirm": "Are you sure you want to approve this collection request?",
+      "confirm_approve": "OK"
     }
   },
   "fuelProvide": {
@@ -987,9 +1008,17 @@
     "approveOrder": "Approve",
     "cancelOrder": "Cancel",
     "address": "Address",
-    "fuelName": "Material Name"
+    "fuelName": "Material Name",
+    "modal": {
+      "approve_title": "Confirm Approval",
+      "approve_confirm": "Are you sure you want to approve this provide request?",
+      "confirm_approve": "OK",
+      "cancel_title": "Confirm Cancellation",
+      "cancel_confirm": "Are you sure you want to cancel this provide request?",
+      "confirm_cancel": "OK"
+    }
   },
- "dashboardWarehouse": {
+"dashboardWarehouse": {
   "title": "Warehouse Management",
   "totalReceipts": "Total receipts",
   "pendingReceipts": "Pending receipts",
