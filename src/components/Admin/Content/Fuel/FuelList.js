@@ -624,7 +624,11 @@ const FuelList = () => {
       </DrawerComponent>
 
       <Drawer
-        title={t("fuelList.drawer.update_title")}
+        title={
+          <div style={{ textAlign: "center" }}>
+            {t("fuelList.drawer.update_title")}
+          </div>
+        }
         open={isUpdateDrawerOpen}
         onClose={() => {
           setIsUpdateDrawerOpen(false);

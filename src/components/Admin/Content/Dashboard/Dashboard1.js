@@ -23,7 +23,7 @@ const DashboardWarehouse = () => {
 
   const [loading, setLoading] = useState(false);
   const [storage, setStorage] = useState({
-    name_storage: "Không có dữ liệu",
+    name_storage: t("dashboardWarehouse.noData"),
     capacity: 0,
     remaining_capacity: 0,
   });
@@ -124,7 +124,7 @@ const DashboardWarehouse = () => {
               if (storageDetails) {
                 setStorage({
                   name_storage:
-                    storageDetails.name_storage || "Chưa có tên kho",
+                    storageDetails.name_storage || t("dashboardWarehouse.noStorageInfo"),
                   capacity: storageDetails.capacity || 0, // ✅ Dữ liệu từ API
                   remaining_capacity: storageDetails.remaining_capacity || 0,
                 });
@@ -221,7 +221,7 @@ const DashboardWarehouse = () => {
       }
     } catch (err) {
       console.error(" Lỗi khi lấy dữ liệu xuất kho:", err);
-      message.error("Không thể tải dữ liệu đơn xuất kho");
+      message.error(t("dashboardWarehouse.exportLoadError"));
     }
   };
 
@@ -280,15 +280,17 @@ const DashboardWarehouse = () => {
   // Cấu hình biểu đồ cột cho thống kê đơn nhập kho
   const receiptsChartData = [
     {
-      status: isMobile
-        ? t("supplier_dashboard.total_orders").replace(" ", "\n")
-        : t("supplier_dashboard.total_orders"),
+      code: "total",
+      label: isMobile
+        ? t("dashboardWarehouse.totalReceipts").replace(" ", "\n")
+        : t("dashboardWarehouse.totalReceipts"),
       count: stats.totalReceipts,
     },
     {
-      status: isMobile
-        ? t("status.pending").replace(" ", "\n")
-        : t("status.pending"),
+      code: "pending",
+      label: isMobile
+        ? t("dashboardWarehouse.status.pending").replace(" ", "\n")
+        : t("dashboardWarehouse.status.pending"),
       count: stats.pendingReceipts,
     },
     // {
@@ -298,21 +300,21 @@ const DashboardWarehouse = () => {
     //   count: stats.approvedReceipts,
     // },
     {
-      status: isMobile
-        ? t("status.imported").replace(" ", "\n")
-        : t("status.imported"),
+      code: "imported",
+      label: isMobile
+        ? t("dashboardWarehouse.importedReceipts").replace(" ", "\n")
+        : t("dashboardWarehouse.importedReceipts"),
       count: stats.importedReceipts || 0,
     },
   ];
 
   const receiptsChartConfig = {
     data: receiptsChartData,
-    xField: "status",
+    xField: "label",
     yField: "count",
-    color: ({ status }) => {
-      const raw = status.replace("\n", " ");
-      if (raw === "Chờ duyệt") return "#faad14";
-      if (raw === "Nhập kho thành công") return "#52c41a";
+    color: ({ code }) => {
+      if (code === "pending") return "#faad14";
+      if (code === "imported") return "#52c41a";
       return "#1890ff";
     },
 
@@ -341,27 +343,35 @@ const DashboardWarehouse = () => {
   // ✅ Cấu hình biểu đồ cột cho đơn xuất kho
   const exportsChartData = [
     {
-      status: isMobile ? "Tổng đơn\nxuất kho" : "Tổng đơn xuất kho",
+      code: "total",
+      label: isMobile
+        ? t("dashboardWarehouse.totalExports").replace(" ", "\n")
+        : t("dashboardWarehouse.totalExports"),
       count: exportStats.totalExports,
     },
     {
-      status: isMobile ? "Chờ\nduyệt" : "Chờ duyệt",
+      code: "pending",
+      label: isMobile
+        ? t("dashboardWarehouse.status.pending").replace(" ", "\n")
+        : t("dashboardWarehouse.status.pending"),
       count: exportStats.pendingExports,
     },
     {
-      status: isMobile ? "Hoàn\nthành" : "Hoàn thành",
+      code: "completed",
+      label: isMobile
+        ? t("dashboardWarehouse.status.completed").replace(" ", "\n")
+        : t("dashboardWarehouse.status.completed"),
       count: exportStats.completedExports,
     },
   ];
 
   const exportsChartConfig = {
     data: exportsChartData,
-    xField: "status",
+    xField: "label",
     yField: "count",
-    color: ({ status }) => {
-      const raw = status.replace("\n", " ");
-      if (raw === "Hoàn thành") return "#52c41a";
-      if (raw === "Chờ duyệt") return "#faad14";
+    color: ({ code }) => {
+      if (code === "completed") return "#52c41a";
+      if (code === "pending") return "#faad14";
       return "#1890ff";
     },
     label: {
@@ -406,7 +416,7 @@ const DashboardWarehouse = () => {
             title={
               <span>
                 <InboxOutlined style={{ marginRight: 8, color: "#1890ff" }} />
-                Tổng đơn nhập kho
+                {t("dashboardWarehouse.totalReceipts")}
               </span>
             }
             value={stats.totalReceipts}
@@ -421,7 +431,7 @@ const DashboardWarehouse = () => {
             title={
               <span>
                 <ExportOutlined style={{ marginRight: 8, color: "#fa8c16" }} />
-                Tổng đơn xuất kho
+                {t("dashboardWarehouse.totalExports")}
               </span>
             }
             value={exportStats.totalExports}
@@ -435,19 +445,19 @@ const DashboardWarehouse = () => {
                 <FileSyncOutlined
                   style={{ marginRight: 8, color: "#52c41a" }}
                 />
-                Trạng thái đơn
+                {t("dashboardWarehouse.orderStatus")}
               </span>
             }
             valueRender={() => (
               <div>
                 <div>
-                  Chờ duyệt:{" "}
+                  {t("dashboardWarehouse.status.pending")}:{" "}
                   <b style={{ color: "#faad14" }}>
                     {stats.pendingReceipts + exportStats.pendingExports}
                   </b>
                 </div>
                 <div>
-                  Đã xuất kho:{" "}
+                  {t("dashboardWarehouse.exported")}:{" "}
                   <b style={{ color: "#52c41a" }}>
                     {exportStats.completedExports}
                   </b>
@@ -485,7 +495,7 @@ const DashboardWarehouse = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">
             <BarChartOutlined className="mr-2 text-purple-500" />
-            Thống kê đơn xuất kho
+            {t("dashboardWarehouse.exportStatsChartTitle")}
           </h2>
           <Column {...exportsChartConfig} />
         </div>
@@ -503,7 +513,7 @@ const DashboardWarehouse = () => {
             }`}
             onClick={() => setFilterType("day")}
           >
-            {t("dashboard.filter_day")}
+            {t("dashboardWarehouse.filter.day")}
           </button>
 
           <button
@@ -514,7 +524,7 @@ const DashboardWarehouse = () => {
             }`}
             onClick={() => setFilterType("week")}
           >
-            {t("dashboard.filter_week")}
+            {t("dashboardWarehouse.filter.week")}
           </button>
           <button
             className={`text-[10px] sm:text-base px-2 py-1 sm:px-4 sm:py-2 rounded-r whitespace-nowrap ${
@@ -524,7 +534,7 @@ const DashboardWarehouse = () => {
             }`}
             onClick={() => setFilterType("month")}
           >
-            {t("dashboard.filter_month")}
+            {t("dashboardWarehouse.filter.month")}
           </button>
         </div>
 
@@ -601,25 +611,25 @@ const DashboardWarehouse = () => {
       <div className="bg-white p-6 rounded-lg shadow-md  mb-4">
         <h2 className="text-xl font-semibold mb-4 mt-8">
           <FileDoneOutlined className="mr-2 text-green-600" />
-          Đơn xuất kho 
+          {t("dashboardWarehouse.exportOrders")}
         </h2>
 
         <Table
           columns={[
             {
-              title: "Mã đơn",
+              title: t("dashboardWarehouse.columns.id"),
               dataIndex: "_id",
               key: "_id",
               width: 150,
             },
             {
-              title: "Người tạo",
+              title: t("dashboardWarehouse.columns.creator"),
               dataIndex: ["user_id", "full_name"],
               key: "user_id",
               align: "center",
             },
             {
-              title: "Lô nguyên liệu",
+              title: t("dashboardWarehouse.columns.batchName"),
               dataIndex: ["batch_id", "batch_name"],
               key: "batch_id",
               align: "center",
@@ -631,7 +641,7 @@ const DashboardWarehouse = () => {
             //   align: "center",
             // },
             {
-              title: "Ngày tạo",
+              title: t("dashboardWarehouse.columns.createdAt"),
               dataIndex: "createdAt",
               key: "createdAt",
               align: "center",
