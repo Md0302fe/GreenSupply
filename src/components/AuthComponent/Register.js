@@ -54,7 +54,6 @@ const Register = () => {
 
   useEffect(() => {
     if (isSuccess && data.status === "OK") {
-      message.success(t("register_success"));
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);

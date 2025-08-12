@@ -110,7 +110,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {
-        message.success(data?.message);
+        message.success('Updated successfully!');
         handleGetDetailsUser(userRedux?.id, userRedux?.access_token);
       } else if (data?.status === "ERROR") {
         message.error(data?.message);
