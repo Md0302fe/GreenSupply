@@ -81,3 +81,21 @@ export const deletePurchaseOrder = async (id, access_token) => {
   );
   return res?.data;
 };
+
+
+export const getDashboardData = async (access_token) => {
+  try {
+    const res = await axiosJWT.get(
+      `${process.env.REACT_APP_API_URL}/purchase-order/dashboard-supplyrequest`, 
+      {
+        headers: {
+          token: `Bearer ${access_token}`, 
+        },
+      }
+    );
+    return res?.data; 
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    throw error; 
+  }
+};

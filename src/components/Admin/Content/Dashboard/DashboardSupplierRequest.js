@@ -24,27 +24,28 @@ const DashboardSupplyRequest = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const access_token = user?.access_token;
-      const user_id = user?.id;
-      const response = await getAllFuelEntry({}, access_token, user_id);
+      const access_token =
+        user?.access_token || localStorage.getItem("access_token");
 
-      if (response.status === "OK") {
-        const now = Date.now();
-        const validOrders = response.data.filter(
-          (order) =>
-            !order.is_deleted && new Date(order.end_received).getTime() > now
-        );
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/purchase-order/dashboard-supplyrequest`,
+        {
+          headers: { Authorization: `Bearer ${access_token}` },
+        }
+      );
 
-        // Gom nhóm theo trạng thái
-        const dashboardSummary = {
-          total: validOrders.length,
-          pending: validOrders.filter((o) => o.status === "Chờ duyệt").length,
-          completed: validOrders.filter((o) => o.status === "Đã Hoàn Thành")
-            .length,
-          processingList: validOrders.filter((o) => o.status === "Đang xử lý"),
-        };
-        console.log(dashboardSummary)
-        setDashboardData(dashboardSummary);
+      if (response.data.status === "SUCCESS") {
+        const { total, pending, approved, processingList, completed } =
+          response.data.data;
+
+        // Cập nhật các thông tin thống kê vào state
+        setDashboardData({
+          total,
+          pending,
+          approved,
+          processingList,
+          completed,
+        });
       } else {
         message.error(t("dashboard.error_fetch_data"));
       }
@@ -181,14 +182,14 @@ const DashboardSupplyRequest = () => {
               key={item._id}
               className="flex items-center gap-4 border-b pb-4"
             >
-              {/* Hình ảnh */}
-              <div className="flex-shrink-0">
-                <img
-                  src={item.fuel_image || "https://via.placeholder.com/50"}
-                  alt={item.name}
-                  className="w-14 h-14 object-cover rounded shadow"
-                />
-              </div>
+               {/* Hình ảnh */}
+    <div className="flex-shrink-0">
+      <img
+        src={item.image || "https://via.placeholder.com/50"} // Nếu item.image có giá trị base64, nó sẽ được sử dụng, nếu không dùng ảnh mặc định.
+        alt={item.name}
+        className="w-14 h-14 object-cover rounded shadow"
+      />
+    </div>
 
               {/* Tên + Progress */}
               <div className="flex-1">
