@@ -20,8 +20,8 @@ import ModalComponent from "../../../ModalComponent/ModalComponent";
 import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import Highlighter from "react-highlight-words";
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { getBase64, convertPrice } from "../../../../ultils";
@@ -42,7 +42,7 @@ const UserComponent = () => {
   const [isConfirmAccept, setIsConfirmAccept] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  const [fuel_types, setFuel_Types] = useState({});
+  const [fuel_types, setFuel_Types] = useState([]);
 
   const user = useSelector((state) => state.user);
   const location = useLocation();
@@ -56,7 +56,6 @@ const UserComponent = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [formUpdate] = Form.useForm();
   const searchInput = useRef(null);
-
   //  State Details quản lý products khi có req edit
   const [purchaseDetails, setPurchaseDetails] = useState({
     request_name: "",
@@ -98,10 +97,10 @@ const UserComponent = () => {
       return 0;
     return q * p;
   };
-
-  const toDayStart = (d) => (d ? new Date(d).setHours(0, 0, 0, 0) : null);
-  const normalizeDate = (d) => (d ? new Date(d).setHours(0, 0, 0, 0) : null);
-  const today = toDayStart(new Date());
+  const isEditable = purchaseDetails?.status === "Chờ duyệt";
+  const getFuelTypeName = (id) =>
+    fuel_types.find((f) => f._id === id)?.fuel_type_id?.type_name || "";
+  const today = dayjs().startOf("day");
 
   // Fetch : Get User Details
   const fetchGetPurchaseDetail = async ({ id, access_token }) => {
@@ -116,9 +115,9 @@ const UserComponent = () => {
         const d = res.PurchaseOrderDetail;
         setPurchaseDetails({
           request_name: d.request_name,
-          start_received: d.start_received ? new Date(d.start_received) : null,
-          end_received: d.end_received ? new Date(d.end_received) : null,
-          due_date: d.due_date ? new Date(d.due_date) : null,
+          start_received: d.start_received ? dayjs(d.start_received) : null,
+          end_received: d.end_received ? dayjs(d.end_received) : null,
+          due_date: d.due_date ? dayjs(d.due_date) : null,
           quantity: d.quantity,
           quantity_remain: d.quantity_remain,
           status: d.status,
@@ -201,11 +200,18 @@ const UserComponent = () => {
       return; // Dừng lại nếu có lỗi
     }
 
+    const payload = {
+      ...purchaseDetails,
+      start_received: purchaseDetails.start_received?.toISOString() || null,
+      end_received: purchaseDetails.end_received?.toISOString() || null,
+      due_date: purchaseDetails.due_date?.toISOString() || null,
+    };
+
     mutationUpdatePurchaseOrder.mutate(
       {
         id: rowSelected,
         access_token: user?.access_token,
-        dataUpdate: purchaseDetails,
+        dataUpdate: payload,
       },
       {
         onSettled: () => {
@@ -224,11 +230,18 @@ const UserComponent = () => {
       return; // Dừng lại nếu có lỗi
     }
 
+    const payload = {
+      ...purchaseDetails,
+      start_received: purchaseDetails.start_received?.toISOString() || null,
+      end_received: purchaseDetails.end_received?.toISOString() || null,
+      due_date: purchaseDetails.due_date?.toISOString() || null,
+    };
+
     mutationAcceptPurchaseOrder.mutate(
       {
         id: rowSelected,
         access_token: user?.access_token,
-        dataUpdate: purchaseDetails,
+        dataUpdate: payload,
       },
       {
         onSettled: () => {
@@ -242,9 +255,9 @@ const UserComponent = () => {
     const errors = [];
     const q = Number(purchaseDetails.quantity);
     const p = Number(purchaseDetails.price);
-    const start = normalizeDate(purchaseDetails.start_received);
-    const end = normalizeDate(purchaseDetails.end_received);
-    const due = normalizeDate(purchaseDetails.due_date);
+    const start = purchaseDetails.start_received;
+    const end = purchaseDetails.end_received;
+    const due = purchaseDetails.due_date;
 
     // Name & fuel type
     if (!purchaseDetails.request_name?.trim())
@@ -254,15 +267,13 @@ const UserComponent = () => {
 
     // Dates (không lặp lại)
     if (!start) errors.push(t("harvest.validation.empty_start_date"));
-    else if (start < today)
+    else if (start.isBefore(today))
       errors.push(t("harvest.validation.invalid_start_date"));
-
     if (!end) errors.push(t("harvest.validation.empty_end_date"));
-    else if (start && end <= start)
+    else if (start && !end.isAfter(start))
       errors.push(t("harvest.validation.invalid_end_date"));
-
     if (!due) errors.push(t("harvest.validation.empty_due_date"));
-    else if (end && due <= end)
+    else if (end && !due.isAfter(end))
       errors.push(t("harvest.validation.invalid_due_date"));
 
     // Quantity
@@ -430,6 +441,7 @@ const UserComponent = () => {
     const { name, value } = e.target;
     const nextErrors = { ...fieldErrors };
 
+    if (!isEditable) return;
     // Name
     if (name === "request_name") {
       const v = (value ?? "").trim();
@@ -438,27 +450,27 @@ const UserComponent = () => {
 
     // ----- Dates -----
     if (name === "start_received") {
-      const v = toDayStart(value);
+      const v = value ? value.startOf("day") : null;
       nextErrors.start_received =
-        v === null || v < today
+        !v || v.isBefore(today)
           ? t("harvest.validation.invalid_start_date")
           : "";
     }
 
     if (name === "end_received") {
-      const start = toDayStart(purchaseDetails.start_received);
-      const end = toDayStart(value);
+      const start = purchaseDetails.start_received;
+      const end = value ? value.startOf("day") : null;
       nextErrors.end_received =
-        end === null || start === null || end <= start
+        !end || !start || !end.isAfter(start)
           ? t("harvest.validation.invalid_end_date")
           : "";
     }
 
     if (name === "due_date") {
-      const end = toDayStart(purchaseDetails.end_received);
-      const due = toDayStart(value);
+      const end = purchaseDetails.end_received;
+      const due = value ? value.startOf("day") : null;
       nextErrors.due_date =
-        due === null || end === null || due <= end
+        !due || !end || !due.isAfter(end)
           ? t("harvest.validation.invalid_due_date")
           : "";
     }
@@ -579,24 +591,21 @@ const UserComponent = () => {
   //   : [];
 
   // Không cho chọn ngày trong quá khứ
-  const disabledStartDate = (current) => {
-    return current && current < new Date().setHours(0, 0, 0, 0);
-  };
+  const disabledStartDate = (current) =>
+    current && current < dayjs().startOf("day");
 
   // end_received phải > start_received
   const disabledEndDate = (current) => {
-    if (!purchaseDetails.start_received) {
-      return current && current < new Date().setHours(0, 0, 0, 0);
-    }
-    return current && current <= new Date(purchaseDetails.start_received);
+    if (!purchaseDetails.start_received)
+      return current && current < dayjs().startOf("day");
+    return current && current <= purchaseDetails.start_received.startOf("day");
   };
 
   // due_date phải > end_received
   const disabledDueDate = (current) => {
-    if (!purchaseDetails.end_received) {
-      return current && current < new Date().setHours(0, 0, 0, 0);
-    }
-    return current && current <= new Date(purchaseDetails.end_received);
+    if (!purchaseDetails.end_received)
+      return current && current < dayjs().startOf("day");
+    return current && current <= purchaseDetails.end_received.startOf("day");
   };
 
   const tableData = Array.isArray(data_purchase?.data)
@@ -628,6 +637,7 @@ const UserComponent = () => {
   };
 
   const handleChangeFuelImage = async (info) => {
+    if (!isEditable) return;
     // C2: getBase64
     if (!info.fileList.length) {
       setPurchaseDetails((prev) => ({
@@ -796,6 +806,7 @@ const UserComponent = () => {
 
   // Xử lý sự kiện thay đổi giá trị
   const handlePriorityChange = (e) => {
+    if (!isEditable) return;
     const selectedPriority = priorityOptions.find(
       (p) => p.label === e.target.value
     );
@@ -1037,6 +1048,7 @@ const UserComponent = () => {
                     value={purchaseDetails.request_name}
                     onChange={handleChange}
                     className={`border p-2 rounded w-full focus:ring focus:ring-yellow-300
+                      ${!isEditable ? "bg-gray-100 cursor-not-allowed" : ""}
                       ${
                         fieldErrors.request_name
                           ? "border-red-400 focus:border-red-500"
@@ -1055,25 +1067,30 @@ const UserComponent = () => {
                   <label className="block text-gray-800 font-semibold mb-2">
                     {t("order.form.fuel_type")}
                   </label>
-                  <select
-                    name="fuel_type"
-                    value={purchaseDetails.fuel_type}
-                    onChange={handleChange}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
-                  >
-                    <option value="" disabled>
-                      {t("order.form.fuel_type_placeholder")}
-                    </option>
-                    {fuel_types && fuel_types.length > 0 ? (
-                      fuel_types.map((fuel) => (
+                  {!isEditable ? (
+                    // View-only
+                    <div className="border p-2 rounded w-full bg-gray-100 text-gray-700">
+                      {getFuelTypeName(purchaseDetails.fuel_type) ||
+                        t("order.form.no_data")}
+                    </div>
+                  ) : (
+                    // Editable
+                    <select
+                      name="fuel_type"
+                      value={purchaseDetails.fuel_type || ""}
+                      onChange={handleChange}
+                      className="border p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    >
+                      <option value="" disabled>
+                        {t("order.form.fuel_type_placeholder")}
+                      </option>
+                      {fuel_types.map((fuel) => (
                         <option key={fuel._id} value={fuel._id}>
-                          {fuel.fuel_type_id.type_name}
+                          {fuel.fuel_type_id?.type_name}
                         </option>
-                      ))
-                    ) : (
-                      <option disabled>{t("order.form.no_data")}</option>
-                    )}
-                  </select>
+                      ))}
+                    </select>
+                  )}
                 </div>
 
                 {/* Ảnh nguyên liệu */}
@@ -1093,6 +1110,7 @@ const UserComponent = () => {
                       beforeUpload={() => false}
                       onChange={handleChangeFuelImage}
                       className="!w-full"
+                      disabled={!isEditable}
                     >
                       <button className="bg-gray-200 p-2 rounded hover:bg-gray-300 w-full">
                         {t("order.form.upload")}
@@ -1121,19 +1139,11 @@ const UserComponent = () => {
                     <input
                       type="number"
                       name="quantity"
-                      min="1"
-                      placeholder={t("order.form.quantity_placeholder")}
                       value={purchaseDetails.quantity}
                       onChange={handleChange}
-                      onKeyDown={(e) => {
-                        if (
-                          ["e", "E", "+", "-", ".", ","].includes(e.key) ||
-                          (!/^\d$/.test(e.key) && e.key.length === 1)
-                        ) {
-                          e.preventDefault();
-                        }
-                      }}
-                      className={`border p-2 pr-12 rounded w-full focus:ring focus:ring-yellow-300
+                      disabled={!isEditable}
+                      className={`border p-2 pr-20 rounded w-full focus:ring focus:ring-yellow-300
+                        ${!isEditable ? "bg-gray-100 cursor-not-allowed" : ""}
                         ${
                           fieldErrors.quantity
                             ? "border-red-400 focus:border-red-500"
@@ -1192,93 +1202,88 @@ const UserComponent = () => {
 
                 {/* Ngày nhận đơn */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Start Date */}
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
                       {t("order.form.start_date")}
                     </label>
-                    <div className="border border-gray-300 p-2 rounded w-full focus-within:ring focus-within:ring-yellow-300">
-                      <DatePicker
-                        selected={purchaseDetails.start_received}
-                        onChange={(date) =>
-                          handleChange({
-                            target: { name: "start_received", value: date },
-                          })
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        placeholderText={t("order.form.date_placeholder")}
-                        className="w-full outline-none bg-transparent"
-                        minDate={new Date()}
-                      />
-                      {fieldErrors.start_received && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {fieldErrors.start_received}
-                        </p>
-                      )}
-                    </div>
+                    <DatePicker
+                      value={purchaseDetails.start_received}
+                      onChange={(d) =>
+                        handleChange({
+                          target: {
+                            name: "start_received",
+                            value: d ? d.startOf("day") : null,
+                          },
+                        })
+                      }
+                      format="DD/MM/YYYY"
+                      disabledDate={disabledStartDate}
+                      disabled={!isEditable}
+                      placeholder={t("harvest.form.start_date_placeholder")}
+                      className="w-full h-10 !rounded-xl !border-2 !border-gray-200 focus:!border-blue-500"
+                    />
+                    {fieldErrors.start_received && (
+                      <p className="mt-1 text-red-500 text-sm">
+                        {fieldErrors.start_received}
+                      </p>
+                    )}
                   </div>
+
+                  {/* End Date */}
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
                       {t("order.form.end_date")}
                     </label>
-                    <div className="border border-gray-300 p-2 rounded w-full focus-within:ring focus-within:ring-yellow-300">
-                      <DatePicker
-                        selected={purchaseDetails.end_received}
-                        onChange={(date) =>
-                          handleChange({
-                            target: { name: "end_received", value: date },
-                          })
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        className="..."
-                        placeholderText={t("order.form.date_placeholder")}
-                        minDate={
-                          purchaseDetails.start_received
-                            ? new Date(
-                                new Date(
-                                  purchaseDetails.start_received
-                                ).getTime() + 86400000
-                              )
-                            : new Date()
-                        }
-                      />
-                      {fieldErrors.end_received && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {fieldErrors.end_received}
-                        </p>
-                      )}
-                    </div>
+                    <DatePicker
+                      value={purchaseDetails.end_received}
+                      onChange={(d) =>
+                        handleChange({
+                          target: {
+                            name: "end_received",
+                            value: d ? d.startOf("day") : null,
+                          },
+                        })
+                      }
+                      format="DD/MM/YYYY"
+                      disabledDate={disabledEndDate}
+                      disabled={!purchaseDetails.start_received || !isEditable}
+                      placeholder={t("harvest.form.end_date_placeholder")}
+                      className="w-full h-10 !rounded-xl !border-2 !border-gray-200 focus:!border-blue-500"
+                    />
+                    {fieldErrors.end_received && (
+                      <p className="mt-1 text-red-500 text-sm">
+                        {fieldErrors.end_received}
+                      </p>
+                    )}
                   </div>
+
+                  {/* Due Date */}
                   <div>
                     <label className="block text-gray-800 font-semibold mb-2">
                       {t("order.form.due_date")}
                     </label>
-                    <div className="border border-gray-300 p-2 rounded w-full focus-within:ring focus-within:ring-yellow-300">
-                      <DatePicker
-                        selected={purchaseDetails.due_date}
-                        onChange={(date) =>
-                          handleChange({
-                            target: { name: "due_date", value: date },
-                          })
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        className="..."
-                        placeholderText={t("order.form.date_placeholder")}
-                        minDate={
-                          purchaseDetails.end_received
-                            ? new Date(
-                                new Date(
-                                  purchaseDetails.end_received
-                                ).getTime() + 86400000
-                              )
-                            : new Date()
-                        }
-                      />
-                      {fieldErrors.due_date && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {fieldErrors.due_date}
-                        </p>
-                      )}
-                    </div>
+                    <DatePicker
+                      value={purchaseDetails.due_date}
+                      onChange={(d) =>
+                        handleChange({
+                          target: {
+                            name: "due_date",
+                            value: d ? d.startOf("day") : null,
+                          },
+                        })
+                      }
+                      format="DD/MM/YYYY"
+                      disabledDate={disabledDueDate}
+                      disabled={!purchaseDetails.end_received || !isEditable}
+                      placeholder={t("harvest.form.due_date_placeholder")}
+                      className="w-full h-10 !rounded-xl !border-2 !border-gray-200 focus:!border-blue-500"
+                    />
+                    {fieldErrors.due_date && (
+                      <p className="mt-1 text-red-500 text-sm">
+                        {fieldErrors.due_date}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -1311,11 +1316,11 @@ const UserComponent = () => {
                   </label>
                   <textarea
                     name="note"
-                    placeholder={t("order.form.note_placeholder")}
-                    rows="3"
                     value={purchaseDetails.note}
                     onChange={handleChange}
-                    className="border border-gray-300 p-2 rounded w-full focus:ring focus:ring-yellow-300"
+                    readOnly={!isEditable}
+                    className={`border p-2 rounded w-full focus:ring focus:ring-yellow-300
+                      ${!isEditable ? "bg-gray-100 cursor-not-allowed" : ""}`}
                   />
                 </div>
 
