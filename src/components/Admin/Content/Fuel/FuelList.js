@@ -4,8 +4,6 @@ import {
   Button,
   message,
   Space,
-  Modal,
-  Descriptions,
   Tag,
   Input,
   Drawer,
@@ -373,7 +371,11 @@ const FuelList = () => {
       align: "left",
     },
     {
-      title: t("fuelList.columns.quantity"),
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("fuelList.columns.quantity")}
+        </div>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       className: "text-center",
@@ -382,7 +384,11 @@ const FuelList = () => {
       align: "center",
     },
     {
-      title: t("fuelList.columns.status"),
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("fuelList.columns.status")}
+        </div>
+      ),
       dataIndex: "is_deleted",
       key: "is_deleted",
       className: "text-center",
@@ -402,7 +408,11 @@ const FuelList = () => {
       ),
     },
     {
-      title: t("fuelList.columns.actions"),
+      title: (
+        <div style={{ textAlign: "center", width: "100%" }}>
+          {t("fuelList.columns.actions")}
+        </div>
+      ),
       key: "action",
       width: 100,
       align: "center",

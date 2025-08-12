@@ -322,6 +322,8 @@ const ProductionRequestList = () => {
     setSelectedRequest(null);
   };
 
+  console.log("selected Request => ", selectedRequest)
+
   return (
     <div className="production-request-list px-8">
       <div className="mt-2 mb-2">
@@ -427,10 +429,10 @@ const ProductionRequestList = () => {
 
                 {/* Nguyên liệu - chiếm toàn dòng */}
                 <Form.Item
-                  label={t("form.material_id")}
+                  label={t("form.material")}
                   className="!mb-0 lg:col-span-2"
                 >
-                  <Input value={selectedRequest.material} />
+                  <Input value={selectedRequest.material?.fuel_type_id?.type_name} />
                 </Form.Item>
 
                 {/* Loại đơn */}

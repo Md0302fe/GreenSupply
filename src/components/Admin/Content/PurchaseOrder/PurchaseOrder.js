@@ -43,6 +43,14 @@ const HarvestRequestPage = () => {
     note: "", // Ghi chú thêm về đơn hàng
     is_deleted: false, // Trạng thái xóa (true/false hoặc 0/1) - đánh dấu đơn hàng đã bị xóa hay chưa
   });
+  const [errors, setErrors] = useState({
+    quantity: "",
+    price: "",
+  });
+  const MAX_QTY = 1_000_000;
+  const MAX_PRICE = 9_999_999;
+  const q = Number(formData.quantity);
+  const p = Number(formData.price);
 
   const [fuelImage, setFuelImage] = useState(null);
   const [fuel_types, setFuel_Types] = useState({});
@@ -53,12 +61,21 @@ const HarvestRequestPage = () => {
 
   // Tính tổng giá
   const totalPrice = () => {
-    const q = Number(formData.quantity) || 0;
-    const p = Number(formData.price) || 0;
+    const q = Number(formData.quantity);
+    const p = Number(formData.price);
+    if (
+      isNaN(q) ||
+      isNaN(p) ||
+      !isFinite(q) ||
+      !isFinite(p) ||
+      q > MAX_QTY ||
+      p > MAX_PRICE
+    ) {
+      return 0;
+    }
     return q * p;
   };
 
-  // Xử lý onchange <-> input
   const handleChange = (e) => {
     const { name, value } = e?.target || {};
     if (
@@ -66,10 +83,44 @@ const HarvestRequestPage = () => {
       name === "end_received" ||
       name === "due_date"
     ) {
-      // value là moment object hoặc null
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
+    
+    const newErrors = { ...errors };
+    if (name === "quantity") {
+      const v = value;
+      const n = Number(v);
+      if (!v?.trim()) {
+        newErrors.quantity = t("harvest.validation.empty_quantity"); 
+      } else if (isNaN(n) || !isFinite(n) || n <= 0) {
+        newErrors.quantity = t("harvest.validation.invalid_quantity"); 
+      } else if (n > MAX_QTY) {
+        newErrors.quantity = t("harvest.validation.exceed_quantity", {
+          max: MAX_QTY.toLocaleString("en-US"),
+        });
+      } else {
+        newErrors.quantity = "";
+      }
+    }
+
+    if (name === "price") {
+      const v = value;
+      const n = Number(v);
+      if (!v?.trim()) {
+        newErrors.price = t("harvest.validation.empty_price"); 
+      } else if (isNaN(n) || !isFinite(n) || n <= 0) {
+        newErrors.price = t("harvest.validation.invalid_price"); 
+      } else if (n > MAX_PRICE) {
+        newErrors.price = t("harvest.validation.exceed_price", {
+          max: MAX_PRICE.toLocaleString("en-US"),
+        });
+      } else {
+        newErrors.price = "";
+      }
+    }
+
+    setErrors(newErrors);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -94,7 +145,7 @@ const HarvestRequestPage = () => {
 
     // Chặn các ngày nhỏ hơn hoặc bằng ngày kết thúc (end_received)
     // Tính từ 00:00 của ngày hôm sau
-    const nextDay = moment(formData.end_received).add(2, "day").startOf("day");
+    const nextDay = moment(formData.end_received).add(1, "day").startOf("day");
 
     return current && current < nextDay;
   };
@@ -162,17 +213,33 @@ const HarvestRequestPage = () => {
       },
       {
         condition:
-          new Date(formData.start_received) > new Date(formData.end_received),
+          new Date(formData.start_received) >= new Date(formData.end_received),
         message: t("harvest.validation.invalid_end_date"),
       },
       {
         condition:
-          new Date(formData.due_date) < new Date(formData.end_received),
+          new Date(formData.due_date) <= new Date(formData.end_received),
         message: t("harvest.validation.invalid_due_date"),
       },
       {
         condition: !formData.priority.trim(),
         message: t("harvest.validation.empty_priority"),
+      },
+      {
+        condition: !formData.quantity?.trim(),
+        message: t("harvest.validation.empty_quantity"),
+      },
+      {
+        condition: isNaN(q) || !isFinite(q) || q > MAX_QTY,
+        message: t("harvest.validation.invalid_quantity"),
+      },
+      {
+        condition: !formData.price?.trim(),
+        message: t("harvest.validation.empty_price"),
+      },
+      {
+        condition: isNaN(p) || !isFinite(p) || p > MAX_PRICE,
+        message: t("harvest.validation.invalid_price"),
       },
     ];
 
@@ -186,8 +253,8 @@ const HarvestRequestPage = () => {
         request_name: formData.request_name,
         fuel_type: formData.fuel_type,
         fuel_image: fuelImage,
-        quantity: Number(formData.quantity),
-        quantity_remain: Number(formData.quantity),
+        quantity: Number(q),
+        quantity_remain: Number(q),
         is_deleted: formData.is_deleted,
         start_received: formData.start_received
           ? formData.start_received.toISOString()
@@ -196,7 +263,7 @@ const HarvestRequestPage = () => {
           ? formData.end_received.toISOString()
           : null,
         due_date: formData.due_date ? formData.due_date.toISOString() : null,
-        price: Number(formData.price),
+        price: Number(p),
         total_price: totalPrice(),
         priority: formData.priority,
         note: formData.note,
@@ -262,7 +329,7 @@ const HarvestRequestPage = () => {
   useEffect(() => {
     if (isSuccess) {
       if (data?.PurchaseOrder?.status) {
-        message.success(t('harvest.success.created'));
+        message.success(t("harvest.success.created"));
       }
       setTimeout(() => {
         setNewForm();
@@ -317,15 +384,14 @@ const HarvestRequestPage = () => {
           type="button"
           onClick={() => navigate("/system/admin/R_purchase-orders")}
           className="group inline-flex items-center gap-1.5 md:gap-2 
-             bg-blue-600 hover:bg-blue-700 text-white font-medium 
-             px-3 py-2 md:px-3.5 md:py-2.5 
-             rounded-lg md:rounded-xl 
-             shadow-sm hover:shadow-md transition-all duration-200"
+            bg-blue-600 hover:bg-blue-700 text-white font-medium 
+            px-3 py-2 md:px-3.5 md:py-2.5 
+            rounded-lg md:rounded-xl 
+            shadow-sm hover:shadow-md transition-all duration-200"
         >
           {t("harvest.viewList") || "Material Purchase List"}
           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
         </button>
-
       </div>
 
       <div className="max-w-5xl mx-auto">
@@ -437,7 +503,7 @@ const HarvestRequestPage = () => {
               </div>
             </div>
 
-            {/* Quantity and Price Row */}
+            {/* Quantity */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
@@ -448,18 +514,22 @@ const HarvestRequestPage = () => {
                   type="number"
                   name="quantity"
                   min="1"
+                  max={MAX_QTY}
                   placeholder={t("harvest.form.quantity_placeholder")}
                   value={formData.quantity}
                   onChange={handleChange}
                   onKeyDown={(e) => {
-                    if (["e", "E", "-", "."].includes(e.key)) {
+                    if (["e", "E", "+", "-", "."].includes(e.key))
                       e.preventDefault();
-                    }
                   }}
                   className="w-full border-2 border-gray-200 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
                 />
+                {errors.quantity && (
+                  <p className="mt-1 text-red-500 text-sm">{errors.quantity}</p>
+                )}
               </div>
 
+              {/* Price */}
               <div className="space-y-3">
                 <label className="text-gray-800 font-semibold text-sm flex items-center gap-1">
                   <span className="text-red-500 text-base">*</span>
@@ -469,16 +539,19 @@ const HarvestRequestPage = () => {
                   type="number"
                   name="price"
                   min="1"
+                  max={MAX_PRICE}
                   placeholder={t("harvest.form.price_placeholder")}
                   value={formData.price}
                   onChange={handleChange}
                   onKeyDown={(e) => {
-                    if (["e", "E", "-", "."].includes(e.key)) {
+                    if (["e", "E", "+", "-", "."].includes(e.key))
                       e.preventDefault();
-                    }
                   }}
                   className="w-full border-2 border-gray-200 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
                 />
+                {errors.price && (
+                  <p className="mt-1 text-red-500 text-sm">{errors.price}</p>
+                )}
               </div>
             </div>
 
@@ -593,27 +666,25 @@ const HarvestRequestPage = () => {
 
                 <div className="text-right">
                   <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                    {(formData.quantity * formData.price || 0).toLocaleString(
-                      "vi-VN"
-                    )}{" "}
-                    VNĐ
+                    {totalPrice().toLocaleString("vi-VN")} VNĐ
                   </span>
 
                   {formData.priority && (
                     <div className="mt-1 md:mt-2">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${formData.priority === "Cao"
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          formData.priority === "Cao"
                             ? "bg-red-100 text-red-800"
                             : formData.priority === "Trung bình"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
                       >
                         {formData.priority === "Cao"
                           ? "High"
                           : formData.priority === "Trung bình"
-                            ? "Medium"
-                            : "Low"}{" "}
+                          ? "Medium"
+                          : "Low"}{" "}
                         Priority
                       </span>
                     </div>

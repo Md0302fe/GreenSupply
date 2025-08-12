@@ -798,20 +798,33 @@
     },
     "validation": {
       "empty_name": "Tên đơn hàng không được để trống!",
-      "empty_fuel_type": "Loại Nguyên liệu không được để trống!",
-      "empty_image": "Hình ảnh Nguyên liệu không được để trống!",
-      "empty_quantity": "Tổng sl Nguyên liệu cần thu không được để trống!",
-      "empty_price": "Giá Nguyên liệu không được để trống!",
+      "empty_fuel_type": "Loại nguyên liệu không được để trống!",
+      "empty_image": "Hình ảnh nguyên liệu không được để trống!",
+      "empty_quantity": "Tổng sl nguyên liệu cần thu không được để trống!",
+      "empty_price": "Giá nguyên liệu không được để trống!",
       "empty_start_date": "Vui lòng chọn ngày bắt đầu nhận đơn!",
       "invalid_start_date": "Ngày bắt đầu nhận đơn phải từ hôm nay trở đi!",
       "empty_end_date": "Vui lòng chọn ngày kết thúc nhận đơn!",
       "empty_due_date": "Vui lòng chọn hạn chót hoàn thành đơn!",
       "invalid_end_date": "Ngày kết thúc nhận đơn phải sau ngày bắt đầu!",
       "invalid_due_date": "Hạn chót hoàn thành đơn phải sau ngày kết thúc nhận đơn!",
-      "empty_priority": "Vui lòng chọn mức độ ưu tiên!"
+      "empty_priority": "Vui lòng chọn mức độ ưu tiên!",
+      "exceed_quantity": "Nhập số lượng nhỏ hơn {{max}} kg.",
+      "exceed_price": "Nhập giá nhỏ hơn {{max}} VND.",
+      "invalid_quantity": "Số lượng không hợp lệ",
+      "invalid_price": "Giá tiền không hợp lệ"
     },
     "success": {
-      "created": "Lập Kế Hoạch Cung Cấp Nguyên Liệu Thành Công!"
+      "created": "Tạo kế hoạch nhập nguyên liệu thành công!",
+      "updated": "Cập nhật kế hoạch nhập nguyên liệu thành công!",
+      "accept":  "Duyệt kế hoạch nhập nguyên liệu thành công!",
+      "delete": "Xóa kế hoạch nhập nguyên liệu thành công!"
+    },
+    "fail": {
+      "created": "Tạo kế hoạch nhập nguyên liệu thất bại!",
+      "updated": "Cập nhật kế hoạch nhập nguyên liệu thất bại!",
+      "accept":  "Duyệt kế hoạch nhập nguyên liệu thất bại!",
+      "delete": "Xóa kế hoạch nhập nguyên liệu thất bại!"
     }
   },
   "order": {
@@ -952,6 +965,14 @@
       "complete_success": "Đơn hàng đã được hoàn thành thành công!",
       "complete_failed": "Hoàn thành đơn thất bại!",
       "complete_error": "Có lỗi xảy ra khi hoàn thành đơn!"
+    },
+    "modal": {
+      "cancel_title": "Xác nhận hủy",
+      "cancel_confirm": "Bạn có chắc chắn muốn hủy yêu cầu thu hàng này không?",
+      "confirm_cancel": "Đồng ý",
+      "approve_title": "Xác nhận duyệt",
+      "approve_confirm": "Bạn có chắc chắn muốn duyệt yêu cầu thu hàng này không?",
+      "confirm_approve": "Đồng ý"
     }
   },
   "fuelProvide": {
@@ -989,7 +1010,15 @@
     "approveOrder": "Duyệt đơn",
     "cancelOrder": "Hủy đơn",
     "address": "Địa chỉ",
-    "fuelName": "Tên Nguyên Liệu"
+    "fuelName": "Tên Nguyên Liệu",
+    "modal": {
+      "approve_title": "Xác nhận duyệt",
+      "approve_confirm": "Bạn có chắc chắn muốn duyệt yêu cầu cung cấp này không?",
+      "confirm_approve": "Đồng ý",
+      "cancel_title": "Xác nhận hủy",
+      "cancel_confirm": "Bạn có chắc chắn muốn hủy yêu cầu cung cấp này không?",
+      "confirm_cancel": "Đồng ý"
+    }
   },
   "dashboardWarehouse": {
   "title": "Quản Lý Kho",
@@ -1102,6 +1131,14 @@
     "columns": {
       "receipt_id": "Mã đơn",
       "receiptType": "Loại đơn hàng",
+      "productCode":"Mã thành phẩm",
+      "productionPlan": "Mã kế hoạch",
+      "expirationDate": "Hạn sử dụng",
+      "curentStatus": "Tình trạng",
+      "materialType": "Loại nguyên liệu",
+      "productImage": "Hình ảnh lô nguyên liệu",
+      "planCode": "Mã kế hoạch",
+      "weight": "Cân nặng",
       "storage": "Kho",
       "status": "Trạng thái",
       "createdAt": "Ngày tạo",

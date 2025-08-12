@@ -146,6 +146,8 @@ const ProductionRequestList = () => {
     ? data.map((req) => ({ ...req, key: req._id }))
     : [];
 
+  console.log("tableData ==> ", tableData)
+
   // 2. MUTATION cập nhật (PATCH)
   const mutationUpdate = useMutation({
     mutationFn: ProductionRequestServices.updateProductionRequest,
@@ -431,21 +433,17 @@ const ProductionRequestList = () => {
   // Cấu hình cột
   const columns = [
     {
+      title: t("table.planCode"),
+      dataIndex: "_id",
+      key: "_id",
+      ...getColumnSearchProps("_id"),
+    },
+    {
       title: t("table.request_name"),
       dataIndex: "request_name",
       key: "request_name",
       ...getColumnSearchProps("request_name"),
       sorter: (a, b) => a.request_name.localeCompare(b.request_name),
-    },
-
-    {
-      title: <div className="text-center">{t("table.material_quantity")}</div>,
-      dataIndex: "material_quantity",
-      key: "material_quantity",
-      align: "center",
-      className: "text-center",
-      sorter: (a, b) => a.material_quantity - b.material_quantity,
-      render: (val) => `${val} `,
     },
     {
       title: <div className="text-center">{t("table.product_quantity")}</div>,
