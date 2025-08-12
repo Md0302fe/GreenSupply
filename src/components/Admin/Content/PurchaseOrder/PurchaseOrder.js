@@ -9,7 +9,7 @@ import {
   AlertCircle,
   CheckCircle2,
 } from "lucide-react";
-
+import dayjs from "dayjs";
 import { getBase64 } from "../../../../ultils";
 import { useMutationHooks } from "../../../../hooks/useMutationHook";
 import { MDBCardText } from "mdb-react-ui-kit";
@@ -86,15 +86,15 @@ const HarvestRequestPage = () => {
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
-    
+
     const newErrors = { ...errors };
     if (name === "quantity") {
       const v = value;
       const n = Number(v);
       if (!v?.trim()) {
-        newErrors.quantity = t("harvest.validation.empty_quantity"); 
+        newErrors.quantity = t("harvest.validation.empty_quantity");
       } else if (isNaN(n) || !isFinite(n) || n <= 0) {
-        newErrors.quantity = t("harvest.validation.invalid_quantity"); 
+        newErrors.quantity = t("harvest.validation.invalid_quantity");
       } else if (n > MAX_QTY) {
         newErrors.quantity = t("harvest.validation.exceed_quantity", {
           max: MAX_QTY.toLocaleString("en-US"),
@@ -108,9 +108,9 @@ const HarvestRequestPage = () => {
       const v = value;
       const n = Number(v);
       if (!v?.trim()) {
-        newErrors.price = t("harvest.validation.empty_price"); 
+        newErrors.price = t("harvest.validation.empty_price");
       } else if (isNaN(n) || !isFinite(n) || n <= 0) {
-        newErrors.price = t("harvest.validation.invalid_price"); 
+        newErrors.price = t("harvest.validation.invalid_price");
       } else if (n > MAX_PRICE) {
         newErrors.price = t("harvest.validation.exceed_price", {
           max: MAX_PRICE.toLocaleString("en-US"),
@@ -125,29 +125,19 @@ const HarvestRequestPage = () => {
   };
 
   const disabledStartDate = (current) => {
-    return current && current < moment().startOf("day");
+    return current && current < dayjs().startOf("day");
   };
 
   const disabledEndDate = (current) => {
-    if (!formData.start_received) {
-      return current && current < moment().startOf("day");
-    }
-    return (
-      current && current <= moment(formData.start_received).startOf("minute")
-    );
+    if (!formData.start_received)
+      return current && current < dayjs().startOf("day");
+    return current && current <= formData.start_received.startOf("day");
   };
 
   const disabledDueDate = (current) => {
-    if (!formData.end_received) {
-      // Nếu chưa chọn ngày kết thúc thì chặn các ngày trước hôm nay
-      return current && current < moment().startOf("day");
-    }
-
-    // Chặn các ngày nhỏ hơn hoặc bằng ngày kết thúc (end_received)
-    // Tính từ 00:00 của ngày hôm sau
-    const nextDay = moment(formData.end_received).add(1, "day").startOf("day");
-
-    return current && current < nextDay;
+    if (!formData.end_received)
+      return current && current < dayjs().startOf("day");
+    return current && current <= formData.end_received.startOf("day");
   };
 
   // Tuy nguyên, cần lưu ý rằng event trong trường hợp này sẽ là một đối tượng chứa thông tin về tệp tải lên,
@@ -169,113 +159,76 @@ const HarvestRequestPage = () => {
 
   // Gửi form
   const handleSubmit = async () => {
-    // Danh sách kiểm tra dữ liệu
-    const today = new Date(); // Lấy ngày hiện tại
-    today.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00 để so sánh chính xác
+  const q = Number(formData.quantity);
+  const p = Number(formData.price);
 
-    // Danh sách kiểm tra dữ liệu
-    const validationRules = [
-      {
-        condition: !formData.request_name.trim(),
-        message: t("harvest.validation.empty_name"),
-      },
-      {
-        condition: !formData.fuel_type.trim(),
-        message: t("harvest.validation.empty_fuel_type"),
-      },
-      {
-        condition: !fuelImage || fuelImage.trim() === "",
-        message: t("harvest.validation.empty_image"),
-      },
-      {
-        condition: !formData.quantity || formData.quantity.trim() === "",
-        message: t("harvest.validation.empty_quantity"),
-      },
-      {
-        condition: !formData.price || formData.price.trim() === "",
-        message: t("harvest.validation.empty_price"),
-      },
-      {
-        condition: !formData.start_received,
-        message: t("harvest.validation.empty_start_date"),
-      },
-      {
-        condition: new Date(formData.start_received) < today,
-        message: t("harvest.validation.invalid_start_date"),
-      }, // Kiểm tra ngày hợp lệ
-      {
-        condition: !formData.end_received,
-        message: t("harvest.validation.empty_end_date"),
-      },
-      {
-        condition: !formData.due_date,
-        message: t("harvest.validation.empty_due_date"),
-      },
-      {
-        condition:
-          new Date(formData.start_received) >= new Date(formData.end_received),
-        message: t("harvest.validation.invalid_end_date"),
-      },
-      {
-        condition:
-          new Date(formData.due_date) <= new Date(formData.end_received),
-        message: t("harvest.validation.invalid_due_date"),
-      },
-      {
-        condition: !formData.priority.trim(),
-        message: t("harvest.validation.empty_priority"),
-      },
-      {
-        condition: !formData.quantity?.trim(),
-        message: t("harvest.validation.empty_quantity"),
-      },
-      {
-        condition: isNaN(q) || !isFinite(q) || q > MAX_QTY,
-        message: t("harvest.validation.invalid_quantity"),
-      },
-      {
-        condition: !formData.price?.trim(),
-        message: t("harvest.validation.empty_price"),
-      },
-      {
-        condition: isNaN(p) || !isFinite(p) || p > MAX_PRICE,
-        message: t("harvest.validation.invalid_price"),
-      },
-    ];
+  // Các ngày là dayjs (đã set d.startOf("day") ở onChange)
+  const start = formData.start_received; // dayjs | null
+  const end   = formData.end_received;   // dayjs | null
+  const due   = formData.due_date;       // dayjs | null
+  const today = dayjs().startOf("day");
 
-    // Lặp qua danh sách và kiểm tra điều kiện
-    const error = validationRules.find((rule) => rule.condition);
-    if (error) {
-      message.warning(error.message);
-      return;
-    } else {
-      const fuelRequest = {
-        request_name: formData.request_name,
-        fuel_type: formData.fuel_type,
-        fuel_image: fuelImage,
-        quantity: Number(q),
-        quantity_remain: Number(q),
-        is_deleted: formData.is_deleted,
-        start_received: formData.start_received
-          ? formData.start_received.toISOString()
-          : null,
-        end_received: formData.end_received
-          ? formData.end_received.toISOString()
-          : null,
-        due_date: formData.due_date ? formData.due_date.toISOString() : null,
-        price: Number(p),
-        total_price: totalPrice(),
-        priority: formData.priority,
-        note: formData.note,
-        status: "Chờ duyệt",
-      };
+  // ---- Validate text bắt buộc ----
+  if (!formData.request_name?.trim()) {
+    message.warning(t("harvest.validation.empty_name")); return;
+  }
+  if (!formData.fuel_type) {
+    message.warning(t("harvest.validation.empty_fuel_type")); return;
+  }
+  if (!fuelImage) {
+    message.warning(t("harvest.validation.empty_image")); return;
+  }
+  if (!formData.priority?.trim()) {
+    message.warning(t("harvest.validation.empty_priority")); return;
+  }
 
-      mutationCreateOrder.mutate({
-        access_token: user?.access_token,
-        dataRequest: fuelRequest,
-      });
-    }
+  // ---- Validate số ----
+  if (!Number.isFinite(q) || q <= 0 || q > MAX_QTY) {
+    message.warning(t("harvest.validation.invalid_quantity")); return;
+  }
+  if (!Number.isFinite(p) || p <= 0 || p > MAX_PRICE) {
+    message.warning(t("harvest.validation.invalid_price")); return;
+  }
+
+  // ---- Validate ngày (dayjs) ----
+  if (!start) { message.warning(t("harvest.validation.empty_start_date")); return; }
+  if (start.isBefore(today)) {
+    message.warning(t("harvest.validation.invalid_start_date")); return;
+  }
+
+  if (!end)   { message.warning(t("harvest.validation.empty_end_date")); return; }
+  if (!end.isAfter(start)) {
+    message.warning(t("harvest.validation.invalid_end_date")); return;
+  }
+
+  if (!due)   { message.warning(t("harvest.validation.empty_due_date")); return; }
+  if (!due.isAfter(end)) {
+    message.warning(t("harvest.validation.invalid_due_date")); return;
+  }
+
+  // ---- Build payload & submit ----
+  const fuelRequest = {
+    request_name: formData.request_name.trim(),
+    fuel_type: formData.fuel_type,
+    fuel_image: fuelImage,                 // base64/url
+    quantity: q,
+    quantity_remain: q,
+    start_received: start.toISOString(),
+    end_received:   end.toISOString(),
+    due_date:       due.toISOString(),
+    price: p,
+    total_price: q * p,
+    priority: formData.priority,
+    note: formData.note?.trim() || "",
+    status: "Chờ duyệt",
+    is_deleted: !!formData.is_deleted,
   };
+
+  mutationCreateOrder.mutate({
+    access_token: user?.access_token,
+    dataRequest: fuelRequest,
+  });
+};
 
   const mutationCreateOrder = useMutationHooks((data) => {
     return PurchaseOrderServices.createPurchaseOrder(data);
@@ -564,13 +517,15 @@ const HarvestRequestPage = () => {
                   </label>
                   <DatePicker
                     value={formData.start_received}
-                    onChange={(date) =>
+                    onChange={(d) =>
                       handleChange({
-                        target: { name: "start_received", value: date },
+                        target: {
+                          name: "start_received",
+                          value: d ? d.startOf("day") : null,
+                        },
                       })
                     }
-                    showTime={{ format: "HH:mm" }}
-                    format="DD/MM/YYYY HH:mm"
+                    format="DD/MM/YYYY"
                     disabledDate={disabledStartDate}
                     placeholder={t("harvest.form.start_date_placeholder")}
                     className="w-full rounded-xl border-2 px-3 h-10 border-gray-200 focus:border-blue-500 transition-all duration-200"
@@ -583,13 +538,15 @@ const HarvestRequestPage = () => {
                   </label>
                   <DatePicker
                     value={formData.end_received}
-                    onChange={(date) =>
+                    onChange={(d) =>
                       handleChange({
-                        target: { name: "end_received", value: date },
+                        target: {
+                          name: "end_received",
+                          value: d ? d.startOf("day") : null,
+                        },
                       })
                     }
-                    showTime={{ format: "HH:mm" }}
-                    format="DD/MM/YYYY HH:mm"
+                    format="DD/MM/YYYY" // chỉ ngày
                     disabledDate={disabledEndDate}
                     disabled={!formData.start_received}
                     placeholder={t("harvest.form.end_date_placeholder")}
@@ -603,13 +560,15 @@ const HarvestRequestPage = () => {
                   </label>
                   <DatePicker
                     value={formData.due_date}
-                    onChange={(date) =>
+                    onChange={(d) =>
                       handleChange({
-                        target: { name: "due_date", value: date },
+                        target: {
+                          name: "due_date",
+                          value: d ? d.startOf("day") : null,
+                        },
                       })
                     }
-                    showTime={{ format: "HH:mm" }}
-                    format="DD/MM/YYYY HH:mm"
+                    format="DD/MM/YYYY" // chỉ ngày
                     disabledDate={disabledDueDate}
                     disabled={!formData.end_received}
                     placeholder={t("harvest.form.due_date_placeholder")}
