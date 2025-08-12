@@ -1247,7 +1247,14 @@
     "fullNameNoSpecialChar": "Tên không được chứa ký tự đặc biệt.",
     "phoneDigitsOnly": "Số điện thoại chỉ được chứa số.",
     "addressRequired": "Địa chỉ không được để trống.",
-    "addressTooShort": "Địa chỉ phải có ít nhất 5 ký tự."
+    "addressTooShort": "Địa chỉ phải có ít nhất 5 ký tự.",
+    "fullNameNoEdgeSpace": "Họ tên không được có khoảng trắng ở đầu/cuối.",
+    "emailNoSpace": "Email không được chứa khoảng trắng.",
+    "phoneNoSpace": "Số điện thoại không được chứa khoảng trắng.",
+    "passwordNoSpace": "Mật khẩu không được chứa khoảng trắng.",
+    "passwordRequired": "Vui lòng nhập mật khẩu.",
+    "passwordMinLen": "Mật khẩu phải có ít nhất 6 ký tự.",
+    "birthDayMinYear": "Năm sinh phải từ năm {{year}} trở đi."
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",

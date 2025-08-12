@@ -61,9 +61,13 @@ const ProfilePage = () => {
   });
   const { isPending, isSuccess, data } = mutation;
 
+  const hasAnySpace = (s = "") => /\s/.test(s);
+  const hasEdgeSpace = (s = "") => /^\s|\s$/.test(s);
+
   ////Hàm check name
   const validateFullName = (name) => {
     if (!name.trim()) return t("validation.fullNameRequired");
+    if (hasEdgeSpace(name)) return t("validation.fullNameNoEdgeSpace"); // thêm key i18n
     if (name.length < 2 || name.length > 50)
       return t("validation.fullNameLength");
     if (/\d/.test(name)) return t("validation.fullNameNoNumber");
@@ -73,6 +77,7 @@ const ProfilePage = () => {
   ////Hàm check email
   const validateEmail = (email) => {
     if (!email.trim()) return t("validation.emailRequired");
+    if (hasAnySpace(email)) return t("validation.emailNoSpace"); // thêm key i18n
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) return t("validation.emailInvalid");
     return "";
@@ -80,9 +85,9 @@ const ProfilePage = () => {
 
   ///Hàm check phone
   const validatePhone = (phone) => {
-    if (!phone.trim()) return t("validation.phoneRequired");
-    if (phone.includes("-")) return t("validation.phoneNegative");
-    if (phone.length !== 10) return t("validation.phoneLength");
+    if (!phone) return t("validation.phoneRequired");
+    if (hasAnySpace(phone)) return t("validation.phoneNoSpace");
+    if (!/^\d{10}$/.test(phone)) return t("validation.phoneLength"); // dùng key cũ cho 10 số
     return "";
   };
 
@@ -98,19 +103,31 @@ const ProfilePage = () => {
     }
     const today = new Date();
     const selectedDate = new Date(date);
+    const year = selectedDate.getFullYear();
+
     if (selectedDate > today) {
       setBirthDayError(t("validation.birthDayInFuture"));
+      return false;
+    }
+    if (year < 1950) {
+      setBirthDayError(t("validation.birthDayMinYear", { year: 1950 }));
       return false;
     }
     setBirthDayError("");
     return true;
   };
 
+  const validateNewPassword = (pwd) => {
+    if (!pwd) return t("validation.passwordRequired");
+    if (hasAnySpace(pwd)) return t("validation.passwordNoSpace");
+    if (pwd.length < 6) return t("validation.passwordMinLen");
+    return "";
+  };
   // 3: useEffect
   useEffect(() => {
     if (isSuccess) {
       if (data?.status === "OK") {
-        message.success('Updated successfully!');
+        message.success("Updated successfully!");
         handleGetDetailsUser(userRedux?.id, userRedux?.access_token);
       } else if (data?.status === "ERROR") {
         message.error(data?.message);
@@ -120,11 +137,15 @@ const ProfilePage = () => {
 
   // CLICK BUTTON BTN UPDATE -> CALL API HANDLE UPDATE USER - CLICK CẬP NHẬT
   const handleClickBtnUpdate = (customAvatar = null) => {
+    const _full_name = (full_name || "").trim().replace(/\s{2,}/g, " ");
+    const _email = (email || "").trim();
+    const _phone = (phone || "").replace(/\s+/g, "");
+    const _gender = (gender || "").trim();
     console.log("🛠 Running handleClickBtnUpdate");
-    const nameError = validateFullName(full_name);
-    const emailError = validateEmail(email);
-    const phoneError = validatePhone(phone);
-    const genderError = validateGender(gender);
+    const nameError = validateFullName(_full_name);
+    const emailError = validateEmail(_email);
+    const phoneError = validatePhone(_phone);
+    const genderError = validateGender(_gender);
 
     setFullNameError(nameError);
     setEmailError(emailError);
@@ -136,9 +157,9 @@ const ProfilePage = () => {
       return;
     }
     const data = {
-      full_name,
-      email,
-      phone,
+      full_name: _full_name,
+      email: _email,
+      phone: _phone,
       address,
       avatar: customAvatar || avatar,
       birth_day,
@@ -149,6 +170,7 @@ const ProfilePage = () => {
       data,
       access_token: userRedux?.access_token,
     });
+    setIsEditing(!isEditing);
   };
 
   // USER INFOMATIONS AFTER UPDATE
@@ -213,6 +235,11 @@ const ProfilePage = () => {
   const handleCheckPassword = async () => {
     if ((!password && havePassword) || !newPassword || !confirmNewPassword) {
       message.error(t("fieldsRequired"));
+      return;
+    }
+    const pwdErr = validateNewPassword(newPassword);
+    if (pwdErr) {
+      message.error(pwdErr);
       return;
     }
     if (newPassword !== confirmNewPassword) {
@@ -554,7 +581,12 @@ const ProfilePage = () => {
                       <input
                         type="tel"
                         value={phone}
-                        onChange={(e) => handleChangePhone(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === " ") e.preventDefault();
+                        }}
+                        onChange={(e) =>
+                          handleChangePhone(e.target.value.replace(/\s+/g, ""))
+                        }
                         disabled={!isEditing}
                         className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
                           !isEditing
@@ -581,6 +613,7 @@ const ProfilePage = () => {
                     <div className="md:col-span-2">
                       <input
                         type="date"
+                        min="1950-01-01"
                         value={formatDateForInput(birth_day)}
                         onChange={(e) => handleChangeBirthday(e.target.value)}
                         disabled={!isEditing}
@@ -854,7 +887,12 @@ const ProfilePage = () => {
               <input
                 type={showPassword.new ? "text" : "password"}
                 value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === " ") e.preventDefault();
+                }}
+                onChange={(e) =>
+                  setNewPassword(e.target.value.replace(/\s+/g, ""))
+                }
                 className="w-full p-3 border rounded-md focus:ring focus:border-blue-500"
               />
             </div>
@@ -866,7 +904,12 @@ const ProfilePage = () => {
               <input
                 type={showPassword.confirm ? "text" : "password"}
                 value={confirmNewPassword}
-                onChange={(e) => setconfirmNewPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === " ") e.preventDefault();
+                }}
+                onChange={(e) =>
+                  setconfirmNewPassword(e.target.value.replace(/\s+/g, ""))
+                }
                 className="w-full p-3 border rounded-md focus:ring focus:border-blue-500"
               />
               {newPassword !== confirmNewPassword && (
@@ -885,7 +928,9 @@ const ProfilePage = () => {
               disabled={sendOtpLoading}
               className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
             >
-              {sendOtpLoading ? t('profile.updating') : t('profile.updatePassword')}
+              {sendOtpLoading
+                ? t("profile.updating")
+                : t("profile.updatePassword")}
             </button>
           </div>
         </div>

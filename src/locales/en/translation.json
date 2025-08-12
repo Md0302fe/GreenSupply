@@ -1259,7 +1259,14 @@
     "fullNameNoSpecialChar": "Full name cannot contain special characters.",
     "phoneDigitsOnly": "Phone number must contain only digits.",
     "addressRequired": "Address is required.",
-    "addressTooShort": "Address must be at least 5 characters long."
+    "addressTooShort": "Address must be at least 5 characters long.",
+    "fullNameNoEdgeSpace": "Full name must not have leading or trailing spaces.",
+    "emailNoSpace": "Email must not contain any spaces.",
+    "phoneNoSpace": "Phone number must not contain any spaces.",
+    "passwordNoSpace": "Password must not contain any spaces.",
+    "passwordRequired": "Please enter a password.",
+    "passwordMinLen": "Password must be at least 6 characters long.",
+    "birthDayMinYear": "Year of birth must be from {{year}} onwards."
   },
   "messages": {
     "notLoggedIn": "You are not logged in.",
