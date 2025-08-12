@@ -44,6 +44,7 @@ const ProvideRequestPage = () => {
         access_token,
         user_id
       );
+      console.log(response)
       setAdminOrders(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
       setCurrentPage(page);

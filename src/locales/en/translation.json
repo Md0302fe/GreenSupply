@@ -880,7 +880,7 @@
     "table": {
       "image": "Product",
       "request_name": "Request Name",
-      "quantity_remain": "Remaining",
+      "price": "Price (VND)",
       "total_quantity": "Total (Kg)",
       "start_date": "Start Date",
       "end_date": "End Date",

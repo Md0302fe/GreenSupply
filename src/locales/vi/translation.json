@@ -872,7 +872,7 @@
     "table": {
       "image": "Mặt hàng",
       "request_name": "Tên yêu cầu",
-      "quantity_remain": "Tiến độ còn thu",
+      "price": "Giá (VND)",
       "total_quantity": "Tổng thu (Kg)",
       "start_date": "Ngày bắt đầu nhận đơn",
       "end_date": "Ngày kết thúc đơn",

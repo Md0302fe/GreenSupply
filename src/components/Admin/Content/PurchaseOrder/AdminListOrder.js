@@ -202,6 +202,7 @@ const UserComponent = () => {
 
     const payload = {
       ...purchaseDetails,
+      total_price: (Number(purchaseDetails.quantity) || 0) * (Number(purchaseDetails.price) || 0),
       start_received: purchaseDetails.start_received?.toISOString() || null,
       end_received: purchaseDetails.end_received?.toISOString() || null,
       due_date: purchaseDetails.due_date?.toISOString() || null,
@@ -349,6 +350,7 @@ const UserComponent = () => {
   const fetchGetAllPurchaseOrder = async () => {
     const access_token = user?.access_token;
     const res = await PurchaseOrderServices.getAllPurchaseOrder(access_token);
+    console.log(res);
     return res.data;
   };
 
@@ -478,6 +480,8 @@ const UserComponent = () => {
     if (name === "quantity") {
       const v = value?.toString() ?? "";
       const n = Number(v);
+
+      // validate như cũ
       if (!v.trim()) {
         nextErrors.quantity = t("harvest.validation.empty_quantity");
       } else if (isNaN(n) || !isFinite(n) || n <= 0) {
@@ -489,6 +493,19 @@ const UserComponent = () => {
       } else {
         nextErrors.quantity = "";
       }
+      setFieldErrors(nextErrors);
+
+      // chặn "0"
+      if (value === "0") return;
+
+      // ✅ set remain = quantity
+      setPurchaseDetails((prev) => ({
+        ...prev,
+        quantity: n,
+        quantity_remain: n,
+      }));
+
+      return; // tránh rơi xuống setPurchaseDetails chung
     }
 
     // validate giá
@@ -851,16 +868,14 @@ const UserComponent = () => {
     },
     {
       title: (
-        <div style={{ textAlign: "center" }}>
-          {t("order.table.quantity_remain")}
-        </div>
+        <div style={{ textAlign: "center" }}>{t("order.table.price")}</div>
       ),
-      __excelTitle__: t("order.table.quantity_remain"),
-      dataIndex: "quantity_remain",
+      __excelTitle__: t("order.table.price"),
+      dataIndex: "price",
+      key: "price",
       className: "text-center",
-      key: "quantity_remain",
-      sorter: (a, b) => a?.quantity_remain - b?.quantity_remain,
-      render: (quantity_remain) => convertPrice(quantity_remain),
+      sorter: (a, b) => a.price - b.price,
+      render: (price) => `${convertPrice(price)} VND/kg`,
     },
 
     {
