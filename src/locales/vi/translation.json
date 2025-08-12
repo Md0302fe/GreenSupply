@@ -111,6 +111,8 @@
   "error_not_match": "Mật khẩu nhập lại không khớp.",
   "cancel": "Hủy",
   "confirm": "Xác nhận",
+  "nodata": "Hiện tại không có sản phẩm nào",
+  "createNew": "Tạo yêu cầu mới",
   "carousel": {
     "view_more": "Xem thêm",
     "slide1_title": "Chào mừng đến với Mangovate",
