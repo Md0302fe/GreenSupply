@@ -51,9 +51,9 @@ const ImportProductList = () => {
     }
   }
 
-  // useEffect(() => {
-  //   fetchOrders()
-  // }, [id])
+  useEffect(() => {
+    fetchOrders()
+  }, [id])
 
   // Cấu hình Slider
   const sliderSettings = {
