@@ -13,6 +13,8 @@ import {
 
 const AddressCreate = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
@@ -25,33 +27,40 @@ const AddressCreate = () => {
     address: "",
   });
 
-  const navigate = useNavigate();
-
-  // Validate full name
+  // Validate từng field
   const validateFullName = (name) => {
-    if (!name.trim()) return t("addressCreate.validation.fullNameRequired");
-    if (name.length < 2 || name.length > 40)
+    const trimmed = name.trim();
+    if (!trimmed) return t("addressCreate.validation.fullNameRequired");
+    if (trimmed.length < 2 || trimmed.length > 40)
       return t("addressCreate.validation.fullNameLength");
-    if (/\d/.test(name)) return t("addressCreate.validation.fullNameNoNumber");
-    if (/[^a-zA-ZÀ-ỹ\s]/.test(name))
+    if (/\d/.test(trimmed))
+      return t("addressCreate.validation.fullNameNoNumber");
+    if (/[^a-zA-ZÀ-ỹ\s'\-]/.test(trimmed))
       return t("addressCreate.validation.fullNameSpecialChar");
+    if (/\s{2,}/.test(trimmed))
+      return t("addressCreate.validation.fullNameMultiSpace");
     return "";
   };
 
-  // Validate phone
   const validatePhone = (phone) => {
-    if (!phone.trim()) return t("addressCreate.validation.phoneRequired");
-    if (phone.includes("-")) return t("addressCreate.validation.phoneNegative");
+    if (!phone) return t("addressCreate.validation.phoneRequired");
     if (!/^\d+$/.test(phone))
       return t("addressCreate.validation.phoneOnlyDigits");
     if (phone.length !== 10) return t("addressCreate.validation.phoneLength");
+    if (!/^0\d{9}$/.test(phone))
+      return t("addressCreate.validation.phoneStart");
     return "";
   };
 
-  // Validate address
   const validateAddress = (address) => {
-    if (!address.trim()) return t("addressCreate.validation.addressRequired");
-    if (address.length < 5) return t("addressCreate.validation.addressLength");
+    const trimmed = address.trim();
+    if (!trimmed) return t("addressCreate.validation.addressRequired");
+    if (trimmed.length < 5)
+      return t("addressCreate.validation.addressLengthMin");
+    if (trimmed.length > 120)
+      return t("addressCreate.validation.addressLengthMax");
+    if (/[^0-9a-zA-ZÀ-ỹ\s\/\-,.#]/.test(trimmed))
+      return t("addressCreate.validation.addressInvalidChar");
     return "";
   };
 
@@ -67,6 +76,14 @@ const AddressCreate = () => {
     });
 
     return !fullNameError && !phoneError && !addressError;
+  };
+
+  const handleChange = (field, value) => {
+    const cleanedValue = value.replace(/\s+/g, " ");
+    setFormData((prev) => ({
+      ...prev,
+      [field]: cleanedValue,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -92,17 +109,6 @@ const AddressCreate = () => {
         autoClose: 3000,
       });
     }
-  };
-
-  const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
-
-    let error = "";
-    if (field === "full_name") error = validateFullName(value);
-    if (field === "phone") error = validatePhone(value);
-    if (field === "address") error = validateAddress(value);
-
-    setErrors({ ...errors, [field]: error });
   };
 
   return (
@@ -159,6 +165,9 @@ const AddressCreate = () => {
                     placeholder={t("addressCreate.fullNamePlaceholder")}
                     value={formData.full_name}
                     onChange={(e) => handleChange("full_name", e.target.value)}
+                    onBlur={(e) =>
+                      handleChange("full_name", e.target.value.trim())
+                    }
                   />
                   {errors.full_name && (
                     <p className="text-red-500 text-sm mt-1">
@@ -176,10 +185,21 @@ const AddressCreate = () => {
                     type="text"
                     placeholder={t("addressCreate.phonePlaceholder")}
                     value={formData.phone}
-                    onChange={(e) => handleChange("phone", e.target.value)}
+                    onChange={(event) => {
+                      const input = event.target.value;
+                      if (/^\d{0,10}$/.test(input)) {
+                        // Chỉ cho phép nhập số, tối đa 10 số
+                        handleChange("phone", input);
+                      }
+                    }}
                   />
                   {errors.phone && (
                     <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  )}
+                  {formData.phone && !/^0\d{9}$/.test(formData.phone) && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {t("invalid_phone")}
+                    </p>
                   )}
                 </div>
 
@@ -193,6 +213,9 @@ const AddressCreate = () => {
                     placeholder={t("addressCreate.addressPlaceholder")}
                     value={formData.address}
                     onChange={(e) => handleChange("address", e.target.value)}
+                    onBlur={(e) =>
+                      handleChange("address", e.target.value.trim())
+                    }
                   />
                   {errors.address && (
                     <p className="text-red-500 text-sm mt-1">

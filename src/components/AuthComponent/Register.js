@@ -236,8 +236,6 @@ const Register = () => {
       setLoading(false);
     }
   };
-  const trimEdgesOnly = (s) =>
-    s.replace(/^[\s\u00A0\u3000]+|[\s\u00A0\u3000]+$/g, "");
   return (
     <div className={`login-container flex-center-center h-screen `}>
       <div
