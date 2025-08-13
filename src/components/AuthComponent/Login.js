@@ -326,7 +326,7 @@ const Login = () => {
             >
               <span>{t("forgot_password")}</span>
             </div>
-            <div
+            {/* <div
               className={`errorShow register ${
                 stateNotification ? "active" : ""
               }`}
@@ -346,7 +346,7 @@ const Login = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
             <Loading isPending={isPending}>
               <div className="text-center">
                 <button

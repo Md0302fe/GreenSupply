@@ -49,7 +49,7 @@ const HistoriesProcess = () => {
     queryFn: fetchHistoriesProcess,
     retry: false,
   });
-
+  console.log(data);
   const handleLoadingData = async (typeProcess) => {
     set_type_process(typeProcess);
   };
@@ -75,6 +75,16 @@ const HistoriesProcess = () => {
       })) ||
     [];
 
+  const cmpText = (a = "", b = "") =>
+    a
+      .toString()
+      .localeCompare(b.toString(), undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+
+  const cmpDate = (a, b) =>
+    new Date(a || 0).getTime() - new Date(b || 0).getTime();
   // Customize Filter Search Props
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -189,14 +199,14 @@ const HistoriesProcess = () => {
       dataIndex: "processName",
       key: "processName",
       ...getColumnSearchProps("processName"),
-      sorter: (a, b) => a?.full_name.length - b?.full_name.length,
+      sorter: (a, b) => cmpText(a.processName, b.processName)
     },
     {
       title: <div className="text-center">{t("histories.field.start")}</div>,
       dataIndex: "start_time",
       key: "start_time",
       className: "text-center",
-      sorter: true,
+      sorter: (a, b) => cmpDate(a.start_time, b.start_time),
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
@@ -204,7 +214,7 @@ const HistoriesProcess = () => {
       dataIndex: "end_time",
       key: "end_time",
       className: "text-center",
-      sorter: true,
+      sorter: (a, b) => cmpDate(a.end_time, b.end_time),
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {

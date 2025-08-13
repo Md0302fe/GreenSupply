@@ -102,6 +102,17 @@
   "emailNotExist": "Email không tồn tại",
   "otp_expired_or_not_exist": "OTP đã hết hạn hoặc không tồn tại.",
   "otp_incorrect": "OTP không chính xác, hoặc đã hết hạn.",
+  "reset_password": "Đặt lại mật khẩu",
+  "new_password": "Mật khẩu mới",
+  "confirm_password": "Xác nhận mật khẩu",
+  "enter_new_password": "Nhập mật khẩu mới",
+  "reenter_password": "Nhập lại mật khẩu",
+  "error_min_length": "Mật khẩu phải có ít nhất 6 ký tự.",
+  "error_not_match": "Mật khẩu nhập lại không khớp.",
+  "cancel": "Hủy",
+  "confirm": "Xác nhận",
+  "nodata": "Hiện tại không có sản phẩm nào",
+  "createNew": "Tạo yêu cầu mới",
   "carousel": {
     "view_more": "Xem thêm",
     "slide1_title": "Chào mừng đến với Mangovate",
@@ -319,7 +330,19 @@
     "seamless_integration": "Tích hợp liền mạch",
     "seamless_integration_desc": "Kết nối các quy trình trong chuỗi cung ứng của bạn một cách dễ dàng với các công cụ và công nghệ hiện đại, đảm bảo hoạt động trơn tru.",
     "real_time_tracking": "Theo dõi thời gian thực",
-    "real_time_tracking_desc": "Giám sát chuỗi cung ứng của bạn trong thời gian thực với các cập nhật chính xác, đảm bảo tính minh bạch và kiểm soát ở mọi bước."
+    "real_time_tracking_desc": "Giám sát chuỗi cung ứng của bạn trong thời gian thực với các cập nhật chính xác, đảm bảo tính minh bạch và kiểm soát ở mọi bước.",
+    "currentActivity": {
+      "title": "Hoạt động hiện tại",
+      "totalPlans": "📄 Tổng Kế Hoạch Sản Xuất",
+      "executingSingle": "🚀 Quy Trình Đơn Đang Thực Thi",
+      "executingConsolidate": "🔄 Quy Trình Tổng Hợp Đang Thực Thi"
+    },
+    "stats": {
+      "title": "Tổng hợp thống kê",
+      "totalSingle": "📦 Tổng Quy Trình Đơn Đã Tạo",
+      "totalConsolidate": "📦 Tổng Quy Trình Tổng Hợp Đã Tạo",
+      "waitingToCreate": "⏳ Kế Hoạch Chờ Tạo Quy Trình"
+    }
   },
   "about": {
     "description": "Chúng tôi nỗ lực chuyển đổi chuỗi cung ứng xoài bằng cách cung cấp các giải pháp đổi mới đảm bảo chất lượng, hiệu quả và tính bền vững từ trang trại đến bàn ăn. Với MSCM, tính minh bạch và hợp tác là trọng tâm trong mọi việc chúng tôi làm. Để đơn giản hóa và nâng cao chuỗi cung ứng xoài, trao quyền cho nông dân, nhà phân phối và nhà bán lẻ thông qua các giải pháp đổi mới, công nghệ và dựa trên dữ liệu.",
@@ -805,13 +828,13 @@
     "success": {
       "created": "Tạo kế hoạch nhập nguyên liệu thành công!",
       "updated": "Cập nhật kế hoạch nhập nguyên liệu thành công!",
-      "accept":  "Duyệt kế hoạch nhập nguyên liệu thành công!",
+      "accept": "Duyệt kế hoạch nhập nguyên liệu thành công!",
       "delete": "Xóa kế hoạch nhập nguyên liệu thành công!"
     },
     "fail": {
       "created": "Tạo kế hoạch nhập nguyên liệu thất bại!",
       "updated": "Cập nhật kế hoạch nhập nguyên liệu thất bại!",
-      "accept":  "Duyệt kế hoạch nhập nguyên liệu thất bại!",
+      "accept": "Duyệt kế hoạch nhập nguyên liệu thất bại!",
       "delete": "Xóa kế hoạch nhập nguyên liệu thất bại!"
     }
   },
@@ -851,7 +874,7 @@
     "table": {
       "image": "Mặt hàng",
       "request_name": "Tên yêu cầu",
-      "quantity_remain": "Tiến độ còn thu",
+      "price": "Giá (VND)",
       "total_quantity": "Tổng thu (Kg)",
       "start_date": "Ngày bắt đầu nhận đơn",
       "end_date": "Ngày kết thúc đơn",
@@ -913,7 +936,9 @@
     "material_quantity": "K.l Nguyên liệu (Kg)",
     "production_date": "Ngày bắt đầu",
     "end_date": "Ngày kết thúc",
-    "actions": "Hành động"
+    "actions": "Hành động",
+    "planName": "Tên kế hoạch",
+    "createdAt": "Ngày tạo"
   },
   "fuel_request": {
     "back": "Quay lại",
@@ -1007,53 +1032,53 @@
     }
   },
   "dashboardWarehouse": {
-  "title": "Quản Lý Kho",
-  "totalReceipts": "Tổng đơn nhập kho",
-  "pendingReceipts": "Đơn Chờ Duyệt",
-  "approvedReceipts": "Đơn Đã Duyệt",
-  "importedReceipts": "Đơn đã nhập kho",
-  "totalExports": "Tổng đơn xuất kho",
-  "pendingExports": "Đơn xuất kho chờ duyệt",
-  "completedExports": "Đơn xuất kho hoàn thành",
-  "orderStatus": "Trạng thái đơn",
-  "exported": "Đã xuất kho",
-  "storageInfo": "Thông tin kho",
-  "used": "đã sử dụng",
-  "statsChartTitle": "Thống kê đơn nhập kho",
-  "exportStatsChartTitle": "Thống kê đơn xuất kho",
-  "exportOrders": "Đơn xuất kho",
-  "exportLoadError": "Không thể tải dữ liệu đơn xuất kho",
-  "filter": {
-    "day": "Theo Ngày",
-    "week": "Theo Tuần",
-    "month": "Theo Tháng"
+    "title": "Quản Lý Kho",
+    "totalReceipts": "Tổng đơn nhập kho",
+    "pendingReceipts": "Đơn Chờ Duyệt",
+    "approvedReceipts": "Đơn Đã Duyệt",
+    "importedReceipts": "Đơn đã nhập kho",
+    "totalExports": "Tổng đơn xuất kho",
+    "pendingExports": "Đơn xuất kho chờ duyệt",
+    "completedExports": "Đơn xuất kho hoàn thành",
+    "orderStatus": "Trạng thái đơn",
+    "exported": "Đã xuất kho",
+    "storageInfo": "Thông tin kho",
+    "used": "đã sử dụng",
+    "statsChartTitle": "Thống kê đơn nhập kho",
+    "exportStatsChartTitle": "Thống kê đơn xuất kho",
+    "exportOrders": "Đơn xuất kho",
+    "exportLoadError": "Không thể tải dữ liệu đơn xuất kho",
+    "filter": {
+      "day": "Theo Ngày",
+      "week": "Theo Tuần",
+      "month": "Theo Tháng"
+    },
+    "recentReceipts": "Đơn nhập kho",
+    "columns": {
+      "id": "Mã đơn",
+      "manager": "Người quản lý",
+      "status": "Trạng thái",
+      "quantity": "Số lượng",
+      "createdAt": "Ngày nhập",
+      "creator": "Người tạo",
+      "batchName": "Lô nguyên liệu"
+    },
+    "noData": "Không có dữ liệu",
+    "notLoggedIn": "Bạn chưa đăng nhập!",
+    "noStorageInfo": "Không tìm thấy thông tin kho!",
+    "noReceipts": "Không có dữ liệu đơn nhập kho!",
+    "serverError": "Không thể kết nối đến server!",
+    "status": {
+      "pending": "Chờ duyệt",
+      "approve": "Đã duyệt",
+      "cancelled": "Đã hủy",
+      "completed": "Hoàn thành",
+      "processing": "Đang xử lý",
+      "failed": "Thất bại",
+      "disable": "Vô hiệu hóa",
+      "imported": "Nhập kho thành công"
+    }
   },
-  "recentReceipts": "Đơn nhập kho",
-  "columns": {
-    "id": "Mã đơn",
-    "manager": "Người quản lý",
-    "status": "Trạng thái",
-    "quantity": "Số lượng",
-    "createdAt": "Ngày nhập",
-    "creator": "Người tạo",
-    "batchName": "Lô nguyên liệu"
-  },
-  "noData": "Không có dữ liệu",
-  "notLoggedIn": "Bạn chưa đăng nhập!",
-  "noStorageInfo": "Không tìm thấy thông tin kho!",
-  "noReceipts": "Không có dữ liệu đơn nhập kho!",
-  "serverError": "Không thể kết nối đến server!",
-  "status": {
-    "pending": "Chờ duyệt",
-    "approve": "Đã duyệt",
-    "cancelled": "Đã hủy",
-    "completed": "Hoàn thành",
-    "processing": "Đang xử lý",
-    "failed": "Thất bại",
-    "disable": "Vô hiệu hóa",
-    "imported": "Nhập kho thành công"
-  }
-},
   "fuelOrderStatus": {
     "fetchError": "Lỗi khi lấy danh sách đơn hàng!",
     "serverError": "Không thể kết nối đến server!",
@@ -1117,7 +1142,7 @@
     "columns": {
       "receipt_id": "Mã đơn",
       "receiptType": "Loại đơn hàng",
-      "productCode":"Mã thành phẩm",
+      "productCode": "Mã thành phẩm",
       "productionPlan": "Mã kế hoạch",
       "expirationDate": "Hạn sử dụng",
       "curentStatus": "Tình trạng",
@@ -1222,7 +1247,14 @@
     "fullNameNoSpecialChar": "Tên không được chứa ký tự đặc biệt.",
     "phoneDigitsOnly": "Số điện thoại chỉ được chứa số.",
     "addressRequired": "Địa chỉ không được để trống.",
-    "addressTooShort": "Địa chỉ phải có ít nhất 5 ký tự."
+    "addressTooShort": "Địa chỉ phải có ít nhất 5 ký tự.",
+    "fullNameNoEdgeSpace": "Họ tên không được có khoảng trắng ở đầu/cuối.",
+    "emailNoSpace": "Email không được chứa khoảng trắng.",
+    "phoneNoSpace": "Số điện thoại không được chứa khoảng trắng.",
+    "passwordNoSpace": "Mật khẩu không được chứa khoảng trắng.",
+    "passwordRequired": "Vui lòng nhập mật khẩu.",
+    "passwordMinLen": "Mật khẩu phải có ít nhất 6 ký tự.",
+    "birthDayMinYear": "Năm sinh phải từ năm {{year}} trở đi."
   },
   "messages": {
     "notLoggedIn": "Bạn chưa đăng nhập.",
@@ -1320,8 +1352,10 @@
     "note": "Ghi chú"
   },
   "dashboardProduction": {
-    "title": "Dashboard quy trình sản xuất",
-    "chartTitle": "Biểu đồ trạng thái quy trình"
+    "title": "Bảng điều khiển quy trình sản xuất",
+    "chartTitle": "Thống kê trạng thái quy trình",
+    "recentPlansTitle": "🆕 Các kế hoạch sản xuất gần đây",
+    "seriesName": "Số lượng"
   },
   "productionRequest": {
     "title": "Lập kế hoạch sản xuất",
@@ -1670,7 +1704,19 @@
     "export": "Xuất kho",
     "errorLoading": "Không thể tải dữ liệu, vui lòng thử lại!",
     "warningAlmostEmpty": "Sắp hết nhiên liệu!",
-    "warningEmpty": "Hết nhiên liệu!"
+    "warningEmpty": "Hết nhiên liệu!",
+    "unknown": "Không xác định",
+    "totalBoxCategories": "Tổng số loại vật liệu",
+    "packagingStats": "Thống kê vật liệu đóng gói",
+    "active": "Đang hoạt động",
+    "inactive": "Đã ngừng sử dụng",
+    "maxStock": "Tồn nhiều nhất",
+    "minStock": "Tồn ít nhất",
+    "noChartData": "Không có dữ liệu biểu đồ!",
+    "packagingDistribution": "Phân bổ bao bì đã sử dụng",
+    "noPackagingData": "Không có dữ liệu biểu đồ bao bì!",
+    "vacuumBag": "túi chân không",
+    "cartonBox": "thùng carton"
   },
   "createFuel": {
     "title": "Tạo Loại Nguyên Liệu Mới",
@@ -2261,10 +2307,10 @@
     "title": "Cập nhật địa chỉ"
   },
   "message": {
-    "fetchFailed": "Không thể lấy địa chỉ!",
-    "fetchError": "Lỗi khi tải địa chỉ. Vui lòng thử lại!",
     "updateSuccess": "Cập nhật địa chỉ thành công!",
-    "updateError": "Cập nhật địa chỉ thất bại. Vui lòng thử lại!"
+    "updateError": "Cập nhật địa chỉ thất bại. Vui lòng thử lại!",
+    "fetchFailed": "Không thể lấy dữ liệu!",
+    "fetchError": "Lỗi khi lấy dữ liệu!"
   },
   "profile": {
     "title": "Thông tin người dùng",

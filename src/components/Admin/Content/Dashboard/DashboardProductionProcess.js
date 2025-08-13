@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table } from "antd";
 const DashboardProductionProcess = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,9 +22,7 @@ const DashboardProductionProcess = () => {
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/production-processing/dashboard`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) {
         setDashboardData(res.data.data);
@@ -38,11 +36,11 @@ const DashboardProductionProcess = () => {
           waitingToCreate: res.data.data.plansWaitingProcessCreate?.length || 0,
         });
       } else {
-        message.error("Không thể lấy dữ liệu dashboard!");
+        message.error(t("message.fetchFailed"));
       }
     } catch (error) {
-      console.error("Lỗi dashboard:", error);
-      message.error("Lỗi khi lấy dữ liệu dashboard!");
+      console.error("Dashboard error:", error);
+      message.error(t("message.fetchError"));
     }
     setLoading(false);
   };
@@ -51,20 +49,40 @@ const DashboardProductionProcess = () => {
     fetchDashboardData();
   }, []);
 
-  const handleCardClick = (status) => {
-    if (status === "Chờ duyệt") {
+  const handleCardClick = (statusKey) => {
+    // Điều hướng theo "key" để không phụ thuộc văn bản
+    if (statusKey === "pending") {
       navigate("/system/admin/production-processing");
-    } else if (status === "Đang sản xuất") {
+    } else if (statusKey === "processing") {
       navigate("/system/admin/production-processing-list");
-    } else if (status === "Hoàn thành") {
+    } else if (statusKey === "completed") {
       navigate(
         `/system/admin/production-processing-list?status=${encodeURIComponent(
-          status
+          t("status.completed")
         )}`
       );
     }
   };
-
+  const statusItems = [
+    {
+      key: "pending",
+      label: t("status.pending"),
+      value: dashboardData?.waiting || 0,
+      color: "#faad14",
+    },
+    {
+      key: "processing",
+      label: t("status.processing"),
+      value: dashboardData?.processing || 0,
+      color: "#1890ff",
+    },
+    {
+      key: "completed",
+      label: t("status.completed"),
+      value: dashboardData?.done || 0,
+      color: "#52c41a",
+    },
+  ];
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth < 768;
@@ -110,9 +128,9 @@ const DashboardProductionProcess = () => {
     yField: "count",
     color: ({ status }) => {
       const raw = status.replace("\n", " ");
-      if (raw === "Chờ duyệt") return "#faad14";
-      if (raw === "Đang sản xuất") return "#1890ff";
-      if (raw === "Hoàn thành") return "#52c41a";
+      if (raw === t("status.pending")) return "#faad14";
+      if (raw === t("status.processing")) return "#1890ff";
+      if (raw === t("status.completed")) return "#52c41a";
       return "#ccc";
     },
     label: {
@@ -135,36 +153,37 @@ const DashboardProductionProcess = () => {
         },
       },
     },
+    tooltip: false
   };
 
   const columns = [
     {
-      title: "Tên kế hoạch",
+      title: t("table.planName"),
       dataIndex: "request_name",
       key: "request_name",
       render: (text) => <span className="font-medium text-700">{text}</span>,
     },
     {
-      title: "Ngày tạo",
+      title: t("table.createdAt"),
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date) =>
-        new Date(date).toLocaleDateString("vi-VN", {
+        new Intl.DateTimeFormat(i18n.language === "vi" ? "vi-VN" : "en-US", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
-        }),
+        }).format(new Date(date)),
     },
     {
-      title: "Trạng thái",
+      title: t("table.status"),
       dataIndex: "status",
       key: "status",
       render: (status) => {
         const colorMap = {
-          "Chờ duyệt": "#faad14",
-          "Đã duyệt": "#1890ff",
-          "Đang sản xuất": "#1890ff",
-          "Hoàn thành": "#52c41a",
+          [t("status.pending")]: "#faad14",
+          [t("status.approve")]: "#1890ff",
+          [t("status.processing")]: "#1890ff",
+          [t("status.completed")]: "#52c41a",
         };
         return (
           <span style={{ color: colorMap[status] || "#000", fontWeight: 600 }}>
@@ -217,7 +236,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <div className="text-lg font-bold text-gray-800">
-                Hoạt động hiện tại
+                {t("dashboardProduction.title")}
               </div>
             }
             valueRender={() => (
@@ -229,7 +248,7 @@ const DashboardProductionProcess = () => {
                       navigate("/system/admin/production-request-list")
                     }
                   >
-                    📄 Tổng Kế Hoạch Sản Xuất
+                    📄 {t("cards.currentActivity.totalPlans")}
                   </div>
                   <div className="text-xl font-semibold text-purple-600">
                     {summaryStats.totalProductionPlans}
@@ -242,7 +261,7 @@ const DashboardProductionProcess = () => {
                       navigate("/system/admin/processing-system?type=single")
                     }
                   >
-                    🚀 Quy Trình Đơn Đang Thực Thi
+                    🚀 {t("cards.currentActivity.executingSingle")}
                   </div>
 
                   <div className="text-xl font-semibold text-blue-600">
@@ -258,7 +277,7 @@ const DashboardProductionProcess = () => {
                       )
                     }
                   >
-                    🔄 Quy Trình Tổng Hợp Đang Thực Thi
+                    🔄 {t("cards.currentActivity.executingConsolidate")}
                   </div>
                   <div className="text-xl font-semibold text-blue-600">
                     {summaryStats.executingConsolidate}
@@ -274,7 +293,7 @@ const DashboardProductionProcess = () => {
           <Statistic
             title={
               <div className="text-lg font-bold text-gray-800">
-                Tổng hợp thống kê
+                {t("cards.stats.title")}
               </div>
             }
             valueRender={() => (
@@ -288,7 +307,7 @@ const DashboardProductionProcess = () => {
                       )
                     }
                   >
-                    📦 Tổng Quy Trình Đơn Đã Tạo
+                    📦 {t("cards.stats.totalSingle")}
                   </div>
                   <div className="text-xl font-semibold text-indigo-600">
                     {summaryStats.totalSingleProcess}
@@ -303,7 +322,7 @@ const DashboardProductionProcess = () => {
                       )
                     }
                   >
-                    📦 Tổng Quy Trình Tổng Hợp Đã Tạo
+                    📦 {t("cards.stats.totalConsolidate")}
                   </div>
 
                   <div className="text-xl font-semibold text-indigo-600">
@@ -319,7 +338,7 @@ const DashboardProductionProcess = () => {
                       )
                     }
                   >
-                    ⏳ Kế Hoạch Chờ Tạo Quy Trình
+                    ⏳ {t("cards.stats.waitingToCreate")}
                   </div>
 
                   <div className="text-xl font-semibold text-red-600">
@@ -343,7 +362,7 @@ const DashboardProductionProcess = () => {
       {/* 🔽 Bảng kế hoạch mới nhất */}
       <div className="bg-white p-6 mt-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">
-          🆕 Các kế hoạch sản xuất gần đây
+          🆕 {t("dashboardProduction.recentPlansTitle")}
         </h2>
         <Table
           dataSource={latestPlans.map((plan, index) => ({
