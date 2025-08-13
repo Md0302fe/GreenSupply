@@ -30,6 +30,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [role_check, setRoleCheck] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [birthDayError, setBirthDayError] = useState(""); // Lưu lỗi của ngày sinh
+
   const [resendTimer, setResendTimer] = useState(0); // Thời gian chờ (giây)
   const [otpLoading, setOtpLoading] = useState(false);
 
@@ -131,6 +133,32 @@ const Register = () => {
     setResendTimer(0);
   };
 
+  const handleChangeBirthday = (value) => {
+    setDate(value);
+    validateBirthDay(value, setBirthDayError);
+  };
+
+  const validateBirthDay = (date, setBirthDayError) => {
+    if (!date) {
+      setBirthDayError("");
+      return true;
+    }
+    const today = new Date();
+    const selectedDate = new Date(date);
+    const year = selectedDate.getFullYear();
+
+    if (selectedDate > today) {
+      setBirthDayError(t("validation.birthDayInFuture"));
+      return false;
+    }
+    if (year < 1950) {
+      setBirthDayError(t("validation.birthDayMinYear", { year: 1950 }));
+      return false;
+    }
+    setBirthDayError("");
+    return true;
+  };
+
   // Hàm xử lý gửi OTP
   const requestOtp = async () => {
     if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
@@ -160,6 +188,12 @@ const Register = () => {
       message.error(t("must_be_18_years_old"));
       return;
     }
+    if (birthYear < 1950) {
+      message.error(t("validation.birthDayMinYear", { year: 1950 }));
+      return;
+    }
+
+
 
     if (resendTimer > 0) return; // Không cho gửi lại nếu còn thời gian chờ
 
@@ -202,7 +236,8 @@ const Register = () => {
       setLoading(false);
     }
   };
-
+  const trimEdgesOnly = (s) =>
+    s.replace(/^[\s\u00A0\u3000]+|[\s\u00A0\u3000]+$/g, "");
   return (
     <div className={`login-container flex-center-center h-screen `}>
       <div
@@ -253,7 +288,8 @@ const Register = () => {
                 className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={name}
                 placeholder={t("name_placeholder")}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={(e) => setName(e.target.value.trim())}
                 required
               ></input>
             </div>
@@ -265,7 +301,12 @@ const Register = () => {
                 className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={email}
                 placeholder={t("email_placeholder")}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) =>
+                  setEmail(event.target.value.replace(/\s+/g, ""))
+                }
+                onKeyDown={(e) => {
+                  if (e.key === " ") e.preventDefault(); // chặn luôn khi bấm space
+                }}
               ></input>
             </div>
 
@@ -278,7 +319,9 @@ const Register = () => {
                 }`}
                 value={password}
                 placeholder={t("password_placeholder")}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) =>
+                  setPassword(event.target.value.replace(/^\s+|\s+$/g, ""))
+                }
                 required
               />
               {/* Hiển thị lỗi nếu mật khẩu không hợp lệ */}
@@ -297,7 +340,11 @@ const Register = () => {
                 className="border-[1px] shadow-[inset_1px_1px_2px_1px_#00000024] border-supply-primary text-black"
                 value={confirmPassword}
                 placeholder={t("confirm_password_placeholder")}
-                onChange={(event) => setConfirmPassword(event.target.value)}
+                onChange={(event) =>
+                  setConfirmPassword(
+                    event.target.value.replace(/^\s+|\s+$/g, "")
+                  )
+                }
                 required
               />
             </div>
@@ -372,14 +419,20 @@ const Register = () => {
                     ? "border-red-500"
                     : ""
                 }`}
+                min="1950-01-01"
                 id="date"
                 value={date}
-                onChange={(event) => setDate(event.target.value)}
+                onChange={(e) => handleChangeBirthday(e.target.value)}
                 required
               />
               {/* Hiển thị lỗi nếu ngày sinh không hợp lệ */}
               {date && date > new Date().toISOString().split("T")[0] && (
                 <p className="text-red-500 text-sm mt-1">{t("invalid_dob")}</p>
+              )}
+              {birthDayError && (
+                <p className="text-red-500 text-sm mt-2 flex items-center">
+                  ⚠️ {birthDayError}
+                </p>
               )}
             </div>
 
