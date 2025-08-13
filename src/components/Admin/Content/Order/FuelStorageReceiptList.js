@@ -264,7 +264,7 @@ const FuelStorageReceiptList = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {
-        message.success(t("fuelStorage.updateSuccess", { status: newStatus }));
+        message.success(t("fuelStorage.updateSuccess"));
         setSelectedReceipt((prev) => ({ ...prev, status: newStatus }));
         setReceipts((prev) =>
           prev.map((r) => (r._id === id ? { ...r, status: newStatus } : r))
