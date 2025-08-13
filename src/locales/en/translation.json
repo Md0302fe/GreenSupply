@@ -1191,7 +1191,7 @@
       "okText": "Confirm",
       "cancelText": "Cancel"
     },
-    "updateSuccess": "Updated status successfully: {{status}}",
+    "updateSuccess": "Updated status successfully",
     "updateFail": "Failed to update status!",
     "serverError": "Unable to connect to the server!",
     "approve": "Approve Import"
