@@ -15,6 +15,8 @@ import { useTranslation } from "react-i18next";
 const AddressUpdate = () => {
   const { t } = useTranslation();
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
@@ -27,29 +29,40 @@ const AddressUpdate = () => {
     address: "",
   });
 
-  const navigate = useNavigate();
-
+  // Validate giống AddressCreate
   const validateFullName = (name) => {
-    if (!name.trim()) return t("validation.fullNameRequired");
-    if (name.length < 2 || name.length > 40)
+    const trimmed = name.trim();
+    if (!trimmed) return t("validation.fullNameRequired");
+    if (trimmed.length < 2 || trimmed.length > 40)
       return t("validation.fullNameLength");
-    if (/\d/.test(name)) return t("validation.fullNameNoNumber");
-    if (/[^a-zA-ZÀ-ỹ\s]/.test(name))
-      return t("validation.fullNameNoSpecialChar");
+    if (/\d/.test(trimmed))
+      return t("validation.fullNameNoNumber");
+    if (/[^a-zA-ZÀ-ỹ\s'\-]/.test(trimmed))
+      return t("validation.fullNameSpecialChar");
+    if (/\s{2,}/.test(trimmed))
+      return t("validation.fullNameMultiSpace");
     return "";
   };
 
   const validatePhone = (phone) => {
-    if (!phone.trim()) return t("validation.phoneRequired");
-    if (phone.includes("-")) return t("validation.phoneNegative");
-    if (!/^\d+$/.test(phone)) return t("validation.phoneDigitsOnly");
+    if (!phone) return t("validation.phoneRequired");
+    if (!/^\d+$/.test(phone))
+      return t("validation.phoneOnlyDigits");
     if (phone.length !== 10) return t("validation.phoneLength");
+    if (!/^0\d{9}$/.test(phone))
+      return t("validation.phoneStart");
     return "";
   };
 
   const validateAddress = (address) => {
-    if (!address.trim()) return t("validation.addressRequired");
-    if (address.length < 5) return t("validation.addressTooShort");
+    const trimmed = address.trim();
+    if (!trimmed) return t("validation.addressRequired");
+    if (trimmed.length < 5)
+      return t("validation.addressLengthMin");
+    if (trimmed.length > 120)
+      return t("validation.addressLengthMax");
+    if (/[^0-9a-zA-ZÀ-ỹ\s\/\-,.#]/.test(trimmed))
+      return t("validation.addressInvalidChar");
     return "";
   };
 
@@ -63,7 +76,20 @@ const AddressUpdate = () => {
       phone: phoneError,
       address: addressError,
     });
+
     return !fullNameError && !phoneError && !addressError;
+  };
+
+  const handleChange = (field, value) => {
+    // Giữ lại tối đa 1 space giữa các từ
+    let cleanedValue = value;
+    if (field === "full_name" || field === "address") {
+      cleanedValue = value.replace(/\s+/g, " ");
+    }
+    setFormData((prev) => ({
+      ...prev,
+      [field]: cleanedValue,
+    }));
   };
 
   useEffect(() => {
@@ -90,14 +116,17 @@ const AddressUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     try {
       const token = JSON.parse(localStorage.getItem("access_token"));
       await axios.put(
         `http://localhost:3001/api/user/address/update/${id}`,
-        formData,
+        {
+          ...formData,
+          full_name: formData.full_name.trim(),
+          address: formData.address.trim(),
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -106,17 +135,6 @@ const AddressUpdate = () => {
     } catch (error) {
       message.error(t("message.updateError"));
     }
-  };
-
-  const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
-
-    let error = "";
-    if (field === "full_name") error = validateFullName(value);
-    if (field === "phone") error = validatePhone(value);
-    if (field === "address") error = validateAddress(value);
-
-    setErrors({ ...errors, [field]: error });
   };
 
   return (
@@ -173,6 +191,9 @@ const AddressUpdate = () => {
                     placeholder={t("placeholder.fullName")}
                     value={formData.full_name}
                     onChange={(e) => handleChange("full_name", e.target.value)}
+                    onBlur={(e) =>
+                      handleChange("full_name", e.target.value.trim())
+                    }
                   />
                   {errors.full_name && (
                     <p className="text-red-500 text-sm mt-1">
@@ -190,10 +211,20 @@ const AddressUpdate = () => {
                     type="text"
                     placeholder={t("placeholder.phone")}
                     value={formData.phone}
-                    onChange={(e) => handleChange("phone", e.target.value)}
+                    onChange={(event) => {
+                      const input = event.target.value;
+                      if (/^\d{0,10}$/.test(input)) {
+                        handleChange("phone", input);
+                      }
+                    }}
                   />
                   {errors.phone && (
                     <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  )}
+                  {formData.phone && !/^0\d{9}$/.test(formData.phone) && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {t("invalid_phone")}
+                    </p>
                   )}
                 </div>
 
@@ -204,9 +235,12 @@ const AddressUpdate = () => {
                   <input
                     className="border p-2 w-full rounded-md"
                     type="text"
-                    placeholder={t("placeholder.address")}
+                    placeholder={t("addressPlaceholder")}
                     value={formData.address}
                     onChange={(e) => handleChange("address", e.target.value)}
+                    onBlur={(e) =>
+                      handleChange("address", e.target.value.trim())
+                    }
                   />
                   {errors.address && (
                     <p className="text-red-500 text-sm mt-1">
