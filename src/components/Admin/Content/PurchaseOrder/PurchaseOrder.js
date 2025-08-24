@@ -159,76 +159,94 @@ const HarvestRequestPage = () => {
 
   // Gửi form
   const handleSubmit = async () => {
-  const q = Number(formData.quantity);
-  const p = Number(formData.price);
+    const q = Number(formData.quantity);
+    const p = Number(formData.price);
 
-  // Các ngày là dayjs (đã set d.startOf("day") ở onChange)
-  const start = formData.start_received; // dayjs | null
-  const end   = formData.end_received;   // dayjs | null
-  const due   = formData.due_date;       // dayjs | null
-  const today = dayjs().startOf("day");
+    // Các ngày là dayjs (đã set d.startOf("day") ở onChange)
+    const start = formData.start_received; // dayjs | null
+    const end = formData.end_received; // dayjs | null
+    const due = formData.due_date; // dayjs | null
+    const today = dayjs().startOf("day");
 
-  // ---- Validate text bắt buộc ----
-  if (!formData.request_name?.trim()) {
-    message.warning(t("harvest.validation.empty_name")); return;
-  }
-  if (!formData.fuel_type) {
-    message.warning(t("harvest.validation.empty_fuel_type")); return;
-  }
-  if (!fuelImage) {
-    message.warning(t("harvest.validation.empty_image")); return;
-  }
-  if (!formData.priority?.trim()) {
-    message.warning(t("harvest.validation.empty_priority")); return;
-  }
+    // ---- Validate text bắt buộc ----
+    if (!formData.request_name?.trim()) {
+      message.warning(t("harvest.validation.empty_name"));
+      return;
+    }
+    if (!formData.fuel_type) {
+      message.warning(t("harvest.validation.empty_fuel_type"));
+      return;
+    }
+    if (!fuelImage) {
+      message.warning(t("harvest.validation.empty_image"));
+      return;
+    }
+    if (!formData.priority?.trim()) {
+      message.warning(t("harvest.validation.empty_priority"));
+      return;
+    }
 
-  // ---- Validate số ----
-  if (!Number.isFinite(q) || q <= 0 || q > MAX_QTY) {
-    message.warning(t("harvest.validation.invalid_quantity")); return;
-  }
-  if (!Number.isFinite(p) || p <= 0 || p > MAX_PRICE) {
-    message.warning(t("harvest.validation.invalid_price")); return;
-  }
+    // ---- Validate số ----
+    if (!Number.isFinite(q) || q <= 0 || q > MAX_QTY) {
+      message.warning(t("harvest.validation.invalid_quantity"));
+      return;
+    }
+    if (!Number.isFinite(p) || p <= 0 || p > MAX_PRICE) {
+      message.warning(t("harvest.validation.invalid_price"));
+      return;
+    }
 
-  // ---- Validate ngày (dayjs) ----
-  if (!start) { message.warning(t("harvest.validation.empty_start_date")); return; }
-  if (start.isBefore(today)) {
-    message.warning(t("harvest.validation.invalid_start_date")); return;
-  }
+    // ---- Validate ngày (dayjs) ----
+    if (!start) {
+      message.warning(t("harvest.validation.empty_start_date"));
+      return;
+    }
+    if (start.isBefore(today)) {
+      message.warning(t("harvest.validation.invalid_start_date"));
+      return;
+    }
 
-  if (!end)   { message.warning(t("harvest.validation.empty_end_date")); return; }
-  if (!end.isAfter(start)) {
-    message.warning(t("harvest.validation.invalid_end_date")); return;
-  }
+    if (!end) {
+      message.warning(t("harvest.validation.empty_end_date"));
+      return;
+    }
+    if (!end.isAfter(start)) {
+      message.warning(t("harvest.validation.invalid_end_date"));
+      return;
+    }
 
-  if (!due)   { message.warning(t("harvest.validation.empty_due_date")); return; }
-  if (!due.isAfter(end)) {
-    message.warning(t("harvest.validation.invalid_due_date")); return;
-  }
+    if (!due) {
+      message.warning(t("harvest.validation.empty_due_date"));
+      return;
+    }
+    if (!due.isAfter(end)) {
+      message.warning(t("harvest.validation.invalid_due_date"));
+      return;
+    }
 
-  // ---- Build payload & submit ----
-  const fuelRequest = {
-    request_name: formData.request_name.trim(),
-    fuel_type: formData.fuel_type,
-    fuel_image: fuelImage,                 // base64/url
-    quantity: q,
-    quantity_remain: q,
-    start_received: start.toISOString(),
-    end_received:   end.toISOString(),
-    due_date:       due.toISOString(),
-    price: p,
-    total_price: q * p,
-    priority: formData.priority,
-    note: formData.note?.trim() || "",
-    status: "Chờ duyệt",
-    is_deleted: !!formData.is_deleted,
+    // ---- Build payload & submit ----
+    const fuelRequest = {
+      request_name: formData.request_name.trim(),
+      fuel_type: formData.fuel_type,
+      fuel_image: fuelImage, // base64/url
+      quantity: q,
+      quantity_remain: q,
+      start_received: start.toISOString(),
+      end_received: end.toISOString(),
+      due_date: due.toISOString(),
+      price: p,
+      total_price: q * p,
+      priority: formData.priority,
+      note: formData.note?.trim() || "",
+      status: "Chờ duyệt",
+      is_deleted: !!formData.is_deleted,
+    };
+
+    mutationCreateOrder.mutate({
+      access_token: user?.access_token,
+      dataRequest: fuelRequest,
+    });
   };
-
-  mutationCreateOrder.mutate({
-    access_token: user?.access_token,
-    dataRequest: fuelRequest,
-  });
-};
 
   const mutationCreateOrder = useMutationHooks((data) => {
     return PurchaseOrderServices.createPurchaseOrder(data);
@@ -380,10 +398,14 @@ const HarvestRequestPage = () => {
               <input
                 type="text"
                 name="request_name"
-                maxLength="200"
+                maxLength="100"
                 placeholder={t("harvest.form.name_placeholder")}
                 value={formData.request_name}
                 onChange={handleChange}
+                onBlur={(e) => {
+                  const trimmed = e.target.value.trim();
+                  setFormData((prev) => ({ ...prev, request_name: trimmed }));
+                }}
                 className="w-full border-2 border-gray-200 py-2.5 px-3 h-10 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50"
               />
             </div>
@@ -609,9 +631,14 @@ const HarvestRequestPage = () => {
               <textarea
                 name="note"
                 placeholder={t("harvest.form.note_placeholder")}
+                maxLength="500"
                 rows="4"
                 value={formData.note}
                 onChange={handleChange}
+                onBlur={(e) => {
+                  const trimmed = e.target.value.trim();
+                  setFormData((prev) => ({ ...prev, note: trimmed }));
+                }}
                 className="w-full border-2 border-gray-200 px-3 py-1 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400 bg-gray-50/50 resize-none"
               />
             </div>
