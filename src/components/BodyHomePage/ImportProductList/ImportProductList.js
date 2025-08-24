@@ -235,7 +235,7 @@ const ProductItem = ({ product }) => {
         <div className="mb-4 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
           <div className="flex items-center mb-2">
             <Clock className="w-3 h-3 text-gray-500 mr-1" />
-            <span className="text-xs font-medium text-gray-700">Thời gian còn lại:</span>
+            <span className="text-xs font-medium text-gray-700">{t("provideRequest.time_left")}{" "}</span>
           </div>
           {timeLeft.total > 0 ? (
             <div className={`text-xs font-bold ${isUrgent ? "text-red-600" : "text-green-600"}`}>

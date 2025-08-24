@@ -44,7 +44,7 @@ const ProvideRequestPage = () => {
         access_token,
         user_id
       );
-      console.log(response)
+      console.log(response);
       setAdminOrders(response.data);
       setTotalPages(response.pagination?.totalPages || 1);
       setCurrentPage(page);
@@ -436,9 +436,14 @@ const ProvideRequestPage = () => {
               </label>
               <textarea
                 name="note"
-                placeholder="Nhập ghi chú"
+                placeholder={t("provideRequest.enter_note")}
+                maxLength={500}
                 value={formData.note}
                 onChange={handleNoteChange}
+                onBlur={(e) => {
+                  const trimmed = e.target.value.trim();
+                  setFormData((prev) => ({ ...prev, note: trimmed }));
+                }}
                 rows={4}
                 className="border border-gray-300 rounded px-3 py-2 w-full resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
               />

@@ -202,7 +202,9 @@ const UserComponent = () => {
 
     const payload = {
       ...purchaseDetails,
-      total_price: (Number(purchaseDetails.quantity) || 0) * (Number(purchaseDetails.price) || 0),
+      total_price:
+        (Number(purchaseDetails.quantity) || 0) *
+        (Number(purchaseDetails.price) || 0),
       start_received: purchaseDetails.start_received?.toISOString() || null,
       end_received: purchaseDetails.end_received?.toISOString() || null,
       due_date: purchaseDetails.due_date?.toISOString() || null,
@@ -1058,10 +1060,23 @@ const UserComponent = () => {
                   <input
                     type="text"
                     name="request_name"
-                    maxLength="50"
+                    maxLength="100"
                     placeholder={t("order.form.name_placeholder")}
                     value={purchaseDetails.request_name}
                     onChange={handleChange}
+                    onBlur={(e) => {
+                      const trimmed = e.target.value.trim();
+                      setPurchaseDetails((prev) => ({
+                        ...prev,
+                        request_name: trimmed,
+                      }));
+                      setFieldErrors((errs) => ({
+                        ...errs,
+                        request_name: trimmed
+                          ? ""
+                          : t("harvest.validation.empty_name"),
+                      }));
+                    }}
                     className={`border p-2 rounded w-full focus:ring focus:ring-yellow-300
                       ${!isEditable ? "bg-gray-100 cursor-not-allowed" : ""}
                       ${
@@ -1332,7 +1347,15 @@ const UserComponent = () => {
                   <textarea
                     name="note"
                     value={purchaseDetails.note}
+                    maxLength="500"
                     onChange={handleChange}
+                    onBlur={(e) => {
+                      const trimmed = e.target.value.trim();
+                      setPurchaseDetails((prev) => ({
+                        ...prev,
+                        note: trimmed,
+                      }));
+                    }}
                     readOnly={!isEditable}
                     className={`border p-2 rounded w-full focus:ring focus:ring-yellow-300
                       ${!isEditable ? "bg-gray-100 cursor-not-allowed" : ""}`}
