@@ -959,7 +959,7 @@
       "customer": "Suppliers",
       "fuel_type": "Material type",
       "request_name": "Request Name",
-      "price": "Price (VND)",
+      "price": "Price (VND/Kg)",
       "status": "Status",
       "actions": "Actions"
     },
@@ -1011,7 +1011,7 @@
     "customer": "Suppliers",
     "request_name": "Request Name",
     "fuelType": "Material Type",
-    "price": "Price (VND)",
+    "price": "Price (VND/Kg)",
     "status": "Status",
     "pending": "Pending",
     "approved": "Approved",
