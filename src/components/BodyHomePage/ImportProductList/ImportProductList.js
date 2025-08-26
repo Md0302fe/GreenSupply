@@ -43,7 +43,7 @@ const ImportProductList = () => {
   const { id } = useParams();
   const user = useSelector((state) => state.user);
   const handleExpired = (id) => {
-    setProductList((prev) => prev.filter((p) => p._id !== id));
+    setProductList((prev) => prev.filter((p) => p._id !== id)); // ⟵ LOẠI BỎ KHỎI LIST
   };
 
   const fetchOrders = async () => {
@@ -55,7 +55,7 @@ const ImportProductList = () => {
         (order) =>
           order.status === "Đang xử lý" &&
           !order.is_deleted &&
-          new Date(order.end_received).getTime() > Date.now()
+          new Date(order.end_received).getTime() > Date.now() // ⟵ LỌC BỎ HẾT HẠN
       );
       setProductList(filteredOrders);
     } catch (error) {
@@ -205,7 +205,7 @@ const ProductItem = ({ product, onExpired }) => {
       setTimeLeft(updatedTime);
       if (updatedTime.total <= 0) {
         clearInterval(interval);
-        onExpired?.(product._id);
+        onExpired?.(product._id); // ⟵ GỌI CALLBACK BÁO HẾT HẠN
       }
     }, 1000);
     return () => clearInterval(interval);
