@@ -224,7 +224,7 @@ const FuelList = () => {
           );
 
           if (res.data.success) {
-            message.success(t("fuelList.delete_success"));
+            message.success(t("fuelList.Undo_delete_success"));
             setFuels((prev) =>
               prev.map((fuel) =>
                 fuel._id === id ? { ...fuel, is_deleted: true } : fuel

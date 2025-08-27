@@ -1774,6 +1774,7 @@
     "create_fail": "Update failed!",
     "update_error": "Server connection error!",
     "delete_success": "Material marked as deleted!",
+    "Undo_delete_success": "Material has recovered!",
     "delete_fail": "Delete failed!",
     "not_logged_in": "You are not logged in. Please log in again.",
     "fetch_fail": "Failed to fetch Material types!",
