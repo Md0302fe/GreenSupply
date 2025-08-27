@@ -1759,6 +1759,10 @@
     "not_logged_in": "Bạn chưa đăng nhập! Vui lòng đăng nhập lại.",
     "fetch_fail": "Lỗi khi lấy danh sách loại Nguyên liệu!",
     "server_error": "Không thể kết nối đến server!",
+    "confirm_delete_title": "Bạn có muốn xóa vật liệu này không?",
+    "confirm_delete_content": "Việc xóa vật liệu là vĩnh viễn và không thể hoàn tác.\nVui lòng xác nhận nếu bạn thực sự muốn tiếp tục.",
+    "confirm_Undodelete_title": "Bạn có muốn khôi phục vật liệu này không?",
+    "confirm_Undodelete_content": "Hành động này sẽ hoàn tác việc xóa và khôi phục vật liệu.\nVui lòng xác nhận nếu bạn muốn tiếp tục.",
     "columns": {
       "type_name": "Tên Loại Nguyên liệu",
       "description": "Mô Tả",
