@@ -16,6 +16,7 @@ import {
   DollarSign,
   FileText,
 } from "lucide-react";
+import dayjs from "dayjs";
 
 // Custom Arrow Components
 const CustomPrevArrow = ({ onClick }) => (
@@ -51,11 +52,18 @@ const ImportProductList = () => {
       const access_token = user?.access_token;
       const user_id = user?.id;
       const response = await getAllFuelEntry({}, access_token, user_id);
+      // const filteredOrders = response.data.filter(
+      //   (order) =>
+      //     order.status === "Đang xử lý" &&
+      //     !order.is_deleted &&
+      //     new Date(order.end_received).getTime() > Date.now() // ⟵ LỌC BỎ HẾT HẠN
+      // );
+      const now = dayjs();
       const filteredOrders = response.data.filter(
         (order) =>
           order.status === "Đang xử lý" &&
           !order.is_deleted &&
-          new Date(order.end_received).getTime() > Date.now() // ⟵ LỌC BỎ HẾT HẠN
+          dayjs(order.end_received).endOf("day").isAfter(now) // ⟵ tính đến 23:59:59 của end_date
       );
       setProductList(filteredOrders);
     } catch (error) {
@@ -185,9 +193,12 @@ const ProductItem = ({ product, onExpired }) => {
   const navigate = useNavigate();
 
   const getTimeRemaining = (endTime) => {
-    const end = new Date(endTime).getTime();
+    // const end = new Date(endTime).getTime();
+    if (!endTime) return { total: -1, days: 0, hours: 0, minutes: 0, seconds: 0 };
+    const endMs = new Date(endTime).getTime();
+
     const now = Date.now();
-    const total = isNaN(end) ? -1 : end - now;
+    const total = isNaN(endMs) ? -1 : endMs - now;
     const seconds = Math.floor((total / 1000) % 60);
     const minutes = Math.floor((total / 1000 / 60) % 60);
     const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
