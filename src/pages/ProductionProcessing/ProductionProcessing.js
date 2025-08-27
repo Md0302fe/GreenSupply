@@ -84,9 +84,8 @@ const ProductionProcessForm = () => {
 
   // ❌ Không cho chọn ngày kết thúc trước ngày bắt đầu
   const disabledEndDate = (current) => {
-    const start = form.getFieldValue("start_time");
-    if (!start) return current && current < dayjs().startOf("day");
-    return current && current.isBefore(start, "minute");
+    if (!startTime) return current && current < dayjs().startOf("day");
+    return current && current < dayjs(startTime).add(1, "day").startOf("day");
   };
   const onFinish = async (values) => {
     // Kiểm tra nếu có lô đang ở trạng thái "Đang chuẩn bị"
@@ -248,6 +247,18 @@ const ProductionProcessForm = () => {
             label={t("createProductionProcess.endTime")}
             rules={[
               { required: true, message: t("validation.endDateRequired") },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const start = getFieldValue("start_time");
+                  if (!value || !start) return Promise.resolve();
+                  if (value.isAfter(dayjs(start).add(1, "day"))) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error(t("validation.endDateMustAfterStartOneDay"))
+                  );
+                },
+              }),
             ]}
             dependencies={["start_time"]}
           >
