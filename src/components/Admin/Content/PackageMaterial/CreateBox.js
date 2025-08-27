@@ -228,15 +228,42 @@ const CreateBox = () => {
           }}
         >
           <Form.Item
-            label={t("boxMaterial.packageMaterialName")}
-            name="package_material_name"
-            rules={[{ required: true, message: t("boxMaterial.enterName") }]}
-          >
-            <Input
-              size="large"
-              placeholder={t("boxMaterial.namePlaceholder")}
-            />
-          </Form.Item>
+  label={t("boxMaterial.packageMaterialName")}
+  name="package_material_name"
+  rules={[
+    { required: true, message: t("boxMaterial.enterName") },
+  ]}
+>
+  <Input
+    size="large"
+    placeholder={t("boxMaterial.namePlaceholder")}
+    onBlur={(e) => {
+      const value = e.target.value;
+
+      // Nếu chỉ toàn khoảng trắng
+      if (value.trim().length === 0) {
+        form.setFields([
+          { name: "package_material_name", errors: [t("boxMaterial.nameOnlySpaces")] },
+        ]);
+        return;
+      }
+
+      // Nếu có khoảng trắng ở đầu/cuối → trim và update lại
+      if (value !== value.trim()) {
+        form.setFieldsValue({
+          package_material_name: value.trim(),
+        });
+        form.setFields([
+          { name: "package_material_name", errors: [t("boxMaterial.noLeadingTrailingSpaces")] },
+        ]);
+      } else {
+        // clear lỗi nếu hợp lệ
+        form.setFields([{ name: "package_material_name", errors: [] }]);
+      }
+    }}
+  />
+</Form.Item>
+
 
           <Form.Item
             label={t("boxMaterial.type")}

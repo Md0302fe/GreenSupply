@@ -9,7 +9,9 @@ import {
   Drawer,
   Form,
   Upload,
+  Modal,
 } from "antd";
+
 import axios from "axios";
 import {
   DownloadOutlined,
@@ -25,6 +27,9 @@ import DrawerComponent from "../../../DrawerComponent/DrawerComponent";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ButtonComponent from "../../../ButtonComponent/ButtonComponent";
+import { MdDelete } from "react-icons/md";
+import { RiDeviceRecoverLine } from "react-icons/ri";
+import { update } from "lodash";
 
 const FuelList = () => {
   const { t } = useTranslation();
@@ -44,8 +49,10 @@ const FuelList = () => {
     type_name: "",
     description: "",
   });
+  const { confirm } = Modal;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
 
   const userRedux = useSelector((state) => state.user);
   const token = userRedux?.access_token || localStorage.getItem("access_token");
@@ -72,7 +79,7 @@ const FuelList = () => {
           description:
             item.fuel_type_id?.description ||
             t("fuelList.drawer.no_description"),
-          is_deleted: item.is_deleted,
+          is_deleted: item?.fuel_type_id?.is_deleted,
           quantity: item.quantity,
           storage_id: item.storage_id?._id || "",
           storage_name:
@@ -81,6 +88,10 @@ const FuelList = () => {
           updatedAt: item.updatedAt,
         }));
         console.log("Danh sách Nguyên liệu:", transformedFuels);
+        // danh sách nguyên liệu - đã trừ những nguyên liệu bị ẩn
+        const listOFfuels = transformedFuels.filter(
+          (item) => !item?.is_deleted
+        );
         setFuels(transformedFuels);
       } else {
         message.error(t("fuelList.fetch_fail"));
@@ -154,34 +165,88 @@ const FuelList = () => {
     }
   };
 
-  const handleCancelFuel = async (id) => {
-    try {
-      const res = await axios.put(
-        `${process.env.REACT_APP_API_URL}/fuel/cancel/${id}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  const handleCancelFuel = (id, status) => {
+    console.log("status ==> ", status);
+    confirm({
+      title: t("fuelList.confirm_delete_title"), // Ví dụ: "Bạn có chắc muốn xóa?"
+      content: t("fuelList.confirm_delete_content"), // Ví dụ: "Hành động này không thể hoàn tác."
+      okText: t("common.ok"), // "Xác nhận"
+      cancelText: t("common.cancel"), // "Hủy"
+      okType: "danger",
+      onOk: async () => {
+        try {
+          const res = await axios.put(
+            `${process.env.REACT_APP_API_URL}/fuel/cancel/${id}`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-      if (res.data.success) {
-        message.success(t("fuelList.delete_success"));
-        setFuels((prev) =>
-          prev.map((fuel) =>
-            fuel._id === id ? { ...fuel, is_deleted: true } : fuel
-          )
-        );
-      } else {
-        message.error(t("fuelList.delete_fail"));
-      }
-    } catch (error) {
-      message.error(t("fuelList.update_error"));
-    }
+          if (res.data.success) {
+            message.success(t("fuelList.delete_success"));
+            setFuels((prev) =>
+              prev.map((fuel) =>
+                fuel._id === id ? { ...fuel, is_deleted: true } : fuel
+              )
+            );
+          } else {
+            message.error(t("fuelList.delete_fail"));
+          }
+          setUpdateStatus(!updateStatus);
+        } catch (error) {
+          message.error(t("fuelList.update_error"));
+        }
+      },
+      onCancel() {
+        // Người dùng bấm Hủy thì không làm gì
+      },
+    });
+  };
+
+  // handle reDelete
+  const handleUndoCancelFuel = (id, status) => {
+    console.log("status ==> ", status);
+    confirm({
+      title: t("fuelList.confirm_Undodelete_title"), // Ví dụ: "Bạn có chắc muốn xóa?"
+      content: t("fuelList.confirm_Undodelete_content"), // Ví dụ: "Hành động này không thể hoàn tác."
+      okText: t("common.ok"), // "Xác nhận"
+      cancelText: t("common.cancel"), // "Hủy"
+      okType: "danger",
+      onOk: async () => {
+        try {
+          const res = await axios.put(
+            `${process.env.REACT_APP_API_URL}/fuel/Undo-cancel/${id}`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (res.data.success) {
+            message.success(t("fuelList.Undo_delete_success"));
+            setFuels((prev) =>
+              prev.map((fuel) =>
+                fuel._id === id ? { ...fuel, is_deleted: true } : fuel
+              )
+            );
+          } else {
+            message.error(t("fuelList.delete_fail"));
+          }
+          setUpdateStatus(!updateStatus);
+        } catch (error) {
+          message.error(t("fuelList.update_error"));
+        }
+      },
+      onCancel() {
+        // Người dùng bấm Hủy thì không làm gì
+      },
+    });
   };
 
   useEffect(() => {
     fetchFuels();
-  }, []);
+  }, [updateStatus]);
 
   // Handle Search
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -429,6 +494,29 @@ const FuelList = () => {
               icon={<EditOutlined style={{ fontSize: "18px" }} />}
               onClick={() => openUpdateDrawer(record)}
             />
+            {/* Button Delete Actions & Reject Actions */}
+            {record.fuel_type_id?.is_deleted !== false ? (
+              <Button
+                icon={<RiDeviceRecoverLine style={{ color: "black" }} />}
+                onClick={() =>
+                  handleUndoCancelFuel(
+                    record._id,
+                    record.fuel_type_id?.is_deleted
+                  )
+                }
+                disabled={record.is_deleted !== true}
+                size="middle"
+              />
+            ) : (
+              <Button
+                icon={<MdDelete style={{ color: "red" }} />}
+                onClick={() =>
+                  handleCancelFuel(record._id, record.fuel_type_id?.is_deleted)
+                }
+                disabled={record.is_deleted !== false}
+                size="middle"
+              />
+            )}
           </Space>
         </div>
       ),

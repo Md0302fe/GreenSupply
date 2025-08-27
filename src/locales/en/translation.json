@@ -1774,10 +1774,15 @@
     "create_fail": "Update failed!",
     "update_error": "Server connection error!",
     "delete_success": "Material marked as deleted!",
+    "Undo_delete_success": "Material has recovered!",
     "delete_fail": "Delete failed!",
     "not_logged_in": "You are not logged in. Please log in again.",
     "fetch_fail": "Failed to fetch Material types!",
     "server_error": "Cannot connect to the server!",
+    "confirm_delete_title" : "Dou you want to delete material ?",
+    "confirm_delete_content" :  "Deleting this material is permanent and cannot be undone. \nPlease confirm if you really want to proceed.",
+    "confirm_Undodelete_title": "Do you want to restore this material?",
+    "confirm_Undodelete_content": "This will undo the deletion and make the material available again.\nPlease confirm if you want to proceed.",
     "columns": {
       "type_name": "Material type Name",
       "description": "Description",
@@ -1994,7 +1999,10 @@
     "heightPlaceholder": "Only for carton box",
     "selectImageButton": "Choose image",
     "vacuumBagLabel": "Vacuum Bag",
-    "cartonBoxLabel": "Carton Box"
+    "cartonBoxLabel": "Carton Box",
+    "nameOnlySpaces": "Name cannot contain only whitespace",
+    "noLeadingTrailingSpaces": "Name cannot have leading or trailing spaces"
+
   },
   "createProductionProcess": {
     "title": "Create Production Process",

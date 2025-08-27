@@ -1755,10 +1755,15 @@
     "create_fail": "Cập nhật thất bại!",
     "update_error": "Lỗi kết nối đến server!",
     "delete_success": "Đã chuyển Nguyên liệu vào trạng thái Đã xóa!",
+    "Undo_delete_success": "Khôi phục nguyên liệu thành công",
     "delete_fail": "Hủy thất bại!",
     "not_logged_in": "Bạn chưa đăng nhập! Vui lòng đăng nhập lại.",
     "fetch_fail": "Lỗi khi lấy danh sách loại Nguyên liệu!",
     "server_error": "Không thể kết nối đến server!",
+    "confirm_delete_title": "Bạn có muốn xóa vật liệu này không?",
+    "confirm_delete_content": "Việc xóa vật liệu là vĩnh viễn và không thể hoàn tác.\nVui lòng xác nhận nếu bạn thực sự muốn tiếp tục.",
+    "confirm_Undodelete_title": "Bạn có muốn khôi phục vật liệu này không?",
+    "confirm_Undodelete_content": "Hành động này sẽ hoàn tác việc xóa và khôi phục vật liệu.\nVui lòng xác nhận nếu bạn muốn tiếp tục.",
     "columns": {
       "type_name": "Tên Loại Nguyên liệu",
       "description": "Mô Tả",
@@ -1975,7 +1980,10 @@
     "heightPlaceholder": "Chỉ áp dụng cho thùng",
     "selectImageButton": "Chọn ảnh",
     "vacuumBagLabel": "Túi chân không",
-    "cartonBoxLabel": "Thùng carton"
+    "cartonBoxLabel": "Thùng carton",
+    "nameOnlySpaces": "Tên không được chỉ chứa khoảng trắng",
+    "noLeadingTrailingSpaces": "Tên không được có khoảng trắng ở đầu hoặc cuối"
+
   },
   "createProductionProcess": {
     "title": "Tạo Quy Trình Sản Xuất",
