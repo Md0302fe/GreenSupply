@@ -1994,7 +1994,10 @@
     "heightPlaceholder": "Only for carton box",
     "selectImageButton": "Choose image",
     "vacuumBagLabel": "Vacuum Bag",
-    "cartonBoxLabel": "Carton Box"
+    "cartonBoxLabel": "Carton Box",
+    "nameOnlySpaces": "Name cannot contain only whitespace",
+    "noLeadingTrailingSpaces": "Name cannot have leading or trailing spaces"
+
   },
   "createProductionProcess": {
     "title": "Create Production Process",
