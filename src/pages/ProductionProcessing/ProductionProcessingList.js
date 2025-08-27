@@ -339,8 +339,8 @@ const ProductionProcessingList = () => {
   // Xử lý duyệt đơn
   const handleApprove = async () => {
     Modal.confirm({
-      title: t("confirm.approveTitle"),
-      content: t("confirm.approveContent"),
+      title: t("productionProcess.confirm.approveTitle"),
+      content: t("productionProcess.confirm.approveContent"),
       onOk: async () => {
         try {
           // approve single process
@@ -350,7 +350,7 @@ const ProductionProcessingList = () => {
               id: selectedProcess._id,
               token: access_token,
             });
-            message.success(t("message.approveSuccess"));
+            message.success(t("productionProcess.message.approveSuccess"));
             setIsDrawerOpen(false);
             refetch();
           }
@@ -366,7 +366,7 @@ const ProductionProcessingList = () => {
             refetch();
           }
         } catch (error) {
-          message.error(t("message.approveFail"));
+          message.error(t("productionProcess.message.approveFail"));
         }
       },
     });

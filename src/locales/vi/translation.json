@@ -1265,7 +1265,7 @@
     "dataFetchError": "Lỗi khi tải dữ liệu từ server.",
     "userNotFound": "Không tìm thấy thông tin người dùng.",
     "unknownError": "Lỗi không xác định!",
-    "createSuccess": "Tạo đơn thành công!",
+    "createSuccess": "Tạo Quy Trình Thành Công!",
     "fetchExportListError": "Lỗi khi lấy danh sách đơn xuất kho!",
     "connectionError": "Không thể kết nối đến server!",
     "approveSuccess": "Duyệt đơn thành công",

@@ -305,7 +305,7 @@ const Admin = (props) => {
       {showNotiList && (
         <ClickAwayListener onClickAway={() => setShowNotiList(false)}>
           <div
-            className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50 max-h-[800px]"
+            className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50 max-h-[600px]"
             style={{
               top:
                 (notificationRef.current?.getBoundingClientRect()?.bottom ||
@@ -330,7 +330,7 @@ const Admin = (props) => {
             {notifications.length === 0 ? (
               <p className="text-gray-500 text-sm">Không có thông báo nào</p>
             ) : (
-              <ul className="space-y-2 max-h-[650px] overflow-y-auto">
+              <ul className="space-y-2 max-h-[500px] overflow-y-auto">
                 {notifications.map((item, idx) => (
                   <li
                     key={idx}

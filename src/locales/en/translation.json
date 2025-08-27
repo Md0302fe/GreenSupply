@@ -1277,7 +1277,7 @@
     "dataFetchError": "Error loading data from server.",
     "userNotFound": "User information not found.",
     "unknownError": "Unknown error occurred!",
-    "createSuccess": "Order created successfully!",
+    "createSuccess": "Create Production Process Successfully!",
     "fetchExportListError": "Failed to load export list!",
     "connectionError": "Unable to connect to server!",
     "approveSuccess": "Order approved successfully",

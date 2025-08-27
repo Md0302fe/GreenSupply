@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Popover } from "antd";
 import {
   Search,
@@ -17,6 +17,11 @@ import { resetUser } from "../../redux/slides/userSlides";
 import { persistor } from "../../redux/store";
 import { useTranslation } from "react-i18next";
 import * as UserServices from "../../services/UserServices";
+import { FaBell } from "react-icons/fa";
+import socket from "../../socket";
+import * as Notifications from "../../services/NotificationsServices";
+import { useQuery } from "@tanstack/react-query";
+import ClickAwayListener from "react-click-away-listener";
 
 // Import components
 import LanguageSwitcher from "../TranslateComponent/LanguageSwitcher";
@@ -33,11 +38,18 @@ const ImprovedHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
   const userRedux = useSelector((state) => state.user);
   const [userAvatar, setUserAvatar] = useState("");
   const dispatch = useDispatch();
+  const [dropdownOpenIndex, setDropdownOpenIndex] = useState(null);
+  const notificationRef = useRef(null);
+
+  const [showNotiList, setShowNotiList] = useState(false);
 
   // Navigation items for authenticated users
   const navigationItems = [
@@ -48,30 +60,22 @@ const ImprovedHeader = () => {
     { href: "/reports", label: t("reports") || "Báo cáo" },
   ];
 
-  // Mock notifications - replace with your actual notifications
-  const notifications = [
-    {
-      id: 1,
-      title: t("new_order") || "Đơn hàng mới",
-      message: "Có 3 đơn hàng mới cần xử lý",
-      time: "5 phút trước",
-      unread: true,
-    },
-    {
-      id: 2,
-      title: t("warehouse_alert") || "Cảnh báo kho",
-      message: "Nguyên liệu A sắp hết",
-      time: "1 giờ trước",
-      unread: true,
-    },
-    {
-      id: 3,
-      title: t("production_complete") || "Hoàn thành sản xuất",
-      message: "Lô hàng #123 đã hoàn thành",
-      time: "2 giờ trước",
-      unread: false,
-    },
-  ];
+  const fetchNotifications = async () => {
+    const dataRequest = {
+      access_token: user?.access_token,
+    };
+    const res = await Notifications?.getAllNotification(dataRequest);
+    return res?.data;
+  };
+  const {
+    data: dataNotifications,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: fetchNotifications,
+  });
 
   // CLICK BTN LOG-OUT
   const handleClickBtnLogout = async () => {
@@ -96,6 +100,67 @@ const ImprovedHeader = () => {
   useEffect(() => {
     setUserAvatar(userRedux?.avatar);
   }, [userRedux?.avatar]);
+
+  useEffect(() => {
+    if (dataNotifications && Array.isArray(dataNotifications)) {
+      setNotifications(dataNotifications);
+      const unread = dataNotifications.filter((item) => !item.is_read).length;
+      setUnreadCount(unread);
+    }
+  }, [dataNotifications]);
+
+  useEffect(() => {
+    const handleNewNotification = (data) => {
+      const newNoti = { ...data };
+      setNotifications((prev) => [newNoti, ...prev]);
+      setUnreadCount((count) => count + 1);
+    };
+
+    socket.on("pushNotification", handleNewNotification);
+    return () => {
+      socket.off("pushNotification", handleNewNotification);
+    };
+  }, []);
+
+  const handleNotificationClick = (index) => {
+    setNotifications((prev) =>
+      prev.map((item, idx) =>
+        idx === index ? { ...item, unread: false } : item
+      )
+    );
+
+    setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  const handleDropdownToggle = (index) => {
+    setDropdownOpenIndex(dropdownOpenIndex === index ? null : index);
+  };
+
+  // Cập nhật notifications với is_read = true cho item
+  const handleMarkAsRead = async (notification_id) => {
+    const dataRequest = {
+      access_token: user?.access_token,
+      notification_id,
+    };
+    const res = await Notifications.read_Notification(dataRequest);
+
+    setDropdownOpenIndex(null);
+    refetch();
+    return res;
+  };
+
+  // Xóa thông báo by notification_id
+  const handleDeleteNotification = async (notification_id) => {
+    const dataRequest = {
+      access_token: user?.access_token,
+      notification_id,
+    };
+    const res = await Notifications.delete_Notification(dataRequest);
+
+    setDropdownOpenIndex(null);
+    refetch();
+    return res;
+  };
 
   const handleOpenAdminCore = () => {
     const roleName = userRedux?.role_name;
@@ -122,8 +187,8 @@ const ImprovedHeader = () => {
       (account) => account?.role_name === roleName
     );
 
-    console.log("roleName ==> ", roleName)
-    console.log("matchedRole ==> ", matchedRole?.page_link)
+    console.log("roleName ==> ", roleName);
+    console.log("matchedRole ==> ", matchedRole?.page_link);
 
     if (matchedRole) {
       navigate(matchedRole?.page_link);
@@ -190,76 +255,149 @@ const ImprovedHeader = () => {
                 )}
               </div>
 
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
               {/* Notifications */}
               {isLoggedIn && (
                 <div className="relative">
-                  <button
-                    onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                    className="relative p-2.5 text-gray-600 hover:text-orange-500 hover:bg-orange-50 rounded-md transition-colors border border-gray-300 hover:border-orange-500"
-                    title={t("notifications") || "Thông báo"}
+                  {/* Chuông Thông Báo */}
+                  <div
+                    ref={notificationRef}
+                    className={`relative border border-grey group flex flex-col justify-center items-center gap-2 cursor-pointer rounded-md p-2 transition-all duration-200 hover:bg-gray-100 ${
+                      showNotiList ? "bg-blue-50" : "text-black"
+                    }`}
+                    onClick={() => setShowNotiList((prev) => !prev)}
                   >
-                    <Bell className="w-5 h-5" />
-                    {notifications.filter((n) => n.unread).length > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                        {notifications.filter((n) => n.unread).length}
+                    <FaBell
+                      className={`text-xl ${
+                        showNotiList ? "text-blue-500" : "text-black"
+                      }`}
+                    />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-md">
+                        {unreadCount}
                       </span>
                     )}
-                  </button>
-
-                  {/* Notifications Dropdown */}
-                  {isNotificationOpen && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={() => setIsNotificationOpen(false)}
-                      />
-                      <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
-                        <div className="p-4 border-b border-gray-100">
-                          <h3 className="font-semibold text-gray-900">
-                            {t("notifications") || "Thông báo"}
-                          </h3>
-                        </div>
-                        <div className="max-h-64 overflow-y-auto">
-                          {notifications.map((notification) => (
-                            <div
-                              key={notification.id}
-                              className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer ${
-                                notification.unread ? "bg-blue-50" : ""
-                              }`}
-                            >
-                              <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                  <h4 className="font-medium text-gray-900 text-sm">
-                                    {notification.title}
-                                  </h4>
-                                  <p className="text-gray-600 text-sm mt-1">
-                                    {notification.message}
-                                  </p>
-                                  <p className="text-gray-400 text-xs mt-2">
-                                    {notification.time}
-                                  </p>
-                                </div>
-                                {notification.unread && (
-                                  <div className="w-2 h-2 bg-blue-500 rounded-full ml-2 mt-1"></div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="p-3 border-t border-gray-100">
-                          <button className="w-full text-center text-orange-500 hover:text-orange-600 text-sm font-medium">
-                            {t("view_all_notifications") ||
-                              "Xem tất cả thông báo"}
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  )}
+                    <span className="absolute bottom-[-25px] left-1/2 transform -translate-x-1/2 scale-0 group-hover:scale-100 transition-all duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10">
+                      Thông báo
+                    </span>
+                  </div>
                 </div>
               )}
+              {showNotiList && (
+                <ClickAwayListener onClickAway={() => setShowNotiList(false)}>
+                  <div
+                    className="absolute bg-white border shadow-md rounded-md p-4 w-[400px] z-50 max-h-[600px]"
+                    style={{
+                      top:
+                        (notificationRef.current?.getBoundingClientRect()
+                          ?.bottom || 250) +
+                        10 +
+                        window.scrollY,
+                      left:
+                        (notificationRef.current?.getBoundingClientRect()
+                          ?.left || 0) -
+                        370 +
+                        window.scrollX,
+                    }}
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-xl font-bold text-black">
+                        Thông báo
+                      </h4>
+                      <button
+                        onClick={() => setShowNotiList(false)}
+                        className="text-gray-700 hover:text-red-500 text-xl"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    {notifications.length === 0 ? (
+                      <p className="text-gray-500 text-sm">
+                        Không có thông báo nào
+                      </p>
+                    ) : (
+                      <ul className="space-y-2 max-h-[450px] overflow-y-auto">
+                        {notifications.map((item, idx) => (
+                          <li
+                            key={idx}
+                            className={`text-sm text-gray-800 border-b pb-2 cursor-pointer p-2 rounded hover:bg-gray-100 relative ${
+                              item.is_read ? "text-gray-400" : "font-semibold"
+                            }`}
+                            onClick={() => handleNotificationClick(idx)}
+                          >
+                            {/* Dấu chấm xanh cho thông báo chưa đọc */}
+                            {!item.is_read && (
+                              <div className="absolute bottom-2 right-2 w-2 h-2 bg-blue-800 rounded-full"></div>
+                            )}
 
-              {/* Language Switcher */}
-              <LanguageSwitcher />
+                            {/* Button ... và dropdown menu */}
+                            <div className="absolute right-2 top-2">
+                              <button
+                                className="w-6 h-6 flex items-center justify-center rounded-full bg-white bg-opacity-50 text-gray-500 hover:bg-opacity-100 hover:text-gray-700 border border-gray-300 shadow-sm transition-all"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDropdownToggle(idx);
+                                }}
+                              >
+                                ⋯
+                              </button>
+
+                              {/* Dropdown menu - Sửa ở đây */}
+                              {dropdownOpenIndex === idx && (
+                                <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-md shadow-lg z-10 border">
+                                  <div className="py-1">
+                                    <button
+                                      className="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleMarkAsRead(item?._id);
+                                      }}
+                                    >
+                                      Đánh dấu đã đọc
+                                    </button>
+                                    <button
+                                      className="block w-full text-left px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteNotification(item?._id);
+                                      }}
+                                    >
+                                      Xóa thông báo
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Phần nội dung thông báo */}
+                            <p className="text-base font-medium text-blue-600 pr-8">
+                              {" "}
+                              {/* Thêm pr-8 để tránh đè lên nút ⋯ */}
+                              {item.title}
+                            </p>
+                            {item.text_message && (
+                              <p className="text-sm text-gray-700">
+                                {item.text_message}
+                              </p>
+                            )}
+                            <div className="flex justify-between mt-1 text-xs text-gray-400">
+                              <span>
+                                {item.createdAt
+                                  ? new Date(item.createdAt).toLocaleString()
+                                  : item.timestamp
+                                  ? new Date(item.timestamp).toLocaleString()
+                                  : ""}
+                              </span>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </ClickAwayListener>
+              )}
 
               {/* User Section */}
               <Loading isPending={loading}>

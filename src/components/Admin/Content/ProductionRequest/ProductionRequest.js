@@ -536,7 +536,7 @@ const ProductionRequest = () => {
                       message: t("productionRequest.lossRequired"),
                     },
                     {
-                      type: "number",
+                      type: "Number",
                       min: 0,
                       max: 100,
                       message: t("productionRequest.lossMinMax"),
@@ -548,6 +548,12 @@ const ProductionRequest = () => {
                     max={100}
                     className="w-full border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-gray-50/50"
                     placeholder={t("productionRequest.enterLoss")}
+                    parser={(value) => value?.replace(/[^\d]/g, "")}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                     onChange={calculateProductQuantity}
                     size="large"
                   />
