@@ -213,14 +213,14 @@ const ProcessDetails = () => {
                   👤 {t("processDetails.info.assignedUser")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.user_id?.name || "Chưa gán"}
+                  {dataProcess?.user_id?.name || "Not assigned"}
                 </p>
               </div>
 
               {/* Nguyên liệu */}
               <div className="bg-white rounded-lg shadow-sm p-2">
                 <p className="text-gray-500 text-xs mb-1 font-bold">
-                  🍋 Nguyên liệu
+                  🍋 {t("details_stage.material")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {
@@ -233,7 +233,7 @@ const ProcessDetails = () => {
               {/* Khối lượng nguyên liệu */}
               <div className="bg-white rounded-lg shadow-sm p-2">
                 <p className="text-gray-500 text-xs mb-1 font-bold">
-                  ⚖️ Khối lượng nguyên liệu
+                  ⚖️ {t("details_stage.quantity_material")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {dataProcess?.data?.production_request_id?.material_quantity}
@@ -243,7 +243,7 @@ const ProcessDetails = () => {
               {/* Khối lượng thành phẩm */}
               <div className="bg-white rounded-lg shadow-sm p-2">
                 <p className="text-gray-500 text-xs mb-1 font-bold">
-                  ⚖️ Khối lượng thành phẩm
+                  ⚖️ {t("details_stage.product")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
                   {dataProcess?.data?.production_request_id?.product_quantity}

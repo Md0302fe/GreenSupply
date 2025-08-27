@@ -84,8 +84,10 @@ const ProductionProcessForm = () => {
 
   // ❌ Không cho chọn ngày kết thúc trước ngày bắt đầu
   const disabledEndDate = (current) => {
-    if (!startTime) return current && current < dayjs().startOf("day");
-    return current && current < dayjs(startTime).add(1, "day").startOf("day");
+    if (!startTime) {
+      return current && current < dayjs().startOf("day");
+    }
+    return current && current < dayjs(startTime).startOf("day");
   };
   const onFinish = async (values) => {
     // Kiểm tra nếu có lô đang ở trạng thái "Đang chuẩn bị"
@@ -251,11 +253,11 @@ const ProductionProcessForm = () => {
                 validator(_, value) {
                   const start = getFieldValue("start_time");
                   if (!value || !start) return Promise.resolve();
-                  if (value.isAfter(dayjs(start).add(1, "day"))) {
+                  if (value.isAfter(dayjs(start))) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error(t("validation.endDateMustAfterStartOneDay"))
+                    new Error(t("validation.endDateMustAfterStart"))
                   );
                 },
               }),
@@ -271,7 +273,7 @@ const ProductionProcessForm = () => {
                   ? t("createProductionProcess.selectStartTimeFirst")
                   : t("createProductionProcess.selectEndTime")
               }
-              disabledDate={disabledEndDate}
+              disabledDate={disabledEndDate} // ✅ đã sửa lại chỉ cần lớn hơn
               disabled={!startTime}
             />
           </Form.Item>

@@ -17,7 +17,6 @@ import Highlighter from "react-highlight-words";
 import { CheckCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { BsBuildingFillGear } from "react-icons/bs";
 
-
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
@@ -224,8 +223,6 @@ const ProductionProcessingList = () => {
     }
   }, [location.search]);
 
-
-
   const dataForExport = useMemo(() => {
     return (data || []).map((item) => ({
       _id: item._id,
@@ -394,7 +391,8 @@ const ProductionProcessingList = () => {
       dataIndex: "start_time",
       key: "start_time",
       className: "text-center",
-      sorter: true,
+      sorter: (a, b) =>
+        moment(a.start_time).unix() - moment(b.start_time).unix(),
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
     {
@@ -402,9 +400,10 @@ const ProductionProcessingList = () => {
       dataIndex: "end_time",
       key: "end_time",
       className: "text-center",
-      sorter: true,
+      sorter: (a, b) => moment(a.end_time).unix() - moment(b.end_time).unix(),
       render: (date) => moment(date).format("DD/MM/YYYY HH:mm"),
     },
+
     {
       title: t("productionProcess.field.status"),
       dataIndex: "status",
@@ -455,8 +454,7 @@ const ProductionProcessingList = () => {
           )}
         </Space>
       ),
-    }
-
+    },
   ];
 
   return (
@@ -509,16 +507,18 @@ const ProductionProcessingList = () => {
                   className={`
               inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
               text-sm font-medium transition-all duration-300
-              ${type_process === "single"
-                      ? "bg-white text-green-600 shadow-sm transform scale-105"
-                      : "text-gray-600 hover:text-green-600 hover:bg-white/50"
-                    }
+              ${
+                type_process === "single"
+                  ? "bg-white text-green-600 shadow-sm transform scale-105"
+                  : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+              }
             `}
                   onClick={() => set_type_process("single")}
                 >
                   <FaGear
-                    className={`text-base ${type_process === "single" ? "text-green-500" : ""
-                      }`}
+                    className={`text-base ${
+                      type_process === "single" ? "text-green-500" : ""
+                    }`}
                   />
                   <span>{t("productionProcess.button.single")}</span>
                 </button>
@@ -527,16 +527,18 @@ const ProductionProcessingList = () => {
                   className={`
               inline-flex items-center gap-2 px-4 py-2.5 rounded-lg
               text-sm font-medium transition-all duration-300
-              ${type_process === "consolidate"
-                      ? "bg-white text-green-600 shadow-sm transform scale-105"
-                      : "text-gray-600 hover:text-green-600 hover:bg-white/50"
-                    }
+              ${
+                type_process === "consolidate"
+                  ? "bg-white text-green-600 shadow-sm transform scale-105"
+                  : "text-gray-600 hover:text-green-600 hover:bg-white/50"
+              }
             `}
                   onClick={() => handleLoadConsolidate()}
                 >
                   <FaGears
-                    className={`text-base ${type_process === "consolidate" ? "text-green-500" : ""
-                      }`}
+                    className={`text-base ${
+                      type_process === "consolidate" ? "text-green-500" : ""
+                    }`}
                   />
                   <span>{t("productionProcess.button.consolidated")}</span>
                 </button>
@@ -566,7 +568,10 @@ const ProductionProcessingList = () => {
         {selectedProcess && (
           <Form layout="vertical" disabled>
             <div className="grid grid-cols-1 gap-2">
-              <Form.Item label={t("productionProcess.field._id")} className="!mb-0">
+              <Form.Item
+                label={t("productionProcess.field._id")}
+                className="!mb-0"
+              >
                 <Input value={selectedProcess._id} />
               </Form.Item>
 
@@ -606,30 +611,46 @@ const ProductionProcessingList = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Thời gian bắt đầu */}
-                <Form.Item label={t("productionProcess.field.start_time")} className="!mb-0">
+                <Form.Item
+                  label={t("productionProcess.field.start_time")}
+                  className="!mb-0"
+                >
                   <Input
                     value={
                       selectedProcess.start_time
-                        ? moment(selectedProcess.start_time).format("DD/MM/YYYY HH:mm")
+                        ? moment(selectedProcess.start_time).format(
+                            "DD/MM/YYYY HH:mm"
+                          )
                         : t("common.unknown")
                     }
                   />
                 </Form.Item>
 
                 {/* Thời gian kết thúc */}
-                <Form.Item label={t("productionProcess.field.end_time")} className="!mb-0">
+                <Form.Item
+                  label={t("productionProcess.field.end_time")}
+                  className="!mb-0"
+                >
                   <Input
                     value={
                       selectedProcess.end_time
-                        ? moment(selectedProcess.end_time).format("DD/MM/YYYY HH:mm")
+                        ? moment(selectedProcess.end_time).format(
+                            "DD/MM/YYYY HH:mm"
+                          )
                         : t("common.unknown")
                     }
                   />
                 </Form.Item>
               </div>
 
-              <Form.Item label={t("productionProcess.field.note")} className="!mb-0">
-                <Input.TextArea value={selectedProcess.note || "Không có"} rows={3} />
+              <Form.Item
+                label={t("productionProcess.field.note")}
+                className="!mb-0"
+              >
+                <Input.TextArea
+                  value={selectedProcess.note || "Không có"}
+                  rows={3}
+                />
               </Form.Item>
 
               {/* Các giai đoạn nếu có */}
@@ -646,10 +667,13 @@ const ProductionProcessingList = () => {
                       <Input
                         value={`${moment(selectedProcess[startKey]).format(
                           "DD/MM/YYYY HH:mm"
-                        )} - ${selectedProcess[endKey]
-                          ? moment(selectedProcess[endKey]).format("DD/MM/YYYY HH:mm")
-                          : t("common.notEnded")
-                          }`}
+                        )} - ${
+                          selectedProcess[endKey]
+                            ? moment(selectedProcess[endKey]).format(
+                                "DD/MM/YYYY HH:mm"
+                              )
+                            : t("common.notEnded")
+                        }`}
                       />
                     </Form.Item>
                   );
@@ -663,10 +687,7 @@ const ProductionProcessingList = () => {
         {/* Nút hành động */}
         <div className="flex justify-end items-center gap-4 mt-2">
           {selectedProcess?.status === "Chờ duyệt" && (
-            <ButtonComponent
-              type="approve"
-              onClick={handleApprove}
-            />
+            <ButtonComponent type="approve" onClick={handleApprove} />
           )}
           <ButtonComponent
             type="close"
@@ -697,7 +718,9 @@ const ProductionProcessingList = () => {
             <Form.Item
               label={t("productionProcess.field.start_time")}
               name="start_time"
-              rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
+              ]}
               className="!mb-0"
             >
               <DatePicker
@@ -752,10 +775,7 @@ const ProductionProcessingList = () => {
             <TextArea rows={3} />
           </Form.Item>
           <div className="flex justify-end gap-3 mt-4">
-            <ButtonComponent
-              type="update"
-              onClick={handleUpdate}
-            />
+            <ButtonComponent type="update" onClick={handleUpdate} />
             <ButtonComponent
               type="close"
               onClick={() => setIsEditModalOpen(false)}

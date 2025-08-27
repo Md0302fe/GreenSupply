@@ -302,6 +302,7 @@
     "cancelled": "Cancelled",
     "completed": "Completed",
     "processing": "Processing",
+    "in_processing": "In Production",
     "rejected": "Rejected",
     "failed": "Failed",
     "disable": "Disable",
@@ -2383,5 +2384,28 @@
     "confirmPassword": "Confirm New Password",
     "updatePassword": "Update Password",
     "updating": "Updating..."
-  }
+  },
+
+  "details_stage": {
+  "material": "Raw Material",
+  "quantity_material": "Raw Material Quantity",
+  "product": "Est Product Quantity",
+  "quantity_sorting": "Quantity after Sorting",
+  "rejection_rate": "Rejection rate (% peel, seed removed)",
+
+  "start_time": "Start time",
+  "end_time": "End time",
+  "weight_after_cut": "Weight after peeling – deseeding – slicing",
+  "removal_rate": "Removal rate (% peel, seed removed)",
+  "weight_after_soaking": "Weight after soaking (kg)",
+  "solution_concentration": "Solution concentration (%)",
+  "soaking_time": "Soaking time (h)",
+  "pre_drying_moisture": "Pre-drying moisture (%)",
+  "weight_after_drying": "Weight after drying (kg)",
+  "weight_loss_rate": "Weight loss rate (% water loss)",
+  "drying_time": "Drying time (h)",
+  "weight_after_cooling": "Weight after cooling (kg Finished Product)",
+  "bags_quantity": "Number of bags (pcs)",
+  "cartons_quantity": "Number of cartons (pcs)"
+}
 }

@@ -482,6 +482,7 @@ const ProductionRequestList = () => {
       filters: [
         { text: t("status.pending"), value: "Chờ duyệt" },
         { text: t("status.approve"), value: "Đã duyệt" },
+        { text: t("status.in_processing"), value: "Đang sản xuất" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (stt) => (

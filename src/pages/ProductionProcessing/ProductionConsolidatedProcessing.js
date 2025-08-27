@@ -106,9 +106,10 @@ const ProductionProcessForm = () => {
 
   // Không cho chọn end_time trước start_time + 1 ngày
   const disabledEndDate = (current) => {
-    const start = form.getFieldValue("start_time");
-    if (!start) return current && current < dayjs().startOf("day");
-    return current && current.isBefore(dayjs(start).add(1, "day"), "minute");
+    if (!startTime) {
+      return current && current < dayjs().startOf("day");
+    }
+    return current && current < dayjs(startTime).startOf("day");
   };
 
   const filteredRequests = selectedMaterialType
@@ -386,7 +387,6 @@ const ProductionProcessForm = () => {
                 ""
               )}
             </div>
-
             {/* Cột phải: Danh sách lô nguyên liệu */}
             <div>
               {batchs.length > 0 && (
@@ -516,26 +516,18 @@ const ProductionProcessForm = () => {
 
             <Form.Item
               name="end_time"
-              label={t("createConsolidatedProcess.endTime")}
-              className="flex-1 min-w-[250px]"
+              label={t("createProductionProcess.endTime")}
               rules={[
-                {
-                  required: true,
-                  message: t("createConsolidatedProcess.selectEndTime"),
-                },
+                { required: true, message: t("validation.endDateRequired") },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     const start = getFieldValue("start_time");
                     if (!value || !start) return Promise.resolve();
-                    if (value.isAfter(dayjs(start).add(1, "day"))) {
+                    if (value.isAfter(dayjs(start))) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      new Error(
-                        t(
-                          "createConsolidatedProcess.endTimeMustAfterStartOneDay"
-                        )
-                      )
+                      new Error(t("validation.endDateMustAfterStart"))
                     );
                   },
                 }),
@@ -548,10 +540,10 @@ const ProductionProcessForm = () => {
                 className="w-full"
                 placeholder={
                   !startTime
-                    ? t("createConsolidatedProcess.selectStartTimeFirst")
-                    : t("createConsolidatedProcess.selectEndTime")
+                    ? t("createProductionProcess.selectStartTimeFirst")
+                    : t("createProductionProcess.selectEndTime")
                 }
-                disabledDate={disabledEndDate}
+                disabledDate={disabledEndDate} // ✅ đã sửa lại chỉ cần lớn hơn
                 disabled={!startTime}
               />
             </Form.Item>

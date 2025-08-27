@@ -261,7 +261,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️K.lg sau phân loại & chọn nguyên liệu
+            ⚖️ {t("details_stage.quantity_sorting")}
           </label>
           <input
             type="number"
@@ -285,7 +285,7 @@ const StageComponent = ({
                 ? "bg-gray-100 cursor-not-allowed"
                 : ""
             }`}
-            placeholder="Nhập khối lượng (kg)"
+            placeholder={t("details_stage.quantity_sorting")}
           />
         </div>
 
@@ -294,7 +294,7 @@ const StageComponent = ({
             htmlFor="id2"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ❌🥭Tỷ lệ loại bỏ (% hỏng, vỡ)
+            ❌🥭 {t("details_stage.rejection_rate")}
           </label>
           <div
             id="id2"
@@ -316,7 +316,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️K.lg sau gọt - tách hạt - cắt lát (kg)
+            ⚖️ {t("details_stage.weight_after_cut")}
           </label>
           <input
             type="number"
@@ -347,7 +347,7 @@ const StageComponent = ({
                 ? "bg-gray-100 cursor-not-allowed"
                 : ""
             }`}
-            placeholder="Nhập khối lượng (kg)"
+            placeholder={t("details_stage.weight_after_cut")}
           />
         </div>
 
@@ -356,7 +356,7 @@ const StageComponent = ({
             htmlFor="id2"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ❌🥭Tỷ lệ loại bỏ (% vỏ , hạt bị loại bỏ)
+            ❌🥭 {t("details_stage.removal_rate")}
           </label>
           <div
             id="id2"
@@ -384,7 +384,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️K.lg sau ngâm (kg)
+            ⚖️{t("details_stage.weight_after_soaking")}
           </label>
           <input
             type="number"
@@ -415,7 +415,7 @@ const StageComponent = ({
                 ? "bg-gray-100 cursor-not-allowed"
                 : ""
             }`}
-            placeholder="K.lg sau ngâm (kg)"
+            placeholder={t("details_stage.weight_after_soaking")}
           />
         </div>
 
@@ -425,7 +425,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️Nồng độ dung dịch (%)
+          ⚖️{t("details_stage.solution_concentration")}
           </label>
           <input
             type="text"
@@ -443,7 +443,7 @@ const StageComponent = ({
               }));
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            placeholder="Nồng độ dung dịch (%)"
+            placeholder={t("details_stage.solution_concentration")}
           />
         </div>
 
@@ -453,7 +453,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️Thời gian ngâm (giờ)
+            ⚖️{t("details_stage.soaking_time")}
           </label>
           <input
             type="number"
@@ -472,7 +472,7 @@ const StageComponent = ({
               }));
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            placeholder="Thời gian ngâm (giờ)"
+            placeholder={t("details_stage.soaking_time")}
           />
         </div>
 
@@ -482,7 +482,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️Độ ẩm trước khi xấy (%)
+            {t("details_stage.pre_drying_moisture")}
           </label>
           <input
             type="number"
@@ -501,7 +501,7 @@ const StageComponent = ({
               }));
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            placeholder="Độ ẩm trước khi xấy (%)"
+            placeholder={t("details_stage.pre_drying_moisture")}
           />
         </div>
       </div>
@@ -518,7 +518,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️K.lg sau khi sấy (kg)
+            ⚖️{t("details_stage.weight_after_drying")}
           </label>
           <input
             type="text"
@@ -541,7 +541,7 @@ const StageComponent = ({
               }));
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            placeholder="K.lg sau khi sấy (kg)"
+            placeholder={t("details_stage.weight_after_drying")}
           />
         </div>
         {/* % hao hụt do mất nước */}
@@ -550,7 +550,7 @@ const StageComponent = ({
             htmlFor="id2"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ❌🥭% Tỷ lệ mất khối lượng (% mất nước)
+            ❌🥭% {t("details_stage.weight_loss_rate")}
           </label>
           <div
             id="id2"
@@ -566,7 +566,7 @@ const StageComponent = ({
             htmlFor="id1"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            ⚖️Thời gian sấy (giờ)
+            ⚖️{t("details_stage.drying_time")}
           </label>
           <input
             type="number"
@@ -585,7 +585,7 @@ const StageComponent = ({
               }));
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-            placeholder="Thời gian sấy (giờ)"
+            placeholder={t("details_stage.drying_time")}
           />
         </div>
       </div>
@@ -603,7 +603,7 @@ const StageComponent = ({
               htmlFor="id1"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              ⚖️K.lg sau làm nguội (kg Thành Phẩm)
+              ⚖️{t("details_stage.weight_after_cooling")}
             </label>
             <input
               type="text"
@@ -621,7 +621,7 @@ const StageComponent = ({
                 }));
               }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-              placeholder="K.lg sau làm nguội (kg Thành Phẩm)"
+              placeholder={t("details_stage.weight_after_cooling")}
             />
           </div>
 
@@ -632,7 +632,7 @@ const StageComponent = ({
                   htmlFor="id2"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  💨Số lượng túi (cái)
+                  💨{t("details_stage.bags_quantity")}
                 </label>
                 <div
                   id="id2"
@@ -647,7 +647,7 @@ const StageComponent = ({
                   htmlFor="id2"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  📦Số lượng thùng (cái)
+                  📦{t("details_stage.cartons_quantity")}
                 </label>
                 <div
                   id="id2"

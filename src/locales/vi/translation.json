@@ -298,6 +298,7 @@
     "cancelled": "Đã hủy",
     "completed": "Hoàn Thành",
     "processing": "Đang xử lý",
+    "in_processing": "Đang sản xuất",
     "rejected": "Từ chối",
     "failed": "Thất bại",
     "disable": "Vô hiệu hóa",
@@ -1983,7 +1984,6 @@
     "cartonBoxLabel": "Thùng carton",
     "nameOnlySpaces": "Tên không được chỉ chứa khoảng trắng",
     "noLeadingTrailingSpaces": "Tên không được có khoảng trắng ở đầu hoặc cuối"
-
   },
   "createProductionProcess": {
     "title": "Tạo Quy Trình Sản Xuất",
@@ -2364,5 +2364,28 @@
     "confirmPassword": "Xác nhận mật khẩu mới",
     "updatePassword": "Cập nhật mật khẩu",
     "updating": "Đang cập nhật..."
+  },
+
+  "details_stage": {
+    "material": "Nguyên liệu đầu vào",
+    "quantity_material": "Khối lượng nguyên liệu",
+    "product": "Khối lượng thành phẩm ước tính",
+    "quantity_sorting": "Khối lượng sau phân loại",
+    "rejection_rate": "Tỷ lệ loại bỏ (% vỏ, hạt bị loại bỏ)",
+
+    "start_time": "Thời gian bắt đầu",
+    "end_time": "Thời gian kết thúc",
+    "weight_after_cut": "Khối lượng sau gọt – tách hạt – cắt lát (kg)",
+    "removal_rate": "Tỷ lệ loại bỏ (% vỏ, hạt bị loại bỏ)",
+    "weight_after_soaking": "Khối lượng sau ngâm (kg)",
+    "solution_concentration": "Nồng độ dung dịch (%)",
+    "soaking_time": "Thời gian ngâm (giờ)",
+    "pre_drying_moisture": "Độ ẩm trước khi sấy (%)",
+    "weight_after_drying": "Khối lượng sau khi sấy (kg)",
+    "weight_loss_rate": "Tỷ lệ mất khối lượng (% mất nước)",
+    "drying_time": "Thời gian sấy (giờ)",
+    "weight_after_cooling": "Khối lượng sau làm nguội (kg Thành phẩm)",
+    "bags_quantity": "Số lượng túi (cái)",
+    "cartons_quantity": "Số lượng thùng (cái)"
   }
 }
