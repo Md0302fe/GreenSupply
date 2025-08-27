@@ -78,7 +78,7 @@ const UserComponent = () => {
         phone: res?.data.phone,
         role: res?.data?.role_id?._id,
         avatar: res?.data.avatar,
-        address: res?.data.address?.[0].address,
+        address: res?.data?.address?.[0]?.address,
         birth_day: res?.data.birth_day,
         createdAt: res?.data.createdAt,
         gender: res?.data.gender,
@@ -87,7 +87,7 @@ const UserComponent = () => {
     }
     return res;
   };
-  console.log(stateDetailsUser)
+  console.log(stateDetailsUser);
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
     setDrawerMode("edit");
@@ -113,13 +113,14 @@ const UserComponent = () => {
       ...dataUpdate,
       role_id: dataUpdate?.role,
     };
-    console.log("updatedData => ", updatedData);
 
-    //remember return . tránh việc mutationUpdate không trả về data
+    // BẮT BUỘC: loại bỏ address (và các field chỉ-đọc nếu có)
+    const { address, createdAt, updatedAt, ...safeUpdate } = updatedData;
+
     return UserServices.updateUser({
       id,
       access_token: token,
-      data: updatedData,
+      data: safeUpdate,
     });
   });
 
@@ -223,10 +224,10 @@ const UserComponent = () => {
   useEffect(() => {
     if (isSuccessUpdate) {
       if (dataRes?.status === "OK") {
-        message.success(dataRes?.message);
+        message.success(t('updateSuccess'));
         handleCancelUpdate();
       } else {
-        message.error(dataRes?.message);
+        message.error(t('updateError'));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
