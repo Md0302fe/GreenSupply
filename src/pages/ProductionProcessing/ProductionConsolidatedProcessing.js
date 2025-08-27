@@ -104,11 +104,11 @@ const ProductionProcessForm = () => {
     return current && current < dayjs().startOf("day");
   };
 
-  // ❌ Không cho chọn ngày kết thúc trước ngày bắt đầu
+  // Không cho chọn end_time trước start_time + 1 ngày
   const disabledEndDate = (current) => {
     const start = form.getFieldValue("start_time");
     if (!start) return current && current < dayjs().startOf("day");
-    return current && current.isBefore(start, "minute");
+    return current && current.isBefore(dayjs(start).add(1, "day"), "minute");
   };
 
   const filteredRequests = selectedMaterialType
@@ -523,6 +523,22 @@ const ProductionProcessForm = () => {
                   required: true,
                   message: t("createConsolidatedProcess.selectEndTime"),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const start = getFieldValue("start_time");
+                    if (!value || !start) return Promise.resolve();
+                    if (value.isAfter(dayjs(start).add(1, "day"))) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        t(
+                          "createConsolidatedProcess.endTimeMustAfterStartOneDay"
+                        )
+                      )
+                    );
+                  },
+                }),
               ]}
               dependencies={["start_time"]}
             >

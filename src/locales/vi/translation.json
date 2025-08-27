@@ -1980,7 +1980,10 @@
     "heightPlaceholder": "Chỉ áp dụng cho thùng",
     "selectImageButton": "Chọn ảnh",
     "vacuumBagLabel": "Túi chân không",
-    "cartonBoxLabel": "Thùng carton"
+    "cartonBoxLabel": "Thùng carton",
+    "nameOnlySpaces": "Tên không được chỉ chứa khoảng trắng",
+    "noLeadingTrailingSpaces": "Tên không được có khoảng trắng ở đầu hoặc cuối"
+
   },
   "createProductionProcess": {
     "title": "Tạo Quy Trình Sản Xuất",
