@@ -78,7 +78,7 @@ const UserComponent = () => {
         phone: res?.data.phone,
         role: res?.data?.role_id?._id,
         avatar: res?.data.avatar,
-        address: res?.data.address,
+        address: res?.data.address?.[0].address,
         birth_day: res?.data.birth_day,
         createdAt: res?.data.createdAt,
         gender: res?.data.gender,
@@ -87,7 +87,7 @@ const UserComponent = () => {
     }
     return res;
   };
-
+  console.log(stateDetailsUser)
   // Handle Click Btn Edit Detail Product : Update product
   const handleDetailsProduct = () => {
     setDrawerMode("edit");
