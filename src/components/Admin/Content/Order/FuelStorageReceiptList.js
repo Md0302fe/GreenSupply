@@ -273,7 +273,7 @@ const FuelStorageReceiptList = () => {
         message.error(t("fuelStorage.updateFail"));
       }
     } catch {
-      message.error(t("fuelStorage.serverError"));
+        message.error(t("fuelStorage.serverError"));
     }
     setLoading(false);
   };
