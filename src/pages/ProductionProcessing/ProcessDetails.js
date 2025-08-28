@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 const ProcessDetails = () => {
   const { t } = useTranslation();
 
-  const { process_id , process_type } = useParams();
+  const { process_id, process_type } = useParams();
   const user = useSelector((state) => state.user);
   const [dataProcess, setDataProcess] = useState();
   const [dataStage, setDataStage] = useState();
@@ -113,6 +113,8 @@ const ProcessDetails = () => {
     }
     await refetch();
   };
+
+  console.log("dataProcess ==> ", dataProcess);
 
   return (
     <Loading isPending={isLoading}>
@@ -223,10 +225,13 @@ const ProcessDetails = () => {
                   🍋 {t("details_stage.material")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {
-                    dataProcess?.data?.production_request_id?.material
-                      ?.fuel_type_id?.type_name
-                  }
+                  {dataProcess?.data?.process_type === "consolidated_processes"
+                    ? dataProcess?.data?.production_request_id?.[0]?.material
+                        ?.fuel_type_id?.type_name
+                    : dataProcess?.data?.process_type === "single_processes"
+                    ? dataProcess?.data?.production_request_id?.material
+                        ?.fuel_type_id?.type_name
+                    : ""}
                 </p>
               </div>
 
@@ -236,7 +241,10 @@ const ProcessDetails = () => {
                   ⚖️ {t("details_stage.quantity_material")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.data?.production_request_id?.material_quantity}
+                  {dataProcess?.data?.process_type === "consolidated_processes"
+                    ? dataProcess?.data?.total_raw_material
+                    : dataProcess?.data?.production_request_id
+                        ?.material_quantity || 0}
                 </p>
               </div>
 
@@ -246,7 +254,10 @@ const ProcessDetails = () => {
                   ⚖️ {t("details_stage.product")}
                 </p>
                 <p className="font-medium text-gray-800 text-sm">
-                  {dataProcess?.data?.production_request_id?.product_quantity}
+                  {dataProcess?.data?.process_type === "consolidated_processes"
+                    ? dataProcess?.data?.total_finish_product
+                    : dataProcess?.data?.production_request_id
+                        ?.product_quantity || 0}
                 </p>
               </div>
             </div>
@@ -341,7 +352,7 @@ const ProcessDetails = () => {
               dataStage: dataStage?.data,
               dataProcess: dataProcess?.data,
             }}
-          />  
+          />
           <StageDetailsComponents
             stage={stage7}
             noStage="7"

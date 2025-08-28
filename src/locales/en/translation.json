@@ -2406,6 +2406,20 @@
   "drying_time": "Drying time (h)",
   "weight_after_cooling": "Weight after cooling (kg Finished Product)",
   "bags_quantity": "Number of bags (pcs)",
-  "cartons_quantity": "Number of cartons (pcs)"
+  "cartons_quantity": "Number of cartons (pcs)",
+    "product_batch" : {
+      "product_info": "Product Informations",
+      "plan_code": "Production Plan Code",
+      "product_code": "Product Code",
+      "product_quanlity": "Product Quanlity (Kg)",
+      "date_create": "Product Quanlity (Kg)",
+      "date_experied": "Product Quanlity (Kg)",
+      "raw_material": "Raw material type",
+
+      "product_plan_title": "Production Plan Detail",
+      "est_end_product": "Estimate Production Quanlity",
+      "est_loss": "Estimate Loss Percentage",
+      "view_product": "View Detail Product"
+    }
 }
 }

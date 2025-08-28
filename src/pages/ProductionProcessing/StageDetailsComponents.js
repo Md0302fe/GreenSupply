@@ -673,12 +673,12 @@ const StageComponent = ({
             >
               <div className="bg-black bg-opacity-50 text-white h-full w-full flex flex-col justify-center items-center rounded-lg px-2">
                 <p className="text-sm text-white font-semibold">
-                  Mã SP: {dataProduct?.production_id}
+                  {t("details_stage.product_batch.product_code")}: {dataProduct?.production_id}
                 </p>
                 <p className="text-sm text-white">
-                  Khối lượng: {dataProduct?.product_quantity}
+                  {t("details_stage.product_batch.product_quanlity")}: {dataProduct?.product_quantity}
                 </p>
-                <p className="text-xs text-white mt-1 italic">Xem Thành Phẩm</p>
+                <p className="text-xs text-white mt-1 italic">{t("details_stage.product_batch.view_product")}</p>
               </div>
             </div>
           </div>
@@ -700,13 +700,13 @@ const StageComponent = ({
                 >
                   <div className="bg-black bg-opacity-50 text-white h-full w-full flex flex-col justify-center items-center rounded-lg px-2">
                     <p className="text-sm text-white font-semibold">
-                      Mã SP: {item?.production_id}
+                      {t("details_stage.product_batch.product_code")}: {item?.production_id}
                     </p>
                     <p className="text-sm text-white">
-                      Khối lượng: {item?.product_quantity}
+                      {t("details_stage.product_batch.product_quanlity")}: {item?.product_quantity}
                     </p>
                     <p className="text-xs text-white mt-1 italic">
-                      Xem Thành Phẩm
+                      {t("details_stage.product_batch.view_product")}
                     </p>
                   </div>
                 </div>
@@ -809,14 +809,14 @@ const StageComponent = ({
           <Form form={form} layout="vertical">
             <div className="space-y-4">
               <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
-                Thông tin sản phẩm
+                {t("details_stage.product_batch.product_info")}
               </h3>
 
               {/* Mã kế hoạch */}
               <Form.Item>
                 <Input
                   readOnly
-                  value={`Mã kế hoạch : ${product?.origin_production_request_id}`}
+                  value={`${t("details_stage.product_batch.plan_code")} : ${product?.origin_production_request_id}`}
                 />
               </Form.Item>
 
@@ -825,7 +825,7 @@ const StageComponent = ({
                 <Input
                   readOnly
                   placeholder={t("finishedProductList.productCode")}
-                  value={`Mã thành phẩm : ${product.masanpham}`}
+                  value={`${t("details_stage.product_batch.product_code")} : ${product.masanpham}`}
                 />
               </Form.Item>
 
@@ -850,7 +850,7 @@ const StageComponent = ({
                 <Input
                   readOnly
                   placeholder="Khối lượng thành phẩm"
-                  value={`Thành phẩm : ${product?.product_quantity}`}
+                  value={`${t("details_stage.product_batch.product_quanlity")} : ${product?.product_quantity}`}
                 />
               </Form.Item>
 
@@ -860,7 +860,7 @@ const StageComponent = ({
                   readOnly
                   className="w-full"
                   placeholder={t("finishedProductList.productionDate")}
-                  value={`Ngày tạo : ${product?.created_date}`}
+                  value={`${t("details_stage.product_batch.date_create")} : ${product?.created_date}`}
                 />
               </Form.Item>
 
@@ -870,7 +870,7 @@ const StageComponent = ({
                   readOnly
                   className="w-full"
                   placeholder={t("finishedProductList.expirationDate")}
-                  value={`Ngày hết hạn : ${product?.expiration_date}`}
+                  value={`${t("details_stage.product_batch.date_experied")} : ${product?.expiration_date}`}
                 />
               </Form.Item>
 
@@ -879,7 +879,7 @@ const StageComponent = ({
                 <Input
                   readOnly
                   placeholder={t("finishedProductList.materialType")}
-                  value={`Nguyên liệu : ${product?.raw_material_type}`}
+                  value={`${t("details_stage.product_batch.raw_material")} : ${product?.raw_material_type}`}
                 />
               </Form.Item>
             </div>
@@ -888,18 +888,18 @@ const StageComponent = ({
           {/* CHI TIẾT YÊU CẦU SẢN XUẤT */}
           <div className="space-y-4">
             <h3 className="font-bold text-lg border-b p-2 bg-gray-100">
-              Chi tiết kế hoạch sản xuất
+              {t("details_stage.product_batch.product_plan_title")}
             </h3>
             {/* mã kế hoạch */}
             <Input
               placeholder={t("finishedProductList.productionId")}
-              value={`Mã kế hoạch : ${product?.origin_production_request_id}`}
+              value={`${t("details_stage.product_batch.plan_code")} : ${product?.origin_production_request_id}`}
             />
 
             {/* Mã thành phẩm */}
             <Input
               placeholder={t("finishedProductList.productCode")}
-              value={`Mã thành phẩm : ${product.masanpham}`}
+              value={`${t("details_stage.product_batch.product_code")} : ${product.masanpham}`}
             />
 
             <Input
@@ -910,7 +910,7 @@ const StageComponent = ({
             <Input
               type="text"
               placeholder={t("finishedProductList.productQuantity")}
-              value={`Khối lượng thành phẩm ước tính : ${dataProduct?.product_quantity} (kg)`}
+              value={`${t("details_stage.product_batch.est_end_product")} : ${dataProduct?.product_quantity} (kg)`}
             />
 
             <Input
@@ -921,13 +921,13 @@ const StageComponent = ({
             <Input
               type="text"
               placeholder={t("finishedProductList.lossPercentage")}
-              value={`Ước tính hao hụt : ${dataProduct?.loss_percentage}%`}
+              value={`${t("details_stage.product_batch.est_loss")} : ${dataProduct?.loss_percentage}%`}
             />
 
             <Input
               type="text"
               placeholder={t("finishedProductList.materialQuantity")}
-              value={`Nguyên liệu : ${product?.raw_material_type} - ${dataProduct?.material_quantity} (kg)`}
+              value={`${t("details_stage.product_batch.raw_material")} : ${product?.raw_material_type} - ${dataProduct?.material_quantity} (kg)`}
             />
           </div>
 

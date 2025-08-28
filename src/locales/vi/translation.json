@@ -2386,6 +2386,22 @@
     "drying_time": "Thời gian sấy (giờ)",
     "weight_after_cooling": "Khối lượng sau làm nguội (kg Thành phẩm)",
     "bags_quantity": "Số lượng túi (cái)",
-    "cartons_quantity": "Số lượng thùng (cái)"
+    "cartons_quantity": "Số lượng thùng (cái)",
+
+    "product_batch": {
+      "product_info": "Thông tin sản phẩm",
+      "plan_code": "Mã kế hoạch sản xuất",
+      "product_code": "Mã sản phẩm",
+      "product_quanlity": "Sản lượng (Kg)",
+      "date_create": "Ngày sản xuất",
+      "date_experied": "Ngày hết hạn",
+      "raw_material": "Loại nguyên liệu",
+
+      "product_plan_title": "Chi tiết kế hoạch sản xuất",
+      "est_end_product": "Sản lượng thành phẩm ước tính",
+      "est_loss": "Tỷ lệ hao hụt ước tính",
+      "view_product": "Xem sản phẩm"
+
+    }
   }
 }

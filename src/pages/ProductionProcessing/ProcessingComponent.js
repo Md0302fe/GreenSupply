@@ -79,7 +79,7 @@ const ProcessingComponent = ({ data , type }) => {
 
         <div className="bg-white shadow-sm border border-gray-200 rounded p-1 max-w-[200px]">
           <p className="text-gray-500 text-xs">👤 Assigned User</p>
-          <p className="font-medium text-gray-800 text-sm">Nguyễn Văn A</p>
+          <p className="font-medium text-gray-800 text-sm">System</p>
         </div>
 
         <div className="bg-white shadow-sm border border-gray-200 rounded p-1 w-full col-span-2 sm:col-span-2 md:col-span-3">
