@@ -175,7 +175,8 @@
     "loading": "Loading data...",
     "high": "High",
     "medium": "Medium",
-    "low": "Low"
+    "low": "Low",
+    "emptyNote": "empty Note"
   },
   "homepage": {
     "mango_desc_1": "When it comes to tropical fruits, mangoes are always worth mentioning. In Vietnam, mangoes are grown from North to South, mostly concentrated from Binh Dinh southward, and especially in the Mekong Delta provinces such as Ben Tre, Tien Giang, Dong Thap, Vinh Long, and Can Tho. Vietnam ranks 13th in the world in mango production.",
@@ -486,7 +487,9 @@
       "warehouse": {
         "title": "Warehouse Usage",
         "used": "Used",
-        "remain": "Remaining"
+        "remain": "Remaining",
+        "storage_in_warehouse" : "Warehouse",
+        "storage_out_warehouse" : "Warehouse Exported"
       },
       "materialCollection": {
         "title": "📥 Material Collection Requests"

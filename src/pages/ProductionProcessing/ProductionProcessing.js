@@ -47,6 +47,8 @@ const ProductionProcessForm = () => {
   const { id: requestIdFromURL } = useParams();
   const navigate = useNavigate();
 
+  console.log("selectedBatch ==> ", selectedBatch);
+
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -98,26 +100,26 @@ const ProductionProcessForm = () => {
     if (hasPreparingBatch) {
       message.warning(t("messages.batchPreparingWarning"));
       return; // Không cho phép tiếp tục
-    }
-
-    const payload = {
-      ...values,
-      start_time: values.start_time?.toISOString(),
-      end_time: values.end_time?.toISOString(),
-    };
-
-    const response =
-      await ProductionProcessingService.createProductionProcessing({
-        access_token: user.access_token,
-        dataRequest: payload,
-      });
-
-    if (response) {
-      message.success(t("messages.createSuccess"));
-      form.resetFields();
-      setBatchs([]);
     } else {
-      message.error(t("messages.createFail"));
+      const payload = {
+        ...values,
+        start_time: values.start_time?.toISOString(),
+        end_time: values.end_time?.toISOString(),
+      };
+
+      const response =
+        await ProductionProcessingService.createProductionProcessing({
+          access_token: user.access_token,
+          dataRequest: payload,
+        });
+
+      if (response) {
+        message.success(t("messages.createSuccess"));
+        form.resetFields();
+        setBatchs([]);
+      } else {
+        message.error(t("messages.createFail"));
+      }
     }
   };
 
@@ -341,8 +343,15 @@ const ProductionProcessForm = () => {
                     {selectedBatch.fuel_type_id.quantity}
                   </Descriptions.Item>
                   <Descriptions.Item label={t("storage.name")}>
-                    {selectedBatch.fuel_type_id.storage_id?.storage_name ||
-                      t("common.unknown")}
+                    {selectedBatch.status === "Chờ xuất kho" ? (
+                      <span>
+                        {t("dashboard.chart.warehouse.storage_in_warehouse")}
+                      </span>
+                    ) : (
+                      <span>
+                        {t("dashboard.chart.warehouse.storage_out_warehouse")}
+                      </span>
+                    )}
                   </Descriptions.Item>
                 </>
               )}
